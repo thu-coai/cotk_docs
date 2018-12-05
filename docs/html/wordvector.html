@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Word Vector &mdash; contk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Metric" href="metric.html" />
+    <link rel="prev" title="Data Loader" href="dataloader.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> contk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">contk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Word Vector</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/wordvector.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-contk.wordvector">
+<span id="word-vector"></span><h1>Word Vector<a class="headerlink" href="#module-contk.wordvector" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">contk.wordvector</span></code> provides classes and functions downloading and
+loading wordvector automatically.</p>
+<dl class="class">
+<dt id="contk.wordvector.WordVector">
+<em class="property">class </em><code class="descclassname">contk.wordvector.</code><code class="descname">WordVector</code><a class="reference internal" href="_modules/contk/wordvector/wordvector.html#WordVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.wordvector.WordVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base of all WordVector loader</p>
+<dl class="method">
+<dt id="contk.wordvector.WordVector.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/wordvector/wordvector.html#WordVector.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.wordvector.WordVector.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load word vector and return a numpy array. The ith row is the feature
+of the ith word in <cite>vocab_list</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_dims</strong> (<em>int</em>) – specify the dimension size of word vector. If <cite>n_dims</cite>
+is bigger than pretrained word vector, the rest feature will be
+randomly initialized by normal distriution.</li>
+<li><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
+is any word not appeared in pretrained word vector, the feature will
+be randomly initialized by normal distribution</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="contk.wordvector.Glove">
+<em class="property">class </em><code class="descclassname">contk.wordvector.</code><code class="descname">Glove</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/wordvector/gloves.html#Glove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.wordvector.Glove" title="Permalink to this definition">¶</a></dt>
+<dd><p>GloVe is pre-trained word vectors from
+Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014.
+GloVe: Global Vectors for Word Representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of GloVe word vectors.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="contk.wordvector.Glove.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/wordvector/gloves.html#Glove.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.wordvector.Glove.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refer to <a class="reference internal" href="#contk.wordvector.WordVector.load" title="contk.wordvector.WordVector.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load()</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="metric.html" class="btn btn-neutral float-right" title="Metric" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dataloader.html" class="btn btn-neutral" title="Data Loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
