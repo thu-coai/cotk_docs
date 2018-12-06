@@ -2,11 +2,11 @@
 
 ### Project
 
-Please refer to https://github.com/hzhwcmhf/contk
+Please refer to https://github.com/thu-coai/contk
 
 ### Github Pages
 
-https://hzhwcmhf.github.io/contk_docs/
+https://thu-coai.github.io/contk_docs/
 
 ### License
 
