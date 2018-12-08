@@ -161,11 +161,31 @@
            <div itemprop="articleBody">
             
   <h1>Source code for contk.dataloader.dataloader</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="Dataloader"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.Dataloader">[docs]</a><span></span><span class="k">class</span> <span class="nc">Dataloader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Dataloader"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.Dataloader">[docs]</a><span></span><span class="k">class</span> <span class="nc">Dataloader</span><span class="p">():</span>
 	<span class="sd">&#39;&#39;&#39;Base class of Dataloader.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">pass</span></div>
+		<span class="k">pass</span>
+
+<div class="viewcode-block" id="Dataloader.get_all_subclasses"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.Dataloader.get_all_subclasses">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a generator of all subclasses.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+			<span class="k">yield from</span> <span class="n">subclass</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">()</span>
+			<span class="k">yield</span> <span class="n">subclass</span></div>
+
+<div class="viewcode-block" id="Dataloader.load_class"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.Dataloader.load_class">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a subclass of `class_name`.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			class_name (str): target class name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">subclass</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">class_name</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">subclass</span>
+		<span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
 
            </div>

@@ -165,14 +165,17 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#B"><strong>B</strong></a>
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -182,10 +185,18 @@
  | <a href="#W"><strong>W</strong></a>
  
 </div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#contk.metric.MetricChain.add_metric">add_metric() (contk.metric.MetricChain method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="metric.html#contk.metric.bleu1">bleu1() (in module contk.metric)</a>
+      <li><a href="metric.html#contk.metric.BleuCorpusMetric">BleuCorpusMetric (class in contk.metric)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -193,10 +204,20 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#module-contk.dataloader">contk.dataloader (module)</a>
+      <li><a href="metric.html#contk.metric.BleuCorpusMetric.close">close() (contk.metric.BleuCorpusMetric method)</a>
+
+      <ul>
+        <li><a href="metric.html#contk.metric.MetricChain.close">(contk.metric.MetricChain method)</a>
 </li>
+        <li><a href="metric.html#contk.metric.PerlplexityMetric.close">(contk.metric.PerlplexityMetric method)</a>
+</li>
+        <li><a href="metric.html#contk.metric.SingleDialogRecorder.close">(contk.metric.SingleDialogRecorder method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#module-contk.dataloader">contk.dataloader (module)</a>
+</li>
       <li><a href="metric.html#module-contk.metric">contk.metric (module)</a>
 </li>
       <li><a href="wordvector.html#module-contk.wordvector">contk.wordvector (module)</a>
@@ -224,15 +245,41 @@
   </ul></td>
 </tr></table>
 
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#contk.metric.BleuCorpusMetric.forward">forward() (contk.metric.BleuCorpusMetric method)</a>
+
+      <ul>
+        <li><a href="metric.html#contk.metric.MetricChain.forward">(contk.metric.MetricChain method)</a>
+</li>
+        <li><a href="metric.html#contk.metric.PerlplexityMetric.forward">(contk.metric.PerlplexityMetric method)</a>
+</li>
+        <li><a href="metric.html#contk.metric.SingleDialogRecorder.forward">(contk.metric.SingleDialogRecorder method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#contk.dataloader.Dataloader.get_all_subclasses">get_all_subclasses() (contk.dataloader.Dataloader class method)</a>
+
+      <ul>
+        <li><a href="wordvector.html#contk.wordvector.WordVector.get_all_subclasses">(contk.wordvector.WordVector class method)</a>
+</li>
+      </ul></li>
       <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.get_batch">get_batch() (contk.dataloader.SingleTurnDialog method)</a>
 </li>
-      <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.get_next_batch">get_next_batch() (contk.dataloader.SingleTurnDialog method)</a>
+      <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.get_inference_metric">get_inference_metric() (contk.dataloader.SingleTurnDialog method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.get_next_batch">get_next_batch() (contk.dataloader.SingleTurnDialog method)</a>
+</li>
+      <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">get_teacher_forcing_metric() (contk.dataloader.SingleTurnDialog method)</a>
+</li>
       <li><a href="wordvector.html#contk.wordvector.Glove">Glove (class in contk.wordvector)</a>
 </li>
       <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.go_id">go_id (contk.dataloader.SingleTurnDialog attribute)</a>
@@ -266,6 +313,26 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#contk.dataloader.Dataloader.load_class">load_class() (contk.dataloader.Dataloader class method)</a>
+
+      <ul>
+        <li><a href="wordvector.html#contk.wordvector.WordVector.load_class">(contk.wordvector.WordVector class method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#contk.metric.MetricBase">MetricBase (class in contk.metric)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#contk.metric.MetricChain">MetricChain (class in contk.metric)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="O">O</h2>
@@ -280,6 +347,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog.pad_id">pad_id (contk.dataloader.SingleTurnDialog attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#contk.metric.PerlplexityMetric">PerlplexityMetric (class in contk.metric)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -299,6 +370,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#contk.metric.SingleDialogRecorder">SingleDialogRecorder (class in contk.metric)</a>
+</li>
       <li><a href="dataloader.html#contk.dataloader.SingleTurnDialog">SingleTurnDialog (class in contk.dataloader)</a>
 </li>
   </ul></td>

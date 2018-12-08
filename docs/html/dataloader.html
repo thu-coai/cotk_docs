@@ -169,7 +169,7 @@
             
   <div class="section" id="module-contk.dataloader">
 <span id="data-loader"></span><h1>Data Loader<a class="headerlink" href="#module-contk.dataloader" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">contk.dataloader</span></code> provides classes and functions downloading and
+<p><cite>contk.dataloader</cite> provides classes and functions downloading and
 loading benchmark data automatically. It reduce your cost preprocessing
 data and provide a fair dataset for every model. It also help you adapt
 your model from one dataset to other datasets.</p>
@@ -177,6 +177,26 @@ your model from one dataset to other datasets.</p>
 <dt id="contk.dataloader.Dataloader">
 <em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class of Dataloader.</p>
+<dl class="classmethod">
+<dt id="contk.dataloader.Dataloader.get_all_subclasses">
+<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader.get_all_subclasses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a generator of all subclasses.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="contk.dataloader.Dataloader.load_class">
+<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader.load_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader.load_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subclass of <cite>class_name</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>class_name</strong> (<em>str</em>) – target class name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <div class="section" id="singleturndialog">
@@ -189,37 +209,37 @@ your model from one dataset to other datasets.</p>
 <dt id="contk.dataloader.SingleTurnDialog.ext_vocab">
 <code class="descname">ext_vocab</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>list</em> – special tokens, must be placed at beginning of <cite>vocab_list</cite>.
-default: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code></p>
+default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.pad_id">
 <code class="descname">pad_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.pad_id" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – token for padding. default: 0</p>
+<dd><p><em>int</em> – token for padding. default: <cite>0</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.unk_id">
 <code class="descname">unk_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.unk_id" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – token for unkown words. default: 1</p>
+<dd><p><em>int</em> – token for unkown words. default: <cite>1</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.go_id">
 <code class="descname">go_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.go_id" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – token at the beginning of sentences. default: 2</p>
+<dd><p><em>int</em> – token at the beginning of sentences. default: <cite>2</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.eos_id">
 <code class="descname">eos_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.eos_id" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – token at the end of sentences. default: 3</p>
+<dd><p><em>int</em> – token at the end of sentences. default: <cite>3</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.key_name">
 <code class="descname">key_name</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – name of subsets of the data. default: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code></p>
+<dd><p><em>list</em> – name of subsets of the data. default: <cite>[“train”, “dev”, “test”]</cite></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -237,18 +257,19 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>(For developer) You must initialize following attributes in the subclasses.</p>
+<p><strong>(For developer)</strong> You must initialize following attributes in the subclasses.</p>
 <ul class="last simple">
 <li>vocab (list): don’t forget <cite>ext_vocab</cite>.</li>
 <li>word2id (dict): should be initialized by <code class="docutils literal notranslate"><span class="pre">{w:</span> <span class="pre">i</span> <span class="pre">for</span> <span class="pre">i,</span> <span class="pre">w</span> <span class="pre">in</span> <span class="pre">enumerate(self.vocab_list)}</span></code></li>
 <li>data (dict): a dict mapping <cite>key_name</cite> to lists, which contains sentences in index form.</li>
-<li>index (dict): a dict mapping <cite>key_name</cite> to lists, should be initialized by <code class="docutils literal notranslate"><span class="pre">list(range(len(data[key])))</span></code></li>
+<li>index (dict): a dict mapping <cite>key_name</cite> to lists, should be initialized
+by <code class="docutils literal notranslate"><span class="pre">list(range(len(data[key])))</span></code></li>
 </ul>
 </div>
 <dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.get_batch">
 <code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.```</p>
+<dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -279,18 +300,59 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 </dd></dl>
 
 <dl class="method">
+<dt id="contk.dataloader.SingleTurnDialog.get_inference_metric">
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metric for inference.</p>
+<p>It contains:</p>
+<ul class="simple">
+<li><a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#contk.metric.SingleDialogRecorder" title="contk.metric.SingleDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or <a class="reference internal" href="metric.html#contk.metric.SingleDialogRecorder" title="contk.metric.SingleDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_next_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_next_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – Ignore the last batch, whose sample num
+is smaller than <cite>batch_size</cite>. Default: <cite>False</cite></li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">func:.get_batch, or None if the epoch is end.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.get_batch" title="contk.dataloader.SingleTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A dict like</td>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_prob_key='gen_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metric for teacher-forcing mode.</p>
+<p>It contains:</p>
+<ul class="simple">
+<li><a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -338,7 +400,7 @@ or an epoch is end.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
 <li><strong>batch_size</strong> (<em>None</em><em> or </em><em>int</em>) – default (None): use last batch_size.</li>
-<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. default: <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. default: <cite>True</cite></li>
 </ul>
 </td>
 </tr>
@@ -375,7 +437,7 @@ or an epoch is end.</p>
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.vocab_size">
 <code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equals to len(self.vocab_list). Read only.</p>
+<dd><p>Equals to <cite>len(self.vocab_list)</cite>. Read only.</p>
 </dd></dl>
 
 </dd></dl>
@@ -391,15 +453,15 @@ or an epoch is end.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of OpenSubtitles dataset.</li>
 <li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
-less than <cite>min_vocab_times</cite>     will be replaced by <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>. Default: 10.</li>
+less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
 <li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
 to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
-<li><strong>from</strong> (<em>Inherited</em>) – class:.SingleTurnDialog</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>Refer to <a class="reference internal" href="#contk.dataloader.SingleTurnDialog" title="contk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for other attributes.</p>
 <div class="admonition-todo admonition" id="index-3">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">

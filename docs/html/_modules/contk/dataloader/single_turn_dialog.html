@@ -168,29 +168,31 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">Dataloader</span>
+<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerlplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleDialogRecorder</span>
 
 <div class="viewcode-block" id="SingleTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialog</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for single-turn dialog datasets.</span>
 
 <span class="sd">	Attributes:</span>
 <span class="sd">		ext_vocab (list): special tokens, must be placed at beginning of `vocab_list`.</span>
-<span class="sd">			default: ``[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]``</span>
-<span class="sd">		pad_id (int): token for padding. default: 0</span>
-<span class="sd">		unk_id (int): token for unkown words. default: 1</span>
-<span class="sd">		go_id (int): token at the beginning of sentences. default: 2</span>
-<span class="sd">		eos_id (int): token at the end of sentences. default: 3</span>
-<span class="sd">		key_name (list): name of subsets of the data. default: ``[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]``</span>
+<span class="sd">			default: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]`</span>
+<span class="sd">		pad_id (int): token for padding. default: `0`</span>
+<span class="sd">		unk_id (int): token for unkown words. default: `1`</span>
+<span class="sd">		go_id (int): token at the beginning of sentences. default: `2`</span>
+<span class="sd">		eos_id (int): token at the end of sentences. default: `3`</span>
+<span class="sd">		key_name (list): name of subsets of the data. default: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
 <span class="sd">		vocab_list (list): all tokens of the datasets.</span>
 <span class="sd">		word2id (dict):  a dict mapping tokens to index.</span>
-<span class="sd">			Maybe you want to use :meth:`.sen_to_index` instead.</span>
+<span class="sd">			Maybe you want to use :meth:`sen_to_index` instead.</span>
 
 <span class="sd">	Note:</span>
-<span class="sd">		(For developer) You must initialize following attributes in the subclasses.</span>
+<span class="sd">		**(For developer)** You must initialize following attributes in the subclasses.</span>
 
 <span class="sd">		* vocab (list): don&#39;t forget `ext_vocab`.</span>
 <span class="sd">		* word2id (dict): should be initialized by ``{w: i for i, w in enumerate(self.vocab_list)}``</span>
 <span class="sd">		* data (dict): a dict mapping `key_name` to lists, which contains sentences in index form.</span>
-<span class="sd">		* index (dict): a dict mapping `key_name` to lists, should be initialized by ``list(range(len(data[key])))``</span>
+<span class="sd">		* index (dict): a dict mapping `key_name` to lists, should be initialized</span>
+<span class="sd">		  by ``list(range(len(data[key])))``</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_key_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -220,7 +222,7 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">vocab_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Equals to len(self.vocab_list). Read only.</span>
+		<span class="sd">&#39;&#39;&#39;Equals to `len(self.vocab_list)`. Read only.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">)</span>
 
@@ -231,7 +233,7 @@
 <span class="sd">		Arguments:</span>
 <span class="sd">			key (str): must be contained in `key_name`</span>
 <span class="sd">			batch_size (None or int): default (None): use last batch_size.</span>
-<span class="sd">			shuffle (bool): whether to shuffle the data. default: ``True``</span>
+<span class="sd">			shuffle (bool): whether to shuffle the data. default: `True`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
@@ -254,7 +256,7 @@
 				<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="SingleTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.```</span>
+		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			key (str): must be contained in `key_name`</span>
@@ -274,10 +276,11 @@
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
 		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
 			<span class="n">post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
 			<span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
@@ -285,20 +288,24 @@
 			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resp</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="SingleTurnDialog.get_next_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_next_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_next_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_next_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_next_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_next_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get next batch.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			key (str): must be contained in `key_name`</span>
+<span class="sd">			ignore_left_samples (bool): Ignore the last batch, whose sample num</span>
+<span class="sd">				is smaller than `batch_size`. Default: `False`</span>
 
 <span class="sd">		Returns:</span>
-<span class="sd">			A dict like :func:.get_batch, or None if the epoch is end.</span>
+<span class="sd">			A dict like :func:`get_batch`, or None if the epoch is end.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
 		<span class="n">batch_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 		<span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">batch_id</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="n">batch_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-		<span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+		<span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">if</span> <span class="n">ignore_left_samples</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
 			<span class="k">return</span> <span class="kc">None</span>
 		<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
@@ -338,24 +345,52 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
-				<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[:</span><span class="n">index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">)]</span>
+				<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[:</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">)]</span>
 			<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
 				<span class="k">pass</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span></div></div>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
+
+<span class="sd">		It contains:</span>
+
+<span class="sd">		* :class:`.metric.PerlplexityMetric`</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerlplexityMetric`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">PerlplexityMetric</span><span class="p">(</span><span class="n">gen_prob_key</span><span class="o">=</span><span class="n">gen_prob_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
+
+<span class="sd">		</span>
+
+<span class="sd">		It contains:</span>
+
+<span class="sd">		* :class:`.metric.BleuCorpusMetric`</span>
+<span class="sd">		* :class:`.metric.SingleDialogRecorder`</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			gen_key (str): default: &quot;gen&quot;. Refer to :class:`.metric.BleuCorpusMetric` or :class:`.metric.SingleDialogRecorder`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">metric</span></div></div>
 
 <div class="viewcode-block" id="OpenSubtitles"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.OpenSubtitles">[docs]</a><span class="k">class</span> <span class="nc">OpenSubtitles</span><span class="p">(</span><span class="n">SingleTurnDialog</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;A dataloder for OpenSubtitles dataset. </span>
+	<span class="sd">&#39;&#39;&#39;A dataloder for OpenSubtitles dataset.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		file_path (str): a str indicates the dir of OpenSubtitles dataset.</span>
 <span class="sd">		min_vocab_times (int): A cut-off threshold of `UNK` tokens. All tokens appear</span>
-<span class="sd">			less than `min_vocab_times`	will be replaced by ``&lt;unk&gt;``. Default: 10.</span>
+<span class="sd">			less than `min_vocab_times`	will be replaced by `&lt;unk&gt;`. Default: 10.</span>
 <span class="sd">		max_sen_length (int): All sentences longer than `max_sen_length` will be shortened</span>
 <span class="sd">			to first `max_sen_length` tokens. Default: 50.</span>
 
-<span class="sd">	Arguments:</span>
-<span class="sd">		Inherited from :class:.SingleTurnDialog</span>
+<span class="sd">	Refer to :class:`.SingleTurnDialog` for other attributes.</span>
 
 <span class="sd">	Todo:</span>
 <span class="sd">		* add references</span>

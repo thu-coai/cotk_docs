@@ -161,15 +161,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for contk.wordvector.wordvector</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="WordVector"><a class="viewcode-back" href="../../../wordvector.html#contk.wordvector.WordVector">[docs]</a><span></span><span class="k">class</span> <span class="nc">WordVector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Base of all WordVector loader</span>
+<div class="viewcode-block" id="WordVector"><a class="viewcode-back" href="../../../wordvector.html#contk.wordvector.WordVector">[docs]</a><span></span><span class="k">class</span> <span class="nc">WordVector</span><span class="p">:</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Base of all word vector loader</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">pass</span>
 
 <div class="viewcode-block" id="WordVector.load"><a class="viewcode-back" href="../../../wordvector.html#contk.wordvector.WordVector.load">[docs]</a>	<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Load word vector and return a numpy array. The ith row is the feature</span>
+		<span class="sd">&#39;&#39;&#39;Load word vector and return a numpy array. The ith row is the feature</span>
 <span class="sd">		of the ith word in `vocab_list`.</span>
 
 <span class="sd">		Parameters:</span>
@@ -180,7 +179,28 @@
 <span class="sd">				is any word not appeared in pretrained word vector, the feature will</span>
 <span class="sd">				be randomly initialized by normal distribution</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load is a virtual function.&quot;</span><span class="p">)</span></div></div>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load is a virtual function.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WordVector.get_all_subclasses"><a class="viewcode-back" href="../../../wordvector.html#contk.wordvector.WordVector.get_all_subclasses">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a generator of all subclasses.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
+			<span class="k">yield from</span> <span class="n">subclass</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">()</span>
+			<span class="k">yield</span> <span class="n">subclass</span></div>
+
+<div class="viewcode-block" id="WordVector.load_class"><a class="viewcode-back" href="../../../wordvector.html#contk.wordvector.WordVector.load_class">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a subclass of `class_name`.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			class_name (str): target class name.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">subclass</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">class_name</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">subclass</span>
+		<span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
 
            </div>
