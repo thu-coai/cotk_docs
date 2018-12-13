@@ -192,13 +192,25 @@ your model from one dataset to other datasets.</p>
 <h2>SingleTurnDialog<a class="headerlink" href="#singleturndialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="contk.dataloader.SingleTurnDialog">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>_key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for single-turn dialog datasets.</p>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for single-turn dialog datasets. This is an abstract class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. default: <cite>[“train”, “dev”, “test”]</cite></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.ext_vocab">
 <code class="descname">ext_vocab</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
-<dd><p>special tokens, must be placed at beginning of <cite>vocab_list</cite>.
-default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
+<dd><p>special tokens, be placed at beginning of <cite>vocab_list</cite>.
+Foe example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -212,7 +224,7 @@ default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;e
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.pad_id">
 <code class="descname">pad_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.pad_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>token for padding. default: <cite>0</cite></p>
+<dd><p>token for padding, always equal to <cite>0</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -226,7 +238,7 @@ default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;e
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.unk_id">
 <code class="descname">unk_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.unk_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>token for unkown words. default: <cite>1</cite></p>
+<dd><p>token for unkown words, always equal to <cite>1</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -240,7 +252,7 @@ default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;e
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.go_id">
 <code class="descname">go_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.go_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>token at the beginning of sentences. default: <cite>2</cite></p>
+<dd><p>token at the beginning of sentences, always equal to <cite>2</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -254,7 +266,7 @@ default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;e
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.eos_id">
 <code class="descname">eos_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.eos_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>token at the end of sentences. default: <cite>3</cite></p>
+<dd><p>token at the end of sentences, always equal to <cite>3</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -268,7 +280,7 @@ default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;e
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.key_name">
 <code class="descname">key_name</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>name of subsets of the data. default: <cite>[“train”, “dev”, “test”]</cite></p>
+<dd><p>name of subsets of the data. For example: <cite>[“train”, “dev”, “test”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -282,7 +294,7 @@ default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;e
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.vocab_list">
 <code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>all tokens of the datasets.</p>
+<dd><p>vocabulary list of the datasets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -308,17 +320,6 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 </table>
 </dd></dl>
 
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p><strong>(For developer)</strong> You must initialize following attributes in the subclasses.</p>
-<ul class="last simple">
-<li>vocab (list): don’t forget <cite>ext_vocab</cite>.</li>
-<li>word2id (dict): should be initialized by <code class="docutils literal notranslate"><span class="pre">{w:</span> <span class="pre">i</span> <span class="pre">for</span> <span class="pre">i,</span> <span class="pre">w</span> <span class="pre">in</span> <span class="pre">enumerate(self.vocab_list)}</span></code></li>
-<li>data (dict): a dict mapping <cite>key_name</cite> to lists, which contains sentences in index form.</li>
-<li>index (dict): a dict mapping <cite>key_name</cite> to lists, should be initialized
-by <code class="docutils literal notranslate"><span class="pre">list(range(len(data[key])))</span></code></li>
-</ul>
-</div>
 <dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.get_batch">
 <code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
@@ -365,7 +366,8 @@ by <code class="docutils literal notranslate"><span class="pre">list(range(len(d
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or <a class="reference internal" href="metric.html#contk.metric.SingleDialogRecorder" title="contk.metric.SingleDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
+<a class="reference internal" href="metric.html#contk.metric.SingleDialogRecorder" title="contk.metric.SingleDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -382,7 +384,7 @@ by <code class="docutils literal notranslate"><span class="pre">list(range(len(d
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
 <li><strong>ignore_left_samples</strong> (<em>bool</em>) – Ignore the last batch, whose sample num
-is smaller than <cite>batch_size</cite>. Default: <cite>False</cite></li>
+is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </ul>
 </td>
 </tr>
@@ -514,7 +516,7 @@ to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
 </tr>
 </tbody>
 </table>
-<p>Refer to <a class="reference internal" href="#contk.dataloader.SingleTurnDialog" title="contk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for other attributes.</p>
+<p>Refer to <a class="reference internal" href="#contk.dataloader.SingleTurnDialog" title="contk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for attributes.</p>
 <div class="admonition-todo admonition" id="index-3">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
