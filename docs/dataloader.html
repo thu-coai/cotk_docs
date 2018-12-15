@@ -423,7 +423,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>index</strong> (<em>list</em>) – a list of int</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, ignore <cite>pad_id</cite> at the end of <cite>index</cite>.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.trim_index" title="contk.dataloader.SingleTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -489,6 +489,39 @@ or an epoch is end.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="contk.dataloader.SingleTurnDialog.trim_index">
+<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Trim index. There will be two steps:</dt>
+<dd><ul class="first last simple">
+<li>find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
+<li>ignore <cite>&lt;pad&gt;</cite> s at the end of the sentence.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (<em>list</em>) – a list of int</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[])</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-3">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>fix the missing example</li>
+</ul>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.vocab_size">
 <code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
@@ -517,7 +550,7 @@ to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
 </tbody>
 </table>
 <p>Refer to <a class="reference internal" href="#contk.dataloader.SingleTurnDialog" title="contk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for attributes.</p>
-<div class="admonition-todo admonition" id="index-3">
+<div class="admonition-todo admonition" id="index-4">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>add references</li>

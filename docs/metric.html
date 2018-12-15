@@ -170,7 +170,7 @@ a fair metric for every model.</p>
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="contk.metric.PerlplexityMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">PerlplexityMetric</code><span class="sig-paren">(</span><em>data_key='resp'</em>, <em>data_len_key='resp_length'</em>, <em>gen_prob_key='gen_prob'</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">PerlplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>data_key='resp'</em>, <em>data_len_key='resp_length'</em>, <em>gen_prob_key='gen_prob'</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calcualting perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -230,7 +230,7 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite>.</li>
 
 <dl class="class">
 <dt id="contk.metric.BleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>data_key='resp'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>data_key='resp'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calcualting BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

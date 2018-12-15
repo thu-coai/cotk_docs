@@ -159,6 +159,8 @@
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">Dataloader</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerlplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleDialogRecorder</span>
 
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">trim_before_target</span>
+
 <div class="viewcode-block" id="SingleTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialog</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for single-turn dialog datasets. This is an abstract class.</span>
 
@@ -345,12 +347,36 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sen</span><span class="p">))</span></div>
 
+<div class="viewcode-block" id="SingleTurnDialog.trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Trim index. There will be two steps:</span>
+<span class="sd">			* find first `&lt;eos&gt;` and abondon words after it (included the `&lt;eos&gt;`).</span>
+<span class="sd">			* ignore `&lt;pad&gt;` s at the end of the sentence.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			index (list): a list of int</span>
+
+<span class="sd">		Examples:</span>
+<span class="sd">			&gt;&gt;&gt; dataloader.index_to_sen(</span>
+<span class="sd">			...		[])</span>
+<span class="sd">			&gt;&gt;&gt;</span>
+
+<span class="sd">		Todo:</span>
+<span class="sd">			* fix the missing example</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="n">index</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
+		<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+		<span class="k">while</span> <span class="n">index</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">:</span>
+			<span class="n">idx</span> <span class="o">-=</span> <span class="mi">1</span>
+		<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">index</span></div>
+
 <div class="viewcode-block" id="SingleTurnDialog.index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a sentences from index to string representation</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			index (list): a list of int</span>
-<span class="sd">			trim (bool): if True, ignore `pad_id` at the end of `index`.</span>
+<span class="sd">			trim (bool): if True, call :func:`trim_index` before convertion.</span>
 
 <span class="sd">		Examples:</span>
 <span class="sd">			&gt;&gt;&gt; dataloader.index_to_sen(</span>
@@ -361,10 +387,7 @@
 <span class="sd">			* fix the missing example</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[:</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">)]</span>
-			<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-				<span class="k">pass</span>
+			<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
@@ -377,7 +400,7 @@
 <span class="sd">		Arguments:</span>
 <span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerlplexityMetric`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="n">PerlplexityMetric</span><span class="p">(</span><span class="n">gen_prob_key</span><span class="o">=</span><span class="n">gen_prob_key</span><span class="p">)</span></div>
+		<span class="k">return</span> <span class="n">PerlplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="n">gen_prob_key</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
@@ -392,7 +415,7 @@
 <span class="sd">			               :class:`.metric.SingleDialogRecorder`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 
