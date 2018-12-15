@@ -156,6 +156,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
+<span class="kn">import</span> <span class="nn">random</span>
 
 <div class="viewcode-block" id="MetricBase"><a class="viewcode-back" href="../../../metric.html#contk.metric.MetricBase">[docs]</a><span class="k">class</span> <span class="nc">MetricBase</span><span class="p">:</span>
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>
@@ -171,16 +172,17 @@
 <span class="sd">			Default: ``resp``.</span>
 <span class="sd">		data_len_key (str): Length of reference sentences are passed to :func:`forward`</span>
 <span class="sd">			by ``data[data_len_key]``. Default: ``resp_length``.</span>
-<span class="sd">		gen_prob_key (str): Sentence generations model outputs are passed to :func:`forward`</span>
-<span class="sd">			by ``data[gen_prob_key]``. Default: ``gen_prob``.</span>
+<span class="sd">		gen_prob_key (str): Sentence generations model outputs of **log softmax** probability</span>
+<span class="sd">			are passed to :func:`forward` by ``data[gen_prob_key]``. Default: ``gen_prob``.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;resp&quot;</span><span class="p">,</span> <span class="n">data_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;resp&quot;</span><span class="p">,</span> <span class="n">data_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">,</span> <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">data_key</span> <span class="o">=</span> <span class="n">data_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">data_len_key</span> <span class="o">=</span> <span class="n">data_len_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_prob_key</span> <span class="o">=</span> <span class="n">gen_prob_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">=</span> <span class="mi">0</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">full_check</span> <span class="o">=</span> <span class="n">full_check</span>
 
 <div class="viewcode-block" id="PerlplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.PerlplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
@@ -191,22 +193,37 @@
 <span class="sd">				Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``. Size: `[batch_size, max_sentence_length]`</span>
 <span class="sd">			data[data_len_key] (list): Length of Reference sentences. Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``.</span>
 <span class="sd">				Size: `[batch_size]`</span>
-<span class="sd">			data[gen_prob_key] (list or :class:`numpy.array`): Setence generations model outputs.</span>
-<span class="sd">				Contains ``&lt;eos&gt;``, but without ``&lt;go&gt;``.</span>
+<span class="sd">			data[gen_prob_key] (list or :class:`numpy.array`): Setence generations model outputs of</span>
+<span class="sd">				**log softmax** probability. Contains ``&lt;eos&gt;``, but without ``&lt;go&gt;``.</span>
 <span class="sd">				Size: `[batch_size, gen_sentence_length, vocab_size]`.</span>
 
 <span class="sd">		Warning:</span>
-<span class="sd">			``data[gen_prob_key]`` must be processed after softmax. That means, every elements in the</span>
-<span class="sd">			tensor must be positive and sum to 1 in the last dim.</span>
+<span class="sd">			``data[gen_prob_key]`` must be processed after log_softmax. That means,</span>
+<span class="sd">			``np.sum(np.exp(gen_prob), -1)`` equals ``np.ones((batch_size, gen_sentence_length))``</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_key</span><span class="p">]</span>
 		<span class="n">resp_length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_len_key</span><span class="p">]</span>
 		<span class="n">gen_prob</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_prob_key</span><span class="p">]</span>
 		<span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">resp_length</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
+
+		<span class="c1"># perform random check to assert the probability is valid</span>
+		<span class="n">checkid</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_length</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">checkrow</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">resp_length</span><span class="p">[</span><span class="n">checkid</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">[</span><span class="n">checkid</span><span class="p">][</span><span class="n">checkrow</span><span class="p">])),</span> <span class="mi">1</span><span class="p">):</span>
+			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gen_prob[</span><span class="si">%d</span><span class="s2">][</span><span class="si">%d</span><span class="s2">] exp sum is equal to </span><span class="si">%f</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">checkid</span><span class="p">,</span> <span class="n">checkrow</span><span class="p">,</span> \
+				<span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">[</span><span class="n">checkid</span><span class="p">][</span><span class="n">checkrow</span><span class="p">]))))</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_prob_key] must be processed after log_softmax.&quot;</span><span class="p">)</span>
+
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">single_length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resp_length</span><span class="p">):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][</span>\
-				<span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">single_length</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="n">single_length</span><span class="p">]]))</span>
+			<span class="c1"># perform full check to assert the probability is valid</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_check</span><span class="p">:</span>
+				<span class="n">expsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">single_length</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expsum</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">single_length</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_prob_key] must be processed after log_softmax.&quot;</span><span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][</span>\
+				<span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">single_length</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="n">single_length</span><span class="p">]])</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">single_length</span> <span class="o">-</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="PerlplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.PerlplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
