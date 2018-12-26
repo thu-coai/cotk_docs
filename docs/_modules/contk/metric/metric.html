@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -154,9 +155,10 @@
 <span class="sd">``contk.metrics`` provides classes and functions evaluating results of models. It provides</span>
 <span class="sd">a fair metric for every model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
-<span class="kn">import</span> <span class="nn">random</span>
 
 <div class="viewcode-block" id="MetricBase"><a class="viewcode-back" href="../../../metric.html#contk.metric.MetricBase">[docs]</a><span class="k">class</span> <span class="nc">MetricBase</span><span class="p">:</span>
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>

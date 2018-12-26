@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -150,13 +151,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for contk.wordvector.gloves</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">A module for GloVe</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.wordvector</span> <span class="k">import</span> <span class="n">WordVector</span>
 
 <div class="viewcode-block" id="Glove"><a class="viewcode-back" href="../../../wordvector.html#contk.wordvector.Glove">[docs]</a><span class="k">class</span> <span class="nc">Glove</span><span class="p">(</span><span class="n">WordVector</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;GloVe is pre-trained word vectors from</span>
-<span class="sd">	Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. </span>
+<span class="sd">	Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014.</span>
 <span class="sd">	GloVe: Global Vectors for Word Representation.</span>
 
 <span class="sd">	Arguments:</span>
@@ -172,23 +176,23 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">raw_word2vec</span> <span class="o">=</span> <span class="p">{}</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
-			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-				<span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-			<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-				<span class="n">w</span><span class="p">,</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-				<span class="n">raw_word2vec</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span>
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">glove_file</span><span class="p">:</span>
+				<span class="n">lines</span> <span class="o">=</span> <span class="n">glove_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+				<span class="n">word</span><span class="p">,</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+				<span class="n">raw_word2vec</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec</span>
 
 		<span class="n">wordvec</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="n">oov_cnt</span> <span class="o">=</span> <span class="mi">0</span>
-		<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vocab_list</span><span class="p">:</span>
-			<span class="n">str_vec</span> <span class="o">=</span> <span class="n">raw_word2vec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">vocab</span> <span class="ow">in</span> <span class="n">vocab_list</span><span class="p">:</span>
+			<span class="n">str_vec</span> <span class="o">=</span> <span class="n">raw_word2vec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 			<span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_dims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
 			<span class="k">if</span> <span class="n">str_vec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="n">oov_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">str_vec</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-				<span class="n">d</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">n_dims</span><span class="p">)</span>
-				<span class="n">vec</span><span class="p">[:</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:</span><span class="n">d</span><span class="p">]</span>
+				<span class="n">now_dims</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">n_dims</span><span class="p">)</span>
+				<span class="n">vec</span><span class="p">[:</span><span class="n">now_dims</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:</span><span class="n">now_dims</span><span class="p">]</span>
 			<span class="n">wordvec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;wordvec cannot cover </span><span class="si">%f</span><span class="s2"> vocab&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">oov_cnt</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)))</span>
 		<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">wordvec</span><span class="p">)</span></div></div>
