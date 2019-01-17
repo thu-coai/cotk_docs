@@ -171,17 +171,17 @@ a fair metric for every model.</p>
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="contk.metric.PerlplexityMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">PerlplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>data_key='resp'</em>, <em>data_len_key='resp_length'</em>, <em>gen_prob_key='gen_prob'</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">PerlplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_key='resp'</em>, <em>reference_len_key='resp_length'</em>, <em>gen_prob_key='gen_prob'</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calcualting perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data_key</strong> (<em>str</em>) – Reference sentences are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetric.forward" title="contk.metric.PerlplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[data_key]</span></code>.
+<li><strong>reference_key</strong> (<em>str</em>) – Reference sentences are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetric.forward" title="contk.metric.PerlplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
-<li><strong>data_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetric.forward" title="contk.metric.PerlplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
-by <code class="docutils literal notranslate"><span class="pre">data[data_len_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">resp_length</span></code>.</li>
+<li><strong>reference_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetric.forward" title="contk.metric.PerlplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
+by <code class="docutils literal notranslate"><span class="pre">data[reference_len_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">resp_length</span></code>.</li>
 <li><strong>gen_prob_key</strong> (<em>str</em>) – Sentence generations model outputs of <strong>log softmax</strong> probability
 are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetric.forward" title="contk.metric.PerlplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[gen_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen_prob</span></code>.</li>
 </ul>
@@ -208,12 +208,14 @@ are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetri
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
-<li><strong>data</strong><strong>[</strong><strong>data_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Reference sentences.
-Contains <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>. Size: <cite>[batch_size, max_sentence_length]</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>data_len_key</strong><strong>]</strong> (<em>list</em>) – Length of Reference sentences. Contains <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>.
-Size: <cite>[batch_size]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (<em>list</em>) – Reference sentences.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> – Length of Reference sentences. Contains start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>)
+and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <cite>[batch_size]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>gen_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Setence generations model outputs of
-<strong>log softmax</strong> probability. Contains <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>, but without <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>.
+<strong>log softmax</strong> probability. Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token
+(eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>). The 2nd dimension can be jagged.
 Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite>.</li>
 </ul>
 </td>
@@ -230,15 +232,78 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite>.</li>
 </dd></dl>
 
 <dl class="class">
+<dt id="contk.metric.MultiTurnDialogRecorder">
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>context_key='content'</em>, <em>reference_key='reference'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>A metric-like class for recording generated sentences and references.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataloader</strong> (<em>DataLoader</em>) – A dataloader for translating index to sentences.</li>
+<li><strong>context_key</strong> (<em>str</em>) – Dialog context are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[context_key]</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">post</span></code>.</li>
+<li><strong>reference_key</strong> (<em>str</em>) – Dialog reference are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
+<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="contk.metric.MultiTurnDialogRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>context</strong>: a list of post sentences.</li>
+<li><strong>reference</strong>: a list of response sentences.</li>
+<li><strong>gen</strong>: a list of generated sentences.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.MultiTurnDialogRecorder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processing a batch of data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
+<li><strong>data</strong><strong>[</strong><strong>context_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog post.
+A 3-d padded array containing id of words.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, _turn_length, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog responses.
+A 3-d padded array containing id of words.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_turn_length, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+A 3-d padded array containing id of words.
+Contains  end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
+Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="contk.metric.BleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>data_key='resp'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_key='resp'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calcualting BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data_key</strong> (<em>str</em>) – Reference sentences are passed to :func:.forward by <code class="docutils literal notranslate"><span class="pre">data[data_key]</span></code>.
+<li><strong>reference_key</strong> (<em>str</em>) – Reference sentences are passed to :func:.forward by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to :func:.forward by
 <code class="docutils literal notranslate"><span class="pre">data[gen_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
@@ -266,11 +331,68 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
-<li><strong>data</strong><strong>[</strong><strong>data_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Reference sentences.
-Contains <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>. Size: <cite>[batch_size, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Reference sentences.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
-Contains <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>, but without <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>.
+Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="contk.metric.MultiTurnBleuCorpusMetric">
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_key='sent'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metric for calcualting multi-turn BLEU.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>reference_key</strong> (<em>str</em>) – Reference sentences are passed to <a class="reference internal" href="#contk.metric.MultiTurnBleuCorpusMetric.forward" title="contk.metric.MultiTurnBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">sent</span></code>.</li>
+<li><strong>reference_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#contk.metric.MultiTurnBleuCorpusMetric.forward" title="contk.metric.MultiTurnBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
+by <code class="docutils literal notranslate"><span class="pre">data[reference_len_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">sent_length</span></code>.</li>
+<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to :func:.forward by
+<code class="docutils literal notranslate"><span class="pre">data[gen_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="contk.metric.MultiTurnBleuCorpusMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>bleu</strong>: bleu value.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.MultiTurnBleuCorpusMetric.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processing a batch of data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Reference sentences.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_turn_length, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>gen_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – 3-d array of int.
+Setences generated by model.
+Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
+The 2nd / 3rd dimension can be jagged.
+Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
 </ul>
 </td>
 </tr>
@@ -284,20 +406,20 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 <div class="section" id="metric-like-class">
 <h2>Metric-like class<a class="headerlink" href="#metric-like-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="contk.metric.SingleDialogRecorder">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">SingleDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>post_key='post'</em>, <em>resp_key='resp'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleDialogRecorder" title="Permalink to this definition">¶</a></dt>
-<dd><p>A metric-like class for recorder BLEU.</p>
+<dt id="contk.metric.SingleTurnDialogRecorder">
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">SingleTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>post_key='post'</em>, <em>resp_key='resp'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>A metric-like class for recording generated sentences and references.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataloader</strong> (<em>DataLoader</em>) – A dataloader for translating index to sentences.</li>
-<li><strong>post_key</strong> (<em>str</em>) – Dialog post are passed to <a class="reference internal" href="#contk.metric.SingleDialogRecorder.forward" title="contk.metric.SingleDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[data_key]</span></code>.
+<li><strong>post_key</strong> (<em>str</em>) – Dialog post are passed to <a class="reference internal" href="#contk.metric.SingleTurnDialogRecorder.forward" title="contk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">post</span></code>.</li>
-<li><strong>resp_key</strong> (<em>str</em>) – Dialog responses are passed to <a class="reference internal" href="#contk.metric.SingleDialogRecorder.forward" title="contk.metric.SingleDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[data_key]</span></code>.
+<li><strong>resp_key</strong> (<em>str</em>) – Dialog responses are passed to <a class="reference internal" href="#contk.metric.SingleTurnDialogRecorder.forward" title="contk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
-<li><strong>gen_key</strong> (<em>str</em>) – Sentence generated by model are passed to <a class="reference internal" href="#contk.metric.SingleDialogRecorder.forward" title="contk.metric.SingleDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<li><strong>gen_key</strong> (<em>str</em>) – Sentence generated by model are passed to <a class="reference internal" href="#contk.metric.SingleTurnDialogRecorder.forward" title="contk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>
 </td>
@@ -305,8 +427,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.SingleDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dt id="contk.metric.SingleTurnDialogRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>post</strong>: a list of post sentences.</li>
@@ -316,8 +438,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.SingleDialogRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="contk.metric.SingleTurnDialogRecorder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -326,11 +448,124 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
 <li><strong>data</strong><strong>[</strong><strong>post_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog post.
-Contains <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>. Size: <cite>[batch_size, max_sentence_length]</cite></li>
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>resp_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog responses.
-Contains <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>. Size: <cite>[batch_size, max_sentence_length]</cite></li>
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
-Contains <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>, but without <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>.
+Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>)`, but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
+Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>context_key='content'</em>, <em>reference_key='reference'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>A metric-like class for recording generated sentences and references.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataloader</strong> (<em>DataLoader</em>) – A dataloader for translating index to sentences.</li>
+<li><strong>context_key</strong> (<em>str</em>) – Dialog context are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[context_key]</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">post</span></code>.</li>
+<li><strong>reference_key</strong> (<em>str</em>) – Dialog reference are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_key]</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
+<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>context</strong>: a list of post sentences.</li>
+<li><strong>reference</strong>: a list of response sentences.</li>
+<li><strong>gen</strong>: a list of generated sentences.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Processing a batch of data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
+<li><strong>data</strong><strong>[</strong><strong>context_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog post.
+A 3-d padded array containing id of words.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, _turn_length, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog responses.
+A 3-d padded array containing id of words.
+Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
+Size: <cite>[batch_size, max_turn_length, max_sentence_length]</cite></li>
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+A 3-d padded array containing id of words.
+Contains  end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
+Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="contk.metric.LanguageGenerationRecorder">
+<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">LanguageGenerationRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>A metric-like class for recorder BLEU.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataloader</strong> (<em>DataLoader</em>) – A dataloader for translating index to sentences.</li>
+<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#contk.metric.LanguageGenerationRecorder.forward" title="contk.metric.LanguageGenerationRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="contk.metric.LanguageGenerationRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>gen</strong>: a list of generated sentences.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.LanguageGenerationRecorder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processing a batch of data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </ul>
 </td>

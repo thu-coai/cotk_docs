@@ -158,7 +158,7 @@
 <span class="kn">import</span> <span class="nn">random</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
+<span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">corpus_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
 
 <div class="viewcode-block" id="MetricBase"><a class="viewcode-back" href="../../../metric.html#contk.metric.MetricBase">[docs]</a><span class="k">class</span> <span class="nc">MetricBase</span><span class="p">:</span>
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>
@@ -170,22 +170,22 @@
 	<span class="sd">&#39;&#39;&#39;Metric for calcualting perplexity.</span>
 
 <span class="sd">	Arguments:</span>
-<span class="sd">		data_key (str): Reference sentences are passed to :func:`forward` by ``data[data_key]``.</span>
+<span class="sd">		reference_key (str): Reference sentences are passed to :func:`forward` by ``data[reference_key]``.</span>
 <span class="sd">			Default: ``resp``.</span>
-<span class="sd">		data_len_key (str): Length of reference sentences are passed to :func:`forward`</span>
-<span class="sd">			by ``data[data_len_key]``. Default: ``resp_length``.</span>
+<span class="sd">		reference_len_key (str): Length of reference sentences are passed to :func:`forward`</span>
+<span class="sd">			by ``data[reference_len_key]``. Default: ``resp_length``.</span>
 <span class="sd">		gen_prob_key (str): Sentence generations model outputs of **log softmax** probability</span>
 <span class="sd">			are passed to :func:`forward` by ``data[gen_prob_key]``. Default: ``gen_prob``.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;resp&quot;</span><span class="p">,</span> \
-					   <span class="n">data_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span> \
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;resp&quot;</span><span class="p">,</span> \
+					   <span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span> \
 					   <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">,</span> \
-			 <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span>
+					   <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span> \
 			  <span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">data_key</span> <span class="o">=</span> <span class="n">data_key</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">data_len_key</span> <span class="o">=</span> <span class="n">data_len_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span> <span class="o">=</span> <span class="n">reference_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span> <span class="o">=</span> <span class="n">reference_len_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_prob_key</span> <span class="o">=</span> <span class="n">gen_prob_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">=</span> <span class="mi">0</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">=</span> <span class="mi">0</span>
@@ -196,22 +196,24 @@
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			data (dict): A dict at least contains the following keys.</span>
-<span class="sd">			data[data_key] (list or :class:`numpy.array`): Reference sentences.</span>
-<span class="sd">				Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``. Size: `[batch_size, max_sentence_length]`</span>
-<span class="sd">			data[data_len_key] (list): Length of Reference sentences. Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``.</span>
-<span class="sd">				Size: `[batch_size]`</span>
+<span class="sd">			data[reference_key] (list or :class:`numpy.array`): Reference sentences.</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_sentence_length]`</span>
+<span class="sd">			data[reference_key] (list): Length of Reference sentences. Contains start token (eg:``&lt;go&gt;``)</span>
+<span class="sd">				and end token (eg:``&lt;eos&gt;``). Size: `[batch_size]`</span>
 <span class="sd">			data[gen_prob_key] (list or :class:`numpy.array`): Setence generations model outputs of</span>
-<span class="sd">				**log softmax** probability. Contains ``&lt;eos&gt;``, but without ``&lt;go&gt;``.</span>
+<span class="sd">				**log softmax** probability. Contains end token (eg:``&lt;eos&gt;``), but without start token</span>
+<span class="sd">				(eg: ``&lt;go&gt;``).	The 2nd dimension can be jagged.</span>
 <span class="sd">				Size: `[batch_size, gen_sentence_length, vocab_size]`.</span>
 
 <span class="sd">		Warning:</span>
 <span class="sd">			``data[gen_prob_key]`` must be processed after log_softmax. That means,</span>
 <span class="sd">			``np.sum(np.exp(gen_prob), -1)`` equals ``np.ones((batch_size, gen_sentence_length))``</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_key</span><span class="p">]</span>
-		<span class="n">resp_length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_len_key</span><span class="p">]</span>
+		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span><span class="p">]</span>
+		<span class="n">resp_length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span><span class="p">]</span>
 		<span class="n">gen_prob</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_prob_key</span><span class="p">]</span>
-		<span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">resp_length</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_length</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
 
 		<span class="c1"># perform random check to assert the probability is valid</span>
@@ -240,61 +242,178 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">)}</span></div></div>
 
+<span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Metric for calcualting multi-turn perplexity.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		reference_key (str): Reference sentences are passed to :func:`forward` by ``data[reference_key]``.</span>
+<span class="sd">			Default: ``sent``.</span>
+<span class="sd">		reference_len_key (str): Length of reference sentences are passed to :func:`forward`</span>
+<span class="sd">			by ``data[reference_len_key]``. Default: ``sent_length``.</span>
+<span class="sd">		gen_prob_key (str): Sentence generations model outputs of **log softmax** probability</span>
+<span class="sd">			are passed to :func:`forward` by ``data[gen_prob_key]``. Default: ``gen_prob``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;sent&quot;</span><span class="p">,</span> \
+					   <span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;sent_length&quot;</span><span class="p">,</span> \
+					   <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">,</span> \
+					   <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span> \
+			  <span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span> <span class="o">=</span> <span class="n">reference_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span> <span class="o">=</span> <span class="n">reference_len_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_prob_key</span> <span class="o">=</span> <span class="n">gen_prob_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span> <span class="o">=</span> <span class="n">PerlplexityMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;sent&quot;</span><span class="p">,</span> \
+				<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;sent_length&quot;</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">,</span> <span class="n">full_check</span><span class="o">=</span><span class="n">full_check</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains the following keys.</span>
+<span class="sd">			data[reference_key] (list or :class:`numpy.array`): Reference sentences.</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_turn_length, max_sentence_length]`</span>
+<span class="sd">			data[reference_len_key] (list of list): Length of Reference sentences. Contains</span>
+<span class="sd">				start token (eg:``&lt;go&gt;``) and end token (eg:``&lt;eos&gt;``). It must NOT be padded,</span>
+<span class="sd">				which means the inner lists may have different length.</span>
+<span class="sd">				Length of outer list: `batch_size`</span>
+<span class="sd">			data[gen_prob_key] (list or :class:`numpy.array`): Setence generations model outputs of</span>
+<span class="sd">				**log softmax** probability. Contains end token (eg:``&lt;eos&gt;``), but without start token</span>
+<span class="sd">				(eg: ``&lt;go&gt;``).	The 2nd / 3rd dimension can be jagged.</span>
+<span class="sd">				Size: `[batch_size, max_turn_length, gen_sentence_length, vocab_size]`.</span>
+
+<span class="sd">		Warning:</span>
+<span class="sd">			``data[gen_prob_key]`` must be processed after log_softmax. That means,</span>
+<span class="sd">			``np.sum(np.exp(gen_prob), -1)`` equals ``np.ones((batch_size, gen_sentence_length))``</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">reference</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span><span class="p">]</span>
+		<span class="n">length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span><span class="p">]</span>
+		<span class="n">gen_prob</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_prob_key</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_prob</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sent_length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="n">reference</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> \
+					<span class="s2">&quot;sent_length&quot;</span><span class="p">:</span> <span class="n">sent_length</span><span class="p">,</span> \
+					<span class="s2">&quot;gen_prob&quot;</span><span class="p">:</span> <span class="n">gen_prob</span><span class="p">[</span><span class="n">i</span><span class="p">]})</span>
+
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
+
+<span class="sd">			* **perplexity**: perplexity value</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 <div class="viewcode-block" id="BleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#contk.metric.BleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">BleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calcualting BLEU.</span>
 
 <span class="sd">	Arguments:</span>
-<span class="sd">		data_key (str): Reference sentences are passed to :func:.forward by ``data[data_key]``.</span>
+<span class="sd">		reference_key (str): Reference sentences are passed to :func:.forward by ``data[reference_key]``.</span>
 <span class="sd">			Default: ``resp``.</span>
 <span class="sd">		gen_key (str): Sentences generated by model are passed to :func:.forward by</span>
 <span class="sd">			``data[gen_prob_key]``. Default: ``gen``.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;resp&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;resp&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">data_key</span> <span class="o">=</span> <span class="n">data_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span> <span class="o">=</span> <span class="n">reference_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bleu_value</span> <span class="o">=</span> <span class="mi">0</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">sentence_num</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="BleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.BleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			data (dict): A dict at least contains the following keys.</span>
-<span class="sd">			data[data_key] (list or :class:`numpy.array` of `int`): Reference sentences.</span>
-<span class="sd">				Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``. Size: `[batch_size, max_sentence_length]`</span>
+<span class="sd">			data[reference_key] (list or :class:`numpy.array` of `int`): Reference sentences.</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_sentence_length]`</span>
 <span class="sd">			data[gen_key] (list or :class:`numpy.array` of `int`): Setences generated by model.</span>
-<span class="sd">				Contains ``&lt;eos&gt;``, but without ``&lt;go&gt;``.</span>
+<span class="sd">				Contains end token (eg: ``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
 <span class="sd">				Size: `[batch_size, gen_sentence_length]`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
-		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_key</span><span class="p">]</span>
+		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span><span class="p">]</span>
 		<span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">gen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
 
 		<span class="k">for</span> <span class="n">gen_sen</span><span class="p">,</span> <span class="n">resp_sen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
-			<span class="n">gen_sen_processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">)</span>
-			<span class="n">resp_sen_processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">bleu_value</span> <span class="o">+=</span> <span class="n">sentence_bleu</span><span class="p">([</span><span class="n">resp_sen_processed</span><span class="p">[</span><span class="mi">1</span><span class="p">:]],</span> <span class="n">gen_sen_processed</span><span class="p">,</span> \
-				<span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">sentence_num</span> <span class="o">+=</span> <span class="mi">1</span></div>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">))</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="BleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.BleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **bleu**: bleu value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bleu_value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentence_num</span><span class="p">}</span></div></div>
+		<span class="k">return</span> <span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="o">.</span><span class="n">method7</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="SingleDialogRecorder"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleDialogRecorder">[docs]</a><span class="k">class</span> <span class="nc">SingleDialogRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;A metric-like class for recorder BLEU.</span>
+<div class="viewcode-block" id="MultiTurnBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Metric for calcualting multi-turn BLEU.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		reference_key (str): Reference sentences are passed to :func:`forward` by ``data[reference_key]``.</span>
+<span class="sd">			Default: ``sent``.</span>
+<span class="sd">		reference_len_key (str): Length of reference sentences are passed to :func:`forward`</span>
+<span class="sd">			by ``data[reference_len_key]``. Default: ``sent_length``.</span>
+<span class="sd">		gen_key (str):Sentences generated by model are passed to :func:.forward by</span>
+<span class="sd">			``data[gen_prob_key]``. Default: ``gen``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;sent&quot;</span><span class="p">,</span> \
+					   <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span> \
+			  <span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span> <span class="o">=</span> <span class="n">reference_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains the following keys.</span>
+<span class="sd">			data[reference_key] (list or :class:`numpy.array`): Reference sentences.</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_turn_length, max_sentence_length]`</span>
+<span class="sd">			data[gen_prob_key] (list or :class:`numpy.array`): 3-d array of int.</span>
+<span class="sd">				Setences generated by model.</span>
+<span class="sd">				Contains end token (eg: ``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
+<span class="sd">				The 2nd / 3rd dimension can be jagged.</span>
+<span class="sd">				Size: `[batch_size, max_turn_length, gen_sentence_length]`.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">reference</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span><span class="p">]</span>
+		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">gen_session</span><span class="p">,</span> <span class="n">ref_session</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+			<span class="n">gen_processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span><span class="n">gen_session</span><span class="p">)</span>
+			<span class="n">ref_processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span><span class="n">ref_session</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_processed</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_processed</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Turn num is not matched.&quot;</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">gen_sent</span><span class="p">,</span> <span class="n">ref_sent</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gen_processed</span><span class="p">,</span> <span class="n">ref_processed</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">gen_sent</span><span class="p">))</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">ref_sent</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
+
+<span class="sd">			* **bleu**: bleu value.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="o">.</span><span class="n">method7</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="SingleTurnDialogRecorder"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleTurnDialogRecorder">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialogRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;A metric-like class for recording generated sentences and references.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		dataloader (DataLoader): A dataloader for translating index to sentences.</span>
-<span class="sd">		post_key (str): Dialog post are passed to :func:`forward` by ``data[data_key]``.</span>
+<span class="sd">		post_key (str): Dialog post are passed to :func:`forward` by ``data[reference_key]``.</span>
 <span class="sd">			Default: ``post``.</span>
-<span class="sd">		resp_key (str): Dialog responses are passed to :func:`forward` by ``data[data_key]``.</span>
+<span class="sd">		resp_key (str): Dialog responses are passed to :func:`forward` by ``data[reference_key]``.</span>
 <span class="sd">			Default: ``resp``.</span>
 <span class="sd">		gen_key (str): Sentence generated by model are passed to :func:`forward` by</span>
 <span class="sd">			``data[gen_key]``. Default: ``gen``.</span>
@@ -309,17 +428,19 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">resp_list</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="SingleDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleTurnDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			data (dict): A dict at least contains the following keys.</span>
 <span class="sd">			data[post_key] (list or :class:`numpy.array` of `int`): Dialog post.</span>
-<span class="sd">				Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``. Size: `[batch_size, max_sentence_length]`</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_sentence_length]`</span>
 <span class="sd">			data[resp_key] (list or :class:`numpy.array` of `int`): Dialog responses.</span>
-<span class="sd">				Contains ``&lt;go&gt;`` and ``&lt;eos&gt;``. Size: `[batch_size, max_sentence_length]`</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_sentence_length]`</span>
 <span class="sd">			data[gen_key] (list or :class:`numpy.array` of `int`): Setences generated by model.</span>
-<span class="sd">				Contains ``&lt;eos&gt;``, but without ``&lt;go&gt;``.</span>
+<span class="sd">				Contains end token (eg: ``&lt;eos&gt;``)`, but without start token (eg: ``&lt;go&gt;``).</span>
 <span class="sd">				Size: `[batch_size, gen_sentence_length]`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">post</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">post_key</span><span class="p">]</span>
@@ -332,7 +453,7 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">resp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]))</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="SingleDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleTurnDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **post**: a list of post sentences.</span>
@@ -341,7 +462,66 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;post&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_list</span><span class="p">,</span> <span class="s2">&quot;resp&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp_list</span><span class="p">,</span> <span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">}</span></div></div>
 
-<span class="k">class</span> <span class="nc">LanguageGenerationRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialogRecorder"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnDialogRecorder">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialogRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;A metric-like class for recording generated sentences and references.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		dataloader (DataLoader): A dataloader for translating index to sentences.</span>
+<span class="sd">		context_key (str): Dialog context are passed to :func:`forward` by ``data[context_key]``.</span>
+<span class="sd">			Default: ``post``.</span>
+<span class="sd">		reference_key (str): Dialog reference are passed to :func:`forward` by ``data[reference_key]``.</span>
+<span class="sd">			Default: ``resp``.</span>
+<span class="sd">		gen_key (str): Sentences generated by model are passed to :func:`forward` by</span>
+<span class="sd">			``data[gen_key]``. Default: ``gen``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">context_key</span><span class="o">=</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;reference&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">context_key</span> <span class="o">=</span> <span class="n">context_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span> <span class="o">=</span> <span class="n">reference_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">context_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MultiTurnDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains the following keys.</span>
+<span class="sd">			data[context_key] (list or :class:`numpy.array` of `int`): Dialog post.</span>
+<span class="sd">				A 3-d padded array containing id of words.</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, _turn_length, max_sentence_length]`</span>
+<span class="sd">			data[reference_key] (list or :class:`numpy.array` of `int`): Dialog responses.</span>
+<span class="sd">				A 3-d padded array containing id of words.</span>
+<span class="sd">				Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_turn_length, max_sentence_length]`</span>
+<span class="sd">			data[gen_key] (list or :class:`numpy.array` of `int`): Setences generated by model.</span>
+<span class="sd">				A 3-d padded array containing id of words.</span>
+<span class="sd">				Contains  end token (eg: ``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
+<span class="sd">				Size: `[batch_size, max_turn_length, gen_sentence_length]`.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">context_key</span><span class="p">]</span>
+		<span class="n">reference</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_key</span><span class="p">]</span>
+		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">context</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">gen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">context_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">:]))</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">:]))</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]))</span></div>
+
+<div class="viewcode-block" id="MultiTurnDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
+
+<span class="sd">			* **context**: a list of post sentences.</span>
+<span class="sd">			* **reference**: a list of response sentences.</span>
+<span class="sd">			* **gen**: a list of generated sentences.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_list</span><span class="p">,</span> <span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span><span class="p">,</span> <span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">}</span></div></div>
+
+<div class="viewcode-block" id="LanguageGenerationRecorder"><a class="viewcode-back" href="../../../metric.html#contk.metric.LanguageGenerationRecorder">[docs]</a><span class="k">class</span> <span class="nc">LanguageGenerationRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A metric-like class for recorder BLEU.</span>
 
 <span class="sd">	Arguments:</span>
@@ -355,25 +535,25 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGenerationRecorder.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.LanguageGenerationRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			data (dict): A dict at least contains the following keys.</span>
 <span class="sd">			data[gen_key] (list or :class:`numpy.array` of `int`): Setences generated by model.</span>
-<span class="sd">				Contains ``&lt;eos&gt;``, but without ``&lt;go&gt;``.</span>
+<span class="sd">				Contains end token (eg: ``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
 <span class="sd">				Size: `[batch_size, gen_sentence_length]`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
 		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gen</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></div>
 
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGenerationRecorder.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.LanguageGenerationRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **gen**: a list of generated sentences.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">}</span>
+		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">}</span></div></div>
 
 <div class="viewcode-block" id="MetricChain"><a class="viewcode-back" href="../../../metric.html#contk.metric.MetricChain">[docs]</a><span class="k">class</span> <span class="nc">MetricChain</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A metric-like class for stacked metric. You can use this class</span>
