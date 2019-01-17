@@ -325,33 +325,23 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 <dt id="contk.dataloader.SingleTurnDialog.get_batch">
 <code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
-<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict at least contains <code class="docutils literal notranslate"><span class="pre">post</span></code>, <code class="docutils literal notranslate"><span class="pre">post_length</span></code>, <code class="docutils literal notranslate"><span class="pre">resp</span></code>,
-<code class="docutils literal notranslate"><span class="pre">resp_length</span></code>. See the example belows.</p>
-</td>
-</tr>
-</tbody>
-</table>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments:</dt>
+<dd>key (str): must be contained in <cite>key_name</cite>
+index (list): a list of specified index</dd>
+<dt>Returns:</dt>
+<dd>A dict at least contains <code class="docutils literal notranslate"><span class="pre">post</span></code>, <code class="docutils literal notranslate"><span class="pre">post_length</span></code>, <code class="docutils literal notranslate"><span class="pre">resp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">resp_length</span></code>. See the example belows.</dd>
+</dl>
+</div></blockquote>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-</pre></div>
-</div>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>fix the missing example</li>
-</ul>
-</div>
+<dl class="docutils">
+<dt>vocab_list = [“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”, “how”,                                                     “are”, “you”, “hello”, “i”, “am”,                                                       “fine”]</dt>
+<dd>data = {                                “train”:{                                       “post”: [                                               [2, 4, 5, 6, 3],   # first post: &lt;go&gt; how are you &lt;eos&gt;                                                 [2, 7, 3],                 # second post: &lt;go&gt; hello &lt;eos&gt;                                      ],                                      “resp”: [                                               [2, 8, 9, 10, 3], # first response: &lt;go&gt; i am fine &lt;eos&gt;                                                [2, 7, 3],         # second response: &lt;go&gt; hello &lt;eos&gt;                                  ],                              },                              “dev”: {…},   # similar to train                              “test”: {…},  # similar to train                      }
+&gt;&gt;&gt; dataloader.get_batch(‘train’, [0, 1])
+&gt;&gt;&gt; {                                   “post”: [                                               [2, 4, 5, 6, 3],   # first post                                                 [2, 7, 3, 0, 0],   # second post with &lt;pad&gt;                                     ],                                      “resp”: [                                               [2, 8, 9, 10, 3],  # first response                                             [2, 7, 3, 0, 0],   # second response with &lt;pad&gt;                                         ],                                      “post_length”: [5, 3], # length of posts                                        “resp_length”: [5, 3], # length of responses                            }</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -431,17 +421,13 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="p">[])</span>
-<span class="go">&gt;&gt;&gt;</span>
-</pre></div>
-</div>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>fix the missing example</li>
-</ul>
-</div>
+<p>vocab_list = [“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”, “I”, “have”,                                                   “been”, “to”, “Sichuan”]
+&gt;&gt;&gt; dataloader.index_to_sen(
+…             [2, 4, 5, 6, 7, 8, 3, 0, 0], trim = True)
+&gt;&gt;&gt; [“&lt;go&gt;”, “I”, “have”, “been”, “to”, “Sichuan”]
+&gt;&gt;&gt; dataloader.index_to_sen(
+…             [2, 4, 5, 6, 7, 8, 3, 0, 0], trim = False)
+&gt;&gt;&gt; [“&lt;go&gt;”, “I”, “have”, “been”, “to”, “Sichuan”, “&lt;eos&gt;”, “&lt;pad&gt;”, “&lt;pad&gt;”]</p>
 </dd></dl>
 
 <dl class="method">
@@ -477,17 +463,10 @@ or an epoch is end.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;province&quot;</span><span class="p">,</span> <span class="s2">&quot;eos&quot;</span><span class="p">])</span>
-<span class="go">&gt;&gt;&gt;</span>
-</pre></div>
-</div>
-<div class="admonition-todo admonition" id="index-2">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>fix the missing example</li>
-</ul>
-</div>
+<p>vocab_list = [“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”, “I”, “have”,                                                   “been”, “to”, “Sichuan”]
+&gt;&gt;&gt; dataloader.sen_to_index(
+…             [“&lt;go&gt;”, “I”, “have”, “been”, “to”, “Sichuan”, “&lt;eos&gt;”])
+&gt;&gt;&gt; [2, 4, 5, 6, 7 ,8 ,3]</p>
 </dd></dl>
 
 <dl class="method">
@@ -510,17 +489,10 @@ or an epoch is end.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="p">[])</span>
-<span class="go">&gt;&gt;&gt;</span>
-</pre></div>
-</div>
-<div class="admonition-todo admonition" id="index-3">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>fix the missing example</li>
-</ul>
-</div>
+<p>vocab_list = [“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”, “I”, “have”,                                                   “been”, “to”, “Sichuan”]
+&gt;&gt;&gt; dataloader.trim_index(
+…             [2, 4, 5, 6, 7, 8, 0, 0, 3, 4, 3, 0]) # &lt;go&gt; I have been to Sichuan &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;
+&gt;&gt;&gt; [2, 4, 5, 6, 7, 8] # &lt;go&gt; I have been to Sichuan</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -551,12 +523,12 @@ to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
 </tbody>
 </table>
 <p>Refer to <a class="reference internal" href="#contk.dataloader.SingleTurnDialog" title="contk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for attributes.</p>
-<div class="admonition-todo admonition" id="index-4">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>add references</li>
-</ul>
-</div>
+<dl class="docutils">
+<dt>Reference:</dt>
+<dd>[1] <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a>
+[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora
+from Movie and TV Subtitles.(LREC 2016)</dd>
+</dl>
 </dd></dl>
 
 </div>
