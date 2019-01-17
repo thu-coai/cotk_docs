@@ -242,7 +242,7 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">)}</span></div></div>
 
-<span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnPerplexityMetric"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnPerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calcualting multi-turn perplexity.</span>
 
 <span class="sd">	Arguments:</span>
@@ -266,7 +266,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span> <span class="o">=</span> <span class="n">PerlplexityMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_key</span><span class="o">=</span><span class="s2">&quot;sent&quot;</span><span class="p">,</span> \
 				<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;sent_length&quot;</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">,</span> <span class="n">full_check</span><span class="o">=</span><span class="n">full_check</span><span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnPerplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnPerplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -296,14 +296,14 @@
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sent_length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="n">reference</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> \
 					<span class="s2">&quot;sent_length&quot;</span><span class="p">:</span> <span class="n">sent_length</span><span class="p">,</span> \
-					<span class="s2">&quot;gen_prob&quot;</span><span class="p">:</span> <span class="n">gen_prob</span><span class="p">[</span><span class="n">i</span><span class="p">]})</span>
+					<span class="s2">&quot;gen_prob&quot;</span><span class="p">:</span> <span class="n">gen_prob</span><span class="p">[</span><span class="n">i</span><span class="p">]})</span></div>
 
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnPerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnPerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **perplexity**: perplexity value</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
 <div class="viewcode-block" id="BleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#contk.metric.BleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">BleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calcualting BLEU.</span>
