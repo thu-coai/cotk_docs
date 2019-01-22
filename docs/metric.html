@@ -199,10 +199,10 @@ are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetri
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
-<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (<em>list</em>) – Reference sentences.
+<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Reference sentences.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <cite>[batch_size, max_sentence_length]</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>reference_key</strong><strong>]</strong> – Length of Reference sentences. Contains start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>)
+<li><strong>data</strong><strong>[</strong><strong>reference_len_key</strong><strong>]</strong> (<em>list</em>) – Length of Reference sentences. Contains start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>)
 and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <cite>[batch_size]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>gen_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Setence generations model outputs of
 <strong>log softmax</strong> probability. Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token
