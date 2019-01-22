@@ -211,41 +211,24 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">])))</span>
 
-	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialog._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;This function is called during the initialization.</span>
 
 <span class="sd">		Returns:</span>
 <span class="sd">			(tuple): tuple containing (refer to the following example):</span>
 
-<span class="sd">				vocab_list (list): vocabulary list of the datasets.</span>
-<span class="sd">				data (dict): a dict contains data.</span>
-
-<span class="sd">		Examples:</span>
-<span class="sd">		.. highlight:: python</span>
-<span class="sd">    	.. code-block:: python</span>
-<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, \</span>
-<span class="sd">						  &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, \</span>
-<span class="sd">						  &quot;fine&quot;]</span>
-<span class="sd">			data = {</span>
-<span class="sd">				&quot;train&quot;: {</span>
-<span class="sd">					&quot;post&quot;: [</span>
-<span class="sd">						[2, 4, 5, 6, 3],  # first post: &lt;go&gt; how are you &lt;eos&gt;</span>
-<span class="sd">						[2, 7, 3],        # second post: &lt;go&gt; hello &lt;eos&gt;</span>
-<span class="sd">					],</span>
-<span class="sd">					&quot;resp&quot;: [</span>
-<span class="sd">						[2, 8, 9, 10, 3], # first response: &lt;go&gt; i am fine &lt;eos&gt;</span>
-<span class="sd">						[2, 7, 3],         # second response: &lt;go&gt; hello &lt;eos&gt;</span>
-<span class="sd">					]</span>
-<span class="sd">				},</span>
-<span class="sd">				&quot;dev&quot;: {...},   # similar to train</span>
-<span class="sd">				&quot;test&quot;: {...},  # similar to train</span>
-<span class="sd">			}</span>
+<span class="sd">				* vocab_list (list): vocabulary list of the datasets.</span>
+<span class="sd">				* data (dict): a dict contains data.</span>
 
 <span class="sd">		Notes:</span>
 <span class="sd">			You can use ``ext_vocab``, ``key_name``, ``pad_id``, ``unk_id``, ``go_id``,</span>
 <span class="sd">			``eos_id``, but other attributes are not initialized.</span>
+
+<span class="sd">		TODO:</span>
+<span class="sd">			Complete missing examples.</span>
+
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span></div>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">vocab_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -282,42 +265,29 @@
 <span class="sd">		Arguments:</span>
 <span class="sd">			key (str): must be contained in `key_name`</span>
 <span class="sd">			index (list): a list of specified index</span>
+
 <span class="sd">		Returns:</span>
 <span class="sd">			A dict at least contains ``post``, ``post_length``, ``resp``,</span>
 <span class="sd">			``resp_length``. See the example belows.</span>
 
-<span class="sd">        Examples:</span>
-<span class="sd">            vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, \</span>
-<span class="sd">							&quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, \</span>
-<span class="sd">							&quot;fine&quot;]</span>
-<span class="sd">			data = { \</span>
-<span class="sd">				&quot;train&quot;:{ \</span>
-<span class="sd">					&quot;post&quot;: [ \</span>
-<span class="sd">						[2, 4, 5, 6, 3],   # first post: &lt;go&gt; how are you &lt;eos&gt; \</span>
-<span class="sd">						[2, 7, 3],		   # second post: &lt;go&gt; hello &lt;eos&gt; \</span>
-<span class="sd">					], \</span>
-<span class="sd">					&quot;resp&quot;: [ \</span>
-<span class="sd">						[2, 8, 9, 10, 3], # first response: &lt;go&gt; i am fine &lt;eos&gt; \</span>
-<span class="sd">						[2, 7, 3],         # second response: &lt;go&gt; hello &lt;eos&gt; \</span>
-<span class="sd">					], \</span>
-<span class="sd">				}, \</span>
-<span class="sd">				&quot;dev&quot;: {...},   # similar to train \</span>
-<span class="sd">				&quot;test&quot;: {...},  # similar to train \</span>
-<span class="sd">			}</span>
+<span class="sd">		Examples:</span>
+<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<span class="sd">			&quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
+
 <span class="sd">			&gt;&gt;&gt; dataloader.get_batch(&#39;train&#39;, [0, 1])</span>
-<span class="sd">			&gt;&gt;&gt; { \</span>
-<span class="sd">					&quot;post&quot;: [ \</span>
-<span class="sd">						[2, 4, 5, 6, 3],   # first post \</span>
-<span class="sd">						[2, 7, 3, 0, 0],   # second post with &lt;pad&gt; \</span>
-<span class="sd">					], \</span>
-<span class="sd">					&quot;resp&quot;: [ \</span>
-<span class="sd">						[2, 8, 9, 10, 3],  # first response \</span>
-<span class="sd">						[2, 7, 3, 0, 0],   # second response with &lt;pad&gt; \</span>
-<span class="sd">					], \</span>
-<span class="sd">					&quot;post_length&quot;: [5, 3], # length of posts \</span>
-<span class="sd">					&quot;resp_length&quot;: [5, 3], # length of responses \</span>
-<span class="sd">				}</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">			{</span>
+<span class="sd">				&quot;post&quot;: [</span>
+<span class="sd">					[2, 4, 5, 6, 3],   # first post: &lt;go&gt; how are you &lt;eos&gt;</span>
+<span class="sd">					[2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="sd">				],</span>
+<span class="sd">				&quot;resp&quot;: [</span>
+<span class="sd">					[2, 8, 9, 10, 3],  # first response: &lt;go&gt; i am fine &lt;eos&gt;</span>
+<span class="sd">					[2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="sd">				],</span>
+<span class="sd">				&quot;post_length&quot;: [5, 3], # length of posts</span>
+<span class="sd">				&quot;resp_length&quot;: [5, 3], # length of responses</span>
+<span class="sd">			}</span>
+<span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
@@ -366,17 +336,18 @@
 <span class="sd">			sen (list): a list of str, representing each token of the sentences.</span>
 
 <span class="sd">		Examples:</span>
-<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,\</span>
-<span class="sd">							&quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+
 <span class="sd">			&gt;&gt;&gt; dataloader.sen_to_index(</span>
 <span class="sd">			...		[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;, &quot;&lt;eos&gt;&quot;])</span>
-<span class="sd">			&gt;&gt;&gt; [2, 4, 5, 6, 7 ,8 ,3]</span>
+<span class="sd">			[2, 4, 5, 6, 7 ,8 ,3]</span>
 
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sen</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="SingleTurnDialog.trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Trim index. There will be two steps:</span>
+
 <span class="sd">			* If there is an `&lt;eos&gt;` in sentences, \</span>
 <span class="sd">				find first `&lt;eos&gt;` and abondon words after it (included the `&lt;eos&gt;`).</span>
 <span class="sd">			* ignore `&lt;pad&gt;` s at the end of the sentence.</span>
@@ -385,11 +356,12 @@
 <span class="sd">			index (list): a list of int</span>
 
 <span class="sd">		Examples:</span>
-<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,\</span>
-<span class="sd">							&quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+
 <span class="sd">			&gt;&gt;&gt; dataloader.trim_index(</span>
-<span class="sd">			...		[2, 4, 5, 6, 7, 8, 0, 0, 3, 4, 3, 0]) # &lt;go&gt; I have been to Sichuan &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
-<span class="sd">			&gt;&gt;&gt; [2, 4, 5, 6, 7, 8] # &lt;go&gt; I have been to Sichuan</span>
+<span class="sd">			... [2, 4, 5, 6, 7, 8, 0, 0, 3, 4, 3, 0])</span>
+<span class="sd">			... # &lt;go&gt; I have been to Sichuan &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="sd">			[2, 4, 5, 6, 7, 8] # &lt;go&gt; I have been to Sichuan</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 
 		<span class="n">index</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
@@ -407,14 +379,14 @@
 <span class="sd">			trim (bool): if True, call :func:`trim_index` before convertion.</span>
 
 <span class="sd">		Examples:</span>
-<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,\</span>
-<span class="sd">							&quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="sd">			vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+
 <span class="sd">			&gt;&gt;&gt; dataloader.index_to_sen(</span>
 <span class="sd">			...		[2, 4, 5, 6, 7, 8, 3, 0, 0], trim = True)</span>
-<span class="sd">			&gt;&gt;&gt; [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="sd">			[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="sd">			&gt;&gt;&gt; dataloader.index_to_sen(</span>
 <span class="sd">			...		[2, 4, 5, 6, 7, 8, 3, 0, 0], trim = False)</span>
-<span class="sd">			&gt;&gt;&gt; [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;pad&gt;&quot;, &quot;&lt;pad&gt;&quot;]</span>
+<span class="sd">			[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;pad&gt;&quot;, &quot;&lt;pad&gt;&quot;]</span>
 
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
@@ -462,10 +434,12 @@
 
 <span class="sd">	Refer to :class:`.SingleTurnDialog` for attributes.</span>
 
-<span class="sd">	Reference:</span>
-<span class="sd">		[1] http://opus.nlpl.eu/OpenSubtitles.php</span>
-<span class="sd">		[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora</span>
-<span class="sd">		from Movie and TV Subtitles.(LREC 2016)</span>
+<span class="sd">	Refer to the following link and paper for more detail.</span>
+
+<span class="sd">	[1] http://opus.nlpl.eu/OpenSubtitles.php</span>
+
+<span class="sd">	[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from</span>
+<span class="sd">	Movie and TV Subtitles.(LREC 2016)</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
@@ -473,7 +447,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">OpenSubtitles</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenSubtitles._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.OpenSubtitles._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by SingleTurnDialog.__init__</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
@@ -509,7 +483,7 @@
 			<span class="n">cut_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. OOV rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
 					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">data</span></div>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">data</span></div></div>
 </pre></div>
 
            </div>

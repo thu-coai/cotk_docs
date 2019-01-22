@@ -190,15 +190,6 @@ are passed to <a class="reference internal" href="#contk.metric.PerlplexityMetri
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.PerlplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>perplexity</strong>: perplexity value</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="contk.metric.PerlplexityMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
@@ -229,6 +220,15 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite>.</li>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="contk.metric.PerlplexityMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerlplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerlplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>perplexity</strong>: perplexity value</li>
+</ul>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -251,15 +251,6 @@ are passed to <a class="reference internal" href="#contk.metric.MultiTurnPerplex
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="contk.metric.MultiTurnPerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>perplexity</strong>: perplexity value</li>
-</ul>
-</dd></dl>
-
 <dl class="method">
 <dt id="contk.metric.MultiTurnPerplexityMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -293,6 +284,15 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="contk.metric.MultiTurnPerplexityMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>perplexity</strong>: perplexity value</li>
+</ul>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -314,15 +314,6 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.BleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>bleu</strong>: bleu value.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="contk.metric.BleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
@@ -343,6 +334,15 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.BleuCorpusMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>bleu</strong>: bleu value.</li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -368,15 +368,6 @@ by <code class="docutils literal notranslate"><span class="pre">data[reference_l
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.MultiTurnBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>bleu</strong>: bleu value.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="contk.metric.MultiTurnBleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
@@ -399,6 +390,15 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.MultiTurnBleuCorpusMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>bleu</strong>: bleu value.</li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -428,17 +428,6 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.SingleTurnDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>post</strong>: a list of post sentences.</li>
-<li><strong>resp</strong>: a list of response sentences.</li>
-<li><strong>gen</strong>: a list of generated sentences.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="contk.metric.SingleTurnDialogRecorder.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
@@ -464,6 +453,17 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="contk.metric.SingleTurnDialogRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>post</strong>: a list of post sentences.</li>
+<li><strong>resp</strong>: a list of response sentences.</li>
+<li><strong>gen</strong>: a list of generated sentences.</li>
+</ul>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -487,17 +487,6 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="contk.metric.MultiTurnDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>context</strong>: a list of post sentences.</li>
-<li><strong>reference</strong>: a list of response sentences.</li>
-<li><strong>gen</strong>: a list of generated sentences.</li>
-</ul>
-</dd></dl>
-
 <dl class="method">
 <dt id="contk.metric.MultiTurnDialogRecorder.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
@@ -527,6 +516,17 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="contk.metric.MultiTurnDialogRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>context</strong>: a list of post sentences.</li>
+<li><strong>reference</strong>: a list of response sentences.</li>
+<li><strong>gen</strong>: a list of generated sentences.</li>
+</ul>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -547,15 +547,6 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.LanguageGenerationRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains:</p>
-<ul class="simple">
-<li><strong>gen</strong>: a list of generated sentences.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="contk.metric.LanguageGenerationRecorder.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
@@ -573,6 +564,15 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.LanguageGenerationRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains:</p>
+<ul class="simple">
+<li><strong>gen</strong>: a list of generated sentences.</li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -603,13 +603,6 @@ making multiples metric combination like one.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.MetricChain.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict which contains the items which all the
-meric components returned.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="contk.metric.MetricChain.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
@@ -622,6 +615,13 @@ metric components need.</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.metric.MetricChain.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict which contains the items which all the
+meric components returned.</p>
 </dd></dl>
 
 </dd></dl>
