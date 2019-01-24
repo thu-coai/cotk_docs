@@ -154,111 +154,46 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">A module for multi turn dialog.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">Dataloader</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
 	<span class="n">MultiTurnDialogRecorder</span>
-<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">trim_before_target</span>
 
-<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
+<span class="c1"># pylint: disable=W0223</span>
+<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for multi-turn dialog datasets. This is an abstract class.</span>
 
 <span class="sd">	Arguments:</span>
-<span class="sd">		ext_vocab (list): special tokens. default: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;eot&gt;&quot;]`</span>
-<span class="sd">		key_name (list): name of subsets of the data. default: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
+<span class="sd">			end_token (int): the special token that stands for end. default: `4(&quot;&lt;eot&gt;&quot;)`</span>
+<span class="sd">			ext_vocab (list): special tokens. default: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;eot&gt;&quot;]`</span>
+<span class="sd">			key_name (list): name of subsets of the data. default: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
 
 <span class="sd">	Attributes:</span>
-<span class="sd">		ext_vocab (list): special tokens, be placed at beginning of `vocab_list`.</span>
-<span class="sd">			For example: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;eot&gt;&quot;]`</span>
-<span class="sd">		pad_id (int): token for padding, always equal to `0`</span>
-<span class="sd">		unk_id (int): token for unkown words, always equal to `1`</span>
-<span class="sd">		go_id (int): token at the beginning of sentences, always equal to `2`</span>
-<span class="sd">		eos_id (int): token at the end of sentences, always equal to `3`</span>
-<span class="sd">		eot_id (int): token at the end of turns, always equal to `4`</span>
-<span class="sd">		key_name (list): name of subsets of the data. For example: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
-<span class="sd">		vocab_list (list): vocabulary list of the datasets.</span>
-<span class="sd">		word2id (dict): a dict mapping tokens to index.</span>
-<span class="sd">			Maybe you want to use :meth:`sen_to_index` instead.</span>
+<span class="sd">			ext_vocab (list): special tokens, be placed at beginning of `vocab_list`.</span>
+<span class="sd">					For example: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;eot&gt;&quot;]`</span>
+<span class="sd">			pad_id (int): token for padding, always equal to `0`</span>
+<span class="sd">			unk_id (int): token for unknown words, always equal to `1`</span>
+<span class="sd">			go_id (int): token at the beginning of sentences, always equal to `2`</span>
+<span class="sd">			eos_id (int): token at the end of sentences, always equal to `3`</span>
+<span class="sd">			eot_id (int): token at the end of turns, always equal to `4`</span>
+<span class="sd">			key_name (list): name of subsets of the data. For example: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
+<span class="sd">			vocab_list (list): vocabulary list of the datasets.</span>
+<span class="sd">			word2id (dict): a dict mapping tokens to index.</span>
+<span class="sd">					Maybe you want to use :meth:`sen_to_index` instead.</span>
+<span class="sd">			end_token (int): token for end. default: equals to `eot_id`</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>		\
-			<span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
-			<span class="n">key_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>	\
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
+				 <span class="n">end_token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
+				 <span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
+				 <span class="n">key_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>	\
 		<span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-		<span class="c1"># initialize by default value. (can be overwritten by subclass)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">=</span> <span class="n">ext_vocab</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eot&gt;&quot;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">go_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;&lt;eot&gt;&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">key_name</span> <span class="o">=</span> <span class="n">key_name</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]</span>
-
-		<span class="c1"># initialize by subclass</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">()</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">)}</span>
-
-		<span class="c1"># postprocess initialization</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
-
-<div class="viewcode-block" id="MultiTurnDialog._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;This function is called during the initialization.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				(tuple): tuple containing (refer to the following example):</span>
-
-<span class="sd">					* vocab_list (list): vocabulary list of the datasets.</span>
-<span class="sd">					* data (dict): a dict contains data.</span>
-
-<span class="sd">		Notes:</span>
-<span class="sd">				You can use ``ext_vocab``, ``key_name``, ``pad_id``, ``unk_id``, ``go_id``,</span>
-<span class="sd">				``eos_id``, ``eot_id``, but other attributes are not initialized.</span>
-
-<span class="sd">		TODO:</span>
-<span class="sd">				Complete missing examples.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span></div>
-
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">vocab_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Equals to `len(self.vocab_list)`. Read only.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">)</span>
-
-<div class="viewcode-block" id="MultiTurnDialog.restart"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.restart">[docs]</a>	<span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Initialize mini-batches. Must call this function before :func:`get_next_batch`</span>
-<span class="sd">		or an epoch is end.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			key (str): must be contained in `key_name`</span>
-<span class="sd">			batch_size (None or int): default (None): use last batch_size.</span>
-<span class="sd">			shuffle (bool): whether to shuffle the data. default: `True`</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need batch_size to intialize.&quot;</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
-			<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-		<span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_size</span>
-		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set restart, </span><span class="si">%d</span><span class="s2"> batches and </span><span class="si">%d</span><span class="s2"> left&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> \
-				<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> \
-				<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span></div>
+		<span class="n">ext_vocab</span> <span class="o">=</span> <span class="n">ext_vocab</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eot&gt;&quot;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span> <span class="o">=</span> <span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;&lt;eot&gt;&quot;</span><span class="p">)</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">end_token</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span><span class="p">,</span> <span class="n">ext_vocab</span><span class="p">,</span> <span class="n">key_name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MultiTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
@@ -268,14 +203,14 @@
 <span class="sd">			index (list): a list of specified index</span>
 
 <span class="sd">		Returns:</span>
-<span class="sd">			A dict at least contains:</span>
+<span class="sd">			(dict): A dict at least contains:</span>
 
-<span class="sd">				turn_length(list): A 1-d list, the number of turns in sessions.</span>
-<span class="sd">					Size: [batch_size]</span>
-<span class="sd">				sent_length(list): A 2-d non-padded list, the length of sentence in turns.</span>
-<span class="sd">					The second dimension is various in different session.</span>
-<span class="sd">					Length of outer list: `batch_size`</span>
-<span class="sd">				sent(:class:numpy.array): A 3-d padding array containing id of words.</span>
+<span class="sd">				* turn_length(list): A 1-d list, the number of turns in sessions. \</span>
+<span class="sd">					Size: `[batch_size]`</span>
+<span class="sd">				* sent_length(list): A 2-d non-padded list, the length of sentence in turns. \</span>
+<span class="sd">					The second dimension is various in different session. \</span>
+<span class="sd">					Length of outer list: `[batch_size]`</span>
+<span class="sd">				* sent(:class:numpy.array): A 3-d padding array containing id of words. \</span>
 <span class="sd">					Size: `[batch_size, max(turn_length[i]), max(sent_length)]`</span>
 
 <span class="sd">			See the example belows.</span>
@@ -301,88 +236,6 @@
 			<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">][</span><span class="n">index_i</span><span class="p">]):</span>
 				<span class="n">res</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sent</span>
 		<span class="k">return</span> <span class="n">res</span></div>
-
-<div class="viewcode-block" id="MultiTurnDialog.get_next_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_next_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_next_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get next batch.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			key (str): must be contained in `key_name`</span>
-<span class="sd">			ignore_left_samples (bool): Ignore the last batch, whose sample num</span>
-<span class="sd">				is not equal to `batch_size`. Default: `False`</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			A dict like :func:`get_batch`, or None if the epoch is end.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please run restart before calling this function.&quot;</span><span class="p">)</span>
-		<span class="n">batch_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-		<span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">batch_id</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="n">batch_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-		<span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
-			<span class="k">return</span> <span class="kc">None</span>
-		<span class="k">if</span> <span class="n">ignore_left_samples</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
-			<span class="k">return</span> <span class="kc">None</span>
-		<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
-		<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-		<span class="k">return</span> <span class="n">res</span></div>
-
-<div class="viewcode-block" id="MultiTurnDialog.sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sen</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert a sentences from string to index representation.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			sen (list): a list of str, representing each token of the sentences.</span>
-
-<span class="sd">		Examples:</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.sen_to_index(</span>
-<span class="sd">			...		[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;, &quot;province&quot;, &quot;eos&quot;])</span>
-<span class="sd">			&gt;&gt;&gt;</span>
-
-<span class="sd">		Todo:</span>
-<span class="sd">			* fix the missing example</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sen</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert a session from string to index representation.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			sen (list): a 2-d list of str, representing each token of the session.</span>
-
-<span class="sd">		Examples:</span>
-
-<span class="sd">		Todo:</span>
-<span class="sd">			* fix the missing example</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span> \
-			<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sent</span><span class="p">)),</span> \
-		<span class="n">session</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="MultiTurnDialog.trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Trim indexes. There will be two steps:</span>
-<span class="sd">			* If there is an `&lt;eot&gt;` in sentences, \</span>
-<span class="sd">				find first `&lt;eot&gt;` and abondon words after it (included the `&lt;eot&gt;`).</span>
-<span class="sd">			* Ignore `&lt;pad&gt;` s at the end of the sentence.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			index (list): a list of int</span>
-
-<span class="sd">		Examples:</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.index_to_sen(</span>
-<span class="sd">			...		[])</span>
-<span class="sd">			&gt;&gt;&gt;</span>
-
-<span class="sd">		Todo:</span>
-<span class="sd">			* fix the missing example</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-
-		<span class="n">index</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span><span class="p">)</span>
-		<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-		<span class="k">while</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">index</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">:</span>
-			<span class="n">idx</span> <span class="o">-=</span> <span class="mi">1</span>
-		<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
-		<span class="k">return</span> <span class="n">index</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Trim indexes for multi turn dialog. There will be 3 steps:</span>
@@ -410,24 +263,20 @@
 				<span class="k">break</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert a sentences from index to string representation</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert a session from string to index representation.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			index (list): a list of int</span>
-<span class="sd">			trim (bool): if True, call :func:`trim_index` before convertion.</span>
+<span class="sd">			sen (list): a 2-d list of str, representing each token of the session.</span>
 
 <span class="sd">		Examples:</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.index_to_sen(</span>
-<span class="sd">			...		[])</span>
-<span class="sd">			&gt;&gt;&gt;</span>
 
 <span class="sd">		Todo:</span>
 <span class="sd">			* fix the missing example</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
-			<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span></div>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span> \
+			<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sent</span><span class="p">)),</span> \
+		<span class="n">session</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.multi_turn_index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a session from index to string representation</span>
@@ -489,7 +338,7 @@
 <span class="sd">		max_turn_length (int): All sessions longer than `max_turn_length` will be shortened</span>
 <span class="sd">			to first `max_turn_length` sentences. Default: 20.</span>
 
-<span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes.</span>
+<span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes and methods.</span>
 
 <span class="sd">	Todo:</span>
 <span class="sd">		* add references</span>
@@ -502,7 +351,7 @@
 		<span class="nb">super</span><span class="p">(</span><span class="n">UbuntuCorpus</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UbuntuCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.UbuntuCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by MultiTurnDialog.__init__</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `MultiTurnDialog.__init__`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
@@ -533,10 +382,12 @@
 					<span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span><span class="p">]</span>
 
 		<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">data_size</span> <span class="o">=</span> <span class="p">{}</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">line2id</span><span class="p">,</span> <span class="n">session</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span><span class="p">]))</span> \
 					<span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]]</span>
+			<span class="n">data_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])</span>
 			<span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))))</span>
 			<span class="n">vocab_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
 			<span class="n">oov_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">word2id</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)))</span>
@@ -549,7 +400,7 @@
 					<span class="s2">&quot;rate: </span><span class="si">%f</span><span class="se">\n\t</span><span class="s2">max turn length before cut: </span><span class="si">%d</span><span class="s2">, cut sentence rate: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> \
 					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_length</span><span class="p">),</span> <span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> \
 					<span class="nb">max</span><span class="p">(</span><span class="n">turn_length</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">sent_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">data</span></div></div>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
 </pre></div>
 
            </div>
