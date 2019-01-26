@@ -305,9 +305,9 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>vocabulary list of the datasets.</p>
+<dt id="contk.dataloader.LanguageGeneration.all_vocab_list">
+<code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.all_vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>vocabulary list of the datasets, including valid words and invalid words.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -348,9 +348,46 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Lang
 </dd></dl>
 
 <dl class="attribute">
+<dt id="contk.dataloader.LanguageGeneration.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.
+Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="contk.dataloader.LanguageGeneration.vocab_size">
 <code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.vocab_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equals to <cite>len(self.vocab_list)</cite>. Read only.</p>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>. Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="contk.dataloader.LanguageGeneration.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>. Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -361,19 +398,28 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Lang
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing (refer to the following example):<blockquote>
-<div><ul class="simple">
-<li>vocab_list (list): vocabulary list of the datasets.</li>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
+<li>all_vocab_list (list): vocabulary list of the datasets,
+including valid and invalid words</li>
+<li>valid_vocab_len (int): the number of valid vocab.
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid words,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid words</li>
 <li>data (dict): a dict contains data.</li>
 <li>data_size (dict): a dict contains size of each item in data.</li>
 </ul>
-</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(tuple)</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.LanguageGeneration._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return the id for a valid word (<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&lt;</span> <span class="pre">valid_vocab_len</span></code>),
+otherwise return <cite>unk_id</cite>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -399,16 +445,35 @@ or an epoch is end.</p>
 <dl class="method">
 <dt id="contk.dataloader.LanguageGeneration.get_batch">
 <code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.
-:param key: must be contained in <cite>key_name</cite>
-:type key: str
-:param index: a list of specified index
-:type index: list</p>
+<dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dict at least contains <code class="docutils literal notranslate"><span class="pre">sentence</span></code>, <code class="docutils literal notranslate"><span class="pre">sentence_length</span></code>. See the example belows.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
+<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>A dict at least contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li>sentence_length(list): A 1-d list, the length of sentence in each batch.
+Size: <cite>[batch_size]</cite></li>
+<li>sentence(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
+Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>sentence_allwords(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
+Provide both valid and invalid words.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+</ul>
+</div></blockquote>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dict)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -424,6 +489,13 @@ or an epoch is end.</p>
 <span class="go">                &quot;sentence_length&quot;: [5, 3], # length of sentences</span>
 <span class="go">}</span>
 </pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add invalid_vocab examples</li>
+<li>mark which array is np.array</li>
+</ul>
 </div>
 </dd></dl>
 
@@ -455,7 +527,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <dd><p>Trim index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
-<li>If there is an <cite>&lt;eos&gt;</cite> in sentences,                          find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
+<li>If there is an <cite>&lt;eos&gt;</cite> in sentences,
+find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
 <li>ignore <cite>&lt;pad&gt;</cite> s at the end of the sentence.</li>
 </ul>
 </div></blockquote>
@@ -469,7 +542,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -481,13 +554,20 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.LanguageGeneration.sen_to_index">
-<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.sen_to_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be replaced by <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+Default: <cite>False</cite></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -498,6 +578,12 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add invalid vocab example</li>
+</ul>
 </div>
 </dd></dl>
 
@@ -519,7 +605,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -573,7 +659,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="contk.dataloader.MSCOCO">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for preprocessed MSCOCO dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -581,10 +667,15 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of MSCOCO dataset.</li>
-<li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
-less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
+<li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
+not less than <cite>min_vocab_times</cite> in <strong>training set</strong> will be marked as valid words.
+Default: 10.</li>
 <li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
 to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, both in training or
+testing stages. Default: 0 (No unknown words).</li>
 </ul>
 </td>
 </tr>
@@ -709,8 +800,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="contk.dataloader.SingleTurnDialog.all_vocab_list">
+<code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>vocabulary list of the datasets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -752,9 +843,46 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 </dd></dl>
 
 <dl class="attribute">
+<dt id="contk.dataloader.SingleTurnDialog.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.
+Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.vocab_size">
 <code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equals to <cite>len(self.vocab_list)</cite>. Read only.</p>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>. Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="contk.dataloader.SingleTurnDialog.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>. Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -765,19 +893,28 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing (refer to the following example):<blockquote>
-<div><ul class="simple">
-<li>vocab_list (list): vocabulary list of the datasets.</li>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
+<li>all_vocab_list (list): vocabulary list of the datasets,
+including valid and invalid words</li>
+<li>valid_vocab_len (int): the number of valid vocab.
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid words,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid words</li>
 <li>data (dict): a dict contains data.</li>
 <li>data_size (dict): a dict contains size of each item in data.</li>
 </ul>
-</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(tuple)</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SingleTurnDialog._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return the id for a valid word (<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&lt;</span> <span class="pre">valid_vocab_len</span></code>),
+otherwise return <cite>unk_id</cite>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -812,8 +949,27 @@ or an epoch is end.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dict at least contains <code class="docutils literal notranslate"><span class="pre">post</span></code>, <code class="docutils literal notranslate"><span class="pre">post_length</span></code>, <code class="docutils literal notranslate"><span class="pre">resp</span></code>,
-<code class="docutils literal notranslate"><span class="pre">resp_length</span></code>. See the example belows.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dict at least contains:<ul class="simple">
+<li>post_length (list): A 1-d list, the length of post in each batch.
+Size: <cite>[batch_size]</cite></li>
+<li>post (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
+Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>post_allwords (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
+Provide both valid and invalid words.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>resp_length (list): A 1-d list, the length of response in each batch.
+Size: <cite>[batch_size]</cite></li>
+<li>resp (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
+Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>resp_allwords (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
+Provide both valid and invalid words.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dict)</td>
 </tr>
 </tbody>
 </table>
@@ -834,6 +990,13 @@ or an epoch is end.</p>
 <span class="go">        &quot;resp_length&quot;: [5, 3], # length of responses</span>
 <span class="go">}</span>
 </pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-2">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add invalid_vocab examples</li>
+<li>mark which is np.array</li>
+</ul>
 </div>
 </dd></dl>
 
@@ -865,7 +1028,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <dd><p>Trim index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
-<li>If there is an <cite>&lt;eos&gt;</cite> in sentences,                          find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
+<li>If there is an <cite>&lt;eos&gt;</cite> in sentences,
+find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
 <li>ignore <cite>&lt;pad&gt;</cite> s at the end of the sentence.</li>
 </ul>
 </div></blockquote>
@@ -879,7 +1043,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -891,13 +1055,20 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.sen_to_index">
-<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be replaced by <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+Default: <cite>False</cite></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -908,6 +1079,12 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-3">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add invalid vocab example</li>
+</ul>
 </div>
 </dd></dl>
 
@@ -929,7 +1106,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -985,7 +1162,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="contk.dataloader.OpenSubtitles">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -997,6 +1174,10 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
 <li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
 to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, both in training or
+testing stages. Default: 0 (No unknown words).</li>
 </ul>
 </td>
 </tr>
@@ -1136,8 +1317,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="contk.dataloader.MultiTurnDialog.all_vocab_list">
+<code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>vocabulary list of the datasets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1179,9 +1360,46 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Mult
 </dd></dl>
 
 <dl class="attribute">
+<dt id="contk.dataloader.MultiTurnDialog.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.
+Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="contk.dataloader.MultiTurnDialog.vocab_size">
 <code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equals to <cite>len(self.vocab_list)</cite>. Read only.</p>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>. Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="contk.dataloader.MultiTurnDialog.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>. Read only.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1192,19 +1410,28 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Mult
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing (refer to the following example):<blockquote>
-<div><ul class="simple">
-<li>vocab_list (list): vocabulary list of the datasets.</li>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
+<li>all_vocab_list (list): vocabulary list of the datasets,
+including valid and invalid words</li>
+<li>valid_vocab_len (int): the number of valid vocab.
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid words,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid words</li>
 <li>data (dict): a dict contains data.</li>
 <li>data_size (dict): a dict contains size of each item in data.</li>
 </ul>
-</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(tuple)</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.MultiTurnDialog._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return the id for a valid word (<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&lt;</span> <span class="pre">valid_vocab_len</span></code>),
+otherwise return <cite>unk_id</cite>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1244,9 +1471,29 @@ or an epoch is end.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>A dict at least contains:</p>
 <blockquote>
 <div><ul class="simple">
-<li>turn_length(list): A 1-d list, the number of turns in sessions.                                       Size: <cite>[batch_size]</cite></li>
-<li>sent_length(list): A 2-d non-padded list, the length of sentence in turns.                                    The second dimension is various in different session.                                   Length of outer list: <cite>[batch_size]</cite></li>
-<li>sent(:class:numpy.array): A 3-d padding array containing id of words.                                         Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></li>
+<li><dl class="first docutils">
+<dt>turn_length(list): A 1-d list, the number of turns in sessions.</dt>
+<dd>Size: <cite>[batch_size]</cite></dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>sent_length(list): A 2-d non-padded list, the length of sentence in turns.</dt>
+<dd>The second dimension is various in different session.
+Length of outer list: <cite>[batch_size]</cite></dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>sent(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 3-d padding array containing id of words.</dt>
+<dd>Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>sent_allwords(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 3-d padding array containing id of words.</dt>
+<dd>Provide both valid and invalid words.
+Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></dd>
+</dl>
+</li>
 </ul>
 </div></blockquote>
 <p>See the example belows.</p>
@@ -1263,7 +1510,7 @@ or an epoch is end.</p>
 <span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
-<div class="admonition-todo admonition" id="index-0">
+<div class="admonition-todo admonition" id="index-4">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>fix the missing example</li>
@@ -1299,7 +1546,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <dd><p>Trim index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
-<li>If there is an <cite>&lt;eos&gt;</cite> in sentences,                          find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
+<li>If there is an <cite>&lt;eos&gt;</cite> in sentences,
+find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
 <li>ignore <cite>&lt;pad&gt;</cite> s at the end of the sentence.</li>
 </ul>
 </div></blockquote>
@@ -1313,7 +1561,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -1340,7 +1588,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong><strong>list or</strong> (<em>index</em>) – class:numpy.array): a 2-d array of int.</li>
+<li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – a 2-d array of int.</li>
 <li><strong>Size</strong> – [turn_length, max_sent_length]</li>
 </ul>
 </td>
@@ -1348,7 +1596,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </tbody>
 </table>
 <p>Examples:</p>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-5">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>fix the missing example</li>
@@ -1358,13 +1606,20 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.sen_to_index">
-<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be replaced by <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+Default: <cite>False</cite></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1376,22 +1631,35 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
+<div class="admonition-todo admonition" id="index-6">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add invalid vocab example</li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">
-<code class="descname">multi_turn_sen_to_index</code><span class="sig-paren">(</span><em>session</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_sen_to_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">multi_turn_sen_to_index</code><span class="sig-paren">(</span><em>session</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_sen_to_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a session from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sen</strong> (<em>list</em>) – a 2-d list of str, representing each token of the session.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sen</strong> (<em>list</em>) – a 2-d list of str, representing each token of the session.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be trasfered to <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+Default: False</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 <p>Examples:</p>
-<div class="admonition-todo admonition" id="index-2">
+<div class="admonition-todo admonition" id="index-7">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>fix the missing example</li>
@@ -1417,7 +1685,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -1438,8 +1706,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong><strong>list or</strong> (<em>index</em>) – class:numpy.array): a 2-d array of int.</li>
-<li><strong>Size</strong> – [turn_length, max_sent_length]</li>
+<li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – a 2-d array of int.
+Size: [turn_length, max_sent_length]</li>
 <li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="contk.dataloader.MultiTurnDialog.multi_turn_trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">multi_turn_trim_index()</span></code></a> before convertion.</li>
 </ul>
 </td>
@@ -1447,7 +1715,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </tbody>
 </table>
 <p>Examples:</p>
-<div class="admonition-todo admonition" id="index-3">
+<div class="admonition-todo admonition" id="index-8">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>fix the missing example</li>
@@ -1499,7 +1767,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 <h3>UbuntuCorpus<a class="headerlink" href="#ubuntucorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="contk.dataloader.UbuntuCorpus">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1513,13 +1781,17 @@ less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;
 to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
 <li><strong>max_turn_length</strong> (<em>int</em>) – All sessions longer than <cite>max_turn_length</cite> will be shortened
 to first <cite>max_turn_length</cite> sentences. Default: 20.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, both in training or
+testing stages. Default: 0 (No unknown words).</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p>Refer to <a class="reference internal" href="#contk.dataloader.MultiTurnDialog" title="contk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
-<div class="admonition-todo admonition" id="index-4">
+<div class="admonition-todo admonition" id="index-9">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>add references</li>

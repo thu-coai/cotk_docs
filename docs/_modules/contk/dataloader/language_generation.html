@@ -177,7 +177,7 @@
 <span class="sd">			go_id (int): token at the beginning of sentences, always equal to `2`</span>
 <span class="sd">			eos_id (int): token at the end of sentences, always equal to `3`</span>
 <span class="sd">			key_name (list): name of subsets of the data. For example: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
-<span class="sd">			vocab_list (list): vocabulary list of the datasets.</span>
+<span class="sd">			all_vocab_list (list): vocabulary list of the datasets, including valid words and invalid words.</span>
 <span class="sd">			word2id (dict): a dict mapping tokens to index.</span>
 <span class="sd">					Maybe you want to use :meth:`sen_to_index` instead.</span>
 <span class="sd">			end_token (int): token for end. default: equals to `eos_id`</span>
@@ -185,11 +185,23 @@
 
 <div class="viewcode-block" id="LanguageGeneration.get_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.LanguageGeneration.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
+
 <span class="sd">		Arguments:</span>
-<span class="sd">				key (str): must be contained in `key_name`</span>
-<span class="sd">				index (list): a list of specified index</span>
+<span class="sd">			key (str): must be contained in `key_name`</span>
+<span class="sd">			index (list): a list of specified index</span>
+
 <span class="sd">		Returns:</span>
-<span class="sd">				A dict at least contains ``sentence``, ``sentence_length``. See the example belows.</span>
+<span class="sd">			(dict): A dict at least contains:</span>
+
+<span class="sd">				* sentence_length(list): A 1-d list, the length of sentence in each batch.</span>
+<span class="sd">				  Size: `[batch_size]`</span>
+<span class="sd">				* sentence(:class:`numpy.array`): A 2-d padding array containing id of words.</span>
+<span class="sd">				  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">				  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* sentence_allwords(:class:`numpy.array`): A 2-d padding array containing id of words.</span>
+<span class="sd">				  Provide both valid and invalid words.</span>
+<span class="sd">				  Size: `[batch_size, max(sent_length)]`</span>
+
 <span class="sd">		Examples:</span>
 <span class="sd">			&gt;&gt;&gt; # vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
 <span class="sd">			&gt;&gt;&gt; #	&quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
@@ -201,6 +213,10 @@
 <span class="sd">					],</span>
 <span class="sd">					&quot;sentence_length&quot;: [5, 3], # length of sentences</span>
 <span class="sd">			}</span>
+
+<span class="sd">		Todo:</span>
+<span class="sd">			* add invalid_vocab examples</span>
+<span class="sd">			* mark which array is np.array</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
@@ -208,11 +224,14 @@
 		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sentence_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> \
 			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> \
+		<span class="n">res_sent</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> \
 			<span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;sentence_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
 			<span class="n">sentence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
 			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sentence</span>
+
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sentence_allwords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_sent</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="LanguageGeneration.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.LanguageGeneration.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
@@ -251,10 +270,15 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">			file_path (str): a str indicates the dir of MSCOCO dataset.</span>
-<span class="sd">			min_vocab_times (int): A cut-off threshold of `UNK` tokens. All tokens appear</span>
-<span class="sd">					less than `min_vocab_times`	will be replaced by `&lt;unk&gt;`. Default: 10.</span>
+<span class="sd">			valid_vocab_times (int): A cut-off threshold of valid tokens. All tokens appear</span>
+<span class="sd">					not less than `min_vocab_times` in **training set** will be marked as valid words.</span>
+<span class="sd">					Default: 10.</span>
 <span class="sd">			max_sen_length (int): All sentences longer than `max_sen_length` will be shortened</span>
 <span class="sd">					to first `max_sen_length` tokens. Default: 50.</span>
+<span class="sd">			invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
+<span class="sd">					not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
+<span class="sd">					marked as invalid words. Otherwise, they are unknown words, both in training or</span>
+<span class="sd">					testing stages. Default: 0 (No unknown words).</span>
 
 <span class="sd">	Refer to :class:`.LanguageGeneration` for attributes and methods.</span>
 
@@ -265,10 +289,11 @@
 
 <span class="sd">	&#39;&#39;&#39;</span>
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">MSCOCO</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MSCOCO._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MSCOCO._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -281,19 +306,35 @@
 			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
 				<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">f_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()))</span>
 
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">])))</span>
+		<span class="n">raw_vocab_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">])))</span>
 		<span class="c1"># Important: Sort the words preventing the index changes between</span>
 		<span class="c1"># different runs</span>
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
+		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
 					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
 			<span class="nb">filter</span><span class="p">(</span> \
 				<span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span><span class="p">,</span> \
 				<span class="n">vocab</span><span class="p">))</span>
 		<span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">))</span>
-		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
+		<span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+		<span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="n">raw_vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">]))))</span>
+		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
+					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
+			<span class="nb">filter</span><span class="p">(</span> \
+				<span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> \
+				<span class="n">vocab</span><span class="p">))</span>
+		<span class="n">vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">)))</span>
+
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;valid vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">valid_vocab_len</span><span class="p">)</span>
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
 
+		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
 		<span class="k">def</span> <span class="nf">line2id</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
 			<span class="k">return</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> \
 					<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word2id</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">word2id</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> \
@@ -313,6 +354,11 @@
 					<span class="nb">filter</span><span class="p">(</span> \
 						<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">word2id</span><span class="p">,</span> \
 						<span class="n">vocab</span><span class="p">)))</span>
+			<span class="n">invalid_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> \
+				<span class="nb">list</span><span class="p">(</span> \
+					<span class="nb">filter</span><span class="p">(</span> \
+						<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> \
+						<span class="n">vocab</span><span class="p">)))</span> <span class="o">-</span> <span class="n">oov_num</span>
 			<span class="n">length</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
 				<span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sen&#39;</span><span class="p">]))</span>
 			<span class="n">cut_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> \
@@ -322,9 +368,9 @@
 					<span class="mi">1</span><span class="p">,</span> \
 					<span class="mi">0</span><span class="p">))</span>
 			<span class="nb">print</span><span class="p">(</span> \
-				<span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. OOV rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
-				<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
+				<span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
+				<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
 </pre></div>
 
            </div>

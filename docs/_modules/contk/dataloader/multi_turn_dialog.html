@@ -181,7 +181,7 @@
 <span class="sd">			eos_id (int): token at the end of sentences, always equal to `3`</span>
 <span class="sd">			eot_id (int): token at the end of turns, always equal to `4`</span>
 <span class="sd">			key_name (list): name of subsets of the data. For example: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
-<span class="sd">			vocab_list (list): vocabulary list of the datasets.</span>
+<span class="sd">			all_vocab_list (list): vocabulary list of the datasets.</span>
 <span class="sd">			word2id (dict): a dict mapping tokens to index.</span>
 <span class="sd">					Maybe you want to use :meth:`sen_to_index` instead.</span>
 <span class="sd">			end_token (int): token for end. default: equals to `eot_id`</span>
@@ -205,12 +205,16 @@
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): A dict at least contains:</span>
 
-<span class="sd">				* turn_length(list): A 1-d list, the number of turns in sessions. \</span>
+<span class="sd">				* turn_length(list): A 1-d list, the number of turns in sessions.</span>
 <span class="sd">					Size: `[batch_size]`</span>
-<span class="sd">				* sent_length(list): A 2-d non-padded list, the length of sentence in turns. \</span>
-<span class="sd">					The second dimension is various in different session. \</span>
+<span class="sd">				* sent_length(list): A 2-d non-padded list, the length of sentence in turns.</span>
+<span class="sd">					The second dimension is various in different session.</span>
 <span class="sd">					Length of outer list: `[batch_size]`</span>
-<span class="sd">				* sent(:class:numpy.array): A 3-d padding array containing id of words. \</span>
+<span class="sd">				* sent(:class:`numpy.array`): A 3-d padding array containing id of words.</span>
+<span class="sd">					Only provide valid words. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">					Size: `[batch_size, max(turn_length[i]), max(sent_length)]`</span>
+<span class="sd">				* sent_allwords(:class:`numpy.array`): A 3-d padding array containing id of words.</span>
+<span class="sd">					Provide both valid and invalid words.</span>
 <span class="sd">					Size: `[batch_size, max(turn_length[i]), max(sent_length)]`</span>
 
 <span class="sd">			See the example belows.</span>
@@ -230,11 +234,14 @@
 		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
 			<span class="n">sent_length</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span>
 			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_length&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sent_length</span><span class="p">)</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;turn_length&#39;</span><span class="p">]),</span> \
+		<span class="n">res_sent</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;turn_length&#39;</span><span class="p">]),</span> \
 			<span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">])))),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
 			<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">][</span><span class="n">index_i</span><span class="p">]):</span>
-				<span class="n">res</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sent</span>
+				<span class="n">res_sent</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sent</span>
+
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_allwords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_sent</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
@@ -245,7 +252,7 @@
 <span class="sd">			* Ignore `&lt;pad&gt;` s at the end of every turn.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			index (list or :class:numpy.array): a 2-d array of int.</span>
+<span class="sd">			index (list or :class:`numpy.array`): a 2-d array of int.</span>
 <span class="sd">			Size: [turn_length, max_sent_length]</span>
 
 <span class="sd">		Examples:</span>
@@ -263,27 +270,36 @@
 				<span class="k">break</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a session from string to index representation.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			sen (list): a 2-d list of str, representing each token of the session.</span>
+<span class="sd">			invalid_vocab (bool): whether to provide invalid words.</span>
+<span class="sd">					If ``False``, invalid words will be trasfered to `unk_id`.</span>
+<span class="sd">					If ``True``, invalid words will using their own id.</span>
+<span class="sd">					Default: False</span>
 
 <span class="sd">		Examples:</span>
 
 <span class="sd">		Todo:</span>
 <span class="sd">			* fix the missing example</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span> \
-			<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sent</span><span class="p">)),</span> \
-		<span class="n">session</span><span class="p">))</span></div>
+		<span class="k">if</span> <span class="n">invalid_vocab</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span> \
+				<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sent</span><span class="p">)),</span> \
+			<span class="n">session</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span> \
+				<span class="bp">self</span><span class="o">.</span><span class="n">_valid_word2id</span><span class="p">,</span> <span class="n">sent</span><span class="p">)),</span> \
+			<span class="n">session</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.multi_turn_index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a session from index to string representation</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			index (list or :class:numpy.array): a 2-d array of int.</span>
-<span class="sd">			Size: [turn_length, max_sent_length]</span>
+<span class="sd">			index (list or :class:`numpy.array`): a 2-d array of int.</span>
+<span class="sd">				Size: [turn_length, max_sent_length]</span>
 <span class="sd">			trim (bool): if True, call :func:`multi_turn_trim_index` before convertion.</span>
 
 <span class="sd">		Examples:</span>
@@ -294,7 +310,7 @@
 		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
 			<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> \
-			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">sent</span><span class="p">)),</span> \
+			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">sent</span><span class="p">)),</span> \
 			<span class="n">index</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
@@ -337,17 +353,23 @@
 <span class="sd">			to first `max_sen_length` tokens. Default: 50.</span>
 <span class="sd">		max_turn_length (int): All sessions longer than `max_turn_length` will be shortened</span>
 <span class="sd">			to first `max_turn_length` sentences. Default: 20.</span>
+<span class="sd">		invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
+<span class="sd">			not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
+<span class="sd">			marked as invalid words. Otherwise, they are unknown words, both in training or</span>
+<span class="sd">			testing stages. Default: 0 (No unknown words).</span>
 
 <span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes and methods.</span>
 
 <span class="sd">	Todo:</span>
 <span class="sd">		* add references</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">max_turn_length</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">max_turn_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> \
+			<span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span> <span class="o">=</span> <span class="n">max_turn_length</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">UbuntuCorpus</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UbuntuCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.UbuntuCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -367,16 +389,33 @@
 						<span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;__eou__&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;eos&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__eot__&#39;</span><span class="p">)]</span>
 				<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">raw2line</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">))}</span>
 
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))))</span>
+		<span class="n">raw_vocab_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))))</span>
 		<span class="c1"># Important: Sort the words preventing the index changes between different runs</span>
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span><span class="p">,</span> <span class="n">vocab</span><span class="p">))</span>
 		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">))</span>
 		<span class="n">left_vocab</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;&lt;eos&gt;&#39;</span><span class="p">)</span>
 		<span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="n">left_vocab</span>
-		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
+		<span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+		<span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="n">raw_vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))))</span>
+		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
+					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
+			<span class="nb">filter</span><span class="p">(</span> \
+				<span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> \
+				<span class="n">vocab</span><span class="p">))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">))</span>
+		<span class="n">vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">left_vocab</span><span class="p">)</span>
+
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;valid vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">valid_vocab_len</span><span class="p">)</span>
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
 
+		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
 		<span class="n">line2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>\
 					<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">line</span><span class="p">))</span> <span class="o">+</span> \
 					<span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span><span class="p">]</span>
@@ -391,16 +430,17 @@
 			<span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))))</span>
 			<span class="n">vocab_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
 			<span class="n">oov_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">word2id</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)))</span>
+			<span class="n">invalid_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)))</span> <span class="o">-</span> <span class="n">oov_num</span>
 			<span class="n">sent_length</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
 			<span class="n">cut_word_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sent_length</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 			<span class="n">turn_length</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))</span>
 			<span class="n">sent_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">turn_length</span><span class="p">)</span>
 			<span class="n">cut_sent_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">turn_length</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-			<span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. OOV rate: </span><span class="si">%f</span><span class="s2">, max sentence length before cut: </span><span class="si">%d</span><span class="s2">, cut word &quot;</span> <span class="o">+</span> \
-					<span class="s2">&quot;rate: </span><span class="si">%f</span><span class="se">\n\t</span><span class="s2">max turn length before cut: </span><span class="si">%d</span><span class="s2">, cut sentence rate: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> \
-					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_length</span><span class="p">),</span> <span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> \
-					<span class="nb">max</span><span class="p">(</span><span class="n">turn_length</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">sent_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
+			<span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max sentence length before cut: </span><span class="si">%d</span><span class="s2">, &quot;</span> <span class="o">+</span> \
+					<span class="s2">&quot;cut word rate: </span><span class="si">%f</span><span class="se">\n\t</span><span class="s2">max turn length before cut: </span><span class="si">%d</span><span class="s2">, cut sentence rate: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> \
+					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_length</span><span class="p">),</span> \
+					<span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_length</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">sent_num</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
 </pre></div>
 
            </div>
