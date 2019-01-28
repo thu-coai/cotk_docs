@@ -352,7 +352,12 @@
 
 <span class="sd">			* **bleu**: bleu value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> <span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)}</span></div></div>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)}</span>
+		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of corpus_bleu, </span><span class="se">\</span>
+<span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="MultiTurnBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#contk.metric.MultiTurnBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calcualting multi-turn BLEU.</span>
@@ -408,7 +413,12 @@
 
 <span class="sd">			* **bleu**: bleu value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> <span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)}</span></div></div>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)}</span>
+		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of corpus_bleu, </span><span class="se">\</span>
+<span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="SingleTurnDialogRecorder"><a class="viewcode-back" href="../../../metric.html#contk.metric.SingleTurnDialogRecorder">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialogRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A metric-like class for recording generated sentences and references.</span>
