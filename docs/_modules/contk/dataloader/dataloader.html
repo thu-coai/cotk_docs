@@ -373,8 +373,8 @@
 	<span class="k">def</span> <span class="nf">trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Trim index. There will be two steps:</span>
 
-<span class="sd">			* If there is an `&lt;eos&gt;` in sentences,</span>
-<span class="sd">			  find first `&lt;eos&gt;` and abondon words after it (included the `&lt;eos&gt;`).</span>
+<span class="sd">			* If there is an end token (`&lt;eos&gt;`) in sentences,</span>
+<span class="sd">			  find first end token and abondon words after it (included the end token).</span>
 <span class="sd">			* ignore `&lt;pad&gt;` s at the end of the sentence.</span>
 
 <span class="sd">		Arguments:</span>

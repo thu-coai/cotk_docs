@@ -264,11 +264,10 @@
 
 		<span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">turn_index</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">ignore_first_token</span><span class="p">:</span>
-				<span class="n">turn_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">turn_index</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">turn_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">turn_index</span><span class="p">)</span>
+			<span class="n">turn_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">turn_index</span><span class="p">)</span>
 			<span class="k">if</span> <span class="n">turn_trim</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">ignore_first_token</span><span class="p">:</span>
+					<span class="n">turn_trim</span> <span class="o">=</span> <span class="n">turn_index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 				<span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">turn_trim</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">break</span>
