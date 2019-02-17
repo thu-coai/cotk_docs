@@ -1573,13 +1573,13 @@ find first end token and abondon words after it (included the end token).</li>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.multi_turn_trim_index">
-<code class="descname">multi_turn_trim_index</code><span class="sig-paren">(</span><em>index</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">multi_turn_trim_index</code><span class="sig-paren">(</span><em>index</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Trim indexes for multi turn dialog. There will be 3 steps:</dt>
 <dd><ul class="first last simple">
 <li>For every turn, if there is an <cite>&lt;eot&gt;</cite>,                               find first <cite>&lt;eot&gt;</cite> and abondon words after it (included the <cite>&lt;eot&gt;</cite>).</li>
-<li>If the sentence after triming is empty, discard this turn and the turn after it.</li>
 <li>Ignore <cite>&lt;pad&gt;</cite> s at the end of every turn.</li>
+<li>When <cite>turn_length</cite> is None, discard the first empty turn and the turn after it.                               Otherwise, discard the turn according to turn_length.</li>
 </ul>
 </dd>
 </dl>
@@ -1588,8 +1588,9 @@ find first end token and abondon words after it (included the end token).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – a 2-d array of int.</li>
-<li><strong>Size</strong> – [turn_length, max_sent_length]</li>
+<li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – a 2-d array of int.
+Size: <cite>[turn_length, max_sent_length]</cite></li>
+<li><strong>turn_length</strong> (<em>int</em>) – Default: None</li>
 <li><strong>ignore_first_token</strong> (<em>bool</em>) – if True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 </ul>
 </td>
@@ -1700,7 +1701,7 @@ Default: False</li>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">
-<code class="descname">multi_turn_index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_index_to_sen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen" title="Permalink to this definition">¶</a></dt>
+<code class="descname">multi_turn_index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_index_to_sen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a session from index to string representation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1710,6 +1711,8 @@ Default: False</li>
 <li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – a 2-d array of int.
 Size: [turn_length, max_sent_length]</li>
 <li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="contk.dataloader.MultiTurnDialog.multi_turn_trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">multi_turn_trim_index()</span></code></a> before convertion.</li>
+<li><strong>turn_length</strong> (<em>int</em>) – Only works when trim=True.
+If True, the session is trimmed according the turn_length. Default: None</li>
 <li><strong>ignore_first_token</strong> (<em>bool</em>) – Only works when trim=True.
 If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 </ul>

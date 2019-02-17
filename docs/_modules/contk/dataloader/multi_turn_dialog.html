@@ -244,16 +244,18 @@
 		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Trim indexes for multi turn dialog. There will be 3 steps:</span>
 <span class="sd">			* For every turn, if there is an `&lt;eot&gt;`, \</span>
 <span class="sd">				find first `&lt;eot&gt;` and abondon words after it (included the `&lt;eot&gt;`).</span>
-<span class="sd">			* If the sentence after triming is empty, discard this turn and the turn after it.</span>
 <span class="sd">			* Ignore `&lt;pad&gt;` s at the end of every turn.</span>
+<span class="sd">			* When `turn_length` is None, discard the first empty turn and the turn after it. \</span>
+<span class="sd">				Otherwise, discard the turn according to turn_length.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			index (list or :class:`numpy.array`): a 2-d array of int.</span>
-<span class="sd">			Size: [turn_length, max_sent_length]</span>
+<span class="sd">				Size: `[turn_length, max_sent_length]`</span>
+<span class="sd">			turn_length (int): Default: None</span>
 <span class="sd">			ignore_first_token (bool): if True, ignore first token of each turn (must be `&lt;go&gt;`).</span>
 
 <span class="sd">		Examples:</span>
@@ -261,16 +263,16 @@
 <span class="sd">		Todo:</span>
 <span class="sd">			* fix the missing example</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-
 		<span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="k">for</span> <span class="n">turn_index</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
-			<span class="n">turn_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">turn_index</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">turn_trim</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">ignore_first_token</span><span class="p">:</span>
-					<span class="n">turn_trim</span> <span class="o">=</span> <span class="n">turn_index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-				<span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">turn_trim</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">turn_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">turn_length</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">turn_length</span><span class="p">:</span>
 				<span class="k">break</span>
+			<span class="n">turn_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">turn_index</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">turn_length</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">turn_trim</span><span class="p">:</span>
+				<span class="k">break</span>
+			<span class="k">elif</span> <span class="n">ignore_first_token</span><span class="p">:</span>
+				<span class="n">turn_trim</span> <span class="o">=</span> <span class="n">turn_index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+			<span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">turn_trim</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -297,13 +299,15 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">_valid_word2id</span><span class="p">,</span> <span class="n">sent</span><span class="p">)),</span> \
 			<span class="n">session</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a session from index to string representation</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			index (list or :class:`numpy.array`): a 2-d array of int.</span>
 <span class="sd">				Size: [turn_length, max_sent_length]</span>
 <span class="sd">			trim (bool): if True, call :func:`multi_turn_trim_index` before convertion.</span>
+<span class="sd">			turn_length (int): Only works when trim=True.</span>
+<span class="sd">				If True, the session is trimmed according the turn_length. Default: None</span>
 <span class="sd">			ignore_first_token (bool): Only works when trim=True.</span>
 <span class="sd">				If True, ignore first token of each turn (must be `&lt;go&gt;`).</span>
 
@@ -313,7 +317,8 @@
 <span class="sd">			* fix the missing example</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
-			<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="n">ignore_first_token</span><span class="p">)</span>
+			<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="n">turn_length</span><span class="p">,</span> \
+				<span class="n">ignore_first_token</span><span class="o">=</span><span class="n">ignore_first_token</span><span class="p">)</span>
 		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">sent</span><span class="p">:</span> \
 			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">sent</span><span class="p">)),</span> \
 			<span class="n">index</span><span class="p">))</span></div>
