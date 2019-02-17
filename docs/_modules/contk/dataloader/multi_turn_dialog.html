@@ -157,11 +157,13 @@
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
 	<span class="n">MultiTurnDialogRecorder</span>
+<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">BleuPrecisionRecallMetric</span><span class="p">,</span> <span class="n">EmbSimilarityPrecisionRecallMetric</span>
 
 <span class="c1"># pylint: disable=W0223</span>
 <div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
@@ -451,6 +453,200 @@
 					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_length</span><span class="p">),</span> \
 					<span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_length</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">sent_num</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
+
+<span class="k">class</span> <span class="nc">SwitchboardCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;A dataloder for Switchboard dataset.</span>
+
+<span class="sd">	Refer to :class:^UbuntuCorpus^ for arguments</span>
+
+<span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes and methods.</span>
+
+<span class="sd">	Todo:</span>
+<span class="sd">	    * add references</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">max_turn_length</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> \
+				 <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span> <span class="o">=</span> <span class="n">max_turn_length</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">_convert2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert topic, da, word to ids, invoked by ^SwitchboardCorpus._load_data^</span>
+<span class="sd">		and ^SwitchboardCorpus._load_multi_ref_data^</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">		    * origin_data (dict): Contains at least:</span>
+<span class="sd">		    	* session (list): A 3-d list, utterances in words</span>
+<span class="sd">		    		Size of the outermost list: num_data</span>
+<span class="sd">		    		Size of the second innermost list: num of utterances in a session</span>
+<span class="sd">		    		Size of the innermost list: num of words in a utterance</span>
+<span class="sd">		Returns:</span>
+<span class="sd">		    * data (dict): Contains</span>
+<span class="sd">		    	* session (list): utterances in ids</span>
+<span class="sd">		    		Size: same as input</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">sess2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">sess</span><span class="p">:</span> <span class="p">[([</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> \
+								 <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">utt</span><span class="p">))</span> <span class="o">+</span> \
+								 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eot_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span><span class="p">]</span> <span class="k">for</span> <span class="n">utt</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">]</span>
+		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">sess2id</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]))</span>
+		<span class="k">return</span> <span class="n">data</span>
+
+	<span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">add_pre_turn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_suf_turn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Reading data from file, invoked by ^SwitchboardCorpus._load_data^</span>
+<span class="sd">			and ^SwitchboardCorpus._load_multi_ref_data^</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">		    * filepath (str): Name of the file to read from</span>
+<span class="sd">		    * add_pre_turn (bool): Whether to add turn ^&lt;d&gt;^ ahead of each session</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data_file</span><span class="p">:</span>
+				<span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+				<span class="n">prefix_utts</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;d&gt;&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;utts&#39;</span><span class="p">]</span>
+				<span class="c1"># pylint: disable=cell-var-from-loop</span>
+				<span class="n">suffix_utts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">utt</span><span class="p">:</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &lt;eos&gt; &#39;</span> \
+							<span class="k">if</span> <span class="n">prefix_utts</span><span class="p">[</span><span class="n">utt</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> \
+							<span class="k">else</span> <span class="s1">&#39;&lt;eot&gt; &#39;</span> <span class="o">+</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &lt;eos&gt; &#39;</span><span class="p">,</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;utts&#39;</span><span class="p">])))</span>
+				<span class="n">utts</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;d&gt; &lt;eos&gt; &#39;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suffix_utts</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&lt;eot&gt;&quot;</span><span class="p">)</span>
+				<span class="n">sess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">utt</span><span class="p">:</span> <span class="n">utt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">utts</span><span class="p">))</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">add_pre_turn</span><span class="p">:</span>
+					<span class="n">sess</span> <span class="o">=</span> <span class="n">sess</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+				<span class="k">if</span> <span class="n">add_suf_turn</span><span class="p">:</span>
+					<span class="n">sess</span> <span class="o">+=</span> <span class="p">[[</span><span class="s1">&#39;&lt;d&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;eos&gt;&#39;</span><span class="p">]]</span>
+				<span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span><span class="p">])</span>
+		<span class="k">return</span> <span class="n">origin_data</span>
+
+	<span class="k">def</span> <span class="nf">_build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Building vocabulary(words, topics, da), invoked by `SwitchboardCorpus._load_data`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">raw_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
+		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span><span class="p">,</span> <span class="n">vocab</span><span class="p">))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">))</span>
+		<span class="n">left_vocab</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;&lt;eos&gt;&#39;</span><span class="p">)</span>
+		<span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="n">left_vocab</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+		<span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="n">raw_vocab</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))))</span>
+		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> \
+				<span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> <span class="n">vocab</span><span class="p">))</span>
+		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">))</span>
+		<span class="n">vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">left_vocab</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
+
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;valid vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_set</span>
+
+	<span class="k">def</span> <span class="nf">_load_multi_ref_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `SwitchboardCorpus._load_data`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/switchboard_corpus_multi_ref.jsonl&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span>
+		<span class="n">candidate</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+			<span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data_file</span><span class="p">:</span>
+				<span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+				<span class="n">utt2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">utt</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> \
+										<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+				<span class="n">candidate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">utt2id</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;responses&#39;</span><span class="p">])))</span>
+				<span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="k">return</span> <span class="n">candidate</span>
+
+	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `MultiTurnDialog.__init__`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;multi_ref&#39;</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
+			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_file</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/switchboard_corpus_</span><span class="si">%s</span><span class="s1">.jsonl&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> \
+											   <span class="n">add_pre_turn</span><span class="o">=</span><span class="p">(</span><span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">),</span> \
+											   <span class="n">add_suf_turn</span><span class="o">=</span><span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">))</span>
+
+		<span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_vocab</span><span class="p">(</span><span class="n">origin_data</span><span class="p">)</span>
+
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">data_size</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">}</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
+			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert2ids</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+			<span class="n">data_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])</span>
+
+			<span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))))</span>
+			<span class="n">vocab_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+			<span class="n">oov_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)))</span>
+			<span class="n">invalid_vocab_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> \
+											<span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)))</span> <span class="o">-</span> <span class="n">oov_num</span>
+			<span class="n">sent_lens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
+			<span class="n">cut_word_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sent_lens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+			<span class="n">turn_lens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))</span>
+			<span class="n">cut_sent_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+			<span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max sentence length before cut: </span><span class="si">%d</span><span class="s2">, &quot;</span> <span class="o">+</span> \
+				   <span class="s2">&quot;cut word rate: </span><span class="si">%f</span><span class="se">\n\t</span><span class="s2">max turn length before cut: </span><span class="si">%d</span><span class="s2">, cut sentence rate: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> \
+				  <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_vocab_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_lens</span><span class="p">),</span> \
+				   <span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">)))</span>
+		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;multi_ref&#39;</span><span class="p">][</span><span class="s1">&#39;candidate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_multi_ref_data</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_vocab_set</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
+
+	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			key (str): must be contained in `key_name`</span>
+<span class="sd">			index (list): a list of specified index</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			(dict): A dict contains what is in the return of MultiTurnDialog.get_batch.</span>
+<span class="sd">				It additionally contains:</span>
+<span class="sd">				* candidates (list): A 3-d list, multiple responses for reference</span>
+<span class="sd">					Size of outermost list: batch_size</span>
+<span class="sd">					Size of second innermost list: varying num of references</span>
+<span class="sd">					Size of innermost list: varying num of words in a reference</span>
+
+<span class="sd">			See the example belows.</span>
+
+<span class="sd">		Examples:</span>
+<span class="sd">			&gt;&gt;&gt; dataloader.get_batch(&#39;train&#39;, [1])</span>
+<span class="sd">			&gt;&gt;&gt;</span>
+
+<span class="sd">		Todo:</span>
+<span class="sd">			* fix the missing example</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SwitchboardCorpus</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+		<span class="n">gather</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">sub_key</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">sub_key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">]</span>
+		<span class="k">for</span> <span class="n">sub_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">sub_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+				<span class="n">res</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">sub_key</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">res</span>
+
+	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metrics for precision and recall in terms of BLEU, cosine similarity.</span>
+
+<span class="sd">        It contains:</span>
+
+<span class="sd">        * :class:`.metric.PrecisionRecallMetric`</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            embed (:class:`numpy.array`): Glove word embedding</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">ngram</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+			<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="n">ngram</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;extrema&#39;</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">metric</span>
 </pre></div>
 
            </div>
