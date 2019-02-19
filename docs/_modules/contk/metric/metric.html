@@ -258,7 +258,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (scalar): sentence bleu score \in [0, 1]</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">([</span><span class="n">reference</span><span class="p">],</span> <span class="n">gen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">([</span><span class="n">reference</span><span class="p">],</span> <span class="n">gen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method1</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">_PrecisionRecallMetric</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating cosine similarity precision and recall</span>

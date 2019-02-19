@@ -166,24 +166,13 @@
 <div class="viewcode-block" id="SingleTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialog</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for single-turn dialog datasets. This is an abstract class.</span>
 
-<span class="sd">	Arguments:</span>
-<span class="sd">			end_token (int): the special token that stands for end. default: `3(&quot;&lt;eos&gt;&quot;)`</span>
-<span class="sd">			ext_vocab (list): special tokens. default: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]`</span>
-<span class="sd">			key_name (list): name of subsets of the data. default: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
+<span class="sd">	Arguments:{ARGUMENTS}</span>
 
-<span class="sd">	Attributes:</span>
-<span class="sd">			ext_vocab (list): special tokens, be placed at beginning of `vocab_list`.</span>
-<span class="sd">					For example: `[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]`</span>
-<span class="sd">			pad_id (int): token for padding, always equal to `0`</span>
-<span class="sd">			unk_id (int): token for unknown words, always equal to `1`</span>
-<span class="sd">			go_id (int): token at the beginning of sentences, always equal to `2`</span>
-<span class="sd">			eos_id (int): token at the end of sentences, always equal to `3`</span>
-<span class="sd">			key_name (list): name of subsets of the data. For example: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
-<span class="sd">			all_vocab_list (list): vocabulary list of the datasets.</span>
-<span class="sd">			word2id (dict): a dict mapping tokens to index.</span>
-<span class="sd">					Maybe you want to use :meth:`sen_to_index` instead.</span>
-<span class="sd">			end_token (int): token for end. default: equals to `eos_id`</span>
+<span class="sd">	Attributes:{ATTRIBUTES}</span>
 <span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">BasicLanguageGeneration</span><span class="o">.</span><span class="n">ARGUMENTS</span>
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">BasicLanguageGeneration</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
 
 <div class="viewcode-block" id="SingleTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>

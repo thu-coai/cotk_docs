@@ -178,40 +178,19 @@ your model from one dataset to other datasets.</p>
 <dt id="contk.dataloader.Dataloader">
 <em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class of Dataloader.</p>
-<dl class="classmethod">
-<dt id="contk.dataloader.Dataloader.get_all_subclasses">
-<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader.get_all_subclasses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a generator of all subclasses.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="contk.dataloader.Dataloader.load_class">
-<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader.load_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader.load_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a subclass of <cite>class_name</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>class_name</strong> (<em>str</em>) – target class name.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <div class="section" id="languagegeneration">
 <h2>LanguageGeneration<a class="headerlink" href="#languagegeneration" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="contk.dataloader.LanguageGeneration">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">LanguageGeneration</code><span class="sig-paren">(</span><em>end_token=None</em>, <em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for language generation datasets. This is an abstract class.</p>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">LanguageGeneration</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for language modelling datasets. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>end_token</strong> (<em>int</em>) – the special token that stands for end. default: <cite>3(“&lt;eos&gt;”)</cite></li>
 <li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></li>
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. default: <cite>[“train”, “dev”, “test”]</cite></li>
 </ul>
@@ -321,27 +300,13 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.LanguageGeneration.word2id">
 <code class="descname">word2id</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.word2id" title="Permalink to this definition">¶</a></dt>
-<dd><p>a dict mapping tokens to index.
+<dd><p>a dict mapping all vocab to index.
 Maybe you want to use <a class="reference internal" href="#contk.dataloader.LanguageGeneration.sen_to_index" title="contk.dataloader.LanguageGeneration.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.end_token">
-<code class="descname">end_token</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.end_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>token for end. default: equals to <cite>eos_id</cite></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
 </tr>
 </tbody>
 </table>
@@ -541,8 +506,7 @@ find first end token and abondon words after it (included the end token).</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -604,8 +568,7 @@ Default: <cite>False</cite></li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -699,14 +662,13 @@ testing stages. Default: 0 (No unknown words).</li>
 <h2>SingleTurnDialog<a class="headerlink" href="#singleturndialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="contk.dataloader.SingleTurnDialog">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>end_token=None</em>, <em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for single-turn dialog datasets. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>end_token</strong> (<em>int</em>) – the special token that stands for end. default: <cite>3(“&lt;eos&gt;”)</cite></li>
 <li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></li>
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. default: <cite>[“train”, “dev”, “test”]</cite></li>
 </ul>
@@ -802,7 +764,7 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.all_vocab_list">
 <code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>vocabulary list of the datasets.</p>
+<dd><p>vocabulary list of the datasets, including valid words and invalid words.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -816,27 +778,13 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.word2id">
 <code class="descname">word2id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.word2id" title="Permalink to this definition">¶</a></dt>
-<dd><p>a dict mapping tokens to index.
+<dd><p>a dict mapping all vocab to index.
 Maybe you want to use <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.sen_to_index" title="contk.dataloader.SingleTurnDialog.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.end_token">
-<code class="descname">end_token</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.end_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>token for end. default: equals to <cite>eos_id</cite></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
 </tr>
 </tbody>
 </table>
@@ -1042,8 +990,7 @@ find first end token and abondon words after it (included the end token).</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -1105,8 +1052,7 @@ Default: <cite>False</cite></li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -1202,15 +1148,14 @@ Movie and TV Subtitles.(LREC 2016)</p>
 <h2>MultiTurnDialog<a class="headerlink" href="#multiturndialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="contk.dataloader.MultiTurnDialog">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MultiTurnDialog</code><span class="sig-paren">(</span><em>end_token=None</em>, <em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MultiTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for multi-turn dialog datasets. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>end_token</strong> (<em>int</em>) – the special token that stands for end. default: <cite>4(“&lt;eot&gt;”)</cite></li>
-<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”, “&lt;eot&gt;”]</cite></li>
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. default: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></li>
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. default: <cite>[“train”, “dev”, “test”]</cite></li>
 </ul>
 </td>
@@ -1221,7 +1166,7 @@ Movie and TV Subtitles.(LREC 2016)</p>
 <dt id="contk.dataloader.MultiTurnDialog.ext_vocab">
 <code class="descname">ext_vocab</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p>special tokens, be placed at beginning of <cite>vocab_list</cite>.
-For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”, “&lt;eot&gt;”]</cite></p>
+For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1289,20 +1234,6 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.eot_id">
-<code class="descname">eot_id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.eot_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>token at the end of turns, always equal to <cite>4</cite></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="contk.dataloader.MultiTurnDialog.key_name">
 <code class="descname">key_name</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of subsets of the data. For example: <cite>[“train”, “dev”, “test”]</cite></p>
@@ -1319,7 +1250,7 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.MultiTurnDialog.all_vocab_list">
 <code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>vocabulary list of the datasets.</p>
+<dd><p>vocabulary list of the datasets, including valid words and invalid words.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1333,27 +1264,13 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.MultiTurnDialog.word2id">
 <code class="descname">word2id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.word2id" title="Permalink to this definition">¶</a></dt>
-<dd><p>a dict mapping tokens to index.
+<dd><p>a dict mapping all vocab to index.
 Maybe you want to use <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.sen_to_index" title="contk.dataloader.MultiTurnDialog.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.end_token">
-<code class="descname">end_token</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.end_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>token for end. default: equals to <cite>eot_id</cite></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
 </tr>
 </tbody>
 </table>
@@ -1560,8 +1477,7 @@ find first end token and abondon words after it (included the end token).</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -1577,7 +1493,7 @@ find first end token and abondon words after it (included the end token).</li>
 <dd><dl class="docutils">
 <dt>Trim indexes for multi turn dialog. There will be 3 steps:</dt>
 <dd><ul class="first last simple">
-<li>For every turn, if there is an <cite>&lt;eot&gt;</cite>,                               find first <cite>&lt;eot&gt;</cite> and abondon words after it (included the <cite>&lt;eot&gt;</cite>).</li>
+<li>For every turn, if there is an <cite>&lt;eos&gt;</cite>,                               find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
 <li>Ignore <cite>&lt;pad&gt;</cite> s at the end of every turn.</li>
 <li>When <cite>turn_length</cite> is None, discard the first empty turn and the turn after it.                               Otherwise, discard the turn according to turn_length.</li>
 </ul>
@@ -1686,8 +1602,7 @@ Default: False</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># end_token = 3 #(&#39;&lt;eos&gt;&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
