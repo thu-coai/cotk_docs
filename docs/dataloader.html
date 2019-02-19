@@ -178,6 +178,26 @@ your model from one dataset to other datasets.</p>
 <dt id="contk.dataloader.Dataloader">
 <em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class of Dataloader.</p>
+<dl class="classmethod">
+<dt id="contk.dataloader.Dataloader.get_all_subclasses">
+<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.Dataloader.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a generator of all subclasses.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="contk.dataloader.Dataloader.load_class">
+<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.Dataloader.load_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subclass of <cite>class_name</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>class_name</strong> (<em>str</em>) – target class name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <div class="section" id="languagegeneration">
