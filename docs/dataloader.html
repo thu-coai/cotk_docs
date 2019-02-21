@@ -98,6 +98,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#multiturndialog">MultiTurnDialog</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntucorpus">UbuntuCorpus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#switchboardcorpus">SwitchBoardCorpus</a></li>
 </ul>
 </li>
 </ul>
@@ -429,7 +430,7 @@ or an epoch is end.</p>
 
 <dl class="method">
 <dt id="contk.dataloader.LanguageGeneration.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -438,6 +439,8 @@ or an epoch is end.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
 <li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+<li><strong>needhash</strong> (<em>bool</em>) – whether to return a hashvalue
+representing this batch of data. Default: False.</li>
 </ul>
 </td>
 </tr>
@@ -452,6 +455,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <li>sentence_allwords(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
 Provide both valid and invalid words.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>hashvalue(bytes): (If <cite>needhash</cite> is True.) A bytes representing hash value of the data.</li>
 </ul>
 </div></blockquote>
 </p>
@@ -471,7 +475,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <span class="go">                        [2, 4, 5, 6, 3],   # first sentence: &lt;go&gt; how are you &lt;eos&gt;</span>
 <span class="go">                        [2, 7, 3, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
 <span class="go">                ],</span>
-<span class="go">                &quot;sentence_length&quot;: [5, 3], # length of sentences</span>
+<span class="go">        &quot;sentence_length&quot;: [5, 3], # length of sentences</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -486,7 +490,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.LanguageGeneration.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -907,12 +911,14 @@ or an epoch is end.</p>
 
 <dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.
 :param key: must be contained in <cite>key_name</cite>
 :type key: str
 :param index: a list of specified index
-:type index: list</p>
+:type index: list
+:param needhash: whether to return a hashvalue                          representing this batch of data. Default: False.
+:type needhash: bool</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -934,6 +940,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <li>resp_allwords (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
 Provide both valid and invalid words.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>hashvalue(bytes): (If <cite>needhash</cite> is True.) A bytes representing hash value of the data.</li>
 </ul>
 </td>
 </tr>
@@ -970,7 +977,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1393,7 +1400,7 @@ or an epoch is end.</p>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1457,7 +1464,7 @@ Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></dd>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1742,6 +1749,180 @@ testing stages. Default: 0 (No unknown words).</li>
 <dt id="contk.dataloader.UbuntuCorpus._load_data">
 <code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loading dataset, invoked by <cite>MultiTurnDialog.__init__</cite></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="switchboardcorpus">
+<h3>SwitchBoardCorpus<a class="headerlink" href="#switchboardcorpus" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="contk.dataloader.SwitchboardCorpus">
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=5</em>, <em>max_sen_length=50</em>, <em>max_turn_length=1000</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dataloder for Switchboard dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of OpenSubtitles dataset.</li>
+<li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
+less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
+<li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
+to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
+<li><strong>max_turn_length</strong> (<em>int</em>) – All sessions longer than <cite>max_turn_length</cite> will be shortened
+to first <cite>max_turn_length</cite> sentences. Default: 20.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, both in training or
+testing stages. Default: 0 (No unknown words).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Refer to <a class="reference internal" href="#contk.dataloader.MultiTurnDialog" title="contk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
+<div class="admonition-todo admonition" id="index-10">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add references</li>
+</ul>
+</div>
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus._convert2ids">
+<code class="descname">_convert2ids</code><span class="sig-paren">(</span><em>origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._convert2ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._convert2ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert topic, da, word to ids, invoked by ^SwitchboardCorpus._load_data^
+and ^SwitchboardCorpus._load_multi_ref_data^</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>origin_data</strong> (<em>dict</em>) – <p>Contains at least:</p>
+<ul class="simple">
+<li>session (list): A 3-d list, utterances in words.
+Size of the outermost list: num_data.
+Size of the second innermost list: num of utterances in a session.
+Size of the innermost list: num of words in a utterance.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Contains:<ul class="simple">
+<li>session (list): utterances in ids. Size: same as input</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dict)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus._read_file">
+<code class="descname">_read_file</code><span class="sig-paren">(</span><em>filepath</em>, <em>add_pre_turn=True</em>, <em>add_suf_turn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._read_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Reading data from file, invoked by ^SwitchboardCorpus._load_data^</dt>
+<dd>and ^SwitchboardCorpus._load_multi_ref_data^</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>*</em>) – Name of the file to read from</li>
+<li><strong>add_pre_turn</strong> (<em>*</em>) – Whether to add turn ^&lt;d&gt;^ ahead of each session</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus._build_vocab">
+<code class="descname">_build_vocab</code><span class="sig-paren">(</span><em>origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._build_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._build_vocab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Building vocabulary(words, topics, da), invoked by <cite>SwitchboardCorpus._load_data</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus._load_multi_ref_data">
+<code class="descname">_load_multi_ref_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_multi_ref_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._load_multi_ref_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading dataset, invoked by <cite>SwitchboardCorpus._load_data</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading dataset, invoked by <cite>MultiTurnDialog.__init__</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>index</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
+<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+<li><strong>needhash</strong> (<em>bool</em>) – whether to return a hashvalue
+representing this batch of data. Default: False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>A dict contains what is in the return of MultiTurnDialog.get_batch.</dt>
+<dd><p class="first">It additionally contains:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>candidates (list): A 3-d list, multiple responses for reference
+Size of outermost list: batch_size
+Size of second innermost list: varying num of references
+Size of innermost list: varying num of words in a reference</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<p>See the example belows.</p>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dict)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="index-11">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>fix the missing example</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="contk.dataloader.SwitchboardCorpus.get_precision_recall_metric">
+<code class="descname">get_precision_recall_metric</code><span class="sig-paren">(</span><em>embed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_precision_recall_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus.get_precision_recall_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metrics for precision and recall in terms of BLEU, cosine similarity.</p>
+<p>It contains:</p>
+<ul class="simple">
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PrecisionRecallMetric</span></code></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>embed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Glove word embedding</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

@@ -161,6 +161,8 @@
 <span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">corpus_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
 <span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">sentence_bleu</span>
 
+<span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
+
 <div class="viewcode-block" id="MetricBase"><a class="viewcode-back" href="../../../metric.html#contk.metric.MetricBase">[docs]</a><span class="k">class</span> <span class="nc">MetricBase</span><span class="p">:</span>
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
@@ -726,6 +728,34 @@
 <span class="sd">			* **gen**: a list of generated sentences.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">}</span></div></div>
+
+<span class="k">class</span> <span class="nc">HashValueRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;A metric-like class for recording hash value metric.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hash_key</span><span class="o">=</span><span class="s2">&quot;hashvalue&quot;</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_key</span> <span class="o">=</span> <span class="n">hash_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span> <span class="o">=</span> <span class="kc">None</span>
+
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains hashvalue.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="s2">&quot;hashvalue&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span> <span class="o">=</span> <span class="n">UnorderedSha256</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_hash</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;hashvalue&quot;</span><span class="p">])</span>
+
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains the items which all the</span>
+<span class="sd">			meric components returned.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash_key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()}</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="MetricChain"><a class="viewcode-back" href="../../../metric.html#contk.metric.MetricChain">[docs]</a><span class="k">class</span> <span class="nc">MetricChain</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A metric-like class for stacked metric. You can use this class</span>
