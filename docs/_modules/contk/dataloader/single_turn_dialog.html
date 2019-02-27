@@ -161,7 +161,7 @@
 
 <span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
-<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerlplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span><span class="p">,</span> \
+<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span><span class="p">,</span> \
 			<span class="n">HashValueRecorder</span>
 
 <span class="c1"># pylint: disable=W0223</span>
@@ -192,16 +192,16 @@
 <span class="sd">			* post (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
 <span class="sd">			  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
 <span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			* post_allwords (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  Provide both valid and invalid words.</span>
+<span class="sd">			* post_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
+<span class="sd">			  Provide both valid and invalid vocabs.</span>
 <span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
 <span class="sd">			* resp_length (list): A 1-d list, the length of response in each batch.</span>
 <span class="sd">			  Size: `[batch_size]`</span>
 <span class="sd">			* resp (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">			  Only provide valid vocabs. `unk_id` will be used if a word is not valid.</span>
 <span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			* resp_allwords (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  Provide both valid and invalid words.</span>
+<span class="sd">			* resp_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
+<span class="sd">			  Provide both valid and invalid vocabs.</span>
 <span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
 <span class="sd">			* hashvalue(bytes): (If `needhash` is True.) A bytes representing hash value of the data.</span>
 
@@ -249,25 +249,25 @@
 					<span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
 			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;hashvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unordered_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
 
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_allwords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_post</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_allwords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_resp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_post</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_resp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="n">res_post</span><span class="p">[</span><span class="n">res_post</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="n">res_resp</span><span class="p">[</span><span class="n">res_resp</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
 
 <span class="sd">		It contains:</span>
 
-<span class="sd">		* :class:`.metric.PerlplexityMetric`</span>
+<span class="sd">		* :class:`.metric.PerplexityMetric`</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerlplexityMetric`</span>
+<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">HashValueRecorder</span><span class="p">(</span><span class="n">hash_key</span><span class="o">=</span><span class="s2">&quot;teacher_forcing_hashvalue&quot;</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerlplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="n">gen_prob_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
 <div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
@@ -299,7 +299,7 @@
 <span class="sd">			to first `max_sen_length` tokens. Default: 50.</span>
 <span class="sd">		invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
 <span class="sd">			not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
-<span class="sd">			marked as invalid words. Otherwise, they are unknown words, both in training or</span>
+<span class="sd">			marked as invalid vocabs. Otherwise, they are unknown words, both in training or</span>
 <span class="sd">			testing stages. Default: 0 (No unknown words).</span>
 
 <span class="sd">	Refer to :class:`.SingleTurnDialog` for attributes and methods.</span>

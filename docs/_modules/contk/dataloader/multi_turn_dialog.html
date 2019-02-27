@@ -204,8 +204,8 @@
 <span class="sd">				* sent(:class:`numpy.array`): A 3-d padding array containing id of words.</span>
 <span class="sd">					Only provide valid words. `unk_id` will be used if a word is not valid.</span>
 <span class="sd">					Size: `[batch_size, max(turn_length[i]), max(sent_length)]`</span>
-<span class="sd">				* sent_allwords(:class:`numpy.array`): A 3-d padding array containing id of words.</span>
-<span class="sd">					Provide both valid and invalid words.</span>
+<span class="sd">				* sent_allvocabs(:class:`numpy.array`): A 3-d padding array containing id of words.</span>
+<span class="sd">					Provide both valid and invalid vocabs.</span>
 <span class="sd">					Size: `[batch_size, max(turn_length[i]), max(sent_length)]`</span>
 
 <span class="sd">			See the example belows.</span>
@@ -238,7 +238,7 @@
 			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;hashvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unordered_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
 			<span class="c1"># hashvalue must be unique for representing the whole batch</span>
 
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_allwords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_sent</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_sent</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
@@ -266,10 +266,10 @@
 			<span class="k">if</span> <span class="n">turn_length</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">turn_length</span><span class="p">:</span>
 				<span class="k">break</span>
 			<span class="n">turn_trim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">turn_index</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">turn_length</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">turn_trim</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">turn_trim</span> <span class="ow">and</span> <span class="n">ignore_first_token</span><span class="p">:</span>
+				<span class="n">turn_trim</span> <span class="o">=</span> <span class="n">turn_trim</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+			<span class="k">if</span> <span class="n">turn_length</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">turn_trim</span><span class="p">):</span>
 				<span class="k">break</span>
-			<span class="k">elif</span> <span class="n">ignore_first_token</span><span class="p">:</span>
-				<span class="n">turn_trim</span> <span class="o">=</span> <span class="n">turn_index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 			<span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">turn_trim</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
@@ -278,9 +278,9 @@
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			sen (list): a 2-d list of str, representing each token of the session.</span>
-<span class="sd">			invalid_vocab (bool): whether to provide invalid words.</span>
-<span class="sd">					If ``False``, invalid words will be trasfered to `unk_id`.</span>
-<span class="sd">					If ``True``, invalid words will using their own id.</span>
+<span class="sd">			invalid_vocab (bool): whether to provide invalid vocabs.</span>
+<span class="sd">					If ``False``, invalid vocabs will be trasfered to `unk_id`.</span>
+<span class="sd">					If ``True``, invalid vocabs will using their own id.</span>
 <span class="sd">					Default: False</span>
 
 <span class="sd">		Examples:</span>
@@ -321,7 +321,7 @@
 			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">sent</span><span class="p">)),</span> \
 			<span class="n">index</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_prob&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
 
 <span class="sd">		It contains:</span>
@@ -329,11 +329,11 @@
 <span class="sd">		* :class:`.metric.MultiTurnPerplexityMetric`</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerlplexityMetric`</span>
+<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">HashValueRecorder</span><span class="p">(</span><span class="n">hash_key</span><span class="o">=</span><span class="s2">&quot;teacher_forcing_hashvalue&quot;</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_prob_key</span><span class="o">=</span><span class="n">gen_prob_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
 <div class="viewcode-block" id="MultiTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
@@ -355,6 +355,7 @@
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 
 <div class="viewcode-block" id="UbuntuCorpus"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.UbuntuCorpus">[docs]</a><span class="k">class</span> <span class="nc">UbuntuCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
+
 	<span class="sd">&#39;&#39;&#39;A dataloder for Ubuntu dataset.</span>
 
 <span class="sd">	Arguments:{ARGUMENTS}</span>
@@ -655,9 +656,9 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
 		<span class="k">for</span> <span class="n">ngram</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-			<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="n">ngram</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;extrema&#39;</span><span class="p">))</span>
+			<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ngram</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;extrema&#39;</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 </pre></div>
 

@@ -184,7 +184,8 @@
 <span class="s2">			go_id (int): token at the beginning of sentences, always equal to `2`</span>
 <span class="s2">			eos_id (int): token at the end of sentences, always equal to `3`</span>
 <span class="s2">			key_name (list): name of subsets of the data. For example: `[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]`</span>
-<span class="s2">			all_vocab_list (list): vocabulary list of the datasets, including valid words and invalid words.</span>
+<span class="s2">			all_vocab_list (list): vocabulary list of the datasets,</span>
+<span class="s2">					including valid vocabs and invalid vocabs.</span>
 <span class="s2">			word2id (dict): a dict mapping all vocab to index.</span>
 <span class="s2">					Maybe you want to use :meth:`sen_to_index` instead.</span>
 <span class="s2">	&quot;&quot;&quot;</span>
@@ -231,10 +232,10 @@
 <span class="sd">			(tuple): tuple containing:</span>
 
 <span class="sd">			* all_vocab_list (list): vocabulary list of the datasets,</span>
-<span class="sd">			  including valid and invalid words</span>
+<span class="sd">			  including valid and invalid vocabs</span>
 <span class="sd">			* valid_vocab_len (int): the number of valid vocab.</span>
-<span class="sd">			  ``vocab_list[:valid_vocab_len]`` will be regarded as valid words,</span>
-<span class="sd">			  while ``vocab_list[valid_vocab_len:]`` regarded as invalid words</span>
+<span class="sd">			  ``vocab_list[:valid_vocab_len]`` will be regarded as valid vocabs,</span>
+<span class="sd">			  while ``vocab_list[valid_vocab_len:]`` regarded as invalid vocabs</span>
 <span class="sd">			* data (dict): a dict contains data.</span>
 <span class="sd">			* data_size (dict): a dict contains size of each item in data.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
@@ -330,9 +331,9 @@
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			sen (list): a list of str, representing each token of the sentences.</span>
-<span class="sd">			invalid_vocab (bool): whether to provide invalid words.</span>
-<span class="sd">					If ``False``, invalid words will be replaced by `unk_id`.</span>
-<span class="sd">					If ``True``, invalid words will using their own id.</span>
+<span class="sd">			invalid_vocab (bool): whether to provide invalid vocabs.</span>
+<span class="sd">					If ``False``, invalid vocabs will be replaced by `unk_id`.</span>
+<span class="sd">					If ``True``, invalid vocabs will using their own id.</span>
 <span class="sd">					Default: `False`</span>
 
 <span class="sd">		Examples:</span>

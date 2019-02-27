@@ -307,7 +307,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.LanguageGeneration.all_vocab_list">
 <code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.all_vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>vocabulary list of the datasets, including valid words and invalid words.</p>
+<dd><p>vocabulary list of the datasets,
+including valid vocabs and invalid vocabs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -386,10 +387,10 @@ Read only.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
 <li>all_vocab_list (list): vocabulary list of the datasets,
-including valid and invalid words</li>
+including valid and invalid vocabs</li>
 <li>valid_vocab_len (int): the number of valid vocab.
-<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid words,
-while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid words</li>
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs</li>
 <li>data (dict): a dict contains data.</li>
 <li>data_size (dict): a dict contains size of each item in data.</li>
 </ul>
@@ -447,12 +448,12 @@ representing this batch of data. Default: False.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>A dict at least contains:</p>
 <blockquote>
 <div><ul class="simple">
-<li>sentence_length(list): A 1-d list, the length of sentence in each batch.
+<li>sent_length(list): A 1-d list, the length of sentence in each batch.
 Size: <cite>[batch_size]</cite></li>
-<li>sentence(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
+<li>sent(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
 Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
-<li>sentence_allwords(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
+<li>sent_allvocabs(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
 Provide both valid and invalid words.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <li>hashvalue(bytes): (If <cite>needhash</cite> is True.) A bytes representing hash value of the data.</li>
@@ -471,11 +472,11 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="go">{</span>
-<span class="go">        &quot;sentence&quot;: [</span>
+<span class="go">        &quot;sent&quot;: [</span>
 <span class="go">                        [2, 4, 5, 6, 3],   # first sentence: &lt;go&gt; how are you &lt;eos&gt;</span>
 <span class="go">                        [2, 7, 3, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
 <span class="go">                ],</span>
-<span class="go">        &quot;sentence_length&quot;: [5, 3], # length of sentences</span>
+<span class="go">        &quot;sent_length&quot;: [5, 3], # length of sentences</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -550,9 +551,9 @@ find first end token and abondon words after it (included the end token).</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
-If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be replaced by <cite>unk_id</cite>.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
 Default: <cite>False</cite></li>
 </ul>
 </td>
@@ -606,17 +607,17 @@ Default: <cite>False</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.LanguageGeneration.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_prob_key='gen_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for teacher-forcing mode.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -788,7 +789,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.SingleTurnDialog.all_vocab_list">
 <code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>vocabulary list of the datasets, including valid words and invalid words.</p>
+<dd><p>vocabulary list of the datasets,
+including valid vocabs and invalid vocabs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -867,10 +869,10 @@ Read only.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
 <li>all_vocab_list (list): vocabulary list of the datasets,
-including valid and invalid words</li>
+including valid and invalid vocabs</li>
 <li>valid_vocab_len (int): the number of valid vocab.
-<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid words,
-while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid words</li>
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs</li>
 <li>data (dict): a dict contains data.</li>
 <li>data_size (dict): a dict contains size of each item in data.</li>
 </ul>
@@ -929,16 +931,16 @@ Size: <cite>[batch_size]</cite></li>
 <li>post (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
 Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
-<li>post_allwords (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
-Provide both valid and invalid words.
+<li>post_allvocabs (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
+Provide both valid and invalid vocabs.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <li>resp_length (list): A 1-d list, the length of response in each batch.
 Size: <cite>[batch_size]</cite></li>
 <li>resp (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
-Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Only provide valid vocabs. <cite>unk_id</cite> will be used if a word is not valid.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
-<li>resp_allwords (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
-Provide both valid and invalid words.
+<li>resp_allvocabs (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
+Provide both valid and invalid vocabs.
 Size: <cite>[batch_size, max(sent_length)]</cite></li>
 <li>hashvalue(bytes): (If <cite>needhash</cite> is True.) A bytes representing hash value of the data.</li>
 </ul>
@@ -1037,9 +1039,9 @@ find first end token and abondon words after it (included the end token).</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
-If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be replaced by <cite>unk_id</cite>.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
 Default: <cite>False</cite></li>
 </ul>
 </td>
@@ -1093,17 +1095,17 @@ Default: <cite>False</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_prob_key='gen_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for teacher-forcing mode.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1149,7 +1151,7 @@ less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;
 to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
 <li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
 not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
-marked as invalid words. Otherwise, they are unknown words, both in training or
+marked as invalid vocabs. Otherwise, they are unknown words, both in training or
 testing stages. Default: 0 (No unknown words).</li>
 </ul>
 </td>
@@ -1277,7 +1279,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 <dl class="attribute">
 <dt id="contk.dataloader.MultiTurnDialog.all_vocab_list">
 <code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>vocabulary list of the datasets, including valid words and invalid words.</p>
+<dd><p>vocabulary list of the datasets,
+including valid vocabs and invalid vocabs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1356,10 +1359,10 @@ Read only.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple containing:<ul class="simple">
 <li>all_vocab_list (list): vocabulary list of the datasets,
-including valid and invalid words</li>
+including valid and invalid vocabs</li>
 <li>valid_vocab_len (int): the number of valid vocab.
-<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid words,
-while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid words</li>
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs</li>
 <li>data (dict): a dict contains data.</li>
 <li>data_size (dict): a dict contains size of each item in data.</li>
 </ul>
@@ -1433,8 +1436,8 @@ Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>sent_allwords(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 3-d padding array containing id of words.</dt>
-<dd>Provide both valid and invalid words.
+<dt>sent_allvocabs(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 3-d padding array containing id of words.</dt>
+<dd>Provide both valid and invalid vocabs.
 Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></dd>
 </dl>
 </li>
@@ -1559,9 +1562,9 @@ Size: <cite>[turn_length, max_sent_length]</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sen</strong> (<em>list</em>) – a list of str, representing each token of the sentences.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
-If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be replaced by <cite>unk_id</cite>.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
 Default: <cite>False</cite></li>
 </ul>
 </td>
@@ -1594,9 +1597,9 @@ Default: <cite>False</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sen</strong> (<em>list</em>) – a 2-d list of str, representing each token of the session.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid words.
-If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid words will be trasfered to <cite>unk_id</cite>.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid words will using their own id.
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be trasfered to <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
 Default: False</li>
 </ul>
 </td>
@@ -1673,7 +1676,7 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 
 <dl class="method">
 <dt id="contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_prob_key='gen_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for teacher-forcing mode.</p>
 <p>It contains:</p>
 <ul class="simple">
@@ -1683,7 +1686,7 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerlplexityMetric" title="contk.metric.PerlplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerlplexityMetric</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
