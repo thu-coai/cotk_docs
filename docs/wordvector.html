@@ -186,7 +186,7 @@ loading wordvector automatically.</p>
 
 <dl class="class">
 <dt id="contk.wordvector.Glove">
-<em class="property">class </em><code class="descclassname">contk.wordvector.</code><code class="descname">Glove</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/wordvector/gloves.html#Glove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.wordvector.Glove" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.wordvector.</code><code class="descname">Glove</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='Glove300d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/wordvector/gloves.html#Glove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.wordvector.Glove" title="Permalink to this definition">¶</a></dt>
 <dd><p>GloVe is pre-trained word vectors from
 Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014.
 GloVe: Global Vectors for Word Representation.</p>
@@ -194,7 +194,11 @@ GloVe: Global Vectors for Word Representation.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of GloVe word vectors.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_id</strong> (<em>str</em>) – a str indicates the source of GloVe word vectors.</li>
+<li><strong>file_type</strong> (<em>str</em>) – a str indicates the type of GloVe word vectors. Default: Glove300d</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

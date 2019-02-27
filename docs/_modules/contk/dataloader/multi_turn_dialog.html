@@ -162,6 +162,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
+<span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
 	<span class="n">MultiTurnDialogRecorder</span><span class="p">,</span> <span class="n">HashValueRecorder</span>
@@ -358,7 +359,10 @@
 
 	<span class="sd">&#39;&#39;&#39;A dataloder for Ubuntu dataset.</span>
 
-<span class="sd">	Arguments:{ARGUMENTS}</span>
+<span class="sd">	Arguments:</span>
+<span class="sd">		file_id (str): a str indicates the source of UbuntuCorpus dataset.</span>
+<span class="sd">		file_type (str): a str indicates the type of UbuntuCorpus dataset. Default: &quot;Ubuntu&quot;</span>
+<span class="sd">		{ARGUMENTS}</span>
 
 <span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes and methods.</span>
 
@@ -367,7 +371,6 @@
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">			file_path (str): a str indicates the dir of OpenSubtitles dataset.</span>
 <span class="s1">			min_vocab_times (int): A cut-off threshold of `UNK` tokens. All tokens appear</span>
 <span class="s1">				less than `min_vocab_times`	will be replaced by `&lt;unk&gt;`. Default: 10.</span>
 <span class="s1">			max_sen_length (int): All sentences longer than `max_sen_length` will be shortened</span>
@@ -380,9 +383,11 @@
 <span class="s1">				testing stages. Default: 0 (No unknown words).</span>
 <span class="s1">	&#39;&#39;&#39;</span>
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">max_turn_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> \
-			<span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;Ubuntu&quot;</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
+			<span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">max_turn_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">file_type</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="n">file_type</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span> <span class="o">=</span> <span class="n">max_turn_length</span>
@@ -461,7 +466,9 @@
 <div class="viewcode-block" id="SwitchboardCorpus"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloder for Switchboard dataset.</span>
 
-<span class="sd">	Arguments: {ARGUMENTS}</span>
+<span class="sd">	Arguments:</span>
+<span class="sd">		file_id (str): a str indicates the source of SwitchboardCorpus dataset.</span>
+<span class="sd">		{ARGUMENTS}</span>
 
 <span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes and methods.</span>
 

@@ -160,6 +160,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
+<span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span><span class="p">,</span> \
 			<span class="n">HashValueRecorder</span>
@@ -292,7 +293,8 @@
 	<span class="sd">&#39;&#39;&#39;A dataloder for OpenSubtitles dataset.</span>
 
 <span class="sd">	Arguments:</span>
-<span class="sd">		file_path (str): a str indicates the dir of OpenSubtitles dataset.</span>
+<span class="sd">		file_id (str): a str indicates the source of OpenSubtitles dataset.</span>
+<span class="sd">		file_type (str): a str indicates the type of OpenSubtitles dataset. Default: &quot;OpenSubtitles&quot;</span>
 <span class="sd">		min_vocab_times (int): A cut-off threshold of `UNK` tokens. All tokens appear</span>
 <span class="sd">			less than `min_vocab_times`	will be replaced by `&lt;unk&gt;`. Default: 10.</span>
 <span class="sd">		max_sen_length (int): All sentences longer than `max_sen_length` will be shortened</span>
@@ -310,8 +312,11 @@
 <span class="sd">		[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from</span>
 <span class="sd">		Movie and TV Subtitles.(LREC 2016)</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;OpenSubtitles&quot;</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
+			<span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">file_type</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="n">file_type</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>

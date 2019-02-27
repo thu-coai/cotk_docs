@@ -647,14 +647,15 @@ Default: <cite>False</cite></li>
 <h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="contk.dataloader.MSCOCO">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for preprocessed MSCOCO dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of MSCOCO dataset.</li>
+<li><strong>file_id</strong> (<em>str</em>) – a str indicates the source of MSCOCO dataset.</li>
+<li><strong>file_type</strong> (<em>str</em>) – a str indicates the type of MSCOCO dataset. Default: “MSCOCO”</li>
 <li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
 not less than <cite>min_vocab_times</cite> in <strong>training set</strong> will be marked as valid words.
 Default: 10.</li>
@@ -1137,14 +1138,15 @@ Default: <cite>False</cite></li>
 <h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="contk.dataloader.OpenSubtitles">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of OpenSubtitles dataset.</li>
+<li><strong>file_id</strong> (<em>str</em>) – a str indicates the source of OpenSubtitles dataset.</li>
+<li><strong>file_type</strong> (<em>str</em>) – a str indicates the type of OpenSubtitles dataset. Default: “OpenSubtitles”</li>
 <li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
 less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
 <li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
@@ -1718,24 +1720,28 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 <h3>UbuntuCorpus<a class="headerlink" href="#ubuntucorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="contk.dataloader.UbuntuCorpus">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='Ubuntu'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for Ubuntu dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of OpenSubtitles dataset.</li>
-<li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
-less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
-<li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
-to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
-<li><strong>max_turn_length</strong> (<em>int</em>) – All sessions longer than <cite>max_turn_length</cite> will be shortened
-to first <cite>max_turn_length</cite> sentences. Default: 20.</li>
-<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
-not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+<li><strong>file_id</strong> (<em>str</em>) – a str indicates the source of UbuntuCorpus dataset.</li>
+<li><strong>file_type</strong> (<em>str</em>) – <p>a str indicates the type of UbuntuCorpus dataset. Default: “Ubuntu”</p>
+<dl class="docutils">
+<dt>min_vocab_times (int): A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear</dt>
+<dd>less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</dd>
+<dt>max_sen_length (int): All sentences longer than <cite>max_sen_length</cite> will be shortened</dt>
+<dd>to first <cite>max_sen_length</cite> tokens. Default: 50.</dd>
+<dt>max_turn_length (int): All sessions longer than <cite>max_turn_length</cite> will be shortened</dt>
+<dd>to first <cite>max_turn_length</cite> sentences. Default: 20.</dd>
+<dt>invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</dt>
+<dd>not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
 marked as invalid words. Otherwise, they are unknown words, both in training or
-testing stages. Default: 0 (No unknown words).</li>
+testing stages. Default: 0 (No unknown words).</dd>
+</dl>
+</li>
 </ul>
 </td>
 </tr>
@@ -1767,19 +1773,19 @@ testing stages. Default: 0 (No unknown words).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_path</strong> (<em>str</em>) – a str indicates the dir of OpenSubtitles dataset.</li>
-<li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
-less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
-<li><strong>max_sen_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sen_length</cite> will be shortened
-to first <cite>max_sen_length</cite> tokens. Default: 50.</li>
-<li><strong>max_turn_length</strong> (<em>int</em>) – All sessions longer than <cite>max_turn_length</cite> will be shortened
-to first <cite>max_turn_length</cite> sentences. Default: 20.</li>
-<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
-not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_id</strong> (<em>str</em>) – <p>a str indicates the source of SwitchboardCorpus dataset.</p>
+<dl class="docutils">
+<dt>min_vocab_times (int): A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear</dt>
+<dd>less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</dd>
+<dt>max_sen_length (int): All sentences longer than <cite>max_sen_length</cite> will be shortened</dt>
+<dd>to first <cite>max_sen_length</cite> tokens. Default: 50.</dd>
+<dt>max_turn_length (int): All sessions longer than <cite>max_turn_length</cite> will be shortened</dt>
+<dd>to first <cite>max_turn_length</cite> sentences. Default: 20.</dd>
+<dt>invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</dt>
+<dd>not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
 marked as invalid words. Otherwise, they are unknown words, both in training or
-testing stages. Default: 0 (No unknown words).</li>
-</ul>
+testing stages. Default: 0 (No unknown words).</dd>
+</dl>
 </td>
 </tr>
 </tbody>
