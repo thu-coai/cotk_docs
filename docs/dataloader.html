@@ -625,7 +625,7 @@ Default: <cite>False</cite></li>
 
 <dl class="method">
 <dt id="contk.dataloader.LanguageGeneration.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em>, <em>sample=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for inference.</p>
 <p>It contains:</p>
 <ul class="simple">
@@ -635,7 +635,11 @@ Default: <cite>False</cite></li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.LanguageGenerationRecorder" title="contk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.LanguageGenerationRecorder" title="contk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></li>
+<li><strong>sample</strong> (<em>int</em>) – default: 1000. Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
