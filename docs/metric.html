@@ -172,7 +172,7 @@ a fair metric for every model.</p>
 <dl class="class">
 <dt id="contk.metric.PerplexityMetric">
 <em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='resp_allvocabs'</em>, <em>reference_len_key='resp_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metric for calcualting perplexity.</p>
+<dd><p>Metric for calculating perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -215,7 +215,7 @@ with all vocabs. Contains start token (eg: <code class="docutils literal notrans
 Size: <cite>[batch_size, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>reference_len_key</strong><strong>]</strong> (<em>list</em>) – Length of Reference sentences. Contains start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>)
 and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <cite>[batch_size]</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>gen_log_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Setence generations model outputs of
+<li><strong>data</strong><strong>[</strong><strong>gen_log_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Sentence generations model outputs of
 <strong>log softmax</strong> probability. Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token
 (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>). The 2nd dimension can be jagged.
 Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite> for <code class="docutils literal notranslate"><span class="pre">invalid_vocab</span> <span class="pre">=</span> <span class="pre">False</span></code>.
@@ -246,7 +246,7 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite> for <code class
 <dl class="class">
 <dt id="contk.metric.MultiTurnPerplexityMetric">
 <em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='sent_allvocabs'</em>, <em>reference_len_key='sent_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metric for calcualting multi-turn perplexity.</p>
+<dd><p>Metric for calculating multi-turn perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -287,7 +287,7 @@ Size: <cite>[batch_size, max_turn_length, max_sentence_length]</cite></li>
 start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). It must NOT be padded,
 which means the inner lists may have different length.
 Length of outer list: <cite>batch_size</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>gen_log_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Setence generations model outputs of
+<li><strong>data</strong><strong>[</strong><strong>gen_log_prob_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Sentence generations model outputs of
 <strong>log softmax</strong> probability. Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token
 (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>). The 2nd / 3rd dimension can be jagged or padded.
 Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite>.</li>
@@ -317,7 +317,7 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite
 <dl class="class">
 <dt id="contk.metric.BleuCorpusMetric">
 <em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metric for calcualting BLEU.</p>
+<dd><p>Metric for calculating BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -347,7 +347,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 <li><strong>data</strong><strong>[</strong><strong>reference_allvocabs_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – reference_allvocabs sentences.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <cite>[batch_size, max_sentence_length]</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Sentences generated by model.
 Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </ul>
@@ -371,7 +371,7 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 <dl class="class">
 <dt id="contk.metric.MultiTurnBleuCorpusMetric">
 <em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='reference_allvocabs'</em>, <em>gen_key='gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metric for calcualting multi-turn BLEU.</p>
+<dd><p>Metric for calculating multi-turn BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -404,7 +404,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">reference_
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <cite>[batch_size, max_turn_length, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – 3-d array of int.
-Setences generated by model.
+Sentences generated by model.
 Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 The 2nd / 3rd dimension can be jagged.
 Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
@@ -470,7 +470,7 @@ Size: <cite>[batch_size, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>resp_allvocabs_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog responses with all vocabs.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <cite>[batch_size, max_sentence_length]</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Sentences generated by model.
 Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>)`, but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </ul>
@@ -534,7 +534,7 @@ Size: <cite>[batch_size, _turn_length, max_sentence_length]</cite></li>
 <li><strong>data</strong><strong>[</strong><strong>reference_allvocabs_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Dialog responses with all vocabs. A 3-d padded array containing id of words.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <cite>[batch_size, max_turn_length, max_sentence_length]</cite></li>
-<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Sentences generated by model.
 A 3-d padded array containing id of words.
 Contains  end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <cite>[batch_size, max_turn_length, gen_sentence_length]</cite>.</li>
@@ -587,7 +587,7 @@ Size: <cite>[batch_size]</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys.</li>
-<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Setences generated by model.
+<li><strong>data</strong><strong>[</strong><strong>gen_key</strong><strong>]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code> of <cite>int</cite>) – Sentences generated by model.
 Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </ul>
@@ -652,7 +652,7 @@ metric components need.</td>
 <dt id="contk.metric.MetricChain.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains the items which all the
-meric components returned.</p>
+metric components returned.</p>
 </dd></dl>
 
 </dd></dl>
