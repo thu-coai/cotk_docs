@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Metric &mdash; contk  documentation</title>
+  <title>Metric &mdash; cotk  documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> contk
+            <a href="index.html" class="icon icon-home"> cotk
           
 
           
@@ -107,7 +107,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">contk</a>
+          <a href="index.html">cotk</a>
         
       </nav>
 
@@ -157,35 +157,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-contk.metric">
-<span id="metric"></span><h1>Metric<a class="headerlink" href="#module-contk.metric" title="Permalink to this headline">¶</a></h1>
-<p><cite>contk.metrics</cite> provides functions evaluating results of models. It provides
+  <div class="section" id="module-cotk.metric">
+<span id="metric"></span><h1>Metric<a class="headerlink" href="#module-cotk.metric" title="Permalink to this headline">¶</a></h1>
+<p><cite>cotk.metrics</cite> provides functions evaluating results of models. It provides
 a fair metric for every model.</p>
 <dl class="class">
-<dt id="contk.metric.MetricBase">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MetricBase</code><a class="reference internal" href="_modules/contk/metric/metric.html#MetricBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricBase" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MetricBase">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MetricBase</code><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for metrics.</p>
 </dd></dl>
 
 <div class="section" id="metric-class">
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="contk.metric.PerplexityMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='resp_allvocabs'</em>, <em>reference_len_key='resp_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.PerplexityMetric">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='resp_allvocabs'</em>, <em>reference_len_key='resp_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs
-are passed to <a class="reference internal" href="#contk.metric.PerplexityMetric.forward" title="contk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
+are passed to <a class="reference internal" href="#cotk.metric.PerplexityMetric.forward" title="cotk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp_allvocabs</span></code>.</li>
-<li><strong>reference_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#contk.metric.PerplexityMetric.forward" title="contk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
+<li><strong>reference_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#cotk.metric.PerplexityMetric.forward" title="cotk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
 by <code class="docutils literal notranslate"><span class="pre">data[reference_len_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">resp_length</span></code>.</li>
 <li><strong>gen_log_prob_key</strong> (<em>str</em>) – Sentence generations model outputs of <strong>log softmax</strong> probability
-are passed to <a class="reference internal" href="#contk.metric.PerplexityMetric.forward" title="contk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[gen_log_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</li>
+are passed to <a class="reference internal" href="#cotk.metric.PerplexityMetric.forward" title="cotk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[gen_log_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</li>
 <li><strong>invalid_vocab</strong> (<em>bool</em>) – whether gen_log_prob contains invalid vocab. Default: False</li>
 <li><strong>full_check</strong> (<em>bool</em>) – whether perform full checks on <cite>gen_log_prob</cite> to make sure the sum
 of probability is 1. Otherwise, a random check will be performed for efficiency.
@@ -196,8 +196,8 @@ Default: False</li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.PerplexityMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.PerplexityMetric.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data. Smoothing will be performed for invalid vocabs.
 Unknowns vocabs will be ignored.</p>
 <div class="admonition-todo admonition" id="index-0">
@@ -233,8 +233,8 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite> for <code class
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.PerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#PerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.PerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.PerplexityMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>perplexity</strong>: perplexity value</li>
@@ -244,22 +244,22 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite> for <code class
 </dd></dl>
 
 <dl class="class">
-<dt id="contk.metric.MultiTurnPerplexityMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='sent_allvocabs'</em>, <em>reference_len_key='sent_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnPerplexityMetric">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='sent_allvocabs'</em>, <em>reference_len_key='sent_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs
-are passed to <a class="reference internal" href="#contk.metric.MultiTurnPerplexityMetric.forward" title="contk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
+are passed to <a class="reference internal" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="cotk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code>.</li>
-<li><strong>reference_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#contk.metric.MultiTurnPerplexityMetric.forward" title="contk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
+<li><strong>reference_len_key</strong> (<em>str</em>) – Length of reference sentences are passed to <a class="reference internal" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="cotk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
 by <code class="docutils literal notranslate"><span class="pre">data[reference_len_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">sent_length</span></code>.</li>
 <li><strong>gen_log_prob_key</strong> (<em>str</em>) – Sentence generations model outputs of <strong>log softmax</strong> probability
-are passed to <a class="reference internal" href="#contk.metric.MultiTurnPerplexityMetric.forward" title="contk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[gen_log_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</li>
+are passed to <a class="reference internal" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="cotk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[gen_log_prob_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</li>
 <li><strong>invalid_vocab</strong> (<em>bool</em>) – whether gen_log_prob contains invalid vocab. Default: False</li>
 <li><strong>full_check</strong> (<em>bool</em>) – whether perform full checks on <cite>gen_log_prob</cite> to make sure the sum
 of probability is 1. Otherwise, a random check will be performed for efficiency.
@@ -270,8 +270,8 @@ Default: False</li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.MultiTurnPerplexityMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnPerplexityMetric.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnPerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -304,8 +304,8 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.MultiTurnPerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnPerplexityMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>perplexity</strong>: perplexity value</li>
@@ -315,15 +315,15 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite
 </dd></dl>
 
 <dl class="class">
-<dt id="contk.metric.BleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.BleuCorpusMetric">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs
 are passed to :func:.forward by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
@@ -335,8 +335,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.BleuCorpusMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.BleuCorpusMetric.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -358,8 +358,8 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.BleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.BleuCorpusMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>bleu</strong>: bleu value.</li>
@@ -369,17 +369,17 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </dd></dl>
 
 <dl class="class">
-<dt id="contk.metric.MultiTurnBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='reference_allvocabs'</em>, <em>gen_key='gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnBleuCorpusMetric">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='reference_allvocabs'</em>, <em>gen_key='gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs are passed to
-<a class="reference internal" href="#contk.metric.MultiTurnBleuCorpusMetric.forward" title="contk.metric.MultiTurnBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
+<a class="reference internal" href="#cotk.metric.MultiTurnBleuCorpusMetric.forward" title="cotk.metric.MultiTurnBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">reference_allvocabs</span></code>.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to :func:.forward by
 <code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
@@ -391,8 +391,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">reference_
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.MultiTurnBleuCorpusMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnBleuCorpusMetric.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -418,8 +418,8 @@ Size: <cite>[batch_size]</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.MultiTurnBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnBleuCorpusMetric.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>bleu</strong>: bleu value.</li>
@@ -432,22 +432,22 @@ Size: <cite>[batch_size]</cite></li>
 <div class="section" id="metric-like-class">
 <h2>Metric-like class<a class="headerlink" href="#metric-like-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="contk.metric.SingleTurnDialogRecorder">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">SingleTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>post_allvocabs_key='post_allvocabs'</em>, <em>resp_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.SingleTurnDialogRecorder">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SingleTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>post_allvocabs_key='post_allvocabs'</em>, <em>resp_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SingleTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recording generated sentences and references.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
-<li><strong>post_allvocabs_key</strong> (<em>str</em>) – Dialog post are passed to <a class="reference internal" href="#contk.metric.SingleTurnDialogRecorder.forward" title="contk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>post_allvocabs_key</strong> (<em>str</em>) – Dialog post are passed to <a class="reference internal" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="cotk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
 by <code class="docutils literal notranslate"><span class="pre">data[post_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">post</span></code>.</li>
-<li><strong>resp_allvocabs_key</strong> (<em>str</em>) – Dialog responses are passed to <a class="reference internal" href="#contk.metric.SingleTurnDialogRecorder.forward" title="contk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
+<li><strong>resp_allvocabs_key</strong> (<em>str</em>) – Dialog responses are passed to <a class="reference internal" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="cotk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
 by <code class="docutils literal notranslate"><span class="pre">data[resp_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
-<li><strong>gen_key</strong> (<em>str</em>) – Sentence generated by model are passed to <a class="reference internal" href="#contk.metric.SingleTurnDialogRecorder.forward" title="contk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<li><strong>gen_key</strong> (<em>str</em>) – Sentence generated by model are passed to <a class="reference internal" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="cotk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>
 </td>
@@ -455,8 +455,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp</span
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.SingleTurnDialogRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.SingleTurnDialogRecorder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -481,8 +481,8 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.SingleTurnDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.SingleTurnDialogRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>post</strong>: a list of post sentences.</li>
@@ -494,21 +494,21 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </dd></dl>
 
 <dl class="class">
-<dt id="contk.metric.MultiTurnDialogRecorder">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>context_allvocabs_key='context_allvocabs'</em>, <em>reference_allvocabs_key='reference_allvocabs'</em>, <em>gen_key='gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnDialogRecorder">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>context_allvocabs_key='context_allvocabs'</em>, <em>reference_allvocabs_key='reference_allvocabs'</em>, <em>gen_key='gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recording generated sentences and references.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
-<li><strong>context_allvocabs_key</strong> (<em>str</em>) – Dialog context are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>context_allvocabs_key</strong> (<em>str</em>) – Dialog context are passed to <a class="reference internal" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="cotk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[context_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">context_allvocabs</span></code>.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Dialog references with all vocabs
-are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
+are passed to <a class="reference internal" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="cotk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">reference_allvocabs</span></code>.</li>
-<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#contk.metric.MultiTurnDialogRecorder.forward" title="contk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="cotk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 <li><strong>turn_len_key</strong> (<em>str</em>) – Turn length are passed to :func:.forward by
 <code class="docutils literal notranslate"><span class="pre">data[turn_len_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">turn_length</span></code>.</li>
@@ -518,8 +518,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">reference_
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.MultiTurnDialogRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnDialogRecorder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -548,8 +548,8 @@ Size: <cite>[batch_size]</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.MultiTurnDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MultiTurnDialogRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>context</strong>: a list of post sentences.</li>
@@ -561,16 +561,16 @@ Size: <cite>[batch_size]</cite></li>
 </dd></dl>
 
 <dl class="class">
-<dt id="contk.metric.LanguageGenerationRecorder">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">LanguageGenerationRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.LanguageGenerationRecorder">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">LanguageGenerationRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#LanguageGenerationRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recorder BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:contk.BasicLanguageGeneration): A language generation dataloader.</li>
-<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#contk.metric.LanguageGenerationRecorder.forward" title="contk.metric.LanguageGenerationRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#cotk.metric.LanguageGenerationRecorder.forward" title="cotk.metric.LanguageGenerationRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>
 </td>
@@ -578,8 +578,8 @@ Size: <cite>[batch_size]</cite></li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="contk.metric.LanguageGenerationRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.LanguageGenerationRecorder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -598,8 +598,8 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.LanguageGenerationRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.LanguageGenerationRecorder.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><strong>gen</strong>: a list of generated sentences.</li>
@@ -609,8 +609,8 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 </dd></dl>
 
 <dl class="class">
-<dt id="contk.metric.MetricChain">
-<em class="property">class </em><code class="descclassname">contk.metric.</code><code class="descname">MetricChain</code><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MetricChain">
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MetricChain</code><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricChain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricChain" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for stacked metric. You can use this class
 making multiples metric combination like one.</p>
 <p class="rubric">Examples</p>
@@ -620,22 +620,22 @@ making multiples metric combination like one.</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="contk.metric.MetricChain.add_metric">
-<code class="descname">add_metric</code><span class="sig-paren">(</span><em>metric</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.add_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.add_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MetricChain.add_metric">
+<code class="descname">add_metric</code><span class="sig-paren">(</span><em>metric</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricChain.add_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricChain.add_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add metric for processing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>metric</strong> (<a class="reference internal" href="#contk.metric.MetricBase" title="contk.metric.MetricBase"><em>MetricBase</em></a>) – a metric class</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>metric</strong> (<a class="reference internal" href="#cotk.metric.MetricBase" title="cotk.metric.MetricBase"><em>MetricBase</em></a>) – a metric class</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.MetricChain.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MetricChain.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricChain.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricChain.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -649,8 +649,8 @@ metric components need.</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.metric.MetricChain.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/metric/metric.html#MetricChain.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.metric.MetricChain.close" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.metric.MetricChain.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricChain.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricChain.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict which contains the items which all the
 metric components returned.</p>
 </dd></dl>

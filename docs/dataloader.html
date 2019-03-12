@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data Loader &mdash; contk  documentation</title>
+  <title>Data Loader &mdash; cotk  documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> contk
+            <a href="index.html" class="icon icon-home"> cotk
           
 
           
@@ -119,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">contk</a>
+          <a href="index.html">cotk</a>
         
       </nav>
 
@@ -169,25 +169,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-contk.dataloader">
-<span id="data-loader"></span><h1>Data Loader<a class="headerlink" href="#module-contk.dataloader" title="Permalink to this headline">¶</a></h1>
-<p><cite>contk.dataloader</cite> provides classes and functions downloading and
+  <div class="section" id="module-cotk.dataloader">
+<span id="data-loader"></span><h1>Data Loader<a class="headerlink" href="#module-cotk.dataloader" title="Permalink to this headline">¶</a></h1>
+<p><cite>cotk.dataloader</cite> provides classes and functions downloading and
 loading benchmark data automatically. It reduce your cost preprocessing
 data and provide a fair dataset for every model. It also help you adapt
 your model from one dataset to other datasets.</p>
 <dl class="class">
-<dt id="contk.dataloader.Dataloader">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/contk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.Dataloader">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class of Dataloader.</p>
 <dl class="classmethod">
-<dt id="contk.dataloader.Dataloader.get_all_subclasses">
-<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.Dataloader.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.Dataloader.get_all_subclasses">
+<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.Dataloader.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a generator of all subclasses.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="contk.dataloader.Dataloader.load_class">
-<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.Dataloader.load_class" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.Dataloader.load_class">
+<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.Dataloader.load_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a subclass of <cite>class_name</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -204,8 +204,8 @@ your model from one dataset to other datasets.</p>
 <div class="section" id="languagegeneration">
 <h2>LanguageGeneration<a class="headerlink" href="#languagegeneration" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="contk.dataloader.LanguageGeneration">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">LanguageGeneration</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">LanguageGeneration</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for language modelling datasets. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -220,8 +220,8 @@ your model from one dataset to other datasets.</p>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.ext_vocab">
-<code class="descname">ext_vocab</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.ext_vocab" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.ext_vocab">
+<code class="descname">ext_vocab</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.ext_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p>special tokens, be placed at beginning of <cite>vocab_list</cite>.
 For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -235,8 +235,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.pad_id">
-<code class="descname">pad_id</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.pad_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.pad_id">
+<code class="descname">pad_id</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.pad_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token for padding, always equal to <cite>0</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -249,8 +249,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.unk_id">
-<code class="descname">unk_id</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.unk_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.unk_id">
+<code class="descname">unk_id</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.unk_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token for unknown words, always equal to <cite>1</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -263,8 +263,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.go_id">
-<code class="descname">go_id</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.go_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.go_id">
+<code class="descname">go_id</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.go_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token at the beginning of sentences, always equal to <cite>2</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -277,8 +277,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.eos_id">
-<code class="descname">eos_id</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.eos_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.eos_id">
+<code class="descname">eos_id</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.eos_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token at the end of sentences, always equal to <cite>3</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -291,8 +291,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.key_name">
-<code class="descname">key_name</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.key_name" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.key_name">
+<code class="descname">key_name</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.key_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of subsets of the data. For example: <cite>[“train”, “dev”, “test”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -305,8 +305,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.all_vocab_list">
-<code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.all_vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.all_vocab_list">
+<code class="descname">all_vocab_list</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.all_vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -320,10 +320,10 @@ including valid vocabs and invalid vocabs.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.word2id">
-<code class="descname">word2id</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.word2id">
+<code class="descname">word2id</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>a dict mapping all vocab to index.
-Maybe you want to use <a class="reference internal" href="#contk.dataloader.LanguageGeneration.sen_to_index" title="contk.dataloader.LanguageGeneration.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
+Maybe you want to use <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.sen_to_index" title="cotk.dataloader.LanguageGeneration.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -335,8 +335,8 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Lang
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.
 Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -350,8 +350,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.vocab_size">
-<code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>. Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -364,8 +364,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.LanguageGeneration.all_vocab_size">
-<code class="descname">all_vocab_size</code><a class="headerlink" href="#contk.dataloader.LanguageGeneration.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.all_vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>. Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -378,8 +378,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is called during the initialization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -403,16 +403,16 @@ while <code class="docutils literal notranslate"><span class="pre">vocab_list[va
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration._valid_word2id">
-<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration._valid_word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function return the id for a valid word (<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&lt;</span> <span class="pre">valid_vocab_len</span></code>),
 otherwise return <cite>unk_id</cite>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.restart">
-<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize mini-batches. Must call this function before <a class="reference internal" href="#contk.dataloader.LanguageGeneration.get_next_batch" title="contk.dataloader.LanguageGeneration.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+<dt id="cotk.dataloader.LanguageGeneration.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize mini-batches. Must call this function before <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.get_next_batch" title="cotk.dataloader.LanguageGeneration.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
 or an epoch is end.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -430,8 +430,8 @@ or an epoch is end.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -490,8 +490,8 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -504,7 +504,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#contk.dataloader.LanguageGeneration.get_batch" title="contk.dataloader.LanguageGeneration.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.get_batch" title="cotk.dataloader.LanguageGeneration.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
 </td>
 </tr>
 </tbody>
@@ -512,8 +512,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.trim_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.trim_index">
+<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.trim_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trim index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
@@ -542,8 +542,8 @@ find first end token and abondon words after it (included the end token).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.sen_to_index">
-<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.sen_to_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.sen_to_index">
+<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -577,8 +577,8 @@ Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.index_to_sen">
-<code class="descname">index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.LanguageGeneration.index_to_sen" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.index_to_sen">
+<code class="descname">index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.index_to_sen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from index to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -586,7 +586,7 @@ Default: <cite>False</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.LanguageGeneration.trim_index" title="contk.dataloader.LanguageGeneration.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.trim_index" title="cotk.dataloader.LanguageGeneration.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -606,37 +606,37 @@ Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric">
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for teacher-forcing mode.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.LanguageGeneration.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em>, <em>sample=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageGeneration.get_inference_metric">
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em>, <em>sample=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for inference.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.LanguageGenerationRecorder" title="contk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.LanguageGenerationRecorder" title="cotk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.LanguageGenerationRecorder" title="contk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></li>
+<li><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#cotk.metric.LanguageGenerationRecorder" title="cotk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></li>
 <li><strong>sample</strong> (<em>int</em>) – default: 1000. Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></li>
 </ul>
 </td>
@@ -650,8 +650,8 @@ Default: <cite>False</cite></li>
 <div class="section" id="mscoco">
 <h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="contk.dataloader.MSCOCO">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MSCOCO">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for preprocessed MSCOCO dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -674,13 +674,13 @@ testing stages. Default: 0 (No unknown words).</li>
 </tr>
 </tbody>
 </table>
-<p>Refer to <a class="reference internal" href="#contk.dataloader.LanguageGeneration" title="contk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageGeneration</span></code></a> for attributes and methods.</p>
+<p>Refer to <a class="reference internal" href="#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageGeneration</span></code></a> for attributes and methods.</p>
 <p class="rubric">References</p>
 <p>[1] <a class="reference external" href="http://images.cocodataset.org/annotations/annotations_trainval2017.zip">http://images.cocodataset.org/annotations/annotations_trainval2017.zip</a></p>
 <p>[2] Lin T Y, Maire M, Belongie S, et al. Microsoft COCO: Common Objects in Context. ECCV 2014.</p>
 <dl class="method">
-<dt id="contk.dataloader.MSCOCO._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/language_generation.html#MSCOCO._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MSCOCO._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MSCOCO._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loading dataset, invoked by <cite>LanguageGeneration.__init__</cite></p>
 </dd></dl>
 
@@ -691,8 +691,8 @@ testing stages. Default: 0 (No unknown words).</li>
 <div class="section" id="singleturndialog">
 <h2>SingleTurnDialog<a class="headerlink" href="#singleturndialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="contk.dataloader.SingleTurnDialog">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for single-turn dialog datasets. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -707,8 +707,8 @@ testing stages. Default: 0 (No unknown words).</li>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.ext_vocab">
-<code class="descname">ext_vocab</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.ext_vocab">
+<code class="descname">ext_vocab</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p>special tokens, be placed at beginning of <cite>vocab_list</cite>.
 For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -722,8 +722,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.pad_id">
-<code class="descname">pad_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.pad_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.pad_id">
+<code class="descname">pad_id</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.pad_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token for padding, always equal to <cite>0</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -736,8 +736,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.unk_id">
-<code class="descname">unk_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.unk_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.unk_id">
+<code class="descname">unk_id</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.unk_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token for unknown words, always equal to <cite>1</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -750,8 +750,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.go_id">
-<code class="descname">go_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.go_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.go_id">
+<code class="descname">go_id</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.go_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token at the beginning of sentences, always equal to <cite>2</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -764,8 +764,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.eos_id">
-<code class="descname">eos_id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.eos_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.eos_id">
+<code class="descname">eos_id</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.eos_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token at the end of sentences, always equal to <cite>3</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -778,8 +778,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.key_name">
-<code class="descname">key_name</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.key_name">
+<code class="descname">key_name</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of subsets of the data. For example: <cite>[“train”, “dev”, “test”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -792,8 +792,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.all_vocab_list">
-<code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.all_vocab_list">
+<code class="descname">all_vocab_list</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -807,10 +807,10 @@ including valid vocabs and invalid vocabs.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.word2id">
-<code class="descname">word2id</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.word2id">
+<code class="descname">word2id</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>a dict mapping all vocab to index.
-Maybe you want to use <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.sen_to_index" title="contk.dataloader.SingleTurnDialog.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
+Maybe you want to use <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.sen_to_index" title="cotk.dataloader.SingleTurnDialog.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -822,8 +822,8 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Sing
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.
 Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -837,8 +837,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.vocab_size">
-<code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>. Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -851,8 +851,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.SingleTurnDialog.all_vocab_size">
-<code class="descname">all_vocab_size</code><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>. Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -865,8 +865,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is called during the initialization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -890,16 +890,16 @@ while <code class="docutils literal notranslate"><span class="pre">vocab_list[va
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog._valid_word2id">
-<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog._valid_word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function return the id for a valid word (<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&lt;</span> <span class="pre">valid_vocab_len</span></code>),
 otherwise return <cite>unk_id</cite>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.restart">
-<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize mini-batches. Must call this function before <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.get_next_batch" title="contk.dataloader.SingleTurnDialog.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+<dt id="cotk.dataloader.SingleTurnDialog.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize mini-batches. Must call this function before <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.get_next_batch" title="cotk.dataloader.SingleTurnDialog.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
 or an epoch is end.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -917,8 +917,8 @@ or an epoch is end.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.
 :param key: must be contained in <cite>key_name</cite>
 :type key: str
@@ -983,8 +983,8 @@ Size: <cite>[batch_size, max(sent_length)]</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -997,7 +997,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.get_batch" title="contk.dataloader.SingleTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="cotk.dataloader.SingleTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
 </td>
 </tr>
 </tbody>
@@ -1005,8 +1005,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.trim_index">
+<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trim index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
@@ -1035,8 +1035,8 @@ find first end token and abondon words after it (included the end token).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.sen_to_index">
-<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.sen_to_index">
+<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1070,8 +1070,8 @@ Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.index_to_sen">
-<code class="descname">index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.index_to_sen" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.index_to_sen">
+<code class="descname">index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.index_to_sen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from index to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1079,7 +1079,7 @@ Default: <cite>False</cite></li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.SingleTurnDialog.trim_index" title="contk.dataloader.SingleTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.trim_index" title="cotk.dataloader.SingleTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -1099,37 +1099,37 @@ Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for teacher-forcing mode.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SingleTurnDialog.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SingleTurnDialog.get_inference_metric">
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for inference.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
 <li><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></td>
 </tr>
 </tbody>
@@ -1141,8 +1141,8 @@ Default: <cite>False</cite></li>
 <div class="section" id="opensubtitles">
 <h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="contk.dataloader.OpenSubtitles">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.OpenSubtitles">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1164,14 +1164,14 @@ testing stages. Default: 0 (No unknown words).</li>
 </tr>
 </tbody>
 </table>
-<p>Refer to <a class="reference internal" href="#contk.dataloader.SingleTurnDialog" title="contk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for attributes and methods.</p>
+<p>Refer to <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog" title="cotk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a> for attributes and methods.</p>
 <p class="rubric">References</p>
 <p>[1] <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a></p>
 <p>[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from
 Movie and TV Subtitles.(LREC 2016)</p>
 <dl class="method">
-<dt id="contk.dataloader.OpenSubtitles._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/single_turn_dialog.html#OpenSubtitles._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.OpenSubtitles._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.OpenSubtitles._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loading dataset, invoked by <cite>SingleTurnDialog.__init__</cite></p>
 </dd></dl>
 
@@ -1182,8 +1182,8 @@ Movie and TV Subtitles.(LREC 2016)</p>
 <div class="section" id="multiturndialog">
 <h2>MultiTurnDialog<a class="headerlink" href="#multiturndialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="contk.dataloader.MultiTurnDialog">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">MultiTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MultiTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for multi-turn dialog datasets. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1198,8 +1198,8 @@ Movie and TV Subtitles.(LREC 2016)</p>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.ext_vocab">
-<code class="descname">ext_vocab</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.ext_vocab">
+<code class="descname">ext_vocab</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.ext_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p>special tokens, be placed at beginning of <cite>vocab_list</cite>.
 For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&lt;eos&gt;”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1213,8 +1213,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.pad_id">
-<code class="descname">pad_id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.pad_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.pad_id">
+<code class="descname">pad_id</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.pad_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token for padding, always equal to <cite>0</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1227,8 +1227,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.unk_id">
-<code class="descname">unk_id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.unk_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.unk_id">
+<code class="descname">unk_id</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.unk_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token for unknown words, always equal to <cite>1</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1241,8 +1241,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.go_id">
-<code class="descname">go_id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.go_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.go_id">
+<code class="descname">go_id</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.go_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token at the beginning of sentences, always equal to <cite>2</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1255,8 +1255,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.eos_id">
-<code class="descname">eos_id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.eos_id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.eos_id">
+<code class="descname">eos_id</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.eos_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>token at the end of sentences, always equal to <cite>3</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1269,8 +1269,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.key_name">
-<code class="descname">key_name</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.key_name">
+<code class="descname">key_name</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.key_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of subsets of the data. For example: <cite>[“train”, “dev”, “test”]</cite></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1283,8 +1283,8 @@ For example: <cite>[“&lt;pad&gt;”, “&lt;unk&gt;”, “&lt;go&gt;”, “&
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.all_vocab_list">
-<code class="descname">all_vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.all_vocab_list">
+<code class="descname">all_vocab_list</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.all_vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1298,10 +1298,10 @@ including valid vocabs and invalid vocabs.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.word2id">
-<code class="descname">word2id</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.word2id">
+<code class="descname">word2id</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>a dict mapping all vocab to index.
-Maybe you want to use <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.sen_to_index" title="contk.dataloader.MultiTurnDialog.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
+Maybe you want to use <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.sen_to_index" title="cotk.dataloader.MultiTurnDialog.sen_to_index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sen_to_index()</span></code></a> instead.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1313,8 +1313,8 @@ Maybe you want to use <a class="reference internal" href="#contk.dataloader.Mult
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.
 Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1328,8 +1328,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.vocab_size">
-<code class="descname">vocab_size</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>. Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1342,8 +1342,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="contk.dataloader.MultiTurnDialog.all_vocab_size">
-<code class="descname">all_vocab_size</code><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>. Read only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1356,8 +1356,8 @@ Read only.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is called during the initialization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1381,16 +1381,16 @@ while <code class="docutils literal notranslate"><span class="pre">vocab_list[va
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog._valid_word2id">
-<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog._valid_word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function return the id for a valid word (<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&lt;</span> <span class="pre">valid_vocab_len</span></code>),
 otherwise return <cite>unk_id</cite>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.restart">
-<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize mini-batches. Must call this function before <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.get_next_batch" title="contk.dataloader.MultiTurnDialog.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+<dt id="cotk.dataloader.MultiTurnDialog.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize mini-batches. Must call this function before <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.get_next_batch" title="cotk.dataloader.MultiTurnDialog.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
 or an epoch is end.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1408,8 +1408,8 @@ or an epoch is end.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1472,8 +1472,8 @@ Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></dd>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1486,7 +1486,7 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.get_batch" title="contk.dataloader.MultiTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.get_batch" title="cotk.dataloader.MultiTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
 </td>
 </tr>
 </tbody>
@@ -1494,8 +1494,8 @@ is not equal to <cite>batch_size</cite>. Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.trim_index">
+<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trim index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
@@ -1524,8 +1524,8 @@ find first end token and abondon words after it (included the end token).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.multi_turn_trim_index">
-<code class="descname">multi_turn_trim_index</code><span class="sig-paren">(</span><em>index</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.multi_turn_trim_index">
+<code class="descname">multi_turn_trim_index</code><span class="sig-paren">(</span><em>index</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Trim indexes for multi turn dialog. There will be 3 steps:</dt>
 <dd><ul class="first last simple">
@@ -1559,8 +1559,8 @@ Size: <cite>[turn_length, max_sent_length]</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.sen_to_index">
-<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.sen_to_index">
+<code class="descname">sen_to_index</code><span class="sig-paren">(</span><em>sen</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1594,8 +1594,8 @@ Default: <cite>False</cite></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">
-<code class="descname">multi_turn_sen_to_index</code><span class="sig-paren">(</span><em>session</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_sen_to_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">
+<code class="descname">multi_turn_sen_to_index</code><span class="sig-paren">(</span><em>session</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_sen_to_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.multi_turn_sen_to_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a session from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1622,8 +1622,8 @@ Default: False</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.index_to_sen">
-<code class="descname">index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.index_to_sen" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.index_to_sen">
+<code class="descname">index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.index_to_sen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from index to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1631,7 +1631,7 @@ Default: False</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.trim_index" title="contk.dataloader.MultiTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.trim_index" title="cotk.dataloader.MultiTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -1651,8 +1651,8 @@ Default: False</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">
-<code class="descname">multi_turn_index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_index_to_sen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">
+<code class="descname">multi_turn_index_to_sen</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_index_to_sen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.multi_turn_index_to_sen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a session from index to string representation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1661,7 +1661,7 @@ Default: False</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – a 2-d array of int.
 Size: [turn_length, max_sent_length]</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#contk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="contk.dataloader.MultiTurnDialog.multi_turn_trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">multi_turn_trim_index()</span></code></a> before convertion.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="cotk.dataloader.MultiTurnDialog.multi_turn_trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">multi_turn_trim_index()</span></code></a> before convertion.</li>
 <li><strong>turn_length</strong> (<em>int</em>) – Only works when trim=True.
 If True, the session is trimmed according the turn_length. Default: None</li>
 <li><strong>ignore_first_token</strong> (<em>bool</em>) – Only works when trim=True.
@@ -1681,38 +1681,38 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for teacher-forcing mode.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.MultiTurnPerplexityMetric" title="contk.metric.MultiTurnPerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnPerplexityMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.MultiTurnPerplexityMetric" title="cotk.metric.MultiTurnPerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnPerplexityMetric</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#contk.metric.PerplexityMetric" title="contk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.MultiTurnDialog.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.MultiTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.get_inference_metric">
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metric for inference.</p>
 <p>It contains:</p>
 <ul class="simple">
-<li><a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#contk.metric.MultiTurnDialogRecorder" title="contk.metric.MultiTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnDialogRecorder</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.MultiTurnDialogRecorder" title="cotk.metric.MultiTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnDialogRecorder</span></code></a></li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#contk.metric.BleuCorpusMetric" title="contk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
-<a class="reference internal" href="metric.html#contk.metric.MultiTurnDialogRecorder" title="contk.metric.MultiTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnDialogRecorder</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
+<a class="reference internal" href="metric.html#cotk.metric.MultiTurnDialogRecorder" title="cotk.metric.MultiTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnDialogRecorder</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1723,8 +1723,8 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 <div class="section" id="ubuntucorpus">
 <h3>UbuntuCorpus<a class="headerlink" href="#ubuntucorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="contk.dataloader.UbuntuCorpus">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='Ubuntu'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.UbuntuCorpus">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='Ubuntu'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for Ubuntu dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1751,7 +1751,7 @@ testing stages. Default: 0 (No unknown words).</dd>
 </tr>
 </tbody>
 </table>
-<p>Refer to <a class="reference internal" href="#contk.dataloader.MultiTurnDialog" title="contk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
+<p>Refer to <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
 <div class="admonition-todo admonition" id="index-9">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
@@ -1759,8 +1759,8 @@ testing stages. Default: 0 (No unknown words).</dd>
 </ul>
 </div>
 <dl class="method">
-<dt id="contk.dataloader.UbuntuCorpus._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#UbuntuCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.UbuntuCorpus._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.UbuntuCorpus._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loading dataset, invoked by <cite>MultiTurnDialog.__init__</cite></p>
 </dd></dl>
 
@@ -1770,8 +1770,8 @@ testing stages. Default: 0 (No unknown words).</dd>
 <div class="section" id="switchboardcorpus">
 <h3>SwitchBoardCorpus<a class="headerlink" href="#switchboardcorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="contk.dataloader.SwitchboardCorpus">
-<em class="property">class </em><code class="descclassname">contk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=5</em>, <em>max_sen_length=50</em>, <em>max_turn_length=1000</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=5</em>, <em>max_sen_length=50</em>, <em>max_turn_length=1000</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloder for Switchboard dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1794,7 +1794,7 @@ testing stages. Default: 0 (No unknown words).</dd>
 </tr>
 </tbody>
 </table>
-<p>Refer to <a class="reference internal" href="#contk.dataloader.MultiTurnDialog" title="contk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
+<p>Refer to <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
 <div class="admonition-todo admonition" id="index-10">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
@@ -1802,8 +1802,8 @@ testing stages. Default: 0 (No unknown words).</dd>
 </ul>
 </div>
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus._convert2ids">
-<code class="descname">_convert2ids</code><span class="sig-paren">(</span><em>origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._convert2ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._convert2ids" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus._convert2ids">
+<code class="descname">_convert2ids</code><span class="sig-paren">(</span><em>origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._convert2ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._convert2ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert topic, da, word to ids, invoked by ^SwitchboardCorpus._load_data^
 and ^SwitchboardCorpus._load_multi_ref_data^</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1831,8 +1831,8 @@ Size of the innermost list: num of words in a utterance.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus._read_file">
-<code class="descname">_read_file</code><span class="sig-paren">(</span><em>filepath</em>, <em>add_pre_turn=True</em>, <em>add_suf_turn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._read_file" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus._read_file">
+<code class="descname">_read_file</code><span class="sig-paren">(</span><em>filepath</em>, <em>add_pre_turn=True</em>, <em>add_suf_turn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._read_file" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Reading data from file, invoked by ^SwitchboardCorpus._load_data^</dt>
 <dd>and ^SwitchboardCorpus._load_multi_ref_data^</dd>
@@ -1852,26 +1852,26 @@ Size of the innermost list: num of words in a utterance.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus._build_vocab">
-<code class="descname">_build_vocab</code><span class="sig-paren">(</span><em>origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._build_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._build_vocab" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus._build_vocab">
+<code class="descname">_build_vocab</code><span class="sig-paren">(</span><em>origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._build_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._build_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Building vocabulary(words, topics, da), invoked by <cite>SwitchboardCorpus._load_data</cite></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus._load_multi_ref_data">
-<code class="descname">_load_multi_ref_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_multi_ref_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._load_multi_ref_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus._load_multi_ref_data">
+<code class="descname">_load_multi_ref_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_multi_ref_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._load_multi_ref_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loading dataset, invoked by <cite>SwitchboardCorpus._load_data</cite></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loading dataset, invoked by <cite>MultiTurnDialog.__init__</cite></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em>, <em>needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1921,8 +1921,8 @@ Size of innermost list: varying num of words in a reference</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="contk.dataloader.SwitchboardCorpus.get_precision_recall_metric">
-<code class="descname">get_precision_recall_metric</code><span class="sig-paren">(</span><em>embed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_precision_recall_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contk.dataloader.SwitchboardCorpus.get_precision_recall_metric" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">
+<code class="descname">get_precision_recall_metric</code><span class="sig-paren">(</span><em>embed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_precision_recall_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metrics for precision and recall in terms of BLEU, cosine similarity.</p>
 <p>It contains:</p>
 <ul class="simple">

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>contk.dataloader.multi_turn_dialog &mdash; contk  documentation</title>
+  <title>cotk.dataloader.multi_turn_dialog &mdash; cotk  documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> contk
+            <a href="../../../index.html" class="icon icon-home"> cotk
           
 
           
@@ -102,7 +102,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">contk</a>
+          <a href="../../../index.html">cotk</a>
         
       </nav>
 
@@ -135,7 +135,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>contk.dataloader.multi_turn_dialog</li>
+      <li>cotk.dataloader.multi_turn_dialog</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -150,7 +150,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for contk.dataloader.multi_turn_dialog</h1><div class="highlight"><pre>
+  <h1>Source code for cotk.dataloader.multi_turn_dialog</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">A module for multi turn dialog.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -169,7 +169,7 @@
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">BleuPrecisionRecallMetric</span><span class="p">,</span> <span class="n">EmbSimilarityPrecisionRecallMetric</span>
 
 <span class="c1"># pylint: disable=W0223</span>
-<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for multi-turn dialog datasets. This is an abstract class.</span>
 
 <span class="sd">	Arguments:{ARGUMENTS}</span>
@@ -187,7 +187,7 @@
 		<span class="n">ext_vocab</span> <span class="o">=</span> <span class="n">ext_vocab</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ext_vocab</span><span class="p">,</span> <span class="n">key_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
 <span class="sd">		Arguments:</span>
@@ -243,7 +243,7 @@
 		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Trim indexes for multi turn dialog. There will be 3 steps:</span>
 <span class="sd">			* For every turn, if there is an `&lt;eos&gt;`, \</span>
 <span class="sd">				find first `&lt;eos&gt;` and abondon words after it (included the `&lt;eos&gt;`).</span>
@@ -274,7 +274,7 @@
 			<span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">turn_trim</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_sen_to_index"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.multi_turn_sen_to_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_sen_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a session from string to index representation.</span>
 
 <span class="sd">		Arguments:</span>
@@ -298,7 +298,7 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">_valid_word2id</span><span class="p">,</span> <span class="n">sent</span><span class="p">)),</span> \
 			<span class="n">session</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.multi_turn_index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.multi_turn_index_to_sen"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.multi_turn_index_to_sen">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_index_to_sen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert a session from index to string representation</span>
 
 <span class="sd">		Arguments:</span>
@@ -322,7 +322,7 @@
 			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">sent</span><span class="p">)),</span> \
 			<span class="n">index</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
 
 <span class="sd">		It contains:</span>
@@ -337,7 +337,7 @@
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.MultiTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
 
 <span class="sd">		It contains:</span>
@@ -355,7 +355,7 @@
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 
-<div class="viewcode-block" id="UbuntuCorpus"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.UbuntuCorpus">[docs]</a><span class="k">class</span> <span class="nc">UbuntuCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
+<div class="viewcode-block" id="UbuntuCorpus"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.UbuntuCorpus">[docs]</a><span class="k">class</span> <span class="nc">UbuntuCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
 
 	<span class="sd">&#39;&#39;&#39;A dataloder for Ubuntu dataset.</span>
 
@@ -394,7 +394,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">UbuntuCorpus</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="UbuntuCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.UbuntuCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UbuntuCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.UbuntuCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `MultiTurnDialog.__init__`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
@@ -463,7 +463,7 @@
 					<span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_length</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">sent_num</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloder for Switchboard dataset.</span>
 
 <span class="sd">	Arguments:</span>
@@ -489,7 +489,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span> <span class="o">=</span> <span class="p">{}</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SwitchboardCorpus._convert2ids"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus._convert2ids">[docs]</a>	<span class="k">def</span> <span class="nf">_convert2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus._convert2ids"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._convert2ids">[docs]</a>	<span class="k">def</span> <span class="nf">_convert2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Convert topic, da, word to ids, invoked by ^SwitchboardCorpus._load_data^</span>
 <span class="sd">		and ^SwitchboardCorpus._load_multi_ref_data^</span>
 
@@ -513,7 +513,7 @@
 		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">sess2id</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]))</span>
 		<span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus._read_file"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus._read_file">[docs]</a>	<span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">add_pre_turn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_suf_turn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus._read_file"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._read_file">[docs]</a>	<span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">add_pre_turn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_suf_turn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Reading data from file, invoked by ^SwitchboardCorpus._load_data^</span>
 <span class="sd">			and ^SwitchboardCorpus._load_multi_ref_data^</span>
 
@@ -539,7 +539,7 @@
 				<span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span><span class="p">])</span>
 		<span class="k">return</span> <span class="n">origin_data</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus._build_vocab"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus._build_vocab">[docs]</a>	<span class="k">def</span> <span class="nf">_build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus._build_vocab"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._build_vocab">[docs]</a>	<span class="k">def</span> <span class="nf">_build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Building vocabulary(words, topics, da), invoked by `SwitchboardCorpus._load_data`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">raw_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
@@ -566,7 +566,7 @@
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_set</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus._load_multi_ref_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus._load_multi_ref_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_multi_ref_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus._load_multi_ref_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._load_multi_ref_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_multi_ref_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `SwitchboardCorpus._load_data`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/switchboard_corpus_multi_ref.jsonl&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span>
@@ -581,7 +581,7 @@
 				<span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
 		<span class="k">return</span> <span class="n">candidate</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `MultiTurnDialog.__init__`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
@@ -615,7 +615,7 @@
 		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;multi_ref&#39;</span><span class="p">][</span><span class="s1">&#39;candidate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_multi_ref_data</span><span class="p">()</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_vocab_set</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus.get_batch"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
 <span class="sd">		Arguments:</span>
@@ -651,7 +651,7 @@
 		<span class="k">return</span> <span class="n">res</span></div>
 
 	<span class="c1">#TODO: move to inference metric. embedding have to be a property of dataloader</span>
-<div class="viewcode-block" id="SwitchboardCorpus.get_precision_recall_metric"><a class="viewcode-back" href="../../../dataloader.html#contk.dataloader.SwitchboardCorpus.get_precision_recall_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus.get_precision_recall_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for precision and recall in terms of BLEU, cosine similarity.</span>
 
 <span class="sd">		It contains:</span>
