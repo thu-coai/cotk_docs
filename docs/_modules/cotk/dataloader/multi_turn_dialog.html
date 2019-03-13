@@ -246,7 +246,7 @@
 <div class="viewcode-block" id="MultiTurnDialog.multi_turn_trim_index"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.multi_turn_trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">multi_turn_trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">turn_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Trim indexes for multi turn dialog. There will be 3 steps:</span>
 <span class="sd">			* For every turn, if there is an `&lt;eos&gt;`, \</span>
-<span class="sd">				find first `&lt;eos&gt;` and abondon words after it (included the `&lt;eos&gt;`).</span>
+<span class="sd">				find first `&lt;eos&gt;` and abandon words after it (included the `&lt;eos&gt;`).</span>
 <span class="sd">			* Ignore `&lt;pad&gt;` s at the end of every turn.</span>
 <span class="sd">			* When `turn_length` is None, discard the first empty turn and the turn after it. \</span>
 <span class="sd">				Otherwise, discard the turn according to turn_length.</span>
@@ -280,7 +280,7 @@
 <span class="sd">		Arguments:</span>
 <span class="sd">			sen (list): a 2-d list of str, representing each token of the session.</span>
 <span class="sd">			invalid_vocab (bool): whether to provide invalid vocabs.</span>
-<span class="sd">					If ``False``, invalid vocabs will be trasfered to `unk_id`.</span>
+<span class="sd">					If ``False``, invalid vocabs will be transferred to `unk_id`.</span>
 <span class="sd">					If ``True``, invalid vocabs will using their own id.</span>
 <span class="sd">					Default: False</span>
 
@@ -357,7 +357,7 @@
 
 <div class="viewcode-block" id="UbuntuCorpus"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.UbuntuCorpus">[docs]</a><span class="k">class</span> <span class="nc">UbuntuCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
 
-	<span class="sd">&#39;&#39;&#39;A dataloder for Ubuntu dataset.</span>
+	<span class="sd">&#39;&#39;&#39;A dataloader for Ubuntu dataset.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		file_id (str): a str indicates the source of UbuntuCorpus dataset.</span>
@@ -464,7 +464,7 @@
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
 
 <div class="viewcode-block" id="SwitchboardCorpus"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpus</span><span class="p">(</span><span class="n">MultiTurnDialog</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;A dataloder for Switchboard dataset.</span>
+	<span class="sd">&#39;&#39;&#39;A dataloader for Switchboard dataset.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		file_id (str): a str indicates the source of SwitchboardCorpus dataset.</span>
@@ -540,6 +540,7 @@
 		<span class="k">return</span> <span class="n">origin_data</span></div>
 
 <div class="viewcode-block" id="SwitchboardCorpus._build_vocab"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._build_vocab">[docs]</a>	<span class="k">def</span> <span class="nf">_build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
+		<span class="c1"># TODO: build vocab has to use multi_ref data</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Building vocabulary(words, topics, da), invoked by `SwitchboardCorpus._load_data`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">raw_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
@@ -646,11 +647,11 @@
 		<span class="n">gather</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">sub_key</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">sub_key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">]</span>
 		<span class="k">for</span> <span class="n">sub_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
 			<span class="k">if</span> <span class="n">sub_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
-				<span class="n">res</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">sub_key</span><span class="p">)</span>
+				<span class="n">res</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">sub_key</span><span class="p">)</span> <span class="c1"># TODO: candidates renamed to candidates_allvocabs</span>
 		<span class="c1">#TODO: add hashvalue for SwitchBoard</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-	<span class="c1">#TODO: move to inference metric. embedding have to be a property of dataloader</span>
+	<span class="c1">#TODO: renamed to inference metric. embedding should have a default realization (use wordvec from Glove)</span>
 <div class="viewcode-block" id="SwitchboardCorpus.get_precision_recall_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for precision and recall in terms of BLEU, cosine similarity.</span>
 

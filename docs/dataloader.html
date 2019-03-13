@@ -1529,7 +1529,7 @@ find first end token and abondon words after it (included the end token).</li>
 <dd><dl class="docutils">
 <dt>Trim indexes for multi turn dialog. There will be 3 steps:</dt>
 <dd><ul class="first last simple">
-<li>For every turn, if there is an <cite>&lt;eos&gt;</cite>,                               find first <cite>&lt;eos&gt;</cite> and abondon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
+<li>For every turn, if there is an <cite>&lt;eos&gt;</cite>,                               find first <cite>&lt;eos&gt;</cite> and abandon words after it (included the <cite>&lt;eos&gt;</cite>).</li>
 <li>Ignore <cite>&lt;pad&gt;</cite> s at the end of every turn.</li>
 <li>When <cite>turn_length</cite> is None, discard the first empty turn and the turn after it.                               Otherwise, discard the turn according to turn_length.</li>
 </ul>
@@ -1604,7 +1604,7 @@ Default: <cite>False</cite></li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sen</strong> (<em>list</em>) – a 2-d list of str, representing each token of the session.</li>
 <li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
-If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be trasfered to <cite>unk_id</cite>.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be transferred to <cite>unk_id</cite>.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
 Default: False</li>
 </ul>
@@ -1725,7 +1725,7 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 <dl class="class">
 <dt id="cotk.dataloader.UbuntuCorpus">
 <em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_id</em>, <em>file_type='Ubuntu'</em>, <em>min_vocab_times=10</em>, <em>max_sen_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dataloder for Ubuntu dataset.</p>
+<dd><p>A dataloader for Ubuntu dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1772,7 +1772,7 @@ testing stages. Default: 0 (No unknown words).</dd>
 <dl class="class">
 <dt id="cotk.dataloader.SwitchboardCorpus">
 <em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>file_path</em>, <em>min_vocab_times=5</em>, <em>max_sen_length=50</em>, <em>max_turn_length=1000</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dataloder for Switchboard dataset.</p>
+<dd><p>A dataloader for Switchboard dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
