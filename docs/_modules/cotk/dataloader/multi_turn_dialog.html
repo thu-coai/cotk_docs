@@ -163,13 +163,13 @@
 
 <span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">GenerationBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
 	<span class="n">MultiTurnDialogRecorder</span><span class="p">,</span> <span class="n">HashValueRecorder</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">BleuPrecisionRecallMetric</span><span class="p">,</span> <span class="n">EmbSimilarityPrecisionRecallMetric</span>
 
 <span class="c1"># pylint: disable=W0223</span>
-<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for multi-turn dialog datasets. This is an abstract class.</span>
 
 <span class="sd">	Arguments:{ARGUMENTS}</span>
@@ -177,8 +177,8 @@
 <span class="sd">	Attributes:{ATTRIBUTES}</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">BasicLanguageGeneration</span><span class="o">.</span><span class="n">ARGUMENTS</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">BasicLanguageGeneration</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
 
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
 				 <span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \

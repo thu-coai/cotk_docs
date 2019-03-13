@@ -178,7 +178,7 @@ a fair metric for every model.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs
 are passed to <a class="reference internal" href="#cotk.metric.PerplexityMetric.forward" title="cotk.metric.PerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp_allvocabs</span></code>.</li>
@@ -252,7 +252,7 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite> for <code class
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs
 are passed to <a class="reference internal" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="cotk.metric.MultiTurnPerplexityMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code>.</li>
@@ -323,7 +323,7 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs
 are passed to :func:.forward by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp</span></code>.</li>
@@ -377,7 +377,7 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Reference sentences with all vocabs are passed to
 <a class="reference internal" href="#cotk.metric.MultiTurnBleuCorpusMetric.forward" title="cotk.metric.MultiTurnBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">data[reference_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">reference_allvocabs</span></code>.</li>
@@ -440,7 +440,7 @@ Size: <cite>[batch_size]</cite></li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>post_allvocabs_key</strong> (<em>str</em>) – Dialog post are passed to <a class="reference internal" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="cotk.metric.SingleTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a>
 by <code class="docutils literal notranslate"><span class="pre">data[post_allvocabs_key]</span></code>.
 Default: <code class="docutils literal notranslate"><span class="pre">post</span></code>.</li>
@@ -502,7 +502,7 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>context_allvocabs_key</strong> (<em>str</em>) – Dialog context are passed to <a class="reference internal" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="cotk.metric.MultiTurnDialogRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[context_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">context_allvocabs</span></code>.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – Dialog references with all vocabs
@@ -569,7 +569,7 @@ Size: <cite>[batch_size]</cite></li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.BasicLanguageGeneration): A language generation dataloader.</li>
+<li><strong>(</strong> (<em>dataloader</em>) – class:cotk.GenerationBase): A language generation dataloader.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – Sentences generated by model are passed to <a class="reference internal" href="#cotk.metric.LanguageGenerationRecorder.forward" title="cotk.metric.LanguageGenerationRecorder.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by
 <code class="docutils literal notranslate"><span class="pre">data[gen_key]</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>

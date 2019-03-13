@@ -159,12 +159,12 @@
 
 <span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">BasicLanguageGeneration</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">GenerationBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">LanguageGenerationRecorder</span><span class="p">,</span> \
 	<span class="n">FwBwBleuCorpusMetric</span><span class="p">,</span> <span class="n">SelfBleuCorpusMetric</span><span class="p">,</span> <span class="n">HashValueRecorder</span>
 
 <span class="c1"># pylint: disable=W0223</span>
-<div class="viewcode-block" id="LanguageGeneration"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration">[docs]</a><span class="k">class</span> <span class="nc">LanguageGeneration</span><span class="p">(</span><span class="n">BasicLanguageGeneration</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGeneration"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration">[docs]</a><span class="k">class</span> <span class="nc">LanguageGeneration</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for language modelling datasets. This is an abstract class.</span>
 
 <span class="sd">	Arguments:{ARGUMENTS}</span>
@@ -172,8 +172,8 @@
 <span class="sd">	Attributes:{ATTRIBUTES}</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">BasicLanguageGeneration</span><span class="o">.</span><span class="n">ARGUMENTS</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">BasicLanguageGeneration</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
 
 <div class="viewcode-block" id="LanguageGeneration.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
@@ -276,7 +276,7 @@
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 
 <div class="viewcode-block" id="MSCOCO"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MSCOCO">[docs]</a><span class="k">class</span> <span class="nc">MSCOCO</span><span class="p">(</span><span class="n">LanguageGeneration</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;A dataloder for preprocessed MSCOCO dataset.</span>
+	<span class="sd">&#39;&#39;&#39;A dataloader for preprocessed MSCOCO dataset.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">			file_id (str): a str indicates the source of MSCOCO dataset.</span>

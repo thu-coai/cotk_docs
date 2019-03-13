@@ -164,7 +164,7 @@
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">pass</span></div>
 
-<span class="k">class</span> <span class="nc">BasicLanguageGeneration</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GenerationBase</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for all language generation datasets. This is an abstract class.</span>
 
 <span class="sd">	Arguments:{ARGUMENTS}</span>
@@ -355,7 +355,7 @@
 		<span class="sd">&#39;&#39;&#39;Trim index. There will be two steps:</span>
 
 <span class="sd">			* If there is an end token (`&lt;eos&gt;`) in sentences,</span>
-<span class="sd">			  find first end token and abondon words after it (included the end token).</span>
+<span class="sd">			  find first end token and abandon words after it (included the end token).</span>
 <span class="sd">			* ignore `&lt;pad&gt;` s at the end of the sentence.</span>
 
 <span class="sd">		Arguments:</span>
