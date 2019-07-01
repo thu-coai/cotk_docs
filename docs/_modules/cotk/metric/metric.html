@@ -591,13 +591,14 @@
 <span class="sd">			``data[gen_key]``. Default: ``gen``.</span>
 <span class="sd">		sample (int): Number of samples sampled from the generated sentences. Default: 1000.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
 
 	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
@@ -616,7 +617,7 @@
 		<span class="sd">&#39;&#39;&#39;Auxiliary function which returns:</span>
 <span class="sd">			* **sentence-self-bleu**: sentence-self-bleu value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method1</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
@@ -625,6 +626,7 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+		<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
 		<span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">]</span>
 
@@ -645,7 +647,7 @@
 <span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;Metric for calculating BLEU.</span>
+	<span class="sd">&#39;&#39;&#39;Metric for calculating FwBw-BLEU.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		dataloader (:class:cotk.GenerationBase): A language generation dataloader.</span>
@@ -658,18 +660,16 @@
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
 			<span class="n">reference_test_key</span><span class="p">,</span> \
 			<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
-			<span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+			<span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+			<span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_test_key</span> <span class="o">=</span> <span class="n">reference_test_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span>
-
+		<span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_test_key</span><span class="p">]</span>
-		<span class="k">for</span> <span class="n">resp_sen</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
 
 	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
@@ -681,53 +681,59 @@
 <span class="sd">				Size: `[batch_size, gen_sentence_length]`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
-
-		<span class="k">for</span> <span class="n">gen_sen</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+		<span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_test_key</span><span class="p">]</span>
+		<span class="k">for</span> <span class="n">gen_sen</span><span class="p">,</span> <span class="n">resp_sen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">))</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
 
 	<span class="k">def</span> <span class="nf">run_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ele</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Auxiliary function which returns:</span>
 <span class="sd">			* **sentence-self-bleu**: sentence-self-bleu value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method1</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **fwbwbleu**: fw/bw bleu value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)])</span>
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">max_len</span>
+		<span class="n">sample_hyps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+		<span class="n">sample_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
 
+		<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
 		<span class="k">try</span><span class="p">:</span>
 			<span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
-			<span class="k">for</span> <span class="n">ngram</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-				<span class="n">weight</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">ngram</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngram</span><span class="p">)))</span>
-				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
-					<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
-					<span class="n">bleu_irl_fw</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> \
-							<span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weight</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">)])</span>
-					<span class="n">bleu_irl_bw</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> \
-							<span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weight</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">)])</span>
-					<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-					<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="n">bleu_irl_fw</span><span class="p">,</span> <span class="n">bleu_irl_bw</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-					<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">):</span>
-						<span class="n">bleu_irl_fw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weight</span><span class="p">)))</span>
-						<span class="n">bleu_irl_bw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weight</span><span class="p">)))</span>
+			<span class="k">if</span> <span class="n">sample_hyps</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
+				<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+				<span class="n">bleu_irl_fw</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> \
+						<span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_hyps</span><span class="p">)])</span>
+				<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+				<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">bleu_irl_fw</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_hyps</span><span class="p">):</span>
+					<span class="n">bleu_irl_fw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
 
-				<span class="n">fw_bleu</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bleu_irl_fw</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleu_irl_fw</span><span class="p">))</span>
-				<span class="n">bw_bleu</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bleu_irl_bw</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleu_irl_bw</span><span class="p">))</span>
-				<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bleu-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">ngram</span><span class="p">]</span> <span class="o">=</span> <span class="n">fw_bleu</span>
-				<span class="n">result</span><span class="p">[</span><span class="s2">&quot;bw-bleu-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">ngram</span><span class="p">]</span> <span class="o">=</span> <span class="n">bw_bleu</span>
-				<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-bleu-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">ngram</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">bw_bleu</span> <span class="o">*</span> <span class="n">fw_bleu</span> <span class="o">/</span> <span class="p">(</span><span class="n">fw_bleu</span> <span class="o">+</span> <span class="n">bw_bleu</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">sample_refs</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
+				<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+				<span class="n">bleu_irl_bw</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> \
+						<span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_refs</span><span class="p">)])</span>
+				<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+				<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">bleu_irl_bw</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_refs</span><span class="p">):</span>
+					<span class="n">bleu_irl_bw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+			<span class="n">fw_bleu</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bleu_irl_fw</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleu_irl_fw</span><span class="p">))</span>
+			<span class="n">bw_bleu</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bleu_irl_bw</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleu_irl_bw</span><span class="p">))</span>
+			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bleu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fw_bleu</span>
+			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;bw-bleu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bw_bleu</span>
+			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-bleu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">bw_bleu</span> <span class="o">*</span> <span class="n">fw_bleu</span> <span class="o">/</span> <span class="p">(</span><span class="n">fw_bleu</span> <span class="o">+</span> <span class="n">bw_bleu</span><span class="p">)</span>
 			<span class="k">return</span> <span class="n">result</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of corpus_bleu, </span><span class="se">\</span>
+			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of sentence_bleu, </span><span class="se">\</span>
 <span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span>
 
 
