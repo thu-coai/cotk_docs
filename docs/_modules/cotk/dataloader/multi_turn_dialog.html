@@ -167,6 +167,7 @@
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
 	<span class="n">MultiTurnDialogRecorder</span><span class="p">,</span> <span class="n">HashValueRecorder</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">BleuPrecisionRecallMetric</span><span class="p">,</span> <span class="n">EmbSimilarityPrecisionRecallMetric</span>
+<span class="kn">from</span> <span class="nn">..wordvector</span> <span class="k">import</span> <span class="n">Glove</span>
 
 <span class="c1"># pylint: disable=W0223</span>
 <div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
@@ -509,18 +510,26 @@
 		<span class="n">sess2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">sess</span><span class="p">:</span> <span class="p">[([</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> \
 								 <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">utt</span><span class="p">))</span> <span class="o">+</span> \
 								 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span><span class="p">]</span> <span class="k">for</span> <span class="n">utt</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">]</span>
+		<span class="n">cand2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">cand</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">resp</span><span class="p">))</span> \
+								<span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">]</span>
 		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">sess2id</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]))</span>
+		<span class="k">if</span> <span class="s1">&#39;candidate_allvocabs&#39;</span> <span class="ow">in</span> <span class="n">origin_data</span><span class="p">:</span>
+			<span class="n">data</span><span class="p">[</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">cand2id</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">]))</span>
 		<span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus._read_file"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._read_file">[docs]</a>	<span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">add_pre_turn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_suf_turn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus._read_file"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._read_file">[docs]</a>	<span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">read_multi_ref</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Reading data from file, invoked by ^SwitchboardCorpus._load_data^</span>
-<span class="sd">			and ^SwitchboardCorpus._load_multi_ref_data^</span>
+<span class="sd">		and ^SwitchboardCorpus._load_multi_ref_data^</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			* filepath (str): Name of the file to read from</span>
-<span class="sd">			* add_pre_turn (bool): Whether to add turn ^&lt;d&gt;^ ahead of each session</span>
+<span class="sd">			* read_multi_ref (bool):</span>
+<span class="sd">				If False, add turn ^&lt;d&gt;^ ahead of each session</span>
+<span class="sd">				If True, add turn ^&lt;d&gt;^ at the end of each session and read candidate ^responses^</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+		<span class="k">if</span> <span class="n">read_multi_ref</span><span class="p">:</span>
+			<span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
 			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data_file</span><span class="p">:</span>
 				<span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -531,15 +540,15 @@
 							<span class="k">else</span> <span class="s1">&#39;&lt;eos&gt; &#39;</span> <span class="o">+</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;utts&#39;</span><span class="p">])))</span>
 				<span class="n">utts</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;d&gt; &#39;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suffix_utts</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">)</span>
 				<span class="n">sess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">utt</span><span class="p">:</span> <span class="n">utt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">utts</span><span class="p">))</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="n">add_pre_turn</span><span class="p">:</span>
-					<span class="n">sess</span> <span class="o">=</span> <span class="n">sess</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-				<span class="k">if</span> <span class="n">add_suf_turn</span><span class="p">:</span>
-					<span class="n">sess</span> <span class="o">+=</span> <span class="p">[[</span><span class="s1">&#39;&lt;d&gt;&#39;</span><span class="p">]]</span>
+				<span class="n">sess</span> <span class="o">=</span> <span class="n">sess</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[[</span><span class="s1">&#39;&lt;d&gt;&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="n">read_multi_ref</span> <span class="k">else</span> <span class="n">sess</span>
 				<span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_turn_length</span><span class="p">])</span>
+
+				<span class="k">if</span> <span class="n">read_multi_ref</span><span class="p">:</span>
+					<span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span>\
+						<span class="k">lambda</span> <span class="n">resp</span><span class="p">:</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;responses&#39;</span><span class="p">])))</span>
 		<span class="k">return</span> <span class="n">origin_data</span></div>
 
 <div class="viewcode-block" id="SwitchboardCorpus._build_vocab"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._build_vocab">[docs]</a>	<span class="k">def</span> <span class="nf">_build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">):</span>
-		<span class="c1"># TODO: build vocab has to use multi_ref data</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Building vocabulary(words, topics, da), invoked by `SwitchboardCorpus._load_data`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">raw_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))</span>
@@ -553,6 +562,8 @@
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
 				<span class="k">continue</span>
+			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">:</span>
+				<span class="n">raw_vocab</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">]))))</span>
 			<span class="n">raw_vocab</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">])))))</span>
 		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> \
@@ -566,21 +577,6 @@
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_set</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus._load_multi_ref_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._load_multi_ref_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_multi_ref_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `SwitchboardCorpus._load_data`</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/switchboard_corpus_multi_ref.jsonl&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span>
-		<span class="n">candidate</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
-			<span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
-			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data_file</span><span class="p">:</span>
-				<span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-				<span class="n">utt2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">utt</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> \
-										<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
-				<span class="n">candidate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">utt2id</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;responses&#39;</span><span class="p">])))</span>
-				<span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
-		<span class="k">return</span> <span class="n">candidate</span></div>
-
 <div class="viewcode-block" id="SwitchboardCorpus._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `MultiTurnDialog.__init__`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
@@ -588,8 +584,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;multi_ref&#39;</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_file</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/switchboard_corpus_</span><span class="si">%s</span><span class="s1">.jsonl&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> \
-											   <span class="n">add_pre_turn</span><span class="o">=</span><span class="p">(</span><span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">),</span> \
-											   <span class="n">add_suf_turn</span><span class="o">=</span><span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">))</span>
+											   <span class="n">read_multi_ref</span><span class="o">=</span><span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">))</span>
 
 		<span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_vocab</span><span class="p">(</span><span class="n">origin_data</span><span class="p">)</span>
 
@@ -612,7 +607,6 @@
 				   <span class="s2">&quot;cut word rate: </span><span class="si">%f</span><span class="se">\n\t</span><span class="s2">max turn length before cut: </span><span class="si">%d</span><span class="s2">, cut sentence rate: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> \
 				  <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_vocab_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_lens</span><span class="p">),</span> \
 				   <span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">)))</span>
-		<span class="n">data</span><span class="p">[</span><span class="s1">&#39;multi_ref&#39;</span><span class="p">][</span><span class="s1">&#39;candidate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_multi_ref_data</span><span class="p">()</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_vocab_set</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div>
 
 <div class="viewcode-block" id="SwitchboardCorpus.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -628,7 +622,7 @@
 <span class="sd">			(dict): A dict contains what is in the return of MultiTurnDialog.get_batch.</span>
 <span class="sd">			  It additionally contains:</span>
 
-<span class="sd">				* candidates (list): A 3-d list, multiple responses for reference</span>
+<span class="sd">				* candidate_allvocabs (list): A 3-d list, multiple responses for reference</span>
 <span class="sd">				  Size of outermost list: batch_size</span>
 <span class="sd">				  Size of second innermost list: varying num of references</span>
 <span class="sd">				  Size of innermost list: varying num of words in a reference</span>
@@ -646,26 +640,31 @@
 		<span class="n">gather</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">sub_key</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">sub_key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">]</span>
 		<span class="k">for</span> <span class="n">sub_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
 			<span class="k">if</span> <span class="n">sub_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
-				<span class="n">res</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">sub_key</span><span class="p">)</span> <span class="c1"># TODO: candidates renamed to candidates_allvocabs</span>
+				<span class="n">res</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">sub_key</span><span class="p">)</span>
 		<span class="c1">#TODO: add hashvalue for SwitchBoard</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-	<span class="c1">#TODO: renamed to inference metric. embedding should have a default realization (use wordvec from Glove)</span>
-<div class="viewcode-block" id="SwitchboardCorpus.get_precision_recall_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus.get_precision_recall_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent_per_inst</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">embed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for precision and recall in terms of BLEU, cosine similarity.</span>
 
-<span class="sd">		It contains:</span>
+<span class="sd">        It contains:</span>
 
-<span class="sd">		* :class:`.metric.PrecisionRecallMetric`</span>
+<span class="sd">		* :class:`.metric.BleuPrecisionRecallMetric`</span>
+<span class="sd">		* :class:`.metric.EmbSimilarityPrecisionRecallMetric`</span>
 
-<span class="sd">		Arguments:</span>
-<span class="sd">			embed (:class:`numpy.array`): Glove word embedding</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            sent_per_inst (int): The number of sentences to generate per instance</span>
+<span class="sd">            embed (:class:`numpy.array`): Word embedding for lookup</span>
+<span class="sd">            	Default: Glove word embedding</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">embed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">glove</span> <span class="o">=</span> <span class="n">Glove</span><span class="p">(</span><span class="s2">&quot;resources://Glove300d&quot;</span><span class="p">)</span>
+			<span class="n">embed</span> <span class="o">=</span> <span class="n">glove</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">ngram</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-			<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ngram</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;extrema&#39;</span><span class="p">))</span>
+			<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ngram</span><span class="p">,</span> <span class="n">sent_per_inst</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;avg&#39;</span><span class="p">,</span> <span class="n">sent_per_inst</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="s1">&#39;extrema&#39;</span><span class="p">,</span> <span class="n">sent_per_inst</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 </pre></div>
 

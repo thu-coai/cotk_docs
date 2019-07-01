@@ -1602,16 +1602,15 @@ Size of the innermost list: num of words in a utterance.</p></li>
 
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus._read_file">
-<code class="sig-name descname">_read_file</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">add_pre_turn=True</em>, <em class="sig-param">add_suf_turn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._read_file" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Reading data from file, invoked by ^SwitchboardCorpus._load_data^</dt><dd><p>and ^SwitchboardCorpus._load_multi_ref_data^</p>
-</dd>
-</dl>
+<code class="sig-name descname">_read_file</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">read_multi_ref=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._read_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reading data from file, invoked by ^SwitchboardCorpus._load_data^
+and ^SwitchboardCorpus._load_multi_ref_data^</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filepath</strong> (<em>*</em>) – Name of the file to read from</p></li>
-<li><p><strong>add_pre_turn</strong> (<em>*</em>) – Whether to add turn ^&lt;d&gt;^ ahead of each session</p></li>
+<li><p><strong>read_multi_ref</strong> (<em>*</em>) – If False, add turn ^&lt;d&gt;^ ahead of each session
+If True, add turn ^&lt;d&gt;^ at the end of each session and read candidate ^responses^</p></li>
 </ul>
 </dd>
 </dl>
@@ -1621,12 +1620,6 @@ Size of the innermost list: num of words in a utterance.</p></li>
 <dt id="cotk.dataloader.SwitchboardCorpus._build_vocab">
 <code class="sig-name descname">_build_vocab</code><span class="sig-paren">(</span><em class="sig-param">origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._build_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._build_vocab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Building vocabulary(words, topics, da), invoked by <cite>SwitchboardCorpus._load_data</cite></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cotk.dataloader.SwitchboardCorpus._load_multi_ref_data">
-<code class="sig-name descname">_load_multi_ref_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._load_multi_ref_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._load_multi_ref_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loading dataset, invoked by <cite>SwitchboardCorpus._load_data</cite></p>
 </dd></dl>
 
 <dl class="method">
@@ -1653,7 +1646,7 @@ representing this batch of data. Default: False.</p></li>
 <dt>A dict contains what is in the return of MultiTurnDialog.get_batch.</dt><dd><p>It additionally contains:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>candidates (list): A 3-d list, multiple responses for reference
+<li><p>candidate_allvocabs (list): A 3-d list, multiple responses for reference
 Size of outermost list: batch_size
 Size of second innermost list: varying num of references
 Size of innermost list: varying num of words in a reference</p></li>
@@ -1683,15 +1676,22 @@ Size of innermost list: varying num of words in a reference</p></li>
 
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">
-<code class="sig-name descname">get_precision_recall_metric</code><span class="sig-paren">(</span><em class="sig-param">embed</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_precision_recall_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_precision_recall_metric</code><span class="sig-paren">(</span><em class="sig-param">sent_per_inst=20</em>, <em class="sig-param">embed=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_precision_recall_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metrics for precision and recall in terms of BLEU, cosine similarity.</p>
 <p>It contains:</p>
-<ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PrecisionRecallMetric</span></code></p></li>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuPrecisionRecallMetric</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.EmbSimilarityPrecisionRecallMetric</span></code></p></li>
 </ul>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>embed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Glove word embedding</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sent_per_inst</strong> (<em>int</em>) – The number of sentences to generate per instance</p></li>
+<li><p><strong>embed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>) – Word embedding for lookup
+Default: Glove word embedding</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
