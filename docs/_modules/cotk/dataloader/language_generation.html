@@ -301,11 +301,10 @@
 
 <span class="sd">	&#39;&#39;&#39;</span>
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;MSCOCO&quot;</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
 			<span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">file_type</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="n">file_type</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
