@@ -386,15 +386,13 @@ or an epoch is end.</p>
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.get_batch">
-<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></p></li>
 <li><p><strong>index</strong> (<em>list</em>) – a list of specified index</p></li>
-<li><p><strong>needhash</strong> (<em>bool</em>) – whether to return a hashvalue
-representing this batch of data. Default: False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -409,7 +407,6 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 <li><p>sent_allvocabs(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
 Provide both valid and invalid words.
 Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
-<li><p>hashvalue(bytes): (If <cite>needhash</cite> is True.) A bytes representing hash value of the data.</p></li>
 </ul>
 </div></blockquote>
 </p>
@@ -442,7 +439,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.get_next_batch">
-<code class="sig-name descname">get_next_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ignore_left_samples=False</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_next_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -801,14 +798,12 @@ or an epoch is end.</p>
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_batch">
-<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.
 :param key: must be contained in <cite>key_name</cite>
 :type key: str
 :param index: a list of specified index
-:type index: list
-:param needhash: whether to return a hashvalue                          representing this batch of data. Default: False.
-:type needhash: bool</p>
+:type index: list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><p>A dict at least contains:</p>
@@ -829,7 +824,6 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 <li><p>resp_allvocabs (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
 Provide both valid and invalid vocabs.
 Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
-<li><p>hashvalue(bytes): (If <cite>needhash</cite> is True.) A bytes representing hash value of the data.</p></li>
 </ul>
 </p>
 </dd>
@@ -866,7 +860,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_next_batch">
-<code class="sig-name descname">get_next_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ignore_left_samples=False</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_next_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1224,7 +1218,7 @@ or an epoch is end.</p>
 
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.get_batch">
-<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1284,7 +1278,7 @@ Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></p>
 
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.get_next_batch">
-<code class="sig-name descname">get_next_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ignore_left_samples=False</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_next_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get next batch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1630,15 +1624,13 @@ If True, add turn ^&lt;d&gt;^ at the end of each session and read candidate ^res
 
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus.get_batch">
-<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em>, <em class="sig-param">needhash=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></p></li>
 <li><p><strong>index</strong> (<em>list</em>) – a list of specified index</p></li>
-<li><p><strong>needhash</strong> (<em>bool</em>) – whether to return a hashvalue
-representing this batch of data. Default: False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

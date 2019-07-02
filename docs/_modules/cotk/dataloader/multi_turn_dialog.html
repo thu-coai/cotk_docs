@@ -161,7 +161,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
+<span class="c1"># from .._utils.unordered_hash import UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">GenerationBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
@@ -188,7 +188,7 @@
 		<span class="n">ext_vocab</span> <span class="o">=</span> <span class="n">ext_vocab</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ext_vocab</span><span class="p">,</span> <span class="n">key_name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
 <span class="sd">		Arguments:</span>
@@ -232,13 +232,6 @@
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
 			<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">][</span><span class="n">index_i</span><span class="p">]):</span>
 				<span class="n">res_sent</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sent</span>
-
-		<span class="k">if</span> <span class="n">needhash</span><span class="p">:</span>
-			<span class="n">unordered_hash</span> <span class="o">=</span> <span class="n">UnorderedSha256</span><span class="p">()</span>
-			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
-				<span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">repr</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;hashvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unordered_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
-			<span class="c1"># hashvalue must be unique for representing the whole batch</span>
 
 		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_sent</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
@@ -334,7 +327,7 @@
 <span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">HashValueRecorder</span><span class="p">(</span><span class="n">hash_key</span><span class="o">=</span><span class="s2">&quot;teacher_forcing_hashvalue&quot;</span><span class="p">))</span>
+		<span class="c1"># metric.add_metric(HashValueRecorder(hash_key=&quot;teacher_forcing_hashvalue&quot;))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
@@ -351,7 +344,7 @@
 <span class="sd">					   :class:`.metric.MultiTurnDialogRecorder`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">HashValueRecorder</span><span class="p">(</span><span class="n">hash_key</span><span class="o">=</span><span class="s2">&quot;inference_hashvalue&quot;</span><span class="p">))</span>
+		<span class="c1"># metric.add_metric(HashValueRecorder(hash_key=&quot;inference_hashvalue&quot;))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnBleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">MultiTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
@@ -609,14 +602,12 @@
 				   <span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">),</span> <span class="n">cut_sent_num</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">turn_lens</span><span class="p">)))</span>
 		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_vocab_set</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div>
 
-<div class="viewcode-block" id="SwitchboardCorpus.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">needhash</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpus.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			key (str): must be contained in `key_name`</span>
 <span class="sd">			index (list): a list of specified index</span>
-<span class="sd">			needhash (bool): whether to return a hashvalue</span>
-<span class="sd">			  representing this batch of data. Default: False.</span>
 
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): A dict contains what is in the return of MultiTurnDialog.get_batch.</span>
@@ -641,7 +632,6 @@
 		<span class="k">for</span> <span class="n">sub_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
 			<span class="k">if</span> <span class="n">sub_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
 				<span class="n">res</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">sub_key</span><span class="p">)</span>
-		<span class="c1">#TODO: add hashvalue for SwitchBoard</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="SwitchboardCorpus.get_precision_recall_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SwitchboardCorpus.get_precision_recall_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_precision_recall_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent_per_inst</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">embed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

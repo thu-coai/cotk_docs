@@ -165,6 +165,23 @@ a fair metric for every model.</p>
 <dt id="cotk.metric.MetricBase">
 <em class="property">class </em><code class="sig-prename descclassname">cotk.metric.</code><code class="sig-name descname">MetricBase</code><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for metrics.</p>
+<dl class="method">
+<dt id="cotk.metric.MetricBase.hash_relevant_data">
+<code class="sig-name descname">hash_relevant_data</code><span class="sig-paren">(</span><em class="sig-param">data_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase.hash_relevant_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase.hash_relevant_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked by ^forward^ or ^close^ to hash relevant data when computing a metric</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_list</strong> (<em>list</em>) – relevant data organized as list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.metric.MetricBase.hashvalue">
+<code class="sig-name descname">hashvalue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase.hashvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase.hashvalue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked by ^close^ to return hashvalue</p>
+</dd></dl>
+
 </dd></dl>
 
 <div class="section" id="metric-class">
@@ -230,6 +247,7 @@ Size: <cite>[batch_size, gen_sentence_length, vocab_size]</cite> for <code class
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><p><strong>perplexity</strong>: perplexity value</p></li>
+<li><p><strong>hashvalue</strong>: hash value of reference data</p></li>
 </ul>
 </dd></dl>
 
@@ -293,6 +311,7 @@ Size: <cite>[batch_size, max_turn_length, gen_sentence_length, vocab_size]</cite
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><p><strong>perplexity</strong>: perplexity value</p></li>
+<li><p><strong>hashvalue</strong>: hash value of reference data</p></li>
 </ul>
 </dd></dl>
 
@@ -339,6 +358,7 @@ Size: <cite>[batch_size, gen_sentence_length]</cite>.</p></li>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><p><strong>bleu</strong>: bleu value.</p></li>
+<li><p><strong>hashvalue</strong>: hash value of reference data</p></li>
 </ul>
 </dd></dl>
 
@@ -391,6 +411,7 @@ Size: <cite>[batch_size]</cite></p></li>
 <dd><p>Return a dict which contains:</p>
 <ul class="simple">
 <li><p><strong>bleu</strong>: bleu value.</p></li>
+<li><p><strong>hashvalue</strong>: hash value of reference data</p></li>
 </ul>
 </dd></dl>
 

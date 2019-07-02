@@ -156,6 +156,7 @@
 <span class="sd">a fair metric for every model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -167,7 +168,22 @@
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">pass</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span> <span class="o">=</span> <span class="n">UnorderedSha256</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MetricBase.hash_relevant_data"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase.hash_relevant_data">[docs]</a>	<span class="k">def</span> <span class="nf">hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_list</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Invoked by ^forward^ or ^close^ to hash relevant data when computing a metric</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data_list (list): relevant data organized as list</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="MetricBase.hashvalue"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase.hashvalue">[docs]</a>	<span class="k">def</span> <span class="nf">hashvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Invoked by ^close^ to return hashvalue</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span></div></div>
+
 
 <span class="k">class</span> <span class="nc">_PrecisionRecallMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base class for precision recall metrics. This is an abstract class.</span>
@@ -233,6 +249,7 @@
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>\
 					<span class="s2">&quot;Number of sentences per instance does not equal specified sent_per_inst&quot;</span><span class="p">)</span>
 
+		<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">references</span><span class="p">)))</span>
 		<span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">gen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">references</span><span class="p">,</span> <span class="n">gens</span><span class="p">):</span>
 			<span class="c1"># pylint: disable=no-member</span>
 			<span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -247,9 +264,11 @@
 
 <span class="sd">			* **precision**: average precision</span>
 <span class="sd">			* **recall**: average recall</span>
+<span class="sd">			* **hashvalue**: hash value of reference data</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="p">{</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> precision&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prec_list</span><span class="p">),</span> \
-				<span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> recall&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span><span class="p">)}</span>
+				<span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> recall&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span><span class="p">),</span>
+				<span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> hashvalue&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashvalue</span><span class="p">()}</span>
 
 <span class="k">class</span> <span class="nc">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="n">_PrecisionRecallMetric</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating sentence BLEU precision and recall</span>
@@ -420,6 +439,7 @@
 		<span class="c1">#resp = resp_allvocabs.copy()</span>
 		<span class="c1">#resp[resp &gt;= self.dataloader.vocab_size] = self.dataloader.unk_id</span>
 
+		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">single_length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resp_length</span><span class="p">):</span>
 			<span class="c1"># perform full check to assert the probability is valid</span>
 			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_check</span><span class="p">:</span>
@@ -458,14 +478,19 @@
 					<span class="p">))</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">invalid_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+			<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">invalid_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">single_length</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **perplexity**: perplexity value</span>
+<span class="sd">			* **hashvalue**: hash value of reference data</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">)}</span></div></div>
+		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">),</span> \
+		<span class="s2">&quot;perplexity hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashvalue</span><span class="p">()}</span></div></div>
 
 <div class="viewcode-block" id="MultiTurnPerplexityMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating multi-turn perplexity.</span>
@@ -544,6 +569,7 @@
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **perplexity**: perplexity value</span>
+<span class="sd">			* **hashvalue**: hash value of reference data</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
@@ -584,18 +610,24 @@
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
 
+		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">gen_sen</span><span class="p">,</span> <span class="n">resp_sen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">))</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">[</span><span class="mi">1</span><span class="p">:])])</span></div>
+			<span class="n">reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">reference</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **bleu**: bleu value.</span>
+<span class="sd">			* **hashvalue**: hash value of reference data</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">try</span><span class="p">:</span>
 			<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
-				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)}</span>
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">),</span> \
+				<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashvalue</span><span class="p">()}</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of corpus_bleu, </span><span class="se">\</span>
 <span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span></div></div>
@@ -714,6 +746,7 @@
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **fwbwbleu**: fw/bw bleu value.</span>
+<span class="sd">			* **hashvalue**: hash value of reference data</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">sample_hyps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
 		<span class="n">sample_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
@@ -749,11 +782,13 @@
 			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bleu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fw_bleu</span>
 			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;bw-bleu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bw_bleu</span>
 			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-bleu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">bw_bleu</span> <span class="o">*</span> <span class="n">fw_bleu</span> <span class="o">/</span> <span class="p">(</span><span class="n">fw_bleu</span> <span class="o">+</span> <span class="n">bw_bleu</span><span class="p">)</span>
-			<span class="k">return</span> <span class="n">result</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of sentence_bleu, </span><span class="se">\</span>
 <span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span>
 
+		<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+		<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-bleu hashvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashvalue</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="MultiTurnBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating multi-turn BLEU.</span>
@@ -814,10 +849,13 @@
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
 
 <span class="sd">			* **bleu**: bleu value.</span>
+<span class="sd">			* **hashvalue**: hash value of reference data</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">try</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
 			<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
-				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">)}</span>
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">),</span> \
+				<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashvalue</span><span class="p">()}</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of corpus_bleu, </span><span class="se">\</span>
 <span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span></div></div>
