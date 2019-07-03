@@ -159,11 +159,9 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># from .._utils.unordered_hash import UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">GenerationBase</span>
-<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span><span class="p">,</span> \
-			<span class="n">HashValueRecorder</span>
+<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span>
 
 <span class="c1"># pylint: disable=W0223</span>
 <div class="viewcode-block" id="SingleTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialog</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
@@ -179,6 +177,7 @@
 
 <div class="viewcode-block" id="SingleTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
+
 <span class="sd">		Arguments:</span>
 <span class="sd">			key (str): must be contained in `key_name`</span>
 <span class="sd">			index (list): a list of specified index</span>
@@ -186,43 +185,49 @@
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): A dict at least contains:</span>
 
-<span class="sd">			* post_length (list): A 1-d list, the length of post in each batch.</span>
-<span class="sd">			  Size: `[batch_size]`</span>
-<span class="sd">			* post (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
-<span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			* post_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  Provide both valid and invalid vocabs.</span>
-<span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			* resp_length (list): A 1-d list, the length of response in each batch.</span>
-<span class="sd">			  Size: `[batch_size]`</span>
-<span class="sd">			* resp (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  Only provide valid vocabs. `unk_id` will be used if a word is not valid.</span>
-<span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			* resp_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  Provide both valid and invalid vocabs.</span>
-<span class="sd">			  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* post_length (:class:`numpy.array`): A 1-d array, the length of post in each batch.</span>
+<span class="sd">			  	  Size: `[batch_size]`</span>
+<span class="sd">				* post (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
+<span class="sd">			  	  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* post_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
+<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* resp_length (:class:`numpy.array`): A 1-d array, the length of response in each batch.</span>
+<span class="sd">			  	  Size: `[batch_size]`</span>
+<span class="sd">				* resp (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
+<span class="sd">			  	  Only provide valid vocabs. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* resp_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
+<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
 
 <span class="sd">		Examples:</span>
-<span class="sd">			&gt;&gt;&gt; # vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
 <span class="sd">			&gt;&gt;&gt; #	&quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
+<span class="sd">			&gt;&gt;&gt; # vocab_size = 9</span>
+<span class="sd">			&gt;&gt;&gt; # vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;]</span>
 <span class="sd">			&gt;&gt;&gt; dataloader.get_batch(&#39;train&#39;, [0, 1])</span>
 <span class="sd">			{</span>
-<span class="sd">				&quot;post&quot;: [</span>
-<span class="sd">					[2, 4, 5, 6, 3],   # first post: &lt;go&gt; how are you &lt;eos&gt;</span>
+<span class="sd">				&quot;post_allvocabs&quot;: numpy.array([</span>
+<span class="sd">					[2, 5, 6, 10, 3],   # first post: &lt;go&gt; are you fine &lt;eos&gt;</span>
 <span class="sd">					[2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
-<span class="sd">				],</span>
-<span class="sd">				&quot;resp&quot;: [</span>
+<span class="sd">				]),</span>
+<span class="sd">				&quot;post&quot;: numpy.array([</span>
+<span class="sd">					[2, 5, 6, 1, 3],   # first post: &lt;go&gt; are you &lt;unk&gt; &lt;eos&gt;</span>
+<span class="sd">					[2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="sd">				]),</span>
+<span class="sd">				&quot;resp_allvocabs&quot;: numpy.array([</span>
 <span class="sd">					[2, 8, 9, 10, 3],  # first response: &lt;go&gt; i am fine &lt;eos&gt;</span>
 <span class="sd">					[2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
-<span class="sd">				],</span>
-<span class="sd">				&quot;post_length&quot;: [5, 3], # length of posts</span>
-<span class="sd">				&quot;resp_length&quot;: [5, 3], # length of responses</span>
+<span class="sd">				]),</span>
+<span class="sd">				&quot;resp&quot;: numpy.array([</span>
+<span class="sd">					[2, 8, 1, 1, 3],  # first response: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt;</span>
+<span class="sd">					[2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="sd">				]),</span>
+<span class="sd">				&quot;post_length&quot;: numpy.array([5, 3]), # length of posts</span>
+<span class="sd">				&quot;resp_length&quot;: numpy.array([5, 3]), # length of responses</span>
 <span class="sd">			}</span>
-
-<span class="sd">		Todo:</span>
-<span class="sd">			* add invalid_vocab examples</span>
-<span class="sd">			* mark which is np.array</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
@@ -255,7 +260,6 @@
 <span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="c1"># metric.add_metric(HashValueRecorder(hash_key=&quot;teacher_forcing_hashvalue&quot;))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
@@ -272,7 +276,6 @@
 <span class="sd">			               :class:`.metric.SingleDialogRecorder`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="c1"># metric.add_metric(HashValueRecorder(hash_key=&quot;inference_hashvalue&quot;))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
@@ -298,7 +301,7 @@
 <span class="sd">		[1] http://opus.nlpl.eu/OpenSubtitles.php</span>
 
 <span class="sd">		[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from</span>
-<span class="sd">		Movie and TV Subtitles.(LREC 2016)</span>
+<span class="sd">		Movie and TV Subtitles. LREC 2016.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
 			<span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>

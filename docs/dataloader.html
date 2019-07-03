@@ -399,7 +399,7 @@ or an epoch is end.</p>
 <dd class="field-even"><p><p>A dict at least contains:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>sent_length(list): A 1-d list, the length of sentence in each batch.
+<li><p>sent_length(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the length of sentence in each batch.
 Size: <cite>[batch_size]</cite></p></li>
 <li><p>sent(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
 Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
@@ -416,24 +416,25 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="go">{</span>
-<span class="go">        &quot;sent&quot;: [</span>
-<span class="go">                        [2, 4, 5, 6, 3],   # first sentence: &lt;go&gt; how are you &lt;eos&gt;</span>
-<span class="go">                        [2, 7, 3, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
-<span class="go">                ],</span>
-<span class="go">        &quot;sent_length&quot;: [5, 3], # length of sentences</span>
+<span class="go">        &quot;sent&quot;: numpy.array([</span>
+<span class="go">                        [2, 4, 5, 6, 3, 0],   # first sentence: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 3, 0, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 8, 1, 1, 3]    # third sentence: &lt;go&gt; hello i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt;</span>
+<span class="go">                ]),</span>
+<span class="go">        &quot;sent_length&quot;: numpy.array([5, 3, 6]), # length of sentences</span>
+<span class="go">        &quot;sent_allvocabs&quot;: numpy.array([</span>
+<span class="go">                        [2, 4, 5, 6, 3, 0],   # first sentence: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 3, 0, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 8, 9, 10, 3]    # third sentence: &lt;go&gt; hello i am fine &lt;eos&gt;</span>
+<span class="go">                ]),</span>
 <span class="go">}</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add invalid_vocab examples</p></li>
-<li><p>mark which array is np.array</p></li>
-</ul>
 </div>
 </dd></dl>
 
@@ -473,11 +474,11 @@ find first end token and abandon words after it (included the end token).</p></l
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to Sichuan &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to Sichuan</span>
+<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -498,18 +499,17 @@ Default: <cite>False</cite></p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id2">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add invalid vocab example</p></li>
-</ul>
 </div>
 </dd></dl>
 
@@ -527,13 +527,13 @@ Default: <cite>False</cite></p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -799,16 +799,19 @@ or an epoch is end.</p>
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_batch">
 <code class="sig-name descname">get_batch</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.
-:param key: must be contained in <cite>key_name</cite>
-:type key: str
-:param index: a list of specified index
-:type index: list</p>
+<dd><p>Get a batch of specified <cite>index</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p>A dict at least contains:</p>
-<ul class="simple">
-<li><p>post_length (list): A 1-d list, the length of post in each batch.
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></p></li>
+<li><p><strong>index</strong> (<em>list</em>) – a list of specified index</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A dict at least contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>post_length (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the length of post in each batch.
 Size: <cite>[batch_size]</cite></p></li>
 <li><p>post (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
 Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
@@ -816,7 +819,7 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 <li><p>post_allvocabs (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
 Provide both valid and invalid vocabs.
 Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
-<li><p>resp_length (list): A 1-d list, the length of response in each batch.
+<li><p>resp_length (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the length of response in each batch.
 Size: <cite>[batch_size]</cite></p></li>
 <li><p>resp (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
 Only provide valid vocabs. <cite>unk_id</cite> will be used if a word is not valid.
@@ -825,36 +828,40 @@ Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 Provide both valid and invalid vocabs.
 Size: <cite>[batch_size, max(sent_length)]</cite></p></li>
 </ul>
+</div></blockquote>
 </p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(dict)</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="go">{</span>
-<span class="go">        &quot;post&quot;: [</span>
-<span class="go">                [2, 4, 5, 6, 3],   # first post: &lt;go&gt; how are you &lt;eos&gt;</span>
+<span class="go">        &quot;post_allvocabs&quot;: numpy.array([</span>
+<span class="go">                [2, 5, 6, 10, 3],   # first post: &lt;go&gt; are you fine &lt;eos&gt;</span>
 <span class="go">                [2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
-<span class="go">        ],</span>
-<span class="go">        &quot;resp&quot;: [</span>
+<span class="go">        ]),</span>
+<span class="go">        &quot;post&quot;: numpy.array([</span>
+<span class="go">                [2, 5, 6, 1, 3],   # first post: &lt;go&gt; are you &lt;unk&gt; &lt;eos&gt;</span>
+<span class="go">                [2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">        ]),</span>
+<span class="go">        &quot;resp_allvocabs&quot;: numpy.array([</span>
 <span class="go">                [2, 8, 9, 10, 3],  # first response: &lt;go&gt; i am fine &lt;eos&gt;</span>
 <span class="go">                [2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
-<span class="go">        ],</span>
-<span class="go">        &quot;post_length&quot;: [5, 3], # length of posts</span>
-<span class="go">        &quot;resp_length&quot;: [5, 3], # length of responses</span>
+<span class="go">        ]),</span>
+<span class="go">        &quot;resp&quot;: numpy.array([</span>
+<span class="go">                [2, 8, 1, 1, 3],  # first response: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt;</span>
+<span class="go">                [2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">        ]),</span>
+<span class="go">        &quot;post_length&quot;: numpy.array([5, 3]), # length of posts</span>
+<span class="go">        &quot;resp_length&quot;: numpy.array([5, 3]), # length of responses</span>
 <span class="go">}</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id3">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add invalid_vocab examples</p></li>
-<li><p>mark which is np.array</p></li>
-</ul>
 </div>
 </dd></dl>
 
@@ -894,11 +901,11 @@ find first end token and abandon words after it (included the end token).</p></l
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to Sichuan &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to Sichuan</span>
+<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -919,18 +926,17 @@ Default: <cite>False</cite></p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id4">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add invalid vocab example</p></li>
-</ul>
 </div>
 </dd></dl>
 
@@ -948,13 +954,13 @@ Default: <cite>False</cite></p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1019,7 +1025,7 @@ testing stages. Default: 0 (No unknown words).</p></li>
 <p class="rubric">References</p>
 <p>[1] <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a></p>
 <p>[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from
-Movie and TV Subtitles.(LREC 2016)</p>
+Movie and TV Subtitles. LREC 2016.</p>
 <dl class="method">
 <dt id="cotk.dataloader.OpenSubtitles._load_data">
 <code class="sig-name descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles._load_data" title="Permalink to this definition">¶</a></dt>
@@ -1264,15 +1270,36 @@ Size: <cite>[batch_size, max(turn_length[i]), max(sent_length)]</cite></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<span class="go">    &gt;&gt;&gt; #   &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
+<span class="go">    &gt;&gt;&gt; # vocab_size = 9</span>
+<span class="go">    &gt;&gt;&gt; # vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;]</span>
+<span class="go">    &gt;&gt;&gt; dataloader.get_batch(&#39;train&#39;, [0, 1])</span>
+<span class="go">    {</span>
+<span class="go">            &quot;sent_allvocabs&quot;: numpy.array([</span>
+<span class="go">                    [[2, 7, 3, 0, 0, 0],   # 1st sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                    [2, 7, 3, 0, 0, 0],    # 2nd sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                    [2, 4, 5, 6, 3, 0],    # 3rd sentence in 1st session: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                    [2, 8, 9, 10, 3, 0]],  # 4th sentence in 1st session: &lt;go&gt; i am fine &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                    [[2, 7, 4, 5, 6, 3], # 1st sentence in 2nd session: &lt;go&gt; hello how are you &lt;eos&gt;</span>
+<span class="go">                    [2, 8, 9, 10, 3, 0], # 2nd sentence in 2nd session: &lt;go&gt; i am fine &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                    [0, 0, 0, 0, 0, 0],</span>
+<span class="go">                    [0, 0, 0, 0, 0, 0]]</span>
+<span class="go">            ]),</span>
+<span class="go">            &quot;sent&quot;: numpy.array([</span>
+<span class="go">                    [[2, 7, 3, 0, 0, 0],  # 1st sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                    [2, 7, 3, 0, 0, 0],   # 2nd sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                    [2, 4, 5, 6, 3, 0],   # 3rd sentence in 1st session: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                    [2, 8, 1, 1, 3, 0]],  # 4th sentence in 1st session: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                    [[2, 7, 4, 5, 6, 3],  # 1st sentence in 2nd session: &lt;go&gt; hello how are you &lt;eos&gt;</span>
+<span class="go">                    [2, 8, 1, 1, 3, 0],   # 2nd sentence in 2nd session: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                    [0, 0, 0, 0, 0, 0],</span>
+<span class="go">                    [0, 0, 0, 0, 0, 0]]</span>
+<span class="go">            ]),</span>
+<span class="go">            &quot;turn_length&quot;: [4, 2], # the number of turns in each session</span>
+<span class="go">            &quot;sent_length&quot;: [[3, 3, 5, 5], [6, 5]], # length of sentences</span>
+<span class="go">    }</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id5">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>fix the missing example</p></li>
-</ul>
 </div>
 </dd></dl>
 
@@ -1312,11 +1339,11 @@ find first end token and abandon words after it (included the end token).</p></l
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to Sichuan &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to Sichuan</span>
+<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1342,12 +1369,31 @@ Size: <cite>[turn_length, max_sent_length]</cite></p></li>
 </ul>
 </dd>
 </dl>
-<p>Examples:</p>
-<div class="admonition-todo admonition" id="id6">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>fix the missing example</p></li>
-</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;Japan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># &lt;go&gt; I have been to Japan &lt;eos&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">... </span><span class="n">turn_length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="gp">... </span><span class="n">turn_length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="gp">... </span><span class="n">turn_length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -1367,18 +1413,17 @@ Default: <cite>False</cite></p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">sen_to_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id7">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add invalid vocab example</p></li>
-</ul>
 </div>
 </dd></dl>
 
@@ -1397,12 +1442,20 @@ Default: False</p></li>
 </ul>
 </dd>
 </dl>
-<p>Examples:</p>
-<div class="admonition-todo admonition" id="id8">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>fix the missing example</p></li>
-</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;Japan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_sen_to_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Japan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_sen_to_index</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Japan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]],</span> <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">8</span> <span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span> <span class="p">,</span><span class="mi">9</span> <span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -1420,13 +1473,13 @@ Default: False</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;Sichuan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">index_to_sen</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Sichuan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1448,12 +1501,32 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</p><
 </ul>
 </dd>
 </dl>
-<p>Examples:</p>
-<div class="admonition-todo admonition" id="id9">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>fix the missing example</p></li>
-</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;Japan&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="gp">... </span><span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">turn_length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Japan&quot;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="gp">... </span><span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">turn_length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="gp">... </span><span class="n">trim</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">turn_length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Japan&quot;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_index_to_sen</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">trim</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;Japan&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]]</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -1519,12 +1592,11 @@ testing stages. Default: 0 (No unknown words).</p>
 </dd>
 </dl>
 <p>Refer to <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
-<div class="admonition-todo admonition" id="id10">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add references</p></li>
-</ul>
-</div>
+<p class="rubric">References</p>
+<p>[1] <a class="reference external" href="http://dataset.cs.mcgill.ca/ubuntu-corpus-1.0">http://dataset.cs.mcgill.ca/ubuntu-corpus-1.0</a></p>
+<p>[2] <a class="reference external" href="https://github.com/rkadlec/ubuntu-ranking-dataset-creator">https://github.com/rkadlec/ubuntu-ranking-dataset-creator</a></p>
+<p>[3] Lowe R, Pow N, Serban I, et al. The Ubuntu Dialogue Corpus: A Large Dataset
+for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</p>
 <dl class="method">
 <dt id="cotk.dataloader.UbuntuCorpus._load_data">
 <code class="sig-name descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus._load_data" title="Permalink to this definition">¶</a></dt>
@@ -1559,25 +1631,22 @@ testing stages. Default: 0 (No unknown words).</p>
 </dd>
 </dl>
 <p>Refer to <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
-<div class="admonition-todo admonition" id="id11">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>add references</p></li>
-</ul>
-</div>
+<p class="rubric">References</p>
+<p>[1] <a class="reference external" href="https://catalog.ldc.upenn.edu/LDC97S62">https://catalog.ldc.upenn.edu/LDC97S62</a></p>
+<p>[2] John J G and Edward H. Switchboard-1 release 2. Linguistic Data Consortium, Philadelphia 1997.</p>
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus._convert2ids">
 <code class="sig-name descname">_convert2ids</code><span class="sig-paren">(</span><em class="sig-param">origin_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._convert2ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._convert2ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert topic, da, word to ids, invoked by ^SwitchboardCorpus._load_data^
-and ^SwitchboardCorpus._load_multi_ref_data^</p>
+<dd><p>Convert topic, da, word to ids, invoked by <cite>SwitchboardCorpus._load_data</cite>
+and <cite>SwitchboardCorpus._load_multi_ref_data</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>origin_data</strong> (<em>dict</em>) – <p>Contains at least:</p>
 <ul class="simple">
 <li><p>session (list): A 3-d list, utterances in words.
-Size of the outermost list: num_data.
-Size of the second innermost list: num of utterances in a session.
-Size of the innermost list: num of words in a utterance.</p></li>
+The size of the outermost list is num_data.
+The size of the second innermost list is the number of utterances in a session.
+The size of the innermost list is the number of words in a utterance.</p></li>
 </ul>
 </p>
 </dd>
@@ -1597,14 +1666,13 @@ Size of the innermost list: num of words in a utterance.</p></li>
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus._read_file">
 <code class="sig-name descname">_read_file</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">read_multi_ref=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus._read_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reading data from file, invoked by ^SwitchboardCorpus._load_data^
-and ^SwitchboardCorpus._load_multi_ref_data^</p>
+<dd><p>Reading data from file, invoked by <cite>SwitchboardCorpus._load_data</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> (<em>*</em>) – Name of the file to read from</p></li>
-<li><p><strong>read_multi_ref</strong> (<em>*</em>) – If False, add turn ^&lt;d&gt;^ ahead of each session
-If True, add turn ^&lt;d&gt;^ at the end of each session and read candidate ^responses^</p></li>
+<li><p><strong>filepath</strong> (<em>str</em>) – Name of the file to read from</p></li>
+<li><p><strong>read_multi_ref</strong> (<em>bool</em>) – If False, add turn <cite>&lt;d&gt;</cite> ahead of each session
+If True, add turn <cite>&lt;d&gt;</cite> at the end of each session and read candidate <cite>responses</cite></p></li>
 </ul>
 </dd>
 </dl>
@@ -1638,10 +1706,10 @@ If True, add turn ^&lt;d&gt;^ at the end of each session and read candidate ^res
 <dt>A dict contains what is in the return of MultiTurnDialog.get_batch.</dt><dd><p>It additionally contains:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>candidate_allvocabs (list): A 3-d list, multiple responses for reference
-Size of outermost list: batch_size
-Size of second innermost list: varying num of references
-Size of innermost list: varying num of words in a reference</p></li>
+<li><p>candidate_allvocabs (list): A 3-d list, multiple responses for reference.
+The size of outermost list is batch_size, while the size of second innermost list
+is varying with the number of references and the size of innermost list is varying
+with the number of words in a reference.</p></li>
 </ul>
 </div></blockquote>
 </dd>
@@ -1654,15 +1722,39 @@ Size of innermost list: varying num of words in a reference</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">{</span>
+<span class="go">        &quot;sent_allvocabs&quot;: numpy.array([</span>
+<span class="go">                [[2, 7, 3, 0, 0, 0],   # 1st sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                [2, 7, 3, 0, 0, 0],    # 2nd sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                [2, 4, 5, 6, 3, 0],    # 3rd sentence in 1st session: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                [2, 8, 9, 10, 3, 0]],  # 4th sentence in 1st session: &lt;go&gt; i am fine &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                [[2, 7, 4, 5, 6, 3], # 1st sentence in 2nd session: &lt;go&gt; hello how are you &lt;eos&gt;</span>
+<span class="go">                [2, 8, 9, 10, 3, 0], # 2nd sentence in 2nd session: &lt;go&gt; i am fine &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                [0, 0, 0, 0, 0, 0],</span>
+<span class="go">                [0, 0, 0, 0, 0, 0]]</span>
+<span class="go">        ]),</span>
+<span class="go">        &quot;sent&quot;: numpy.array([</span>
+<span class="go">                [[2, 7, 3, 0, 0, 0],  # 1st sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                [2, 7, 3, 0, 0, 0],   # 2nd sentence in 1st session: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                [2, 4, 5, 6, 3, 0],   # 3rd sentence in 1st session: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                [2, 8, 1, 1, 3, 0]],  # 4th sentence in 1st session: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                [[2, 7, 4, 5, 6, 3],  # 1st sentence in 2nd session: &lt;go&gt; hello how are you &lt;eos&gt;</span>
+<span class="go">                [2, 8, 1, 1, 3, 0],   # 2nd sentence in 2nd session: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                [0, 0, 0, 0, 0, 0],</span>
+<span class="go">                [0, 0, 0, 0, 0, 0]]</span>
+<span class="go">        ]),</span>
+<span class="go">        &quot;turn_length&quot;: [4, 2], # the number of turns in each session</span>
+<span class="go">        &quot;sent_length&quot;: [[3, 3, 5, 5], [6, 5]], # length of sentences</span>
+<span class="go">        &quot;candidate_allvocabs&quot;: [</span>
+<span class="go">        [[2, 7, 3],[2, 6, 5, 10, 3]], # two responses to 1st session: &lt;go&gt; hello &lt;eos&gt; / &lt;go&gt; you are fine &lt;eos&gt;</span>
+<span class="go">        [[2, 6, 5, 10, 3]]]           # one response to 2nd session: &lt;go&gt; you are fine &lt;eos&gt;</span>
+<span class="go">}</span>
 </pre></div>
-</div>
-<div class="admonition-todo admonition" id="id12">
-<p class="admonition-title">Todo</p>
-<ul class="simple">
-<li><p>fix the missing example</p></li>
-</ul>
 </div>
 </dd></dl>
 

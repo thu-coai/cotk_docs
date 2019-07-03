@@ -179,6 +179,25 @@ loading wordvector automatically.</p>
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="cotk.wordvector.WordVector.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">n_dims</em>, <em class="sig-param">vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load word vector and return a numpy array. The ith row is the feature
+of the ith word in <cite>vocab_list</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_dims</strong> (<em>int</em>) – specify the dimension size of word vector. If <cite>n_dims</cite>
+is bigger than pretrained word vector, the rest feature will be
+randomly initialized by normal distriution.</p></li>
+<li><p><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
+is any word not appeared in pretrained word vector, the feature will
+be randomly initialized by normal distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -199,7 +218,7 @@ it can be a directory contains ‘glove.txt’ or a text file.</p></li>
 <dl class="method">
 <dt id="cotk.wordvector.Glove.load">
 <code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">n_dims</em>, <em class="sig-param">vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Refer to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load()</span></code>.</p>
+<dd><p>Refer to <a class="reference internal" href="#cotk.wordvector.WordVector.load" title="cotk.wordvector.WordVector.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load()</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
