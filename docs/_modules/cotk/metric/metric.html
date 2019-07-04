@@ -410,66 +410,9 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">full_check</span> <span class="o">=</span> <span class="n">full_check</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">resp_length</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">gen_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span>
-
-<div class="viewcode-block" id="PerplexityMetric.run_f"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.run_f">[docs]</a>	<span class="nd">@classmethod</span>
-	<span class="k">def</span> <span class="nf">run_f</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ele</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Auxiliary function for computing perplexity:</span>
-
-<span class="sd">		Returns:</span>
-
-<span class="sd">			* tuple: sum of log perplexity and sum of sentence length.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">gen_log_prob</span><span class="p">,</span> <span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">single_length</span><span class="p">,</span> \
-				<span class="n">full_check</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">all_vocab_size</span><span class="p">,</span> <span class="n">unk_id</span><span class="p">,</span> <span class="n">invalid_vocab_num</span> <span class="o">=</span> <span class="n">ele</span>
-
-
-		<span class="c1"># perform full check to assert the probability is valid</span>
-		<span class="k">if</span> <span class="n">full_check</span><span class="p">:</span>
-			<span class="n">expsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[:</span><span class="n">single_length</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expsum</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">single_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_log_prob_key] must be processed after log_softmax.&quot;</span><span class="p">)</span>
-
-		<span class="n">resp_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">single_length</span><span class="p">])</span>
-		<span class="n">gen_log_prob_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">invalid_vocab</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">gen_log_prob_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">vocab_size</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to vocab_size when </span><span class="se">\</span>
-<span class="s2">					invalid_vocab = False, </span><span class="se">\</span>
-<span class="s2">					but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_log_prob_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vocab_size</span><span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">gen_log_prob_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">all_vocab_size</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to all_vocab_size </span><span class="se">\</span>
-<span class="s2">					when invalid_vocab = True, </span><span class="se">\</span>
-<span class="s2">					but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_log_prob_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">all_vocab_size</span><span class="p">))</span>
-
-		<span class="n">word_loss</span> <span class="o">=</span> <span class="mi">0</span>
-		<span class="n">length_sum</span> <span class="o">=</span> <span class="mi">0</span>
-
-		<span class="c1"># calc normal vocab</span>
-		<span class="n">normal_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">resp_now</span> <span class="o">!=</span> <span class="n">unk_id</span><span class="p">,</span> \
-								<span class="n">resp_now</span> <span class="o">&lt;</span> <span class="n">vocab_size</span><span class="p">))</span>
-		<span class="n">word_loss</span> <span class="o">+=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">gen_log_prob_now</span><span class="p">[</span><span class="n">normal_idx</span><span class="p">,</span> <span class="n">resp_now</span><span class="p">[</span><span class="n">normal_idx</span><span class="p">]])</span>
-		<span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">normal_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-		<span class="c1"># calc invalid vocab</span>
-		<span class="c1"># smoothing from unk</span>
-		<span class="n">invalid_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">resp_now</span> <span class="o">&gt;=</span> <span class="n">vocab_size</span><span class="p">)</span>
-		<span class="n">invalid_log_prob</span> <span class="o">=</span> <span class="n">gen_log_prob_now</span><span class="p">[</span>\
-								<span class="n">invalid_idx</span><span class="p">,</span> <span class="p">[</span><span class="n">unk_id</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_idx</span><span class="p">)</span> \
-							<span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">invalid_vocab_num</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">invalid_vocab</span><span class="p">:</span>
-			<span class="n">extra_invalid_log_prob</span> <span class="o">=</span> <span class="n">gen_log_prob_now</span><span class="p">[</span><span class="n">invalid_idx</span><span class="p">,</span> <span class="n">resp_now</span><span class="p">[</span><span class="n">invalid_idx</span><span class="p">]]</span>
-			<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> \
-					<span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">extra_invalid_log_prob</span><span class="p">)</span> \
-				<span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span>
-		<span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">invalid_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-		<span class="k">return</span> <span class="n">word_loss</span><span class="p">,</span> <span class="n">length_sum</span></div>
+		<span class="c1">#self.resp_length = []</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="PerplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data. Smoothing will be performed for invalid vocabs.</span>
@@ -516,18 +459,81 @@
 <span class="s2">				gen_log_prob[</span><span class="si">%d</span><span class="s2">][</span><span class="si">%d</span><span class="s2">] exp sum is equal to </span><span class="si">%f</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">checkid</span><span class="p">,</span> <span class="n">checkrow</span><span class="p">,</span> \
 				<span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">checkid</span><span class="p">][</span><span class="n">checkrow</span><span class="p">]))))</span>
 
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-			<span class="n">resp_allvocabs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">)</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-			<span class="n">gen_log_prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">)</span>
+		<span class="c1">#if not isinstance(resp_allvocabs, np.ndarray):</span>
+		<span class="c1">#	resp_allvocabs = np.array(resp_allvocabs)</span>
+		<span class="c1">#if not isinstance(gen_log_prob, np.ndarray):</span>
+		<span class="c1">#	gen_log_prob = np.array(gen_log_prob)</span>
 
+		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">resp_len</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resp_length</span><span class="p">):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">resp_len</span><span class="p">])</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">resp_length</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_len</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">gen_log_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+			<span class="n">resp_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="n">resp_len</span><span class="p">])</span>
+			<span class="n">gen_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-		<span class="c1">#resp = resp_allvocabs.copy()</span>
-		<span class="c1">#resp[resp &gt;= self.dataloader.vocab_size] = self.dataloader.unk_id</span>
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_now</span><span class="p">)</span>
+
+			<span class="c1"># perform full check to assert the probability is valid</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_check</span><span class="p">:</span>
+				<span class="n">expsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[:</span><span class="n">resp_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expsum</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">resp_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_log_prob_key] must be processed after log_softmax.&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to vocab_size when </span><span class="se">\</span>
+<span class="s2">						invalid_vocab = False, </span><span class="se">\</span>
+<span class="s2">						but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to all_vocab_size </span><span class="se">\</span>
+<span class="s2">						when invalid_vocab = True, </span><span class="se">\</span>
+<span class="s2">						but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">))</span>
+
+			<span class="n">resp</span> <span class="o">=</span> <span class="n">resp_now</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+			<span class="c1">#self.resp_length.append(resp_len)</span>
+
+			<span class="n">resp_known</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="n">resp_known</span><span class="p">[</span><span class="n">resp_known</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">resp_len</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">resp_known</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[:</span><span class="n">resp_len</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">])</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PerplexityMetric.run_f"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.run_f">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">run_f</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ele</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Auxiliary function for computing perplexity:</span>
+
+<span class="sd">		Returns:</span>
+
+<span class="sd">			* tuple: sum of log perplexity and sum of sentence length.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">valid_log_prob</span><span class="p">,</span> <span class="n">unk_log_prob</span><span class="p">,</span> <span class="n">resp_now</span><span class="p">,</span> \
+				<span class="n">invalid_vocab</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">all_vocab_size</span><span class="p">,</span> <span class="n">unk_id</span> <span class="o">=</span> <span class="n">ele</span>
+
+		<span class="n">word_loss</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">length_sum</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="c1"># calc normal vocab</span>
+		<span class="n">normal_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">resp_now</span> <span class="o">!=</span> <span class="n">unk_id</span><span class="p">,</span> \
+								<span class="n">resp_now</span> <span class="o">&lt;</span> <span class="n">vocab_size</span><span class="p">))</span>
+		<span class="n">word_loss</span> <span class="o">+=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid_log_prob</span><span class="p">[</span><span class="n">normal_idx</span><span class="p">])</span>
+		<span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">normal_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="c1"># calc invalid vocab</span>
+		<span class="c1"># smoothing from unk</span>
+		<span class="n">invalid_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">resp_now</span> <span class="o">&gt;=</span> <span class="n">vocab_size</span><span class="p">)</span>
+		<span class="n">invalid_log_prob</span> <span class="o">=</span> <span class="n">unk_log_prob</span><span class="p">[</span><span class="n">invalid_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">all_vocab_size</span> <span class="o">-</span> <span class="n">vocab_size</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">invalid_vocab</span><span class="p">:</span>
+			<span class="n">extra_invalid_log_prob</span> <span class="o">=</span> <span class="n">valid_log_prob</span><span class="p">[</span><span class="n">invalid_idx</span><span class="p">]</span>
+			<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> \
+					<span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">extra_invalid_log_prob</span><span class="p">)</span> \
+				<span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span>
+		<span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">invalid_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="k">return</span> <span class="n">word_loss</span><span class="p">,</span> <span class="n">length_sum</span></div>
 
 <div class="viewcode-block" id="PerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
@@ -536,27 +542,27 @@
 <span class="sd">			* **perplexity hashvalue**: hash value of reference data.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span>
-		<span class="n">tasks</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">single_length</span><span class="p">,</span> \
-						<span class="bp">self</span><span class="o">.</span><span class="n">full_check</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> \
-						<span class="n">loader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab_num</span><span class="p">)</span> \
-						<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">single_length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_length</span><span class="p">)]</span>
+		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> \
+		 				<span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span> \
+		 				<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="p">))</span>
 
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resp_length</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
-			<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
-			<span class="k">for</span> <span class="n">ans</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)):</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-			<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">for</span> <span class="n">ans</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> <span class="n">tasks</span><span class="p">):</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="c1"># if len(self.gen_valid_log_prob) &gt; 100:</span>
+		<span class="c1"># 	pool = Pool(multiprocessing.cpu_count())</span>
+		<span class="c1"># 	for ans in tqdm.tqdm(pool.imap_unordered(self.run_f, tasks, chunksize=20), \</span>
+		<span class="c1"># 		total=len(self.gen_valid_log_prob)):</span>
+		<span class="c1"># 		self.word_loss += ans[0]</span>
+		<span class="c1"># 		self.length_sum += ans[1]</span>
+		<span class="c1"># 	pool.close()</span>
+		<span class="c1"># 	pool.join()</span>
+		<span class="c1"># else:</span>
+		<span class="k">for</span> <span class="n">ans</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_f</span><span class="p">,</span> <span class="n">tasks</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">gen_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">resp_length</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
 
 		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">),</span> \
 				<span class="s2">&quot;perplexity hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashvalue</span><span class="p">()}</span></div></div>

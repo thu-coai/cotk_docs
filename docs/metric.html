@@ -294,23 +294,6 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd>
 </dl>
 <dl class="method">
-<dt id="cotk.metric.PerplexityMetric.run_f">
-<em class="property">classmethod </em><code class="sig-name descname">run_f</code><span class="sig-paren">(</span><em class="sig-param">ele</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.run_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.run_f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Auxiliary function for computing perplexity:</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>sum of log perplexity and sum of sentence length.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>tuple</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="cotk.metric.PerplexityMetric.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data. Smoothing will be performed for invalid vocabs.
@@ -355,6 +338,23 @@ where “~” means different sizes allowed.</p>
 <p><code class="docutils literal notranslate"><span class="pre">data[gen_log_prob_key]</span></code> must be processed after log_softmax. That means,
 <code class="docutils literal notranslate"><span class="pre">np.sum(np.exp(gen_log_prob),</span> <span class="pre">-1)</span></code> equals <code class="docutils literal notranslate"><span class="pre">np.ones((batch_size,</span> <span class="pre">gen_sentence_length))</span></code></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.metric.PerplexityMetric.run_f">
+<em class="property">classmethod </em><code class="sig-name descname">run_f</code><span class="sig-paren">(</span><em class="sig-param">ele</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.run_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.run_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auxiliary function for computing perplexity:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sum of log perplexity and sum of sentence length.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>tuple</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
