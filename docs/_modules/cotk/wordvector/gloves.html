@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -41,11 +42,10 @@
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -72,6 +72,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -89,10 +90,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
+</ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,16 +167,19 @@
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
 
 <div class="viewcode-block" id="Glove"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.Glove">[docs]</a><span class="k">class</span> <span class="nc">Glove</span><span class="p">(</span><span class="n">WordVector</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;GloVe is pre-trained word vectors from</span>
-<span class="sd">	Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014.</span>
-<span class="sd">	GloVe: Global Vectors for Word Representation.</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;GloVe is pre-trained word vector named `Global Vectors for Word Representation`.</span>
+
+<span class="sd">	References:</span>
+
+<span class="sd">		[1] Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014.</span>
+<span class="sd">		GloVe: Global Vectors for Word Representation.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		file_id (str): a str indicates the source of GloVe word vectors. If it is local file,</span>
-<span class="sd">			it can be a directory contains &#39;glove.txt&#39; or a text file.</span>
-<span class="sd">		file_type (str): a str indicates the type of GloVe word vectors. Default: Glove300d</span>
+<span class="sd">			it can be a directory contains &#39;glove.txt&#39; or just a text file.</span>
+<span class="sd">			Default: ``resources://Glove300d``.	A 300d glove is downloaded and cached.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="s2">&quot;resources://Glove300d&quot;</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 		<span class="k">if</span> <span class="n">file_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span>
@@ -195,6 +204,7 @@
 
 		<span class="n">wordvec</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="n">oov_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">have_warned</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="k">for</span> <span class="n">vocab</span> <span class="ow">in</span> <span class="n">vocab_list</span><span class="p">:</span>
 			<span class="n">str_vec</span> <span class="o">=</span> <span class="n">raw_word2vec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 			<span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_dims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
@@ -202,6 +212,15 @@
 				<span class="n">oov_cnt</span> <span class="o">+=</span> <span class="mi">1</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">str_vec</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+				<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_dims</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">have_warned</span><span class="p">:</span>
+					<span class="n">have_warned</span> <span class="o">=</span> <span class="kc">True</span>
+					<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n_dims</span><span class="p">:</span>
+						<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Dimension of loaded wordvec is </span><span class="si">%d</span><span class="s2">, but ``n_dims`` is set to </span><span class="si">%d</span><span class="s2">. </span><span class="se">\</span>
+<span class="s2">							The redundant dimension is trimmed.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">n_dims</span><span class="p">))</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Dimension of loaded wordvec is </span><span class="si">%d</span><span class="s2">, but ``n_dims`` is set to </span><span class="si">%d</span><span class="s2">. </span><span class="se">\</span>
+<span class="s2">							The extra dimension is initialized by normal distribution (mean=0, std=0.1).&quot;</span>\
+							<span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">n_dims</span><span class="p">))</span>
 				<span class="n">now_dims</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">n_dims</span><span class="p">)</span>
 				<span class="n">vec</span><span class="p">[:</span><span class="n">now_dims</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:</span><span class="n">now_dims</span><span class="p">]</span>
 			<span class="n">wordvec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>

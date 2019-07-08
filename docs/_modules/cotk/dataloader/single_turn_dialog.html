@@ -33,6 +33,7 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -41,11 +42,10 @@
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -72,6 +72,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -89,10 +90,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
+</ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -167,6 +173,9 @@
 <div class="viewcode-block" id="SingleTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialog</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for single-turn dialog datasets. This is an abstract class.</span>
 
+<span class="sd">	This class is supported for sequence to sequence generation tasks, especially</span>
+<span class="sd">	single turn dialog tasks.</span>
+
 <span class="sd">	Arguments:{ARGUMENTS}</span>
 
 <span class="sd">	Attributes:{ATTRIBUTES}</span>
@@ -179,29 +188,29 @@
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			key (str): must be contained in `key_name`</span>
+<span class="sd">			key (str): key name of dataset, must be contained in ``self.key_name``.</span>
 <span class="sd">			index (list): a list of specified index</span>
 
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): A dict at least contains:</span>
 
-<span class="sd">				* post_length (:class:`numpy.array`): A 1-d array, the length of post in each batch.</span>
-<span class="sd">			  	  Size: `[batch_size]`</span>
-<span class="sd">				* post (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  	  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">				* post_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">				* resp_length (:class:`numpy.array`): A 1-d array, the length of response in each batch.</span>
-<span class="sd">			  	  Size: `[batch_size]`</span>
-<span class="sd">				* resp (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  	  Only provide valid vocabs. `unk_id` will be used if a word is not valid.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">				* resp_allvocabs (:class:`numpy.array`):</span>
-<span class="sd">				  A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">			* **post_length** (:class:`numpy.ndarray`): A 1-d array, the length of post in each batch.</span>
+<span class="sd">			  Size: ``[batch_size]``</span>
+<span class="sd">			* **post** (:class:`numpy.ndarray`): A 2-d padded array containing words of index form in posts.</span>
+<span class="sd">			  Only provide valid words. ``unk_id`` will be used if a word is not valid.</span>
+<span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
+<span class="sd">			* **post_allvocabs** (:class:`numpy.ndarray`): A 2-d padded array containing words of index</span>
+<span class="sd">			  form in posts. Provide both valid and invalid vocabs.</span>
+<span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
+<span class="sd">			* **resp_length** (:class:`numpy.ndarray`): A 1-d array, the length of response in each batch.</span>
+<span class="sd">			  Size: ``[batch_size]``</span>
+<span class="sd">			* **resp** (:class:`numpy.ndarray`): A 2-d padded array containing words of index form</span>
+<span class="sd">			  in responses. Only provide valid vocabs. ``unk_id`` will be used if a word is not valid.</span>
+<span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
+<span class="sd">			* **resp_allvocabs** (:class:`numpy.ndarray`):</span>
+<span class="sd">			  A 2-d padded array containing words of index form in responses.</span>
+<span class="sd">			  Provide both valid and invalid vocabs.</span>
+<span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
 
 <span class="sd">		Examples:</span>
 <span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
@@ -211,19 +220,19 @@
 <span class="sd">			&gt;&gt;&gt; dataloader.get_batch(&#39;train&#39;, [0, 1])</span>
 <span class="sd">			{</span>
 <span class="sd">				&quot;post_allvocabs&quot;: numpy.array([</span>
-<span class="sd">					[2, 5, 6, 10, 3],   # first post: &lt;go&gt; are you fine &lt;eos&gt;</span>
+<span class="sd">					[2, 5, 6, 10, 3],  # first post:  &lt;go&gt; are you fine &lt;eos&gt;</span>
 <span class="sd">					[2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
 <span class="sd">				]),</span>
 <span class="sd">				&quot;post&quot;: numpy.array([</span>
-<span class="sd">					[2, 5, 6, 1, 3],   # first post: &lt;go&gt; are you &lt;unk&gt; &lt;eos&gt;</span>
+<span class="sd">					[2, 5, 6, 1, 3],   # first post:  &lt;go&gt; are you &lt;unk&gt; &lt;eos&gt;</span>
 <span class="sd">					[2, 7, 3, 0, 0],   # second post: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
 <span class="sd">				]),</span>
 <span class="sd">				&quot;resp_allvocabs&quot;: numpy.array([</span>
-<span class="sd">					[2, 8, 9, 10, 3],  # first response: &lt;go&gt; i am fine &lt;eos&gt;</span>
+<span class="sd">					[2, 8, 9, 10, 3],  # first response:  &lt;go&gt; i am fine &lt;eos&gt;</span>
 <span class="sd">					[2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
 <span class="sd">				]),</span>
 <span class="sd">				&quot;resp&quot;: numpy.array([</span>
-<span class="sd">					[2, 8, 1, 1, 3],  # first response: &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt;</span>
+<span class="sd">					[2, 8, 1, 1, 3],   # first response:  &lt;go&gt; i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt;</span>
 <span class="sd">					[2, 7, 3, 0, 0],   # second response: &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt;</span>
 <span class="sd">				]),</span>
 <span class="sd">				&quot;post_length&quot;: numpy.array([5, 3]), # length of posts</span>
@@ -250,34 +259,53 @@
 		<span class="n">res_resp</span><span class="p">[</span><span class="n">res_resp</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span>\
+					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metrics for teacher-forcing.</span>
 
 <span class="sd">		It contains:</span>
 
 <span class="sd">		* :class:`.metric.PerplexityMetric`</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
+<span class="sd">			gen_log_prob_key (str):  The key of predicted log probablilty over words.</span>
+<span class="sd">				Refer to :class:`.metric.PerplexityMetric`. Default: ``gen_log_prob``.</span>
+<span class="sd">			invalid_vocab (bool): Whether ``gen_log_prob`` contains invalid vocab.</span>
+<span class="sd">				Refer to :class:`.metric.PerplexityMetric`. Default: ``False``.</span>
+
+
+<span class="sd">		Returns:</span>
+<span class="sd">			A :class:`.metric.MetricChain` object.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>\
+			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span>\
+			<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span>\
+			<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">,</span>\
+			<span class="n">invalid_vocab</span><span class="o">=</span><span class="n">invalid_vocab</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
-<div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span> \
+					<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span>\
+					<span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metrics for inference.</span>
 
 <span class="sd">		It contains:</span>
 
 <span class="sd">		* :class:`.metric.BleuCorpusMetric`</span>
-<span class="sd">		* :class:`.metric.SingleDialogRecorder`</span>
+<span class="sd">		* :class:`.metric.SingleTurnDialogRecorder`</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			gen_key (str): default: &quot;gen&quot;. Refer to :class:`.metric.BleuCorpusMetric` or</span>
-<span class="sd">			               :class:`.metric.SingleDialogRecorder`</span>
+<span class="sd">			gen_key (str): The key of generated sentences in index form.</span>
+<span class="sd">				Refer to :class:`.metric.BleuCorpusMetric` or</span>
+<span class="sd">				:class:`.metric.SingleTurnDialogRecorder`. Default: ``gen``.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			A :class:`.metric.MetricChain` object.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> \
+			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 
@@ -285,16 +313,17 @@
 	<span class="sd">&#39;&#39;&#39;A dataloader for OpenSubtitles dataset.</span>
 
 <span class="sd">	Arguments:</span>
-<span class="sd">		file_id (str): a str indicates the source of OpenSubtitles dataset.</span>
-<span class="sd">		file_type (str): a str indicates the type of OpenSubtitles dataset. Default: &quot;OpenSubtitles&quot;</span>
-<span class="sd">		min_vocab_times (int): A cut-off threshold of `UNK` tokens. All tokens appear</span>
-<span class="sd">			less than `min_vocab_times`	will be replaced by `&lt;unk&gt;`. Default: 10.</span>
-<span class="sd">		max_sen_length (int): All sentences longer than `max_sen_length` will be shortened</span>
-<span class="sd">			to first `max_sen_length` tokens. Default: 50.</span>
+<span class="sd">		file_id (str): A string indicating the source of OpenSubtitles dataset.</span>
+<span class="sd">				Default: ``resources://OpenSubtitles``. A preset dataset is downloaded and cached.</span>
+<span class="sd">		min_vocab_times (int): A cut-off threshold of valid tokens. All tokens appear</span>
+<span class="sd">				not less than `min_vocab_times` in **training set** will be marked as valid words.</span>
+<span class="sd">				Default: ``10``.</span>
+<span class="sd">		max_sent_length (int): All sentences longer than `max_sent_length` will be shortened</span>
+<span class="sd">				to first `max_sent_length` tokens. Default: ``50``.</span>
 <span class="sd">		invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
-<span class="sd">			not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
-<span class="sd">			marked as invalid vocabs. Otherwise, they are unknown words, both in training or</span>
-<span class="sd">			testing stages. Default: 0 (No unknown words).</span>
+<span class="sd">				not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
+<span class="sd">				marked as invalid vocabs. Otherwise, they are unknown words, both in training or</span>
+<span class="sd">				testing stages. Default: ``0`` (No unknown words).</span>
 
 <span class="sd">	Refer to :class:`.SingleTurnDialog` for attributes and methods.</span>
 
@@ -304,17 +333,17 @@
 <span class="sd">		[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from</span>
 <span class="sd">		Movie and TV Subtitles. LREC 2016.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
-			<span class="n">max_sen_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="s2">&quot;resources://OpenSubtitles&quot;</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
+			<span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">=</span> <span class="n">max_sen_length</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span> <span class="o">=</span> <span class="n">max_sent_length</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">OpenSubtitles</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="OpenSubtitles._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.OpenSubtitles._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `SingleTurnDialog.__init__`</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked during the initialization of :class:`SingleTurnDialog`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
@@ -350,7 +379,7 @@
 		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
 		<span class="n">line2id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> \
 					<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word2id</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">word2id</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> <span class="o">+</span> \
-					<span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span><span class="p">]</span>
+					<span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span><span class="p">]</span>
 
 		<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
 		<span class="n">data_size</span> <span class="o">=</span> <span class="p">{}</span>
@@ -369,7 +398,7 @@
 						<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> \
 						<span class="n">vocab</span><span class="p">)))</span> <span class="o">-</span> <span class="n">oov_num</span>
 			<span class="n">length</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">]))</span>
-			<span class="n">cut_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sen_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+			<span class="n">cut_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, </span><span class="se">\</span>
 <span class="s2">					cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
 					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>

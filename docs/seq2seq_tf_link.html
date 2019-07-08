@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Seq2Seq (TensorFlow) &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Metric" href="metric.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Seq2Seq (TensorFlow)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#require-packages">Require Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tensorboard-example">TensorBoard Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-of-model-results">Case Study of Model Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#author">Author</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Seq2Seq (TensorFlow)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/seq2seq_tf_link.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="seq2seq-tensorflow">
+<h1>Seq2Seq (TensorFlow)<a class="headerlink" href="#seq2seq-tensorflow" title="Permalink to this headline">¶</a></h1>
+<p>Seq2seq is a basic model for single turn dialog. Here, we implement seq2seq with attention mechanism. You can refer to the following papers for details:</p>
+<p>Sutskever, I., Vinyals, O., &amp; Le, Q. V. (2014). Sequence to sequence learning with neural networks. In <em>Advances in Neural Information Processing Systems</em>.</p>
+<p>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. In <em>International Conference on Learning Representation</em>.</p>
+<div class="section" id="require-packages">
+<h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>cotk</li>
+<li>TensorFlow == 1.3</li>
+<li>TensorBoardX &gt;= 1.4</li>
+</ul>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Downloading dataset and save it to <code class="docutils literal notranslate"><span class="pre">./data</span></code>. (Dataset will be released soon.)</li>
+<li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
+<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</li>
+<li>It don’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code></li>
+<li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time.</li>
+</ul>
+</li>
+<li>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.<ul>
+<li>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</li>
+</ul>
+</li>
+<li>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.<ul>
+<li>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</li>
+</ul>
+</li>
+<li>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nv">usage</span>: <span class="nv">run</span>.<span class="nv">py</span> [<span class="o">-</span><span class="nv">h</span>] [<span class="o">--</span><span class="nv">name</span> <span class="nv">NAME</span>] [<span class="o">--</span><span class="nv">restore</span> <span class="nv">RESTORE</span>] [<span class="o">--</span><span class="nv">mode</span> <span class="nv">MODE</span>]
+              [<span class="o">--</span><span class="nv">dataset</span> <span class="nv">DATASET</span>] [<span class="o">--</span><span class="nv">datapath</span> <span class="nv">DATAPATH</span>] [<span class="o">--</span><span class="nv">epoch</span> <span class="nv">EPOCH</span>]
+              [<span class="o">--</span><span class="nv">wvclass</span> <span class="nv">WVCLASS</span>] [<span class="o">--</span><span class="nv">wvpath</span> <span class="nv">WVPATH</span>] [<span class="o">--</span><span class="nv">out_dir</span> <span class="nv">OUT_DIR</span>]
+              [<span class="o">--</span><span class="nv">log_dir</span> <span class="nv">LOG_DIR</span>] [<span class="o">--</span><span class="nv">model_dir</span> <span class="nv">MODEL_DIR</span>]
+              [<span class="o">--</span><span class="nv">cache_dir</span> <span class="nv">CACHE_DIR</span>] [<span class="o">--</span><span class="nv">cpu</span>] [<span class="o">--</span><span class="nv">debug</span>] [<span class="o">--</span><span class="nv">cache</span>]
+
+<span class="nv">optional</span> <span class="nv">arguments</span>:
+  <span class="o">-</span><span class="nv">h</span>, <span class="o">--</span><span class="nv">help</span>            <span class="k">show</span> <span class="nv">this</span> <span class="nv">help</span> <span class="nv">message</span> <span class="nv">and</span> <span class="k">exit</span>
+
+<span class="nv">useful</span> <span class="nv">arguments</span>:
+  <span class="o">--</span><span class="nv">name</span> <span class="nv">NAME</span>           <span class="nv">The</span> <span class="nv">name</span> <span class="nv">of</span> <span class="nv">your</span> <span class="nv">model</span>, <span class="nv">used</span> <span class="k">for</span> <span class="nv">variable</span> <span class="nv">scope</span> <span class="nv">and</span>
+                        <span class="nv">tensorboard</span>, <span class="nv">etc</span>.
+                        <span class="nv">Default</span>: <span class="nv">runXXXXXX_XXXXXX</span> <span class="ss">(</span><span class="nv">initialized</span> <span class="nv">by</span> <span class="nv">current</span> <span class="nv">time</span><span class="ss">)</span>
+  <span class="o">--</span><span class="nv">restore</span> <span class="nv">RESTORE</span>     <span class="nv">Checkpoints</span> <span class="nv">name</span> <span class="nv">to</span> <span class="nv">load</span>. <span class="s2">&quot;</span><span class="s">last</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="nv">last</span> <span class="nv">checkpoints</span>,
+                        <span class="s2">&quot;</span><span class="s">best</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="nv">best</span> <span class="nv">checkpoints</span> <span class="nv">on</span> <span class="nv">dev</span>. <span class="nv">Attention</span>: <span class="s2">&quot;</span><span class="s">last</span><span class="s2">&quot;</span>
+                        <span class="nv">and</span> <span class="s2">&quot;</span><span class="s">best</span><span class="s2">&quot;</span> <span class="nv">wiil</span> <span class="nv">cause</span> <span class="nv">unexpected</span> <span class="nv">behaviour</span> <span class="nv">when</span> <span class="nv">run</span> <span class="mi">2</span>
+                        <span class="nv">models</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">same</span> <span class="nv">dir</span> <span class="nv">at</span> <span class="nv">the</span> <span class="nv">same</span> <span class="nv">time</span>. <span class="nv">Default</span>: <span class="nv">None</span>
+                        <span class="ss">(</span><span class="k">do</span> <span class="nv">not</span> <span class="nv">load</span> <span class="nv">anything</span><span class="ss">)</span>
+  <span class="o">--</span><span class="nv">mode</span> <span class="nv">MODE</span>           <span class="s2">&quot;</span><span class="s">train</span><span class="s2">&quot;</span> <span class="nv">or</span> <span class="s2">&quot;</span><span class="s">test</span><span class="s2">&quot;</span>. <span class="nv">Default</span>: <span class="nv">train</span>
+  <span class="o">--</span><span class="nv">dataset</span> <span class="nv">DATASET</span>     <span class="nv">Dataloader</span> <span class="nv">class</span>. <span class="nv">Default</span>: <span class="nv">OpenSubtitles</span>
+  <span class="o">--</span><span class="nv">datapath</span> <span class="nv">DATAPATH</span>   <span class="nv">Directory</span> <span class="k">for</span> <span class="nv">data</span> <span class="nv">set</span>. <span class="nv">Default</span>: .<span class="o">/</span><span class="nv">data</span>
+  <span class="o">--</span><span class="nv">epoch</span> <span class="nv">EPOCH</span>         <span class="nv">Epoch</span> <span class="k">for</span> <span class="nv">trainning</span>. <span class="nv">Default</span>: <span class="mi">100</span>
+  <span class="o">--</span><span class="nv">wvclass</span> <span class="nv">WVCLASS</span>     <span class="nv">Wordvector</span> <span class="nv">class</span>, <span class="nv">none</span> <span class="k">for</span> <span class="nv">not</span> <span class="nv">using</span> <span class="nv">pretrained</span>
+                        <span class="nv">wordvec</span>. <span class="nv">Default</span>: <span class="nv">None</span>
+  <span class="o">--</span><span class="nv">wvpath</span> <span class="nv">WVPATH</span>       <span class="nv">Directory</span> <span class="k">for</span> <span class="nv">pretrained</span> <span class="nv">wordvector</span>. <span class="nv">Default</span>:
+                        .<span class="o">/</span><span class="nv">wordvec</span>
+
+<span class="nv">advanced</span> <span class="nv">arguments</span>:
+  <span class="o">--</span><span class="nv">out_dir</span> <span class="nv">OUT_DIR</span>     <span class="nv">Output</span> <span class="nv">directory</span> <span class="k">for</span> <span class="nv">test</span> <span class="nv">output</span>. <span class="nv">Default</span>: .<span class="o">/</span><span class="nv">output</span>
+  <span class="o">--</span><span class="nv">log_dir</span> <span class="nv">LOG_DIR</span>     <span class="nv">Log</span> <span class="nv">directory</span> <span class="k">for</span> <span class="nv">tensorboard</span>. <span class="nv">Default</span>: .<span class="o">/</span><span class="nv">tensorboard</span>
+  <span class="o">--</span><span class="nv">model_dir</span> <span class="nv">MODEL_DIR</span>
+                        <span class="nv">Checkpoints</span> <span class="nv">directory</span> <span class="k">for</span> <span class="nv">model</span>. <span class="nv">Default</span>: .<span class="o">/</span><span class="nv">model</span>
+  <span class="o">--</span><span class="nv">cache_dir</span> <span class="nv">CACHE_DIR</span>
+                        <span class="nv">Checkpoints</span> <span class="nv">directory</span> <span class="k">for</span> <span class="nv">cache</span>. <span class="nv">Default</span>: .<span class="o">/</span><span class="nv">cache</span>
+  <span class="o">--</span><span class="nv">cpu</span>                 <span class="nv">Use</span> <span class="nv">cpu</span>.
+  <span class="o">--</span><span class="nv">debug</span>               <span class="nv">Enter</span> <span class="nv">debug</span> <span class="nv">mode</span> <span class="ss">(</span><span class="nv">using</span> <span class="nv">ptvsd</span><span class="ss">)</span>.
+  <span class="o">--</span><span class="nv">cache</span>               <span class="nv">Use</span> <span class="nv">cache</span> <span class="k">for</span> <span class="nv">speeding</span> <span class="nv">up</span> <span class="nv">load</span> <span class="nv">data</span> <span class="nv">and</span> <span class="nv">wordvec</span>. <span class="ss">(</span><span class="nv">It</span>
+                           <span class="nv">may</span> <span class="nv">cause</span> <span class="nv">problems</span> <span class="nv">when</span> <span class="nv">you</span> <span class="nv">switch</span> <span class="nv">dataset</span>.<span class="ss">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tensorboard-example">
+<h2>TensorBoard Example<a class="headerlink" href="#tensorboard-example" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>, you will see the plot in tensorboard pages:</p>
+<a class="reference external image-reference" href="../../models/seq2seq-tensorflow/images/tensorflow-plot-example.png"><img alt="tensorboard_plot_example" src="_images/tensorflow-plot-example.png" /></a>
+<p>Following plot are shown in this model:</p>
+<ul class="simple">
+<li>train/loss</li>
+<li>train/perplexity</li>
+<li>dev/loss</li>
+<li>dev/perplexity</li>
+<li>test/loss</li>
+<li>test/perplexity</li>
+</ul>
+<p>And text output:</p>
+<a class="reference external image-reference" href="../../models/seq2seq-tensorflow/images/tensorflow-text-example.png"><img alt="tensorboard_text_example" src="_images/tensorflow-text-example.png" /></a>
+<p>Following text are shown in this model:</p>
+<ul class="simple">
+<li>args</li>
+</ul>
+</div>
+<div class="section" id="case-study-of-model-results">
+<h2>Case Study of Model Results<a class="headerlink" href="#case-study-of-model-results" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code></p>
+<p>The following output will be in <code class="docutils literal notranslate"><span class="pre">./output/[name]_[dev|test].txt</span></code>:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nv">bleu</span>:  <span class="mi">0</span>.<span class="mi">186838</span>
+<span class="nv">perplexity</span>:    <span class="mi">40</span>.<span class="mi">417562</span>
+<span class="nv">post</span>:  <span class="k">if</span> <span class="nv">it</span> <span class="nv">were</span> <span class="nv">anyone</span> <span class="nv">but</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">s</span> <span class="nv">son</span> .
+<span class="nv">resp</span>:  <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">great</span> <span class="nv">fighter</span> .
+<span class="nv">gen</span>:   <span class="nv">i</span> <span class="nv">dont</span> <span class="nv">know</span> <span class="nv">what</span> <span class="nv">to</span> <span class="k">do</span> .
+<span class="nv">post</span>:  <span class="nv">in</span> <span class="nv">the</span> <span class="nv">fortress</span> , <span class="nv">you</span> <span class="nv">will</span> <span class="nv">face</span> <span class="nv">more</span> <span class="nv">than</span> <span class="nv">the</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> .
+<span class="nv">resp</span>:  <span class="nv">you</span> <span class="nv">will</span> <span class="nv">face</span> <span class="nv">the</span> <span class="nv">beast</span> , <span class="nv">who</span> <span class="nv">is</span> <span class="nv">their</span> <span class="nv">leader</span> .
+<span class="nv">gen</span>:   <span class="nv">the</span> <span class="nv">ss</span> <span class="nv">s</span> <span class="nv">going</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">crushed</span> .
+<span class="nv">post</span>:  <span class="nv">in</span> <span class="nv">a</span> <span class="nv">cave</span> <span class="nv">on</span> <span class="nv">the</span> <span class="nv">highest</span> <span class="nv">peak</span> .
+<span class="nv">resp</span>:  <span class="nv">without</span> <span class="nv">the</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> , <span class="nv">you</span> <span class="nv">will</span> <span class="nv">never</span> <span class="nv">be</span> <span class="nv">able</span> <span class="nv">to</span> <span class="nv">reach</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> .
+<span class="nv">gen</span>:   <span class="nv">when</span> <span class="nv">the</span> <span class="nv">boys</span> <span class="nv">s</span> <span class="nv">out</span> , <span class="k">then</span> <span class="nv">we</span> <span class="nv">started</span> .
+</pre></div>
+</div>
+</div>
+<div class="section" id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">Perplexity</th>
+<th class="head">BLEU</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>OpenSubtitles</td>
+<td>40.42</td>
+<td>0.187</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="author">
+<h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/kepei1106">KE Pei</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="metric.html" class="btn btn-neutral float-left" title="Metric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
