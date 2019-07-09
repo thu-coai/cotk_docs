@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Seq2Seq (TensorFlow) &mdash; cotk  documentation</title>
+  <title>HRED (TensorFlow) &mdash; cotk  documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Seq2Seq (PyTorch)" href="seq2seq_torch_link.html" />
-    <link rel="prev" title="Metric" href="metric.html" /> 
+    <link rel="next" title="Language Model (TensorFlow)" href="lm_tf_link.html" />
+    <link rel="prev" title="Seq2Seq (PyTorch)" href="seq2seq_torch_link.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,7 +94,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Model Tutorial</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Seq2Seq (TensorFlow)</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HRED (TensorFlow)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#require-packages">Require Packages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#arguments">Arguments</a></li>
@@ -104,8 +106,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#author">Author</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hred_tf_link.html">HRED (TensorFlow)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lm_tf_link.html">Language Model (TensorFlow)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vae_tf_link.html">VAE (TensorFlow)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cvae_tf_link.html">CVAE (TensorFlow)</a></li>
@@ -156,13 +156,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Seq2Seq (TensorFlow)</li>
+      <li>HRED (TensorFlow)</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/seq2seq_tf_link.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/hred_tf_link.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -175,11 +175,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="seq2seq-tensorflow">
-<h1>Seq2Seq (TensorFlow)<a class="headerlink" href="#seq2seq-tensorflow" title="Permalink to this headline">¶</a></h1>
-<p>Seq2seq is a basic model for single turn dialog. Here, we implement seq2seq with attention mechanism. You can refer to the following papers for details:</p>
-<p>Sutskever, I., Vinyals, O., &amp; Le, Q. V. (2014). Sequence to sequence learning with neural networks. In <em>Advances in Neural Information Processing Systems</em>.</p>
-<p>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. In <em>International Conference on Learning Representation</em>.</p>
+  <div class="section" id="hred-tensorflow">
+<h1>HRED (TensorFlow)<a class="headerlink" href="#hred-tensorflow" title="Permalink to this headline">¶</a></h1>
+<p>HRED is a basic model for multiple turn dialog. Here, we implement HRED with attention mechanism. You can refer to the following papers for details:</p>
+<p>Serban, I. V., Sordoni, A., Bengio, Y., Courville, A. C., &amp; Pineau, J. (2016, February). Building End-To-End Dialogue Systems Using Generative Hierarchical Neural Network Models. In <em>AAAI</em> (Vol. 16, pp. 3776-3784).</p>
 <div class="section" id="require-packages">
 <h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -193,7 +192,7 @@
 <ul class="simple">
 <li>Downloading dataset and save it to <code class="docutils literal notranslate"><span class="pre">./data</span></code>. (Dataset will be released soon.)</li>
 <li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
-<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</li>
+<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">UbuntuCorpus</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</li>
 <li>It don’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code></li>
 <li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time.</li>
 </ul>
@@ -229,7 +228,7 @@
                         <span class="s2">&quot;</span><span class="s">best</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="nv">best</span> <span class="nv">checkpoints</span> <span class="nv">on</span> <span class="nv">dev</span>. <span class="nv">Attention</span>: <span class="s2">&quot;</span><span class="s">last</span><span class="s2">&quot;</span>
                         <span class="nv">and</span> <span class="s2">&quot;</span><span class="s">best</span><span class="s2">&quot;</span> <span class="nv">wiil</span> <span class="nv">cause</span> <span class="nv">unexpected</span> <span class="nv">behaviour</span> <span class="nv">when</span> <span class="nv">run</span> <span class="mi">2</span>
                         <span class="nv">models</span> <span class="nv">in</span> <span class="nv">the</span> <span class="nv">same</span> <span class="nv">dir</span> <span class="nv">at</span> <span class="nv">the</span> <span class="nv">same</span> <span class="nv">time</span>. <span class="nv">Default</span>: <span class="nv">None</span>
-                        <span class="ss">(</span><span class="k">do</span> <span class="nv">not</span> <span class="nv">load</span> <span class="nv">anything</span><span class="ss">)</span>
+                        <span class="ss">(</span><span class="nv">dont</span> <span class="nv">load</span> <span class="nv">anything</span><span class="ss">)</span>
   <span class="o">--</span><span class="nv">mode</span> <span class="nv">MODE</span>           <span class="s2">&quot;</span><span class="s">train</span><span class="s2">&quot;</span> <span class="nv">or</span> <span class="s2">&quot;</span><span class="s">test</span><span class="s2">&quot;</span>. <span class="nv">Default</span>: <span class="nv">train</span>
   <span class="o">--</span><span class="nv">dataset</span> <span class="nv">DATASET</span>     <span class="nv">Dataloader</span> <span class="nv">class</span>. <span class="nv">Default</span>: <span class="nv">OpenSubtitles</span>
   <span class="o">--</span><span class="nv">datapath</span> <span class="nv">DATAPATH</span>   <span class="nv">Directory</span> <span class="k">for</span> <span class="nv">data</span> <span class="nv">set</span>. <span class="nv">Default</span>: .<span class="o">/</span><span class="nv">data</span>
@@ -249,14 +248,14 @@
   <span class="o">--</span><span class="nv">cpu</span>                 <span class="nv">Use</span> <span class="nv">cpu</span>.
   <span class="o">--</span><span class="nv">debug</span>               <span class="nv">Enter</span> <span class="nv">debug</span> <span class="nv">mode</span> <span class="ss">(</span><span class="nv">using</span> <span class="nv">ptvsd</span><span class="ss">)</span>.
   <span class="o">--</span><span class="nv">cache</span>               <span class="nv">Use</span> <span class="nv">cache</span> <span class="k">for</span> <span class="nv">speeding</span> <span class="nv">up</span> <span class="nv">load</span> <span class="nv">data</span> <span class="nv">and</span> <span class="nv">wordvec</span>. <span class="ss">(</span><span class="nv">It</span>
-                           <span class="nv">may</span> <span class="nv">cause</span> <span class="nv">problems</span> <span class="nv">when</span> <span class="nv">you</span> <span class="nv">switch</span> <span class="nv">dataset</span>.<span class="ss">)</span>
+                        <span class="nv">may</span> <span class="nv">cause</span> <span class="nv">problems</span> <span class="nv">when</span> <span class="nv">you</span> <span class="nv">switch</span> <span class="nv">dataset</span>.<span class="ss">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="tensorboard-example">
 <h2>TensorBoard Example<a class="headerlink" href="#tensorboard-example" title="Permalink to this headline">¶</a></h2>
 <p>Execute <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>, you will see the plot in tensorboard pages:</p>
-<a class="reference external image-reference" href="../../models/seq2seq-tensorflow/images/tensorflow-plot-example.png"><img alt="tensorboard_plot_example" src="_images/tensorflow-plot-example.png" /></a>
+<a class="reference external image-reference" href="../../models/hred-tensorflow/images/hred-plot-example.png"><img alt="hred_plot_example" src="_images/hred-plot-example.png" /></a>
 <p>Following plot are shown in this model:</p>
 <ul class="simple">
 <li>train/loss</li>
@@ -267,7 +266,7 @@
 <li>test/perplexity</li>
 </ul>
 <p>And text output:</p>
-<a class="reference external image-reference" href="../../models/seq2seq-tensorflow/images/tensorflow-text-example.png"><img alt="tensorboard_text_example" src="_images/tensorflow-text-example.png" /></a>
+<a class="reference external image-reference" href="../../models/hred-tensorflow/images/hred-text-example.png"><img alt="hred_text_example" src="_images/hred-text-example.png" /></a>
 <p>Following text are shown in this model:</p>
 <ul class="simple">
 <li>args</li>
@@ -277,17 +276,27 @@
 <h2>Case Study of Model Results<a class="headerlink" href="#case-study-of-model-results" title="Permalink to this headline">¶</a></h2>
 <p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code></p>
 <p>The following output will be in <code class="docutils literal notranslate"><span class="pre">./output/[name]_[dev|test].txt</span></code>:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nv">bleu</span>:  <span class="mi">0</span>.<span class="mi">186838</span>
-<span class="nv">perplexity</span>:    <span class="mi">40</span>.<span class="mi">417562</span>
-<span class="nv">post</span>:  <span class="k">if</span> <span class="nv">it</span> <span class="nv">were</span> <span class="nv">anyone</span> <span class="nv">but</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">s</span> <span class="nv">son</span> .
-<span class="nv">resp</span>:  <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">great</span> <span class="nv">fighter</span> .
-<span class="nv">gen</span>:   <span class="nv">i</span> <span class="nv">dont</span> <span class="nv">know</span> <span class="nv">what</span> <span class="nv">to</span> <span class="k">do</span> .
-<span class="nv">post</span>:  <span class="nv">in</span> <span class="nv">the</span> <span class="nv">fortress</span> , <span class="nv">you</span> <span class="nv">will</span> <span class="nv">face</span> <span class="nv">more</span> <span class="nv">than</span> <span class="nv">the</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> .
-<span class="nv">resp</span>:  <span class="nv">you</span> <span class="nv">will</span> <span class="nv">face</span> <span class="nv">the</span> <span class="nv">beast</span> , <span class="nv">who</span> <span class="nv">is</span> <span class="nv">their</span> <span class="nv">leader</span> .
-<span class="nv">gen</span>:   <span class="nv">the</span> <span class="nv">ss</span> <span class="nv">s</span> <span class="nv">going</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">crushed</span> .
-<span class="nv">post</span>:  <span class="nv">in</span> <span class="nv">a</span> <span class="nv">cave</span> <span class="nv">on</span> <span class="nv">the</span> <span class="nv">highest</span> <span class="nv">peak</span> .
-<span class="nv">resp</span>:  <span class="nv">without</span> <span class="nv">the</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> , <span class="nv">you</span> <span class="nv">will</span> <span class="nv">never</span> <span class="nv">be</span> <span class="nv">able</span> <span class="nv">to</span> <span class="nv">reach</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> .
-<span class="nv">gen</span>:   <span class="nv">when</span> <span class="nv">the</span> <span class="nv">boys</span> <span class="nv">s</span> <span class="nv">out</span> , <span class="k">then</span> <span class="nv">we</span> <span class="nv">started</span> .
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nv">perplexity</span>:     <span class="mi">74</span>.<span class="mi">407300</span>
+<span class="nv">bleu</span>:   <span class="mi">0</span>.<span class="mi">089069</span>
+<span class="nv">post</span>:   <span class="nv">anyone</span> <span class="nv">knows</span> <span class="nv">why</span> <span class="nv">my</span> <span class="nv">stock</span> <span class="nv">oneiric</span> <span class="nv">exports</span> <span class="nv">env</span> <span class="nv">var</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">I</span> <span class="nv">mean</span> <span class="nv">what</span> <span class="nv">is</span> <span class="nv">that</span> <span class="nv">used</span> <span class="k">for</span>? <span class="nv">I</span> <span class="nv">know</span> <span class="nv">of</span> <span class="nv">USER</span> <span class="nv">but</span> <span class="nv">not</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> . <span class="nv">My</span> <span class="nv">precise</span> <span class="nv">install</span> <span class="nv">doesnt</span> <span class="nv">export</span> <span class="nv">USERNAME</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">resp</span>:   <span class="nv">looks</span> <span class="nv">like</span> <span class="nv">it</span> <span class="nv">used</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">exported</span> <span class="nv">by</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">but</span> <span class="nv">the</span> <span class="nv">line</span> <span class="nv">had</span> <span class="nv">the</span> <span class="nv">comment</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">Is</span> <span class="nv">this</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">so</span> <span class="nv">I</span> <span class="nv">guess</span> <span class="nv">it</span> <span class="nv">isnt</span> <span class="nv">surprising</span> <span class="nv">it</span> <span class="nv">is</span> <span class="nv">gone</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">gen</span>:    <span class="nv">you</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">post</span>:   <span class="nv">looks</span> <span class="nv">like</span> <span class="nv">it</span> <span class="nv">used</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">exported</span> <span class="nv">by</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">but</span> <span class="nv">the</span> <span class="nv">line</span> <span class="nv">had</span> <span class="nv">the</span> <span class="nv">comment</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">Is</span> <span class="nv">this</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">so</span> <span class="nv">I</span> <span class="nv">guess</span> <span class="nv">it</span> <span class="nv">isnt</span> <span class="nv">surprising</span> <span class="nv">it</span> <span class="nv">is</span> <span class="nv">gone</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">resp</span>:   <span class="nv">thanks</span><span class="o">!</span> <span class="nv">How</span> <span class="nv">the</span> <span class="nv">heck</span> <span class="nv">did</span> <span class="nv">you</span> <span class="nv">figure</span> <span class="nv">that</span> <span class="nv">out</span>? <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">gen</span>:    <span class="nv">I</span> <span class="nv">have</span> <span class="nv">no</span> <span class="nv">idea</span> <span class="nv">what</span> <span class="nv">that</span> <span class="nv">is</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">post</span>:   <span class="nv">thanks</span><span class="o">!</span> <span class="nv">How</span> <span class="nv">the</span> <span class="nv">heck</span> <span class="nv">did</span> <span class="nv">you</span> <span class="nv">figure</span> <span class="nv">that</span> <span class="nv">out</span>? <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">resp</span>:   <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">gen</span>:    <span class="nv">I</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">post</span>:   <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">resp</span>:   <span class="nv">nice</span> <span class="nv">thanks</span><span class="o">!</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">gen</span>:    <span class="nv">I</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+
+<span class="nv">post</span>:   <span class="nv">i</span> <span class="nv">set</span> <span class="nv">up</span> <span class="nv">my</span> <span class="nv">hd</span> <span class="nv">such</span> <span class="nv">that</span> <span class="nv">i</span> <span class="nv">have</span> <span class="nv">to</span> <span class="nv">type</span> <span class="nv">a</span> <span class="nv">passphrase</span> <span class="nv">to</span> <span class="nv">access</span> <span class="nv">it</span> <span class="nv">at</span> <span class="nv">boot</span>. <span class="nv">how</span> <span class="nv">can</span> <span class="nv">i</span> <span class="nv">remove</span> <span class="nv">that</span> <span class="o">&lt;</span><span class="nv">unk</span><span class="o">&gt;</span> <span class="nv">and</span> <span class="nv">just</span> <span class="nv">boot</span> <span class="nv">up</span> <span class="nv">normal</span>. <span class="nv">i</span> <span class="nv">did</span> <span class="nv">this</span> <span class="nv">at</span> <span class="nv">install</span>, <span class="nv">it</span> <span class="nv">works</span> <span class="nv">fine</span>, <span class="nv">just</span> <span class="nv">tired</span> <span class="nv">of</span> <span class="nv">having</span> <span class="nv">re</span>       <span class="nv">boots</span> <span class="nv">where</span> <span class="nv">i</span> <span class="nv">need</span> <span class="nv">to</span> <span class="nv">be</span> <span class="nv">at</span> <span class="nv">terminal</span>
+<span class="nv">resp</span>:   <span class="nv">backup</span> <span class="nv">your</span> <span class="nv">data</span>, <span class="nv">and</span> <span class="nv">re</span><span class="o">-</span><span class="nv">install</span> <span class="nv">without</span> <span class="nv">encryption</span> <span class="s2">&quot;</span><span class="s">might</span><span class="s2">&quot;</span> <span class="nv">be</span> <span class="nv">the</span> <span class="nv">easiest</span> <span class="nv">method</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">gen</span>:    <span class="nv">you</span> <span class="nv">can</span> <span class="nv">install</span> <span class="nv">the</span> <span class="nv">ubuntu</span> <span class="nv">package</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">post</span>:   <span class="nv">backup</span> <span class="nv">your</span> <span class="nv">data</span>, <span class="nv">and</span> <span class="nv">re</span><span class="o">-</span><span class="nv">install</span> <span class="nv">without</span> <span class="nv">encryption</span> <span class="s2">&quot;</span><span class="s">might</span><span class="s2">&quot;</span> <span class="nv">be</span> <span class="nv">the</span> <span class="nv">easiest</span> <span class="nv">method</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">resp</span>:   <span class="nv">so</span> <span class="nv">you</span> <span class="nv">dont</span> <span class="nv">know</span>, <span class="nv">ok</span>, <span class="nv">anyone</span> <span class="k">else</span>? <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span> <span class="nv">you</span> <span class="nv">are</span> <span class="nv">like</span>, <span class="nv">yah</span> <span class="nv">my</span> <span class="nv">mouse</span> <span class="nv">doesnt</span> <span class="nv">work</span>, <span class="nv">reinstall</span> <span class="nv">your</span> <span class="nv">os</span> <span class="nv">lolol</span> <span class="nv">what</span> <span class="nv">a</span> <span class="nv">joke</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
+<span class="nv">gen</span>:    <span class="nv">I</span> <span class="nv">have</span> <span class="nv">no</span> <span class="nv">idea</span> <span class="nv">what</span> <span class="nv">you</span> <span class="nv">mean</span> <span class="nv">by</span> <span class="nv">the</span> <span class="o">&lt;</span><span class="nv">eos</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -306,16 +315,16 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>OpenSubtitles</td>
-<td>40.42</td>
-<td>0.187</td>
+<tr class="row-even"><td>UbuntuCorpus</td>
+<td>74.20</td>
+<td>0.112</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="author">
 <h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/kepei1106">KE Pei</a></p>
+<p><a class="reference external" href="https://github.com/tuxchow">Zhou Hao</a></p>
 </div>
 </div>
 
@@ -327,10 +336,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="seq2seq_torch_link.html" class="btn btn-neutral float-right" title="Seq2Seq (PyTorch)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="lm_tf_link.html" class="btn btn-neutral float-right" title="Language Model (TensorFlow)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="metric.html" class="btn btn-neutral float-left" title="Metric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="seq2seq_torch_link.html" class="btn btn-neutral float-left" title="Seq2Seq (PyTorch)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
