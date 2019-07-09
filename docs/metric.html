@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Seq2Seq (TensorFlow)" href="seq2seq_tf_link.html" />
+    <link rel="next" title="LanguageGeneration" href="models/LanguageGeneration/index.html" />
     <link rel="prev" title="Word Vector" href="wordvector.html" /> 
 </head>
 
@@ -91,6 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Metric</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hash-value">Hash Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-classes">Basic Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#metric-class">Metric class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#metric-like-class">Metric-like class</a></li>
 </ul>
@@ -98,13 +100,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Model Tutorial</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hred_tf_link.html">HRED (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lm_tf_link.html">Language Model (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vae_tf_link.html">VAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cvae_tf_link.html">CVAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seqgan_tf_link.html">SeqGAN (TensorFlow)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
 </ul>
 
             
@@ -172,8 +170,49 @@
             
   <div class="section" id="module-cotk.metric">
 <span id="metric"></span><h1>Metric<a class="headerlink" href="#module-cotk.metric" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">cotk.metrics</span></code> provides functions evaluating results of models. It provides
-a fair metric for every model.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cotk.metric</span></code> provides commonly used metrics for <code class="docutils literal notranslate"><span class="pre">cotk.dataloader</span></code>.
+All metric objects receive a batch of data per one call of <code class="docutils literal notranslate"><span class="pre">forward</span></code>.
+The batch of data is represented by a dict which contains models’ outputs and
+answers. The answers are highly relevant to the corresponding
+dataloader, where the type, shape are usually identical with the return value of
+<code class="docutils literal notranslate"><span class="pre">get_batch</span></code> in dataloader, as long as the correct key name is set.
+<code class="docutils literal notranslate"><span class="pre">forward</span></code> function can be called several times and at last
+<code class="docutils literal notranslate"><span class="pre">close</span></code> can be called for results.</p>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span> <span class="o">=</span> <span class="n">OpenSubtitles</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span>\
+<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs_key&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="c1"># &quot;resp_allvocabs_key&quot; is a key name in get_batch()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dm</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gen&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="k">assert</span> <span class="s2">&quot;resp_allvocabs_key&quot;</span> <span class="ow">in</span> <span class="n">data</span>
+<span class="gp">... </span>    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">{&quot;bleu&quot;: 0.135, &quot;bleu hashvalue&quot;: b&quot;XXXX&quot;}</span>
+</pre></div>
+</div>
+<p>We also provide default metrics in dataloader, you can use “get_metric”-like
+functions (example: <a class="reference internal" href="dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric" title="cotk.dataloader.SingleTurnDialog.get_inference_metric"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SingleTurnDialog.get_inference_metric()</span></code></a>) to get
+default metrics and avoid the mess with complex key name.</p>
+<p>Here is an exmample:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span> <span class="o">=</span> <span class="n">OpenSubtitles</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">dm</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dm</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gen&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">{&quot;bleu&quot;: 0.135, &quot;bleu hashvalue&quot;: b&quot;XXXX&quot;, ...}</span>
+</pre></div>
+</div>
+<div class="section" id="hash-value">
+<h2>Hash Value<a class="headerlink" href="#hash-value" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="#cotk.metric.MetricBase.close" title="cotk.metric.MetricBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.close()</span></code></a> will return a dict containing hash value,
+which can validate whether two models used the same test data and the
+same setting. Only two models using the same metric with the same hash
+value returned, can compare with each other.</p>
+</div>
+<div class="section" id="basic-classes">
+<h2>Basic Classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.metric.MetricBase">
 <em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MetricBase</code><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase" title="Permalink to this definition">¶</a></dt>
@@ -229,6 +268,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 
 </dd></dl>
 
+</div>
 <div class="section" id="metric-class">
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -304,8 +344,8 @@ for same evaluation settings.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
-<li><strong>data[candidate_allvocabs_key]</strong> (list):
-A 3-dimension jagged list of index. Multiple reference sentences for a single context.
+<li><strong>data[candidate_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
+A 3-d jagged list of index. Multiple reference sentences for a single context.
 Does not contain start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~sentence_num,</span> <span class="pre">~word_num]</span></code>, where “~” means different sizes
 in this dimension is allowed.</li>
@@ -326,7 +366,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>embed</em>, <em>mode</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>word2vec</em>, <em>mode</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating cosine similarity precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -341,8 +381,7 @@ arXiv preprint arXiv:1703.10960.</p>
 <li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
 <li><strong>candidate_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">candidate_allvocabs</span></code>.</li>
 <li><strong>multiple_gen_key</strong> (<em>str</em>) – The key of multiple generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">multiple_gen</span></code>.</li>
-<li><strong>embed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – A 2-d array of word embeddings.
-Size: <code class="docutils literal notranslate"><span class="pre">[dataloader.vocab_size,</span> <span class="pre">dims</span> <span class="pre">of</span> <span class="pre">embedding]</span></code>.</li>
+<li><strong>word2vec</strong> (<em>dict</em>) – Maps a word (str) to its pretrained embedding (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or list)</li>
 <li><strong>mode</strong> (<em>str</em>) – Specifies the operation that computes the bag-of-word representation.
 Must be <code class="docutils literal notranslate"><span class="pre">avg</span></code> or <code class="docutils literal notranslate"><span class="pre">extrema</span></code>:<ul>
 <li><code class="docutils literal notranslate"><span class="pre">avg</span></code> : element-wise average word embeddings.</li>
@@ -404,8 +443,8 @@ for same evaluation settings.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
-<li><strong>data[candidate_allvocabs_key]</strong> (list):
-A 3-dimension jagged list of index. Multiple reference sentences for a single context.
+<li><strong>data[candidate_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
+A 3-d jagged list of index. Multiple reference sentences for a single context.
 Does not contain start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~sentence_num,</span> <span class="pre">~word_num]</span></code>, where “~” means different sizes
 in this dimension is allowed.</li>
@@ -553,7 +592,7 @@ A 2-d jagged or padded array of int. <strong>If padded, redundant position must 
 Length of multi-turn reference sentences. Contains start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>)
 and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
-<li><strong>data[gen_log_prob_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
+<li><strong>data[multi_turn_gen_log_prob_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or                                      <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
 Sentence generations model outputs of
 A 4-d jagged or padded array. <strong>log softmax</strong> probability.
 Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
@@ -569,8 +608,9 @@ If <code class="xref py py-class docutils literal notranslate"><span class="pre"
 </table>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">data[gen_log_prob_key]</span></code> must be processed after log_softmax. That means,
-<code class="docutils literal notranslate"><span class="pre">np.sum(np.exp(gen_log_prob),</span> <span class="pre">-1)</span></code> equals <code class="docutils literal notranslate"><span class="pre">np.ones((batch_size,</span> <span class="pre">gen_sentence_length))</span></code></p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">data[multi_turn_gen_log_prob_key]</span></code> must be processed after log_softmax. That means,
+<code class="docutils literal notranslate"><span class="pre">np.sum(np.exp(multi_turn_gen_log_prob_key),</span> <span class="pre">-1)</span></code> equals
+<code class="docutils literal notranslate"><span class="pre">np.ones((batch_size,</span> <span class="pre">gen_sentence_length))</span></code></p>
 </div>
 </dd></dl>
 
@@ -677,6 +717,13 @@ for same evaluation settings.</li>
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<dl class="last docutils">
+<dt>the calculation of <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> considers the actual sample size of hypotheses which</dt>
+<dd>will be less than <code class="docutils literal notranslate"><span class="pre">sample</span></code> if the size of hypotheses is smaller than <code class="docutils literal notranslate"><span class="pre">sample</span></code></dd>
+</dl>
+</div>
 <dl class="method">
 <dt id="cotk.metric.SelfBleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SelfBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -738,6 +785,13 @@ are passed to <a class="reference internal" href="#cotk.metric.FwBwBleuCorpusMet
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<dl class="last docutils">
+<dt>the calculation of <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> considers the actual sample size of hypotheses and references which</dt>
+<dd>will be less than <code class="docutils literal notranslate"><span class="pre">sample</span></code> if the size of hypotheses or references is smaller than <code class="docutils literal notranslate"><span class="pre">sample</span></code></dd>
+</dl>
+</div>
 <dl class="method">
 <dt id="cotk.metric.FwBwBleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#FwBwBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -1140,7 +1194,7 @@ metric components returned.</td>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="seq2seq_tf_link.html" class="btn btn-neutral float-right" title="Seq2Seq (TensorFlow)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="models/LanguageGeneration/index.html" class="btn btn-neutral float-right" title="LanguageGeneration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="wordvector.html" class="btn btn-neutral float-left" title="Word Vector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

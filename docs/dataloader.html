@@ -90,7 +90,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Loader</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#vocabulary">Vocabulary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#basic-class">Basic Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-classes">Basic Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#languagegeneration">LanguageGeneration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mscoco">MSCOCO</a></li>
 </ul>
@@ -111,13 +111,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Model Tutorial</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hred_tf_link.html">HRED (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lm_tf_link.html">Language Model (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vae_tf_link.html">VAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cvae_tf_link.html">CVAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seqgan_tf_link.html">SeqGAN (TensorFlow)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
 </ul>
 
             
@@ -331,8 +327,8 @@ they don’t have index.</li>
 </dl>
 </div></blockquote>
 </div>
-<div class="section" id="basic-class">
-<h2>Basic Class<a class="headerlink" href="#basic-class" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-classes">
+<h2>Basic Classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.dataloader.Dataloader">
 <em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
@@ -1497,7 +1493,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityM
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>reference_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metrics for inference.</p>
 <p>It contains:</p>
 <ul class="simple">
@@ -2285,7 +2281,7 @@ in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">
-<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>embed=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>word2vec=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metrics for multiple references.</p>
 <p>It contains:</p>
 <ul class="simple">
@@ -2298,7 +2294,7 @@ in this dimension is allowed.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
-<li><strong>embed</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – Word embedding for embedding similarity.
+<li><strong>word2vec</strong> (<em>dict</em>) – Maps words to word embeddings for embedding similarity.
 Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, using glove word embedding from <code class="docutils literal notranslate"><span class="pre">resources://Glove300d</span></code>.</li>
 </ul>
 </td>

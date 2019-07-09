@@ -92,13 +92,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Model Tutorial</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../hred_tf_link.html">HRED (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../lm_tf_link.html">Language Model (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../vae_tf_link.html">VAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cvae_tf_link.html">CVAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../seqgan_tf_link.html">SeqGAN (TensorFlow)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
 </ul>
 
             
@@ -291,9 +287,7 @@
 			<span class="n">invalid_vocab</span><span class="o">=</span><span class="n">invalid_vocab</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
-<div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span> \
-					<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span>\
-					<span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for inference.</span>
 
 <span class="sd">		It contains:</span>

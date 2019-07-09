@@ -93,13 +93,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Model Tutorial</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hred_tf_link.html">HRED (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lm_tf_link.html">Language Model (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vae_tf_link.html">VAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cvae_tf_link.html">CVAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seqgan_tf_link.html">SeqGAN (TensorFlow)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
 </ul>
 
             
@@ -172,34 +168,60 @@
             
   <div class="section" id="cotk-documentation">
 <h1>cotk documentation<a class="headerlink" href="#cotk-documentation" title="Permalink to this headline">¶</a></h1>
-<p>cotk is a python package providing utilities for natural language
+<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> is a python package providing utilities for natural language
 generation. It contains benchmark data loader, word vector loader,
 pretrained baseline models and other useful utilities for evaluating
-new models fairly with baselines.</p>
+your models fairly with baselines.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#installation">Installation</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#vocabulary">Vocabulary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#basic-classes">Basic Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#languagegeneration">LanguageGeneration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#singleturndialog">SingleTurnDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#multiturndialog">MultiTurnDialog</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metric.html#hash-value">Hash Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metric.html#basic-classes">Basic Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metric.html#metric-class">Metric class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metric.html#metric-like-class">Metric-like class</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Model Tutorial</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_tf_link.html">Seq2Seq (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seq2seq_torch_link.html">Seq2Seq (PyTorch)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hred_tf_link.html">HRED (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lm_tf_link.html">Language Model (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vae_tf_link.html">VAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cvae_tf_link.html">CVAE (TensorFlow)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seqgan_tf_link.html">SeqGAN (TensorFlow)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/LM-tensorflow/readme.html">Language Model (TensorFlow)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/VAE-tensorflow/readme.html">VAE (TensorFlow)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/seqGAN-tensorflow/readme.html">SeqGAN (TensorFlow)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models/SingleTurnDialog/seq2seq-pytorch/readme.html">Seq2Seq (PyTorch)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/SingleTurnDialog/seq2seq-tensorflow/readme.html">Seq2Seq (TensorFlow)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models/MultiTurnDialog/hred-tensorflow/readme.html">HRED (TensorFlow)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/MultiTurnDialog/CVAE-tensorflow/readme.html">CVAE (TensorFlow)</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>

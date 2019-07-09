@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CVAE (TensorFlow) &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="HRED (TensorFlow)" href="../hred-tensorflow/readme.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">MultiTurnDialog</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hred-tensorflow/readme.html">HRED (TensorFlow)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CVAE (TensorFlow)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#require-packages">Require Packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorboard-example">TensorBoard Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#case-study-of-model-results">Case Study of Model Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#author">Author</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">MultiTurnDialog</a> &raquo;</li>
+        
+      <li>CVAE (TensorFlow)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/models/MultiTurnDialog/CVAE-tensorflow/readme.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cvae-tensorflow">
+<h1>CVAE (TensorFlow)<a class="headerlink" href="#cvae-tensorflow" title="Permalink to this headline">¶</a></h1>
+<p>CVAE is a basic model for multiple turn dialog. You can refer to the following papers for details:</p>
+<p>Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity for neural dialog models using conditional variational autoencoders. arXiv preprint arXiv:1703.10960.</p>
+<div class="section" id="require-packages">
+<h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>cotk</li>
+<li>TensorFlow == 1.13.1</li>
+<li>TensorBoardX &gt;= 1.4</li>
+</ul>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
+<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">SwitchboardCorpus</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</li>
+<li>It don’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code></li>
+<li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time.</li>
+</ul>
+</li>
+<li>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.<ul>
+<li>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</li>
+</ul>
+</li>
+<li>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.<ul>
+<li>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</li>
+</ul>
+</li>
+<li>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: run.py [-h] [--name NAME] [--restore RESTORE] [--mode MODE]
+              [--dataset DATASET] [--datapath DATAPATH] [--epoch EPOCH]
+              [--wvclass WVCLASS] [--wvpath WVPATH] [--out_dir OUT_DIR]
+              [--log_dir LOG_DIR] [--model_dir MODEL_DIR]
+              [--cache_dir CACHE_DIR] [--cpu] [--debug] [--cache]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+useful arguments:
+  --name NAME           The name of your model, used for variable scope and
+                        tensorboard, etc.
+                        Default: runXXXXXX_XXXXXX (initialized by current time)
+  --restore RESTORE     Checkpoints name to load. &quot;last&quot; for last checkpoints,
+                        &quot;best&quot; for best checkpoints on dev. Attention: &quot;last&quot;
+                        and &quot;best&quot; wiil cause unexpected behaviour when run 2
+                        models in the same dir at the same time. Default: None
+                        (dont load anything)
+  --mode MODE           &quot;train&quot; or &quot;test&quot;. Default: train
+  --dataset DATASET     Dataloader class. Default: OpenSubtitles
+  --datapath DATAPATH   Directory for data set. Default: ./data
+  --epoch EPOCH         Epoch for trainning. Default: 100
+  --wvclass WVCLASS     Wordvector class, none for not using pretrained
+                        wordvec. Default: None
+  --wvpath WVPATH       Directory for pretrained wordvector. Default:
+                        ./wordvec
+
+advanced arguments:
+  --out_dir OUT_DIR     Output directory for test output. Default: ./output
+  --log_dir LOG_DIR     Log directory for tensorboard. Default: ./tensorboard
+  --model_dir MODEL_DIR
+                        Checkpoints directory for model. Default: ./model
+  --cache_dir CACHE_DIR
+                        Checkpoints directory for cache. Default: ./cache
+  --cpu                 Use cpu.
+  --debug               Enter debug mode (using ptvsd).
+  --cache               Use cache for speeding up load data and wordvec. (It
+                        may cause problems when you switch dataset.)
+</pre></div>
+</div>
+</div>
+<div class="section" id="tensorboard-example">
+<h2>TensorBoard Example<a class="headerlink" href="#tensorboard-example" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>, you will see the plot in tensorboard pages:</p>
+<a class="reference external image-reference" href="./images/CVAE-plot-example.png"><img alt="CVAE_plot_example" src="../../../_images/CVAE-plot-example.png" /></a>
+<p>Following plot are shown in this model:</p>
+<ul class="simple">
+<li>train/loss</li>
+<li>train/perplexity</li>
+<li>dev/loss</li>
+<li>dev/perplexity</li>
+<li>test/loss</li>
+<li>test/perplexity</li>
+</ul>
+</div>
+<div class="section" id="case-study-of-model-results">
+<h2>Case Study of Model Results<a class="headerlink" href="#case-study-of-model-results" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code></p>
+<p>The following output will be in <code class="docutils literal notranslate"><span class="pre">./output/[name]_[dev|test].txt</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>perplexity: 46.376537
+bleu:   0.077950
+session:    0
+    post:   &lt;d&gt; &lt;eos&gt;
+    resp:   alright what do you think &lt;eos&gt;
+    gen:    &lt;go&gt; i don&#39;t know i&#39;m not sure that we have to be in the country and &lt;eos&gt;
+
+    post:   alright what do you think &lt;eos&gt;
+    resp:   well i think air pollution is a pretty big problem right now and it&#39;s i mean i think it&#39;s a real bad problem i don&#39;t think that a lot is really being done about it at this point &lt;eos&gt; and there&#39;s just things like for a i think that
+    gen:    &lt;go&gt; i&#39;m not going to have to pay this much more than what i consider &lt;eos&gt;
+
+    post:   well i think air pollution is a pretty big problem right now and it&#39;s i mean i think it&#39;s a real bad problem i don&#39;t think that a lot is really being done about it at this point &lt;eos&gt; and there&#39;s just things like for a i think that
+    resp:   right &lt;eos&gt;
+    gen:    &lt;go&gt; yeah &lt;eos&gt; well i think it will be interesting to start getting ready for the next week &lt;eos&gt;
+
+    post:   right &lt;eos&gt;
+    resp:   and if you look at other countries like in the third world and stuff where people ride bikes and all that i&#39;m sure that their &lt;eos&gt; air quality is much better than ours just as a result of their lack of having cars like if you look at los
+    gen:    &lt;go&gt; i don&#39;t know i don&#39;t know i don&#39;t know i think that i think that the reason i have been working for a lot of people say that i work for a company and i think that i think that the people that have been working for the ti and
+
+    post:   and if you look at other countries like in the third world and stuff where people ride bikes and all that i&#39;m sure that their &lt;eos&gt; air quality is much better than ours just as a result of their lack of having cars like if you look at los
+    resp:   hum okay well i mean also along the same lines i know that there&#39;s somebody i read one time about somebody&#39;s developed a test to look at the emissions from your car &lt;eos&gt;
+    gen:    &lt;go&gt; uh-huh &lt;eos&gt;
+
+    post:   hum okay well i mean also along the same lines i know that there&#39;s somebody i read one time about somebody&#39;s developed a test to look at the emissions from your car &lt;eos&gt;
+    resp:   uh-huh &lt;eos&gt; right &lt;eos&gt;
+    gen:    &lt;go&gt; yeah &lt;eos&gt; yeah &lt;eos&gt; well i have to say that i have a pretty small town there that i used to be in the air force and i used to be a little bit of the ground &lt;eos&gt;
+
+...
+</pre></div>
+</div>
+</div>
+<div class="section" id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">SwitchboardCorpus</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Perplexity (KL)</td>
+<td>21.70 (12.20)</td>
+</tr>
+<tr class="row-odd"><td>BLEU-1 precision</td>
+<td>0.13610</td>
+</tr>
+<tr class="row-even"><td>BLEU-1 recall</td>
+<td>0.04108</td>
+</tr>
+<tr class="row-odd"><td>BLEU-2 precision</td>
+<td>0.02238</td>
+</tr>
+<tr class="row-even"><td>BLEU-2 recall</td>
+<td>0.00617</td>
+</tr>
+<tr class="row-odd"><td>BLEU-3 precision</td>
+<td>0.00398</td>
+</tr>
+<tr class="row-even"><td>BLEU-3 recall</td>
+<td>0.00115</td>
+</tr>
+<tr class="row-odd"><td>BLEU-4 precision</td>
+<td>0.00052</td>
+</tr>
+<tr class="row-even"><td>BLEU-4 recall</td>
+<td>0.00016</td>
+</tr>
+<tr class="row-odd"><td>avg-bow precision</td>
+<td>0.94545</td>
+</tr>
+<tr class="row-even"><td>avg-bow recall</td>
+<td>0.23039</td>
+</tr>
+<tr class="row-odd"><td>extrema-bow precision</td>
+<td>0.90231</td>
+</tr>
+<tr class="row-even"><td>extrema-bow recall</td>
+<td>0.21620</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="author">
+<h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/ZhihongShao">Shao Zhihong</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../hred-tensorflow/readme.html" class="btn btn-neutral float-left" title="HRED (TensorFlow)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

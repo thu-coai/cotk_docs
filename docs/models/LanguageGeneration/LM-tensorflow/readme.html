@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Language Model (TensorFlow) &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="VAE (TensorFlow)" href="../VAE-tensorflow/readme.html" />
+    <link rel="prev" title="LanguageGeneration" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">LanguageGeneration</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Language Model (TensorFlow)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#require-packages">Require Packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorboard-example">TensorBoard Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#case-study-of-model-results">Case Study of Model Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../VAE-tensorflow/readme.html">VAE (TensorFlow)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../seqGAN-tensorflow/readme.html">SeqGAN (TensorFlow)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">LanguageGeneration</a> &raquo;</li>
+        
+      <li>Language Model (TensorFlow)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/models/LanguageGeneration/LM-tensorflow/readme.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="language-model-tensorflow">
+<h1>Language Model (TensorFlow)<a class="headerlink" href="#language-model-tensorflow" title="Permalink to this headline">¶</a></h1>
+<p>An implementation of LM(language model).</p>
+<div class="section" id="require-packages">
+<h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>cotk</li>
+<li>TensorFlow == 1.13.1</li>
+<li>TensorBoardX &gt;= 1.4</li>
+</ul>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Downloading dataset and save it to <code class="docutils literal notranslate"><span class="pre">./data</span></code>. (Dataset will be released soon.)</li>
+<li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
+<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">MSCOCO</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</li>
+<li>It use <code class="docutils literal notranslate"><span class="pre">gloves</span></code>  pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class.</li>
+<li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time.</li>
+</ul>
+</li>
+<li>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.<ul>
+<li>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</li>
+</ul>
+</li>
+<li>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.<ul>
+<li>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</li>
+</ul>
+</li>
+<li>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: run.py [-h] [--name NAME] [--restore RESTORE] [--mode MODE]
+              [--dataset DATASET] [--datapath DATAPATH] [--epoch EPOCH]
+              [--wvclass WVCLASS] [--wvpath WVPATH] [--out_dir OUT_DIR]
+              [--log_dir LOG_DIR] [--model_dir MODEL_DIR]
+              [--cache_dir CACHE_DIR] [--cpu] [--debug] [--cache]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --name NAME           The name of your model, used for variable scope and
+                        tensorboard, etc. Default: runXXXXXX_XXXXXX
+                        (initialized by current time)
+  --restore RESTORE     Checkpoints name to load. &quot;last&quot; for last checkpoints,
+                        &quot;best&quot; for best checkpoints on dev. Attention: &quot;last&quot;
+                        and &quot;best&quot; wiil cause unexpected behaviour when run 2
+                        models in the same dir at the same time. Default: None
+                        (dont load anything)
+  --mode MODE           &quot;train&quot; or &quot;test&quot;. Default: train
+  --dataset DATASET     Dataloader class. Default: MSCOCO
+  --datapath DATAPATH   Directory for data set. Default: ./data
+  --epoch EPOCH         Epoch for trainning. Default: 10
+  --wvclass WVCLASS     Wordvector class, None for using Glove pretrained
+                        wordvec. Default: None
+  --wvpath WVPATH       Path for pretrained wordvector. Default: wordvec
+  --out_dir OUT_DIR     Output directory for test output. Default: ./output
+  --log_dir LOG_DIR     Log directory for tensorboard. Default: ./tensorboard
+  --model_dir MODEL_DIR
+                        Checkpoints directory for model. Default: ./model
+  --cache_dir CACHE_DIR
+                        Checkpoints directory for cache. Default: ./cache
+  --cpu                 Use cpu.
+  --debug               Enter debug mode (using ptvsd).
+  --cache               Use cache for speeding up load data and wordvec. (It
+                        may cause problems when you switch dataset.)
+</pre></div>
+</div>
+<p>For hyperparameter settings, please refer to <code class="docutils literal notranslate"><span class="pre">run.py</span></code>.</p>
+</div>
+<div class="section" id="tensorboard-example">
+<h2>TensorBoard Example<a class="headerlink" href="#tensorboard-example" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>, you will see the plot in tensorboard pages:</p>
+<p>Following plot are shown in this model:</p>
+<ul>
+<li><p class="first">loss: reconstruction loss.</p>
+<a class="reference external image-reference" href="./images/loss.png"><img alt="loss" src="../../../_images/loss.png" /></a>
+</li>
+<li><p class="first">perplexity: reconstruction perplexity.</p>
+<a class="reference external image-reference" href="./images/perplexity.png"><img alt="perplexity" src="../../../_images/perplexity.png" /></a>
+</li>
+</ul>
+<p>And text output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;epochs&quot;: 10,
+&quot;lr&quot;: 0.1,
+&quot;log_dir&quot;: &quot;./tensorboard&quot;,
+&quot;name&quot;: &quot;LM&quot;,
+&quot;max_sen_length&quot;: 50,
+&quot;checkpoint_max_to_keep&quot;: 5,
+&quot;embedding_size&quot;: 300,
+&quot;momentum&quot;: 0.9,
+&quot;checkpoint_steps&quot;: 1000,
+&quot;datapath&quot;: &quot;resources://MSCOCO~tsinghua&quot;,
+&quot;cache&quot;: false,
+&quot;debug&quot;: false,
+&quot;wvclass&quot;: null,
+&quot;restore&quot;: &quot;last&quot;,
+&quot;show_sample&quot;: [
+0
+],
+&quot;wvpath&quot;: null,
+&quot;dh_size&quot;: 200,
+&quot;batch_size&quot;: 128,
+&quot;lr_decay&quot;: 0.995,
+&quot;model_dir&quot;: &quot;./model&quot;,
+&quot;out_dir&quot;: &quot;./output&quot;,
+&quot;cache_dir&quot;: &quot;./cache&quot;,
+&quot;softmax_samples&quot;: 512,
+&quot;mode&quot;: &quot;train&quot;,
+&quot;grad_clip&quot;: 5.0,
+&quot;dataset&quot;: &quot;MSCOCO&quot;,
+&quot;cuda&quot;: true
+</pre></div>
+</div>
+<p>Following text are shown in this model:</p>
+<ul class="simple">
+<li>args</li>
+</ul>
+</div>
+<div class="section" id="case-study-of-model-results">
+<h2>Case Study of Model Results<a class="headerlink" href="#case-study-of-model-results" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">last</span></code></p>
+<p>The following output will be in <code class="docutils literal notranslate"><span class="pre">./output/[name]_test.txt</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>self-bleu-3:    0.709417
+bw-bleu-3:  0.513164
+self-bleu-4:    0.515631
+bw-bleu-4:  0.336216
+self-bleu-2:    0.870640
+fw-bw-bleu-3:   0.550495
+perplexity: 13.409582
+fw-bleu-4:  0.371952
+fw-bleu-2:  0.836639
+fw-bw-bleu-4:   0.353182
+fw-bleu-3:  0.593684
+bw-bleu-2:  0.723493
+fw-bw-bleu-2:   0.775963
+A man and motorcycle parked on front of a building .
+A old desk with a computers computers of computers .
+A people in to a table in to a tree sign
+A man dog with a in in a bathroom bathroom .
+A man young plate to be served by a people .
+A man is on a bench next front park of a woods .
+A man is a piece feeder &#39;s a in
+A man of a old man in a small .
+A man is on a bench next looking dog is on her fence . the park station .
+A old man is standing a orange tie .
+A man is in a dog in to a .
+A old desk a and and a and desk .
+A of and and a black and a .
+A man is a man sitting to a table sign
+A up of a plate plate with with a stove pot . the .
+A man plate top oven in of kitchen .
+A man is on a small cars in a street field .
+A man of people are down a street lined street .
+A man is in two legs and in a couch . a .
+A man is two legs of a person on out a television .
+A in a helmet a on front of a building of people .
+A man is standing on a dog on a laptop .
+</pre></div>
+</div>
+</div>
+<div class="section" id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">Perplexity</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MSCOCO</td>
+<td>13.41</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../VAE-tensorflow/readme.html" class="btn btn-neutral float-right" title="VAE (TensorFlow)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="LanguageGeneration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
