@@ -89,6 +89,8 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Loader</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#vocabulary">Vocabulary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-class">Basic Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#languagegeneration">LanguageGeneration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mscoco">MSCOCO</a></li>
 </ul>
@@ -187,6 +189,150 @@
 loading benchmark data automatically. It reduces your cost preprocessing
 data and provide a fair dataset for every model. It also helps you adapt
 your model from one dataset to other datasets.</p>
+<div class="section" id="vocabulary">
+<h2>Vocabulary<a class="headerlink" href="#vocabulary" title="Permalink to this headline">¶</a></h2>
+<p>Language generation and evaluation highly depend on vocabulary,
+thus we introduce a common setting in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. All tokens appeared
+in dataset (including the ones only appear in test set) are splited into
+3 set.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Valid Vocabularies(<code class="docutils literal notranslate"><span class="pre">valid_vocabs</span></code>)</dt>
+<dd><ul class="first last simple">
+<li>Tokens that the model <strong>should</strong> read, predict and generate.</li>
+<li>These tokens are important in evaluation. They include
+common words and usually cover over 90% of tokens
+from dataset.</li>
+<li>They are extracted from only training set, because models should
+blind for test set. Usually, they are defined as the tokens appear
+more than a specified number of times (<code class="docutils literal notranslate"><span class="pre">min_vocab_times</span></code>) in
+<strong>training set</strong>.</li>
+</ul>
+</dd>
+<dt>Invalid Vocabularies(<code class="docutils literal notranslate"><span class="pre">invalid_vocabs</span></code>)</dt>
+<dd><ul class="first last simple">
+<li>Tokens that the model can <strong>optionally</strong> read,
+but will <strong>not</strong> predict and generate at most times
+(<strong>except</strong> some models can generate rare words using
+copy mechanism or external knowledge).</li>
+<li>These tokens are less important but <strong>DO</strong> affect the evaluation.
+They include rare words.</li>
+<li>They are extracted from both training set and test set, because they
+are defined considering evaluation. Usually, they are defined as the tokens
+(excluded <code class="docutils literal notranslate"><span class="pre">valid_vocabs</span></code>) appear more than a specified number
+(<code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code>) of times in <strong>the whold dataset</strong>.</li>
+</ul>
+</dd>
+<dt>Unknown Vocabularies</dt>
+<dd><ul class="first last simple">
+<li>Tokens that model can <strong>NOT</strong> read, predict or generate. They are always
+replaced by a token like <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, whenever training or evaluation.
+(While <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> is not always <cite>unknown vocabularies</cite>, see below for
+explanation.)</li>
+<li>These tokens will <strong>not</strong> affect the test. Whatever your model generated,
+the unknown words are always considered wrong or ignored.</li>
+<li>Usually, they are defined as the tokens appear less than a specified
+number of times (<code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code>) in all data sets, i.e.,
+the ones are neither <code class="docutils literal notranslate"><span class="pre">valid_vocabs</span></code> nor <code class="docutils literal notranslate"><span class="pre">invalid_vocabs</span></code>.
+By default, <code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>, thus no
+<cite>unknown words</cite> appear in the whole dataset. However, there can
+be words in our real language but out of the dataset, which
+are assumed as <cite>unknown vocabularies</cite>.</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p>There is also some other terms for vocabularies.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>All Vocabularies(<code class="docutils literal notranslate"><span class="pre">allvocabs</span></code>)</dt>
+<dd><ul class="first last simple">
+<li><cite>Valid vocabularies</cite> and <cite>invalid vocabularies</cite> are also called <cite>all vocabularies</cite>.</li>
+</ul>
+</dd>
+<dt>Special Tokens(<code class="docutils literal notranslate"><span class="pre">ext_vocab</span></code>)</dt>
+<dd><ul class="first last simple">
+<li>Most used special tokens are <code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code>’s index is <code class="docutils literal notranslate"><span class="pre">0</span></code>, representing the empty token, used for padding.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>’s index is <code class="docutils literal notranslate"><span class="pre">1</span></code>, see the next section for details.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>’s index is <code class="docutils literal notranslate"><span class="pre">2</span></code>, representing the start of a sentence.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>’s index is <code class="docutils literal notranslate"><span class="pre">3</span></code>, representing the end of a sentence.</li>
+<li>Sometimes, special tokens are counted as valid vocabularies,
+but exactly, they should be specially handled.</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p>There is a special token <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, which is <strong>different</strong> from unknown vocabularies.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Token &lt;unk&gt;</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> means “Out of Vocabularies”, but we have different
+vocabularies, so the meaning of <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> may varies from situations.</li>
+<li>If it appears at a list named with <code class="docutils literal notranslate"><span class="pre">allvocabs</span></code> (eg: <code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code>),
+<code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> indicates <cite>unknown vocabularies</cite>.</li>
+<li>If it appears at a list named without <code class="docutils literal notranslate"><span class="pre">allvocabs</span></code> (eg: <code class="docutils literal notranslate"><span class="pre">sent</span></code>),
+<code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> indicates <cite>invalid vocabularies</cite> or <cite>unknown vocabularies</cite>.</li>
+</ul>
+</dd>
+<dt>Convert from <cite>all vocabularies</cite> to <cite>valid vocabularies</cite></dt>
+<dd><ul class="first last simple">
+<li>If we have a sentence given in <cite>all vocabularies</cite>, just replace all
+<cite>invalid vocabularies</cite> to <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>.</li>
+</ul>
+</dd>
+<dt>Convert from <cite>valid vocabularies</cite> to <cite>all vocabularies</cite></dt>
+<dd><ul class="first last simple">
+<li>There will sometime that <code class="docutils literal notranslate"><span class="pre">cotk</span></code> need to convert a sentence with
+<cite>valid vocabularies</cite> to a sentence with <cite>all vocabularies</cite>. But
+it is <strong>never</strong> returned to user, so you can just skip the section if you
+don’t want to bother with too much of details.
+The convertion is performed depend on the condition.</li>
+<li>For example, <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a> can accept sentences with
+only <cite>valid vocabularies</cite>. A smoothing method will be applied that
+the probablity on <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> will be distributed evenly on
+<cite>invalid vocabularies</cite>.</li>
+<li>For most time, <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> in valid vocabularies will be replaced
+by a special token, which don’t match any other tokens, including itself.
+The special token is only used inside <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p>We offer some tips for you to further understand how vocabularies work.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Use <code class="docutils literal notranslate"><span class="pre">allvocabs</span></code> or not ?</dt>
+<dd><ul class="first last simple">
+<li>First of all, you never need to consider <cite>unknown vocabularies</cite>, because a model
+can never generate a totally unknown word.</li>
+<li><cite>Valid vocabularies</cite> are often used as input, supervision of generated sentences.
+It is because <cite>invalid vocabularies</cite> are less appeared and hard to learn
+the representation or generate, thus we can treat them as <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> .</li>
+<li><cite>All vocabularies</cite> are always used as references of metrics. They can also be used
+as input or supervision, if your model can handle the rare word (like copyNet).</li>
+</ul>
+</dd>
+<dt>Index and <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code></dt>
+<dd><ul class="first last simple">
+<li>Token’s index is always equal to the position that the token in
+<a class="reference internal" href="#cotk.dataloader.GenerationBase.vocab_list" title="cotk.dataloader.GenerationBase.vocab_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GenerationBase.vocab_list</span></code></a>.</li>
+<li>Special tokens like <code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code> are always at
+the front of <a class="reference internal" href="#cotk.dataloader.GenerationBase.vocab_list" title="cotk.dataloader.GenerationBase.vocab_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GenerationBase.vocab_list</span></code></a>.</li>
+<li>Valid vocabularies are following the special tokens.
+Thus <code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_size]</span></code> includes valid words and special tokens.</li>
+<li>Invalid vocabularies are the left. <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_size:]</span></code> are
+invalid_vocabs.</li>
+<li>Unknown vacabularies are not in <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>, therefore
+they don’t have index.</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="basic-class">
+<h2>Basic Class<a class="headerlink" href="#basic-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.dataloader.Dataloader">
 <em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
@@ -528,6 +674,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 </dd></dl>
 
+</div>
 <div class="section" id="languagegeneration">
 <h2>LanguageGeneration<a class="headerlink" href="#languagegeneration" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
