@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Quick Start &mdash; cotk  documentation</title>
+  <title>Frequently Asked Questions &mdash; cotk  documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="GRU Language Model: Load Data and Evaluate Models" href="tutorial_core.html" />
-    <link rel="prev" title="cotk documentation" href="../index.html" /> 
+    <link rel="next" title="Data Loader" href="../dataloader.html" />
+    <link rel="prev" title="Extending Cotk: More Data, More Metrics!" href="extend.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,19 +84,14 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#install-from-pip">Install from pip</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-from-source-code">Install from source code</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-my-codes-seem-running-from-beginning-after-calling-metric-close">Why my codes seem running from beginning after calling metric.close ?</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
@@ -155,13 +150,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Quick Start</li>
+      <li>Frequently Asked Questions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/notes/quickstart.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notes/FAQ.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -174,48 +169,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="quick-start">
-<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>python 3</li>
-<li>numpy &gt;= 1.13</li>
-<li>nltk &gt;= 3.4</li>
-<li>tqdm &gt;= 4.30</li>
-<li>checksumdir &gt;= 1.1</li>
-<li>pytorch &gt;= 1.0.0 (optional)</li>
-<li>pytorch-pretrained-bert (optional)</li>
-</ul>
-</div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="install-from-pip">
-<h3>Install from pip<a class="headerlink" href="#install-from-pip" title="Permalink to this headline">¶</a></h3>
-<p>You can simply get the latest stable version from pip using</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install cotk
-</pre></div>
-</div>
-</div>
-<div class="section" id="install-from-source-code">
-<h3>Install from source code<a class="headerlink" href="#install-from-source-code" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Clone the cotk repository</li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/thu-coai/cotk.git
-</pre></div>
-</div>
-<ul class="simple">
-<li>Install cotk via pip</li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> cotk
-pip install -e .
-</pre></div>
-</div>
-<ul class="simple">
-<li>If you want to run the models in <code class="docutils literal notranslate"><span class="pre">./models</span></code>, you have to additionally install <a class="reference external" href="https://www.tensorflow.org">TensorFlow</a> or <a class="reference external" href="https://pytorch.org/">PyTorch</a>.</li>
-</ul>
-</div>
+  <div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="why-my-codes-seem-running-from-beginning-after-calling-metric-close">
+<h2>Why my codes seem running from beginning after calling metric.close ?<a class="headerlink" href="#why-my-codes-seem-running-from-beginning-after-calling-metric-close" title="Permalink to this headline">¶</a></h2>
+<p><strong>TL;DR: Use if __name__ == “__main__” at your start point of program.</strong></p>
+<p>This happened when you use SelfBleuMetric, FwBwBleuMetric on windows. They use
+<code class="docutils literal notranslate"><span class="pre">multiprocess</span></code> for speed issue but this would call <code class="docutils literal notranslate"><span class="pre">fork()</span></code> of system. If you are
+on windows, which doesn’t support <code class="docutils literal notranslate"><span class="pre">fork()</span></code>, <code class="docutils literal notranslate"><span class="pre">Multiprocess</span></code> has to rerun your program
+for correctly importing packages.</p>
 </div>
 </div>
 
@@ -227,10 +189,10 @@ pip install -e .
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tutorial_core.html" class="btn btn-neutral float-right" title="GRU Language Model: Load Data and Evaluate Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../dataloader.html" class="btn btn-neutral float-right" title="Data Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="cotk documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="extend.html" class="btn btn-neutral float-left" title="Extending Cotk: More Data, More Metrics!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

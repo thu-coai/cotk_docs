@@ -84,6 +84,10 @@
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
@@ -190,10 +194,10 @@
 </li>
       <li><a href="metric.html#cotk.metric.MetricBase._hashvalue">_hashvalue() (cotk.metric.MetricBase method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase._load_data">_load_data() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._load_data">_load_data() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._load_data">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase._load_data">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MSCOCO._load_data">(cotk.dataloader.MSCOCO method)</a>
 </li>
@@ -216,10 +220,10 @@
         <li><a href="metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric._score">(cotk.metric.EmbSimilarityPrecisionRecallMetric method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase._valid_word2id">_valid_word2id() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._valid_word2id">_valid_word2id() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._valid_word2id">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase._valid_word2id">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog._valid_word2id">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -234,10 +238,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="metric.html#cotk.metric.MetricChain.add_metric">add_metric() (cotk.metric.MetricChain method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.all_vocab_size">all_vocab_size (cotk.dataloader.GenerationBase attribute)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.all_vocab_size">all_vocab_size (cotk.dataloader.LanguageGeneration attribute)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.all_vocab_size">(cotk.dataloader.LanguageGeneration attribute)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.all_vocab_size">(cotk.dataloader.LanguageProcessingBase attribute)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.all_vocab_size">(cotk.dataloader.MultiTurnDialog attribute)</a>
 </li>
@@ -292,10 +296,10 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.convert_ids_to_tokens">convert_ids_to_tokens() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.convert_ids_to_tokens">convert_ids_to_tokens() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.convert_ids_to_tokens">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_ids_to_tokens">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -306,10 +310,10 @@
 </li>
       <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_multi_turn_tokens_to_ids">convert_multi_turn_tokens_to_ids() (cotk.dataloader.MultiTurnDialog method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.convert_tokens_to_ids">convert_tokens_to_ids() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.convert_tokens_to_ids">convert_tokens_to_ids() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.convert_tokens_to_ids">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_tokens_to_ids">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -382,18 +386,16 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase">GenerationBase (class in cotk.dataloader)</a>
-</li>
       <li><a href="dataloader.html#cotk.dataloader.Dataloader.get_all_subclasses">get_all_subclasses() (cotk.dataloader.Dataloader class method)</a>
 
       <ul>
         <li><a href="wordvector.html#cotk.wordvector.WordVector.get_all_subclasses">(cotk.wordvector.WordVector class method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.get_batch">get_batch() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_batch">get_batch() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_batch">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_batch">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -402,10 +404,10 @@
         <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.get_batch">(cotk.dataloader.SwitchboardCorpus method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.get_batches">get_batches() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_batches">get_batches() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_batches">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batches">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_batches">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -424,10 +426,10 @@
       </ul></li>
       <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">get_multi_ref_metric() (cotk.dataloader.SwitchboardCorpus method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.get_next_batch">get_next_batch() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_next_batch">get_next_batch() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_next_batch">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.get_next_batch">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_next_batch">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -453,6 +455,8 @@
       <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration">LanguageGeneration (class in cotk.dataloader)</a>
 </li>
       <li><a href="metric.html#cotk.metric.LanguageGenerationRecorder">LanguageGenerationRecorder (class in cotk.metric)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase">LanguageProcessingBase (class in cotk.dataloader)</a>
 </li>
       <li><a href="wordvector.html#cotk.wordvector.Glove.load">load() (cotk.wordvector.Glove method)</a>
 
@@ -516,10 +520,10 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.restart">restart() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.restart">restart() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.restart">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.restart">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.restart">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -548,10 +552,10 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.trim_index">trim_index() (cotk.dataloader.GenerationBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.trim_index">trim_index() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.trim_index">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.trim_index">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.trim_index">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
@@ -572,10 +576,10 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.vocab_list">vocab_list (cotk.dataloader.GenerationBase attribute)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.vocab_list">vocab_list (cotk.dataloader.LanguageGeneration attribute)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.vocab_list">(cotk.dataloader.LanguageGeneration attribute)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.vocab_list">(cotk.dataloader.LanguageProcessingBase attribute)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.vocab_list">(cotk.dataloader.MultiTurnDialog attribute)</a>
 </li>
@@ -584,10 +588,10 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.GenerationBase.vocab_size">vocab_size (cotk.dataloader.GenerationBase attribute)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.vocab_size">vocab_size (cotk.dataloader.LanguageGeneration attribute)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.vocab_size">(cotk.dataloader.LanguageGeneration attribute)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.vocab_size">(cotk.dataloader.LanguageProcessingBase attribute)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.vocab_size">(cotk.dataloader.MultiTurnDialog attribute)</a>
 </li>

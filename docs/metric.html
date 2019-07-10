@@ -85,6 +85,10 @@
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
@@ -284,7 +288,7 @@ arXiv preprint arXiv:1703.10960.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
 <li><strong>candidate_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">candidate_allvocabs</span></code>.</li>
 <li><strong>multiple_gen_key</strong> (<em>str</em>) – The key of multiple generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">multiple_gen</span></code>.</li>
@@ -377,7 +381,7 @@ arXiv preprint arXiv:1703.10960.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
 <li><strong>candidate_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">candidate_allvocabs</span></code>.</li>
 <li><strong>multiple_gen_key</strong> (<em>str</em>) – The key of multiple generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">multiple_gen</span></code>.</li>
@@ -472,7 +476,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">ref_allvocabs</span></code>.</li>
 <li><strong>reference_len_key</strong> (<em>str</em>) – The key of lengths of reference sentences.
 Default: <code class="docutils literal notranslate"><span class="pre">ref_length</span></code>.</li>
@@ -557,7 +561,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>multi_turn_reference_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_allvocabs</span></code>.</li>
 <li><strong>multi_turn_reference_len_key</strong> (<em>str</em>) – The key of lengths of reference sentences.
 Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_length</span></code>.</li>
@@ -643,7 +647,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>reference_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">ref_allvocabs</span></code>.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>
@@ -701,17 +705,21 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.SelfBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating Self-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 <li><strong>sample</strong> (<em>int</em>) – Number of examples sampled from the generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code>.</li>
-<li><strong>seed</strong> (<em>int</em>) – random seed for sampling. Default: <code class="docutils literal notranslate"><span class="pre">1229</span></code>.</li>
+<li><strong>seed</strong> (<em>int</em>) – Random seed for sampling. Default: <code class="docutils literal notranslate"><span class="pre">1229</span></code>.</li>
+<li><strong>cpu_count</strong> (<em>int</em>) – Number of used cpu for multiprocessing. Multiprocessing will <strong>NOT</strong> be used
+when <code class="docutils literal notranslate"><span class="pre">cpu_count</span></code> is set to <code class="docutils literal notranslate"><span class="pre">1</span></code> or the dataset is small. Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+the environment variable <code class="docutils literal notranslate"><span class="pre">CPU_COUNT</span></code> will be used     when it is set,
+or all available cpu will be used otherwise.</li>
 </ul>
 </td>
 </tr>
@@ -767,19 +775,23 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.FwBwBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_key</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_key</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating FwBw-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>reference_test_key</strong> (<em>str</em>) – Reference sentences with all vocabs in test data
 are passed to <a class="reference internal" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="cotk.metric.FwBwBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">dataloader.data[&quot;test&quot;][self.reference_test_key]</span></code>.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 <li><strong>sample</strong> (<em>int</em>) – Number of examples sampled from the generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code>.</li>
 <li><strong>seed</strong> (<em>int</em>) – random seed for sampling. Default: <code class="docutils literal notranslate"><span class="pre">1229</span></code>.</li>
+<li><strong>cpu_count</strong> (<em>int</em>) – Number of used cpu for multiprocessing. Multiprocessing will <strong>NOT</strong> be used
+when <code class="docutils literal notranslate"><span class="pre">cpu_count</span></code> is set to <code class="docutils literal notranslate"><span class="pre">1</span></code> or the dataset is small. Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+the environment variable <code class="docutils literal notranslate"><span class="pre">CPU_COUNT</span></code> will be used     when it is set,
+or all available cpu will be used otherwise.</li>
 </ul>
 </td>
 </tr>
@@ -787,10 +799,9 @@ are passed to <a class="reference internal" href="#cotk.metric.FwBwBleuCorpusMet
 </table>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<dl class="last docutils">
-<dt>the calculation of <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> considers the actual sample size of hypotheses and references which</dt>
-<dd>will be less than <code class="docutils literal notranslate"><span class="pre">sample</span></code> if the size of hypotheses or references is smaller than <code class="docutils literal notranslate"><span class="pre">sample</span></code></dd>
-</dl>
+<p class="last">The calculation of <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> considers the actual sample size of hypotheses and
+references. Therefore <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> may vary with the size of hypothesis or references
+if the size of them is smaller than <code class="docutils literal notranslate"><span class="pre">sample</span></code>.</p>
 </div>
 <dl class="method">
 <dt id="cotk.metric.FwBwBleuCorpusMetric.forward">
@@ -844,7 +855,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>multi_turn_reference_allvocabs_key</strong> (<em>str</em>) – The key of reference sentences. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_allvocabs</span></code>.</li>
 <li><strong>multi_turn_gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_gen</span></code>.</li>
 <li><strong>turn_length</strong> (<em>str</em>) – The key of length of turns. Default: <code class="docutils literal notranslate"><span class="pre">turn_length</span></code>.</li>
@@ -915,7 +926,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>post_allvocabs_key</strong> (<em>str</em>) – The key of dialog posts with allvocabs.
 Default: <code class="docutils literal notranslate"><span class="pre">post_allvocabs</span></code>.</li>
 <li><strong>resp_allvocabs_key</strong> (<em>str</em>) – The key of dialog responses with allvocabs.
@@ -994,7 +1005,7 @@ sizes in this dimension is allowed.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>multi_turn_context_allvocabs_key</strong> (<em>str</em>) – The key of dialog context with allvocabs.
 Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_context_allvocabs</span></code>.</li>
 <li><strong>multi_turn_reference_allvocabs_key</strong> (<em>str</em>) – The key of dialog references with allvocabs.
@@ -1076,7 +1087,7 @@ sizes in this dimension is allowed.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.GenerationBase" title="cotk.dataloader.GenerationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GenerationBase</span></code></a>) – A language generation dataloader.</li>
+<li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>
 </td>

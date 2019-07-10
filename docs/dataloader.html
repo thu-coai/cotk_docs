@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Word Vector" href="wordvector.html" />
-    <link rel="prev" title="Quick Start" href="notes/quickstart.html" /> 
+    <link rel="prev" title="Frequently Asked Questions" href="notes/FAQ.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,6 +85,10 @@
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
@@ -186,7 +190,7 @@ loading benchmark data automatically. It reduces your cost preprocessing
 data and provide a fair dataset for every model. It also helps you adapt
 your model from one dataset to other datasets.</p>
 <div class="section" id="vocabulary">
-<h2>Vocabulary<a class="headerlink" href="#vocabulary" title="Permalink to this headline">¶</a></h2>
+<span id="vocab-ref"></span><h2>Vocabulary<a class="headerlink" href="#vocabulary" title="Permalink to this headline">¶</a></h2>
 <p>Language generation and evaluation highly depend on vocabulary,
 thus we introduce a common setting in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. All tokens appeared
 in dataset (including the ones only appear in test set) are splited into
@@ -313,9 +317,9 @@ as input or supervision, if your model can handle the rare word (like copyNet).<
 <dt>Index and <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code></dt>
 <dd><ul class="first last simple">
 <li>Token’s index is always equal to the position that the token in
-<a class="reference internal" href="#cotk.dataloader.GenerationBase.vocab_list" title="cotk.dataloader.GenerationBase.vocab_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GenerationBase.vocab_list</span></code></a>.</li>
+<a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.vocab_list" title="cotk.dataloader.LanguageProcessingBase.vocab_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LanguageProcessingBase.vocab_list</span></code></a>.</li>
 <li>Special tokens like <code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code> are always at
-the front of <a class="reference internal" href="#cotk.dataloader.GenerationBase.vocab_list" title="cotk.dataloader.GenerationBase.vocab_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GenerationBase.vocab_list</span></code></a>.</li>
+the front of <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.vocab_list" title="cotk.dataloader.LanguageProcessingBase.vocab_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LanguageProcessingBase.vocab_list</span></code></a>.</li>
 <li>Valid vocabularies are following the special tokens.
 Thus <code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_size]</span></code> includes valid words and special tokens.</li>
 <li>Invalid vocabularies are the left. <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_size:]</span></code> are
@@ -366,9 +370,9 @@ they don’t have index.</li>
 </dd></dl>
 
 <dl class="class">
-<dt id="cotk.dataloader.GenerationBase">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">GenerationBase</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for all language generation datasets. This is an abstract class.</p>
+<dt id="cotk.dataloader.LanguageProcessingBase">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">LanguageProcessingBase</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all language processing tasks. This is an abstract class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -390,15 +394,15 @@ For example: <code class="docutils literal notranslate"><span class="pre">[&quot
 <li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</li>
 <li><strong>word2id</strong> (<em>dict</em>) – a dict mapping all vocab to index. You don’t need to use it
-at most times, see <a class="reference internal" href="#cotk.dataloader.GenerationBase.convert_tokens_to_ids" title="cotk.dataloader.GenerationBase.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
+at most times, see <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids" title="cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="cotk.dataloader.GenerationBase.vocab_list">
-<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.GenerationBase.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.vocab_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -411,8 +415,8 @@ at most times, see <a class="reference internal" href="#cotk.dataloader.Generati
 </dd></dl>
 
 <dl class="attribute">
-<dt id="cotk.dataloader.GenerationBase.vocab_size">
-<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.GenerationBase.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -425,8 +429,8 @@ at most times, see <a class="reference internal" href="#cotk.dataloader.Generati
 </dd></dl>
 
 <dl class="attribute">
-<dt id="cotk.dataloader.GenerationBase.all_vocab_size">
-<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.GenerationBase.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.all_vocab_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -439,8 +443,8 @@ at most times, see <a class="reference internal" href="#cotk.dataloader.Generati
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase._load_data" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase._load_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is called during the initialization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -462,8 +466,8 @@ while <code class="docutils literal notranslate"><span class="pre">vocab_list[va
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase._valid_word2id">
-<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase._valid_word2id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase._valid_word2id" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase._valid_word2id">
+<code class="descname">_valid_word2id</code><span class="sig-paren">(</span><em>word</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase._valid_word2id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase._valid_word2id" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function return the id for a valid word, otherwise return <code class="docutils literal notranslate"><span class="pre">unk_id</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -478,9 +482,9 @@ while <code class="docutils literal notranslate"><span class="pre">vocab_list[va
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.restart">
-<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.restart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize batches. This function be called before <a class="reference internal" href="#cotk.dataloader.GenerationBase.get_next_batch" title="cotk.dataloader.GenerationBase.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+<dt id="cotk.dataloader.LanguageProcessingBase.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize batches. This function be called before <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.get_next_batch" title="cotk.dataloader.LanguageProcessingBase.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
 or an epoch is end.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -499,8 +503,8 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.get_batch" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.get_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a batch of specified <cite>index</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -520,9 +524,9 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.get_next_batch">
-<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.get_next_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.get_next_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get next batch. It can be called only after Initializing batches (<a class="reference internal" href="#cotk.dataloader.GenerationBase.restart" title="cotk.dataloader.GenerationBase.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>).</p>
+<dt id="cotk.dataloader.LanguageProcessingBase.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.get_next_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next batch. It can be called only after Initializing batches (<a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.restart" title="cotk.dataloader.LanguageProcessingBase.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -535,7 +539,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.GenerationBase.get_batch" title="cotk.dataloader.GenerationBase.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.get_batch" title="cotk.dataloader.LanguageProcessingBase.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
 </td>
 </tr>
 </tbody>
@@ -543,9 +547,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.get_batches">
-<code class="descname">get_batches</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.get_batches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.get_batches" title="Permalink to this definition">¶</a></dt>
-<dd><p>An iterator over batches. It first call <a class="reference internal" href="#cotk.dataloader.GenerationBase.restart" title="cotk.dataloader.GenerationBase.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>, and then <code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batches()</span></code>                      until no more data is available.</p>
+<dt id="cotk.dataloader.LanguageProcessingBase.get_batches">
+<code class="descname">get_batches</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.get_batches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.get_batches" title="Permalink to this definition">¶</a></dt>
+<dd><p>An iterator over batches. It first call <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.restart" title="cotk.dataloader.LanguageProcessingBase.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>, and then <code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batches()</span></code>                      until no more data is available.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -560,7 +564,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An iterator where each element is like <a class="reference internal" href="#cotk.dataloader.GenerationBase.get_batch" title="cotk.dataloader.GenerationBase.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An iterator where each element is like <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.get_batch" title="cotk.dataloader.LanguageProcessingBase.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>.</p>
 </td>
 </tr>
 </tbody>
@@ -568,8 +572,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.trim_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.trim_index">
+<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.trim_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trim a sentence represented by index. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
@@ -600,8 +604,8 @@ find first end token and abandon words after it (included the end token).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.convert_tokens_to_ids">
-<code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.convert_tokens_to_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids">
+<code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.convert_tokens_to_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from string to index representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -637,8 +641,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.GenerationBase.convert_ids_to_tokens">
-<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#GenerationBase.convert_ids_to_tokens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.GenerationBase.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.convert_ids_to_tokens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a sentence from index to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -646,7 +650,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.GenerationBase.trim_index" title="cotk.dataloader.GenerationBase.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.trim_index" title="cotk.dataloader.LanguageProcessingBase.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -1034,7 +1038,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityM
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metrics for inference. In other words, this function provides metrics for
 language generation tasks.</p>
 <p>It contains:</p>
@@ -1056,6 +1060,8 @@ It will be fast but inaccurate if this become small.
 Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code>.</li>
 <li><strong>seed</strong> (<em>int</em>) – Random seed for sampling.
 Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">1229</span></code>.</li>
+<li><strong>cpu_count</strong> (<em>int</em>) – Number of used cpu for multiprocessing.
+Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
 </ul>
 </td>
 </tr>
@@ -2142,9 +2148,8 @@ testing stages. Default: <code class="docutils literal notranslate"><span class=
 </table>
 <p>Refer to <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a> for attributes and methods.</p>
 <p class="rubric">References</p>
-<p>[1] <a class="reference external" href="http://dataset.cs.mcgill.ca/ubuntu-corpus-1.0">http://dataset.cs.mcgill.ca/ubuntu-corpus-1.0</a></p>
-<p>[2] <a class="reference external" href="https://github.com/rkadlec/ubuntu-ranking-dataset-creator">https://github.com/rkadlec/ubuntu-ranking-dataset-creator</a></p>
-<p>[3] Lowe R, Pow N, Serban I, et al. The Ubuntu Dialogue Corpus: A Large Dataset
+<p>[1] <a class="reference external" href="https://github.com/rkadlec/ubuntu-ranking-dataset-creator">https://github.com/rkadlec/ubuntu-ranking-dataset-creator</a></p>
+<p>[2] Lowe R, Pow N, Serban I, et al. The Ubuntu Dialogue Corpus: A Large Dataset
 for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</p>
 <dl class="method">
 <dt id="cotk.dataloader.UbuntuCorpus._load_data">
@@ -2323,7 +2328,7 @@ Default: if <code class="docutils literal notranslate"><span class="pre">None</s
         <a href="wordvector.html" class="btn btn-neutral float-right" title="Word Vector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="notes/quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="notes/FAQ.html" class="btn btn-neutral float-left" title="Frequently Asked Questions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

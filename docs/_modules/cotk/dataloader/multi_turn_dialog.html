@@ -83,6 +83,10 @@
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
@@ -170,14 +174,14 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">GenerationBase</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">MultiTurnPerplexityMetric</span><span class="p">,</span> <span class="n">MultiTurnBleuCorpusMetric</span><span class="p">,</span> \
 	<span class="n">MultiTurnDialogRecorder</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">BleuPrecisionRecallMetric</span><span class="p">,</span> <span class="n">EmbSimilarityPrecisionRecallMetric</span>
 <span class="kn">from</span> <span class="nn">..wordvector</span> <span class="k">import</span> <span class="n">Glove</span>
 
 <span class="c1"># pylint: disable=W0223</span>
-<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MultiTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnDialog</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for multi-turn dialog datasets. This is an abstract class.</span>
 
 <span class="sd">	Arguments:{ARGUMENTS}</span>
@@ -185,8 +189,8 @@
 <span class="sd">	Attributes:{ATTRIBUTES}</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
 
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
 				 <span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
@@ -480,11 +484,9 @@
 <span class="sd">	Refer to :class:`.MultiTurnDialog` for attributes and methods.</span>
 
 <span class="sd">	References:</span>
-<span class="sd">		[1] http://dataset.cs.mcgill.ca/ubuntu-corpus-1.0</span>
+<span class="sd">		[1] https://github.com/rkadlec/ubuntu-ranking-dataset-creator</span>
 
-<span class="sd">		[2] https://github.com/rkadlec/ubuntu-ranking-dataset-creator</span>
-
-<span class="sd">		[3] Lowe R, Pow N, Serban I, et al. The Ubuntu Dialogue Corpus: A Large Dataset</span>
+<span class="sd">		[2] Lowe R, Pow N, Serban I, et al. The Ubuntu Dialogue Corpus: A Large Dataset</span>
 <span class="sd">		for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 

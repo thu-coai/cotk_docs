@@ -83,6 +83,10 @@
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
@@ -167,12 +171,12 @@
 
 <span class="c1"># from .._utils.unordered_hash import UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">GenerationBase</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">LanguageGenerationRecorder</span><span class="p">,</span> \
 	<span class="n">FwBwBleuCorpusMetric</span><span class="p">,</span> <span class="n">SelfBleuCorpusMetric</span>
 
 <span class="c1"># pylint: disable=W0223</span>
-<div class="viewcode-block" id="LanguageGeneration"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration">[docs]</a><span class="k">class</span> <span class="nc">LanguageGeneration</span><span class="p">(</span><span class="n">GenerationBase</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGeneration"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration">[docs]</a><span class="k">class</span> <span class="nc">LanguageGeneration</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for language modelling datasets. This is an abstract class.</span>
 
 <span class="sd">	This class is supported for language modeling tasks or language generation tasks</span>
@@ -183,8 +187,8 @@
 <span class="sd">	Attributes:{ATTRIBUTES}</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">GenerationBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
 
 <div class="viewcode-block" id="LanguageGeneration.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
@@ -264,7 +268,7 @@
 					<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 
-<div class="viewcode-block" id="LanguageGeneration.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGeneration.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> <span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for inference. In other words, this function provides metrics for</span>
 <span class="sd">		language generation tasks.</span>
 
@@ -283,17 +287,23 @@
 <span class="sd">				Refer to :class:`.metric.SelfBleuCorpusMetric`. Default: ``1000``.</span>
 <span class="sd">			seed (int): Random seed for sampling.</span>
 <span class="sd">				Refer to :class:`.metric.SelfBleuCorpusMetric`. Default: ``1229``.</span>
-
+<span class="sd">			cpu_count (int): Number of used cpu for multiprocessing.</span>
+<span class="sd">				Refer to :class:`.metric.SelfBleuCorpusMetric`. Default: ``None``.</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			A :class:`.metric.MetricChain` object.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
+					<span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> \
+					<span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> \
+					<span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> \
+					<span class="n">cpu_count</span><span class="o">=</span><span class="n">cpu_count</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
 					<span class="n">reference_test_key</span><span class="o">=</span><span class="s2">&quot;sent&quot;</span><span class="p">,</span> \
 					<span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> \
 					<span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span> \
-					<span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">))</span>
+					<span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> \
+					<span class="n">cpu_count</span><span class="o">=</span><span class="n">cpu_count</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">LanguageGenerationRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
 

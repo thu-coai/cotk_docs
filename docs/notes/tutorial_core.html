@@ -1,0 +1,471 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GRU Language Model: Load Data and Evaluate Models &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CLI Usage: Fast Model Reproduction" href="tutorial_cli.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GRU Language Model: Load Data and Evaluate Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preparing-the-data">Preparing the data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#training-models">Training models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluations">Evaluations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#teacher-forcing">Teacher Forcing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#free-run">Free Run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hash-value">Hash value</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-word-vector">Additional: Word Vector</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>GRU Language Model: Load Data and Evaluate Models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notes/tutorial_core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gru-language-model-load-data-and-evaluate-models">
+<h1>GRU Language Model: Load Data and Evaluate Models<a class="headerlink" href="#gru-language-model-load-data-and-evaluate-models" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will train a neural language model on MSCOCO dataset.
+We will focus on how to use <code class="docutils literal notranslate"><span class="pre">cotk</span></code> rather than the neural networks,
+so we assume you have known how to construct a neural network.</p>
+<p>After reading this tutorial, you may know:</p>
+<ul class="simple">
+<li>How to use <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cotk.dataloader</span></code></a> downloading and loading dataset.</li>
+<li>How to train model with the support of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</li>
+<li>How to use <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cotk.metric</span></code></a> evaluating models.</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> does <strong>not</strong> rely on any deep learning framework,
+so you can even use shallow models like ngram language model.
+However, this tutorial constructs neural networks with
+<code class="docutils literal notranslate"><span class="pre">pytorch</span></code>, so make sure you have installed the following package:</p>
+<ul class="simple">
+<li>Python &gt;= 3.5</li>
+<li>cotk</li>
+<li>pytorch &gt;= 1.0.0</li>
+<li>livelossplot (optional, just for showing loss)</li>
+</ul>
+<p>If you don’t have a suitable environment, you can also run the codes
+on google colab. #TODO: FIX THE LINK</p>
+<div class="section" id="preparing-the-data">
+<h2>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> provides <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataloader</span></code></a> to download, import and preprocess data.
+Therefore, we first construct a <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">cotk.dataloader.MSCOCO</span></code></a> to load MSCOCO dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.dataloader</span> <span class="kn">import</span> <span class="n">MSCOCO</span>
+<span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span> <span class="c1"># &quot;resources://MSCOCO_small&quot; is a predefined resources name</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vocab Size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens:&quot;</span><span class="p">,</span>  <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># get the sample of id 0</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: name: MSCOCO_small
+INFO: source: default
+INFO: processor type: MSCOCO
+
+100%|██████████| 1020154/1020154 [00:00&lt;00:00, 1821805.36B/s]
+
+INFO: resource cached at /root/.cotk_cache/9e4c0afe33d98fa249e472206a39e5553d739234d0a27e055044ae8880e314b1_unzip/mscoco
+valid vocab list length = 2588
+vocab list length = 12411
+train set. invalid rate: 0.031716, unknown rate: 0.000000, max length before cut: 55, cut word rate: 0.000022
+dev set. invalid rate: 0.034089, unknown rate: 0.000000, max length before cut: 46, cut word rate: 0.000000
+test set. invalid rate: 0.031213, unknown rate: 0.000000, max length before cut: 27, cut word rate: 0.000000
+Vocab Size: 2588
+First 10 tokens: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]
+Dataset is split into: [&#39;train&#39;, &#39;dev&#39;, &#39;test&#39;]
+{&#39;sent_length&#39;: array([15]), &#39;sent&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
+        4,   3]]), &#39;sent_allvocabs&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
+        4,   3]])}
+[&#39;&lt;go&gt;&#39;, &#39;A&#39;, &#39;blue&#39;, &#39;lamp&#39;, &#39;post&#39;, &#39;with&#39;, &#39;a&#39;, &#39;sign&#39;, &#39;for&#39;, &#39;the&#39;, &#39;yellow&#39;, &#39;brick&#39;, &#39;road&#39;, &#39;.&#39;]
+</pre></div>
+</div>
+<p><a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">cotk.dataloader.MSCOCO</span></code></a> has helped us construct vocabulary list and
+turn the sentences into index representation.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can also import dataset from url (<a class="reference external" href="http://test.com/data.zip">http://test.com/data.zip</a>) or
+local path (./data.zip), as long as the format of the data is suitable.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may find <code class="docutils literal notranslate"><span class="pre">data</span></code> contains similiar key <code class="docutils literal notranslate"><span class="pre">sent</span></code> and <code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code>.
+The difference between them is that <code class="docutils literal notranslate"><span class="pre">sent</span></code> only contains
+<a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">valid vocabularies</span></a> and
+<code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code> contains both <a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">valid vocabularies</span></a> and
+<a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">invalid vocabularies</span></a>.</p>
+</div>
+</div>
+<div class="section" id="training-models">
+<h2>Training models<a class="headerlink" href="#training-models" title="Permalink to this headline">¶</a></h2>
+<p>First we construct a simple GRU Language model using <code class="docutils literal notranslate"><span class="pre">pytorch</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">embedding_size</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="k">class</span> <span class="nc">LanguageModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">embedding_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crossentropy</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># data is the dict returned by ``dataloader.get_batch``</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span>
+        <span class="n">sent_length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">]</span>
+        <span class="c1"># sent is a LongTensor whose shape is (batch_size, sent_length)</span>
+        <span class="c1"># sent_length is a list whose size is (batch_size)</span>
+
+        <span class="n">incoming</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
+        <span class="c1"># incoming: (batch_size, sent_length, embedding_size)</span>
+        <span class="n">incoming</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
+        <span class="c1"># incoming: (batch_size, sent_length, hidden_size)</span>
+        <span class="n">incoming</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
+        <span class="c1"># incoming: (batch_size, sent_length, dataloader.vocab_size)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sent_length</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">crossentropy</span><span class="p">(</span><span class="n">incoming</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sent</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="n">length</span><span class="p">]))</span>
+                <span class="c1"># every time step predict next token</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LogSoftmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span><span class="n">incoming</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you are familiar with GRU, you can see the codes constructed a
+network for predicting next token. Then, we will train our model with
+the help of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">LanguageModel</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">epoch_num</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLosses</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">PlotLosses</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch_num</span><span class="p">):</span>
+    <span class="n">loss_arr</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+        <span class="c1"># convert numpy to torch.LongTensor</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span>
+        <span class="n">net</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">loss_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss_arr</span><span class="p">)})</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;epoch </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epoch_num</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="evaluations">
+<h2>Evaluations<a class="headerlink" href="#evaluations" title="Permalink to this headline">¶</a></h2>
+<p>How well our model can fit the data? <code class="docutils literal notranslate"><span class="pre">cotk</span></code> have provided
+some standard metrics for language generation model.</p>
+<div class="section" id="teacher-forcing">
+<h3>Teacher Forcing<a class="headerlink" href="#teacher-forcing" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">perplexity</span></code>
+is a common used metric and it need the predicted distribution
+over words. Recall we have set <code class="docutils literal notranslate"><span class="pre">data[&quot;gen_log_prob&quot;]</span></code> in previous
+section, we use it right now.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_teacher_forcing_metric</span><span class="p">(</span><span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)):</span>
+    <span class="c1"># convert numpy to torch.LongTensor</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s2">&quot;gen_log_prob&quot;</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p>The codes above evaluated the model in teacher forcing mode, where every input
+token is the real data.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The type of <code class="docutils literal notranslate"><span class="pre">data['gen_log_prob']</span></code> is <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, but most metrics can
+<strong>not</strong> receive a tensor input as we are trying to implement a library <strong>not</strong>
+depending on any deep learning framework. <a class="reference internal" href="../metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a> just use <code class="docutils literal notranslate"><span class="pre">torch</span></code>
+to accelerate the calculation, a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> can also be accepted.</p>
+</div>
+</div>
+<div class="section" id="free-run">
+<h3>Free Run<a class="headerlink" href="#free-run" title="Permalink to this headline">¶</a></h3>
+<p>A language model can also generate sentences by sending the
+generated token back to input in each step. We call it “freerun” or “inference” mode.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pytorch</span></code> doesn’t provide a convenience api for freerun, here we implement a
+simple version that all the prefixes will be recalculated at every step.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
+<span class="n">generate_sample_num</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">max_sent_length</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">generate_sample_num</span><span class="p">):</span>
+    <span class="c1"># convert numpy to torch.LongTensor</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([[</span><span class="n">dataloader</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)])</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_sent_length</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">generated_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomal</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">],</span> <span class="n">generated_token</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()})</span>
+<span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="hash-value">
+<h3>Hash value<a class="headerlink" href="#hash-value" title="Permalink to this headline">¶</a></h3>
+<p>Hash value is for checking whether you use the test set correctly.
+We can refer to dashboard (TO BE ONLINE) for the state of art on this dataset,
+and we find our first hashvalue is correct.</p>
+<p>However, if teacher forcing is tested as following codes, we will
+see a different hash value, which means the implementation is not correct.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_teacher_forcing_metric</span><span class="p">(</span><span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)):</span>
+    <span class="c1"># convert numpy to torch.LongTensor</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span> <span class="c1"># shorten the input</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s2">&quot;gen_log_prob&quot;</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="additional-word-vector">
+<h2>Additional: Word Vector<a class="headerlink" href="#additional-word-vector" title="Permalink to this headline">¶</a></h2>
+<p>It is a common technique to use pre-trained word vector when
+processing natural languages. <code class="docutils literal notranslate"><span class="pre">cotk</span></code> also provides a module <a class="reference internal" href="../wordvector.html#module-cotk.wordvector" title="cotk.wordvector"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wordvector</span></code></a>
+that help you downloading and get word vectors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.wordvec</span> <span class="kn">import</span> <span class="n">Glove</span>
+<span class="n">wordvec</span> <span class="o">=</span> <span class="n">Glove</span><span class="p">(</span><span class="s2">&quot;resources://Glove50d_small&quot;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wordvec</span><span class="o">.</span><span class="n">load_matrix</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>We can add these lines at the end of <code class="docutils literal notranslate"><span class="pre">LanguageModel.__init__</span></code>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial_cli.html" class="btn btn-neutral float-right" title="CLI Usage: Fast Model Reproduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
