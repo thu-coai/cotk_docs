@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="CLI Usage: Fast Model Reproduction" href="tutorial_cli.html" />
-    <link rel="prev" title="Quick Start" href="quickstart.html" /> 
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,9 +82,9 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">GRU Language Model: Load Data and Evaluate Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#preparing-the-data">Preparing the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#training-models">Training models</a></li>
@@ -107,7 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Model Tutorial</span></p>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
@@ -205,12 +205,13 @@ on google colab. #TODO: FIX THE LINK</p>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> provides <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataloader</span></code></a> to download, import and preprocess data.
 Therefore, we first construct a <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">cotk.dataloader.MSCOCO</span></code></a> to load MSCOCO dataset.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.dataloader</span> <span class="kn">import</span> <span class="n">MSCOCO</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span> <span class="c1"># &quot;resources://MSCOCO_small&quot; is a predefined resources name</span>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vocab Size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens:&quot;</span><span class="p">,</span>  <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># get the sample of id 0</span>
-<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
 </pre></div>
 </div>
@@ -291,24 +292,27 @@ The difference between them is that <code class="docutils literal notranslate"><
 
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LogSoftmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)(</span><span class="n">incoming</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>If you are familiar with GRU, you can see the codes constructed a
 network for predicting next token. Then, we will train our model with
-the help of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">LanguageModel</span><span class="p">()</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
-<span class="n">epoch_num</span> <span class="o">=</span> <span class="mi">100</span>
-
-<span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLosses</span>
-<span class="n">plot</span> <span class="o">=</span> <span class="n">PlotLosses</span><span class="p">()</span>
-
+the help of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. (It may takes several minites too train the model.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLosses</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">net</span> <span class="o">=</span> <span class="n">LanguageModel</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
+<span class="n">epoch_num</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">PlotLosses</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epoch_num</span><span class="p">):</span>
     <span class="n">loss_arr</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)):</span>
         <span class="c1"># convert numpy to torch.LongTensor</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span>
         <span class="n">net</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
@@ -316,6 +320,8 @@ the help of <code class="docutils literal notranslate"><span class="pre">cotk</s
         <span class="n">loss_arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
         <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">40</span><span class="p">:</span>
+            <span class="k">break</span> <span class="c1"># break for shorten time of an epoch</span>
     <span class="n">plot</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss_arr</span><span class="p">)})</span>
     <span class="n">plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
     <span class="k">print</span><span class="p">(</span><span class="s2">&quot;epoch </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epoch_num</span><span class="p">))</span>
@@ -337,13 +343,14 @@ is a common used metric and it need the predicted distribution
 over words. Recall we have set <code class="docutils literal notranslate"><span class="pre">data[&quot;gen_log_prob&quot;]</span></code> in previous
 section, we use it right now.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_teacher_forcing_metric</span><span class="p">(</span><span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)):</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)):</span>
     <span class="c1"># convert numpy to torch.LongTensor</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="s2">&quot;gen_log_prob&quot;</span> <span class="ow">in</span> <span class="n">data</span>
     <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
@@ -367,9 +374,9 @@ generated token back to input in each step. We call it “freerun” or “infer
 <p><code class="docutils literal notranslate"><span class="pre">Pytorch</span></code> doesn’t provide a convenience api for freerun, here we implement a
 simple version that all the prefixes will be recalculated at every step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
-<span class="n">generate_sample_num</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="n">max_sent_length</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">generate_sample_num</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">max_sent_length</span> <span class="o">=</span> <span class="mi">20</span>
+
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">generate_sample_num</span><span class="p">):</span>
     <span class="c1"># convert numpy to torch.LongTensor</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([[</span><span class="n">dataloader</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)])</span>
@@ -377,11 +384,11 @@ simple version that all the prefixes will be recalculated at every step.</p>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_sent_length</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="n">generated_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomal</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">generated_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;gen_log_prob&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">exp</span><span class="p">()[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">],</span> <span class="n">generated_token</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()})</span>
-<span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;gen&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()})</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -393,14 +400,15 @@ and we find our first hashvalue is correct.</p>
 <p>However, if teacher forcing is tested as following codes, we will
 see a different hash value, which means the implementation is not correct.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_teacher_forcing_metric</span><span class="p">(</span><span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)):</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)):</span>
     <span class="c1"># convert numpy to torch.LongTensor</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][:</span><span class="mi">10</span><span class="p">])</span> <span class="c1"># shorten the input</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">])</span> <span class="c1"># shorten the input</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="s2">&quot;gen_log_prob&quot;</span> <span class="ow">in</span> <span class="n">data</span>
     <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -430,7 +438,7 @@ that help you downloading and get word vectors.</p>
         <a href="tutorial_cli.html" class="btn btn-neutral float-right" title="CLI Usage: Fast Model Reproduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
