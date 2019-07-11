@@ -83,6 +83,7 @@
               <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
@@ -93,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -196,7 +198,8 @@
 <span class="sd">			The key of reference sentences. Default: ``ref_allvocabs``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS</span> <span class="o">=</span> \
 				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[reference_allvocabs_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 2-d jagged or padded array of int. Reference sentences with allvocabs in index form.</span>
+<span class="sd">				  A 2-d jagged or padded array of int. Reference sentences with</span>
+<span class="sd">				  :ref:`allvocabs &lt;vocab_ref&gt;` in index form.</span>
 <span class="sd">				  Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
 <span class="sd">				  Size: ``[batch_size, ~ref_sentence_length]``,</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
@@ -231,9 +234,9 @@
 <span class="sd">			The key of reference sentences. Default: ``multi_turn_ref_allvocabs``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span> <span class="o">=</span> \
 				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[multi_turn_reference_allvocabs_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 3-d jagged or padded array of int. Multi-turn reference sentences with all vocabs</span>
-<span class="sd">				  with all vocabs. Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
-<span class="sd">				  Size: ``[batch_size, ~turn_length, ~sentence_length]``,</span>
+<span class="sd">				  A 3-d jagged or padded array of int. Multi-turn reference sentences with</span>
+<span class="sd">				  :ref:`all vocabs &lt;vocab_ref&gt;`. Contains start token (eg: ``&lt;go&gt;``) and</span>
+<span class="sd">				  end token (eg: ``&lt;eos&gt;``). Size: ``[batch_size, ~turn_length, ~sentence_length]``,</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS_WITH_TORCH</span> <span class="o">=</span> \
 		<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list or :class:`numpy.ndarray`&quot;</span><span class="p">,</span> \
@@ -588,7 +591,8 @@
 <span class="sd">		{MetricBase.REFERENCE_LEN_KEY_ARGUMENTS}</span>
 <span class="sd">		gen_log_prob_key (str): The key of **log** probability over words.</span>
 <span class="sd">			Default: ``gen_log_prob``.</span>
-<span class="sd">		invalid_vocab (bool): Whether ``gen_log_prob`` contains invalid vocab. Default: ``False``.</span>
+<span class="sd">		invalid_vocab (bool): Whether ``gen_log_prob`` contains :ref:`invalid vocab &lt;vocab_ref&gt;`.</span>
+<span class="sd">			Default: ``False``.</span>
 <span class="sd">		full_check (bool): Whether perform a full check on ``gen_log_prob`` to make sure the sum</span>
 <span class="sd">			of probability is 1. Otherwise, a random check will be performed for efficiency.</span>
 <span class="sd">			If pytorch is used, a full check is always performed and this argument will be ignored.</span>
@@ -619,8 +623,8 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="PerplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Processing a batch of data. Smoothing will be performed for invalid vocabs.</span>
-<span class="sd">		Unknowns vocabs will be ignored.</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data. Smoothing will be performed for :ref:`invalid vocabs &lt;vocab_ref&gt;`.</span>
+<span class="sd">		:ref:`Unknowns vocabs &lt;vocab_ref&gt;` will be ignored.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			data (dict): A dict at least contains the following keys:</span>
@@ -878,7 +882,8 @@
 <span class="sd">		{MetricBase.MULTI_TURN_REFERENCE_LEN_KEY_ARGUMENTS}</span>
 <span class="sd">		gen_log_prob_key (str): The key of **log** probability over words.</span>
 <span class="sd">			Default: ``multi_turn_gen_log_prob``.</span>
-<span class="sd">		invalid_vocab (bool): whether ``gen_log_prob`` contains invalid vocab. Default: ``False``.</span>
+<span class="sd">		invalid_vocab (bool): whether ``gen_log_prob`` contains :ref:`invalid vocab &lt;vocab_ref&gt;`.</span>
+<span class="sd">			Default: ``False``.</span>
 <span class="sd">		full_check (bool): whether perform full checks on ``gen_log_prob`` to make sure the sum</span>
 <span class="sd">			of probability is 1. Otherwise, a random check will be performed for efficiency.</span>
 <span class="sd">			Default: ``False``.</span>
@@ -1173,7 +1178,7 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
-<span class="sd">		reference_test_key (str): Reference sentences with all vocabs in test data</span>
+<span class="sd">		reference_test_key (str): Reference sentences with :ref:`all vocabs &lt;vocab_ref&gt;` in test data</span>
 <span class="sd">			are passed to :func:`forward` by ``dataloader.data[&quot;test&quot;][self.reference_test_key]``.</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
 <span class="sd">		sample (int): Number of examples sampled from the generated sentences. Default: ``1000``.</span>
@@ -1422,9 +1427,9 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
-<span class="sd">		post_allvocabs_key (str): The key of dialog posts with allvocabs.</span>
+<span class="sd">		post_allvocabs_key (str): The key of dialog posts with :ref:`allvocabs &lt;vocab_ref&gt;`.</span>
 <span class="sd">			Default: ``post_allvocabs``.</span>
-<span class="sd">		resp_allvocabs_key (str): The key of dialog responses with allvocabs.</span>
+<span class="sd">		resp_allvocabs_key (str): The key of dialog responses with :ref:`allvocabs &lt;vocab_ref&gt;`.</span>
 <span class="sd">			Default: ``resp_allvocabs``.</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
@@ -1492,10 +1497,10 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
-<span class="sd">		multi_turn_context_allvocabs_key (str): The key of dialog context with allvocabs.</span>
-<span class="sd">			Default: ``multi_turn_context_allvocabs``.</span>
-<span class="sd">		multi_turn_reference_allvocabs_key (str): The key of dialog references with allvocabs.</span>
-<span class="sd">			Default: ``multi_turn_ref_allvocabs``.</span>
+<span class="sd">		multi_turn_context_allvocabs_key (str): The key of dialog context with</span>
+<span class="sd">			:ref:`allvocabs &lt;vocab_ref&gt;`. Default: ``multi_turn_context_allvocabs``.</span>
+<span class="sd">		multi_turn_reference_allvocabs_key (str): The key of dialog references with</span>
+<span class="sd">			:ref:`allvocabs &lt;vocab_ref&gt;`. Default: ``multi_turn_ref_allvocabs``.</span>
 <span class="sd">		{MetricBase.MULTI_TURN_GEN_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_LENGTH_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>

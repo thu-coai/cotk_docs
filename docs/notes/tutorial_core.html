@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="CLI Usage: Fast Model Reproduction" href="tutorial_cli.html" />
-    <link rel="prev" title="Installation" href="installation.html" /> 
+    <link rel="prev" title="Quick Start" href="quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,6 +85,7 @@
               <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">GRU Language Model: Load Data and Evaluate Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#preparing-the-data">Preparing the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#training-models">Training models</a></li>
@@ -106,6 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -198,8 +200,9 @@ However, this tutorial constructs neural networks with
 <li>pytorch &gt;= 1.0.0</li>
 <li>livelossplot (optional, just for showing loss)</li>
 </ul>
-<p>If you don’t have a suitable environment, you can also run the codes
-on google colab. #TODO: FIX THE LINK</p>
+<p>You can click <a class="reference external" href="https://github.com/thu-coai/cotk/blob/master/docs/notes/tutorial_core_1.ipynb">here</a> for ipynb files. If you don’t have a suitable environment,
+you can also run <a class="reference external" href="http://colab.research.google.com/github/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_1.ipynb">the code</a>
+on google colab.</p>
 <div class="section" id="preparing-the-data">
 <h2>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> provides <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataloader</span></code></a> to download, import and preprocess data.
@@ -220,7 +223,7 @@ Therefore, we first construct a <a class="reference internal" href="../dataloade
 INFO: source: default
 INFO: processor type: MSCOCO
 
-100%|██████████| 1020154/1020154 [00:00&lt;00:00, 1821805.36B/s]
+100%|██████████| 1020154/1020154 [00:00&lt;00:00, 1853831.54B/s]
 
 INFO: resource cached at /root/.cotk_cache/9e4c0afe33d98fa249e472206a39e5553d739234d0a27e055044ae8880e314b1_unzip/mscoco
 valid vocab list length = 2588
@@ -231,9 +234,11 @@ test set. invalid rate: 0.031213, unknown rate: 0.000000, max length before cut:
 Vocab Size: 2588
 First 10 tokens: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]
 Dataset is split into: [&#39;train&#39;, &#39;dev&#39;, &#39;test&#39;]
-{&#39;sent_length&#39;: array([15]), &#39;sent&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
-        4,   3]]), &#39;sent_allvocabs&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
-        4,   3]])}
+{&#39;sent&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
+        4,   3]]),
+&#39;sent_allvocabs&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
+        4,   3]]),
+&#39;sent_length&#39;: array([15])}
 [&#39;&lt;go&gt;&#39;, &#39;A&#39;, &#39;blue&#39;, &#39;lamp&#39;, &#39;post&#39;, &#39;with&#39;, &#39;a&#39;, &#39;sign&#39;, &#39;for&#39;, &#39;the&#39;, &#39;yellow&#39;, &#39;brick&#39;, &#39;road&#39;, &#39;.&#39;]
 </pre></div>
 </div>
@@ -328,7 +333,10 @@ the help of <code class="docutils literal notranslate"><span class="pre">cotk</s
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>
+<img alt="../_images/training_loss.png" src="../_images/training_loss.png" />
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>loss:
+    training   (min:    3.147, max:    6.560, cur:    3.235)
+epoch 100/100
 </pre></div>
 </div>
 </div>
@@ -354,7 +362,9 @@ section, we use it right now.</p>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>test set restart, 78 batches and 2 left
+{&#39;perplexity&#39;: 33.99345315581511,\n&quot;,
+ &#39;perplexity hashvalue&#39;: b&#39;O\\x10\\x1c)\\x86\\xf1\\xfe\\x10\\xce\\x1d!\\x97\\xc3\\x08m6Y\\xae\\xc3\\xe6I_8\\x1dg\\xf0\\x0bM\\xbb@\\xa58&#39;}
 </pre></div>
 </div>
 <p>The codes above evaluated the model in teacher forcing mode, where every input
@@ -370,7 +380,8 @@ to accelerate the calculation, a <code class="xref py py-class docutils literal 
 <div class="section" id="free-run">
 <h3>Free Run<a class="headerlink" href="#free-run" title="Permalink to this headline">¶</a></h3>
 <p>A language model can also generate sentences by sending the
-generated token back to input in each step. We call it “freerun” or “inference” mode.</p>
+generated token back to input in each step. We call it “freerun”
+or “inference” mode.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Pytorch</span></code> doesn’t provide a convenience api for freerun, here we implement a
 simple version that all the prefixes will be recalculated at every step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
@@ -391,24 +402,56 @@ simple version that all the prefixes will be recalculated at every step.</p>
 <span class="n">pprint</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Out:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:00&lt;00:00, 1153.17it/s]
+{&#39;bw-bleu&#39;: 0.054939232761090494,
+ &#39;fw-bleu&#39;: 0.2643063370185712,\n&quot;,
+ &#39;fw-bw-bleu&#39;: 0.09096938998850655,\n&quot;,
+ &#39;fw-bw-bleu hashvalue&#39;: b&#39;0\\x18\\xdc1\\x7f\\x82\\xb6\\x01?\\x01\\x1c\\x1f\\x8c\\xcd\\x90\\xc5\\xaf\\xfe\\xd7\\x10\\xb7\\xd7\\xd0jr5\\xcfE\\\\#5B&#39;,
+ &#39;gen&#39;: [[&#39;A&#39;, &#39;black&#39;, &#39;fire&#39;, &#39;hydrant&#39;, &#39;with&#39;, &#39;broccoli&#39;, &#39;on&#39;, &#39;a&#39;, &#39;plate&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;small&#39;, &#39;cat&#39;, &#39;that&#39;, &#39;drinking&#39;, &#39;are&#39;, &#39;sitting&#39;, &#39;from&#39;, &#39;a&#39;, &#39;screen&#39;, &#39;.&#39;],
+        [&#39;This&#39;, &#39;was&#39;, &#39;hydrant&#39;, &#39;at&#39;, &#39;a&#39;, &#39;kitchen&#39;, &#39;by&#39;, &#39;a&#39;, &#39;meal&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;bath&#39;, &#39;room&#39;, &#39;with&#39;, &#39;a&#39;, &#39;bicycle&#39;, &#39;are&#39;, &#39;antique&#39;, &#39;&lt;unk&gt;&#39;, &#39;,&#39;, &#39;sink&#39;, &#39;and&#39;, &#39;patterned&#39;, &#39;photograph&#39;, &#39;and&#39;, &#39;fork&#39;, &#39;look&#39;, &#39;on&#39;, &#39;the&#39;, &#39;bed&#39;],
+        [&#39;Large&#39;, &#39;yellow&#39;, &#39;kitchen&#39;, &#39;with&#39;, &#39;one&#39;, &#39;and&#39;, &#39;&lt;unk&gt;&#39;, &#39;neat&#39;, &#39;,&#39;, &#39;kite&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;young&#39;, &#39;girl&#39;, &#39;are&#39;, &#39;kneeling&#39;, &#39;a&#39;, &#39;tennis&#39;, &#39;match&#39;, &#39;during&#39;, &#39;tennis&#39;, &#39;of&#39;, &#39;her&#39;, &#39;bat&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;zebra&#39;, &#39;leaned&#39;, &#39;across&#39;, &#39;a&#39;, &#39;city&#39;, &#39;street&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;tennis&#39;, &#39;player&#39;, &#39;looks&#39;, &#39;by&#39;, &#39;a&#39;, &#39;wii&#39;, &#39;chocolate&#39;, &#39;strip&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;woman&#39;, &#39;sitting&#39;, &#39;up&#39;, &#39;on&#39;, &#39;the&#39;, &#39;edge&#39;, &#39;of&#39;, &#39;luggage&#39;, &#39;.&#39;],
+        [&#39;Old&#39;, &#39;&lt;unk&gt;&#39;, &#39;right&#39;, &#39;driving&#39;, &#39;along&#39;, &#39;from&#39;, &#39;the&#39;, &#39;stairs&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;close&#39;, &#39;up&#39;, &#39;with&#39;, &#39;a&#39;, &#39;colorful&#39;, &#39;heart&#39;, &#39;next&#39;, &#39;to&#39;, &#39;a&#39;, &#39;skateboard&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;man&#39;, &#39;holding&#39;, &#39;a&#39;, &#39;skate&#39;, &#39;boarding&#39;, &#39;a&#39;, &#39;mountain&#39;, &#39;at&#39;, &#39;the&#39;, &#39;sun&#39;, &#39;man&#39;, &#39;flying&#39;, &#39;the&#39;, &#39;air&#39;, &#39;.&#39;],
+        [&#39;An&#39;, &#39;airplane&#39;, &#39;with&#39;, &#39;speakers&#39;, &#39;on&#39;, &#39;a&#39;, &#39;surface&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;on&#39;, &#39;the&#39;, &#39;two&#39;, &#39;conference&#39;, &#39;floors&#39;, &#39;.&#39;],
+        [&#39;A&#39;, &#39;girl&#39;, &#39;holding&#39;, &#39;a&#39;, &#39;wii&#39;, &#39;screen&#39;, &#39;with&#39;, &#39;a&#39;, &#39;hot&#39;, &#39;Man&#39;, &#39;with&#39;, &#39;wii&#39;, &#39;face&#39;, &#39;in&#39;, &#39;formation&#39;, &#39;.&#39;],
+        [&#39;Three&#39;, &#39;and&#39;, &#39;snowboards&#39;, &#39;a&#39;, &#39;video&#39;, &#39;game&#39;, &#39;during&#39;, &#39;the&#39;, &#39;beach&#39;, &#39;.&#39;]],
+ &#39;self-bleu&#39;: 0.04565576967736443,
+ &#39;self-bleu hashvalue&#39;: b&#39;\\x9f\\x11!\\xd3\\x98\\x8e\\xf4x\\x99C\\xef\\x18\\xc1\\xc0\\xb7I\\xee\\xc0\\xd8\\xee\\xe3\\xf1\&quot;pg\\x16\\x05\\xceg\\x02%\\xf6&#39;}
+</pre></div>
+</div>
 </div>
 <div class="section" id="hash-value">
 <h3>Hash value<a class="headerlink" href="#hash-value" title="Permalink to this headline">¶</a></h3>
 <p>Hash value is for checking whether you use the test set correctly.
 We can refer to dashboard (TO BE ONLINE) for the state of art on this dataset,
-and we find our first hashvalue is correct.</p>
+and we find our hashvalue is correct.</p>
 <p>However, if teacher forcing is tested as following codes, we will
 see a different hash value, which means the implementation is not correct.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_teacher_forcing_metric</span><span class="p">(</span><span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)):</span>
     <span class="c1"># convert numpy to torch.LongTensor</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">])</span> <span class="c1"># shorten the input</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="s2">&quot;gen_log_prob&quot;</span> <span class="ow">in</span> <span class="n">data</span>
     <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">15</span><span class="p">:</span> <span class="c1">#ignore the following batches</span>
+        <span class="k">break</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Out:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test set restart, 78 batches and 2 left
+{&#39;perplexity&#39;: 31.5929983966103, &#39;perplexity hashvalue&#39;: b\&quot;\\x0c\\xfd9r\\xc7\\x8b_\\xf5\\xf7\\xf90\\xd1v\\x7f\\xd8Ua\\xc8g\\xdc\\xd3MV\\xeeH\\xe0\\x86\\xed@&#39;\\x91\\x91\&quot;}
 </pre></div>
 </div>
 </div>
@@ -418,12 +461,16 @@ see a different hash value, which means the implementation is not correct.</p>
 <p>It is a common technique to use pre-trained word vector when
 processing natural languages. <code class="docutils literal notranslate"><span class="pre">cotk</span></code> also provides a module <a class="reference internal" href="../wordvector.html#module-cotk.wordvector" title="cotk.wordvector"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wordvector</span></code></a>
 that help you downloading and get word vectors.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.wordvec</span> <span class="kn">import</span> <span class="n">Glove</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.wordvector</span> <span class="kn">import</span> <span class="n">Glove</span>
 <span class="n">wordvec</span> <span class="o">=</span> <span class="n">Glove</span><span class="p">(</span><span class="s2">&quot;resources://Glove50d_small&quot;</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wordvec</span><span class="o">.</span><span class="n">load_matrix</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">))</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wordvec</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">embedding_size</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p>We can add these lines at the end of <code class="docutils literal notranslate"><span class="pre">LanguageModel.__init__</span></code>.</p>
+<p>You can find the results and codes with pretrained word vector at
+<a class="reference external" href="https://github.com/thu-coai/cotk/blob/master/docs/notes/tutorial_core_2.ipynb">here</a> for ipynb files
+or run <a class="reference external" href="http://colab.research.google.com/github/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_2.ipynb">the code</a>
+on google colab.</p>
 </div>
 </div>
 
@@ -438,7 +485,7 @@ that help you downloading and get word vectors.</p>
         <a href="tutorial_cli.html" class="btn btn-neutral float-right" title="CLI Usage: Fast Model Reproduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

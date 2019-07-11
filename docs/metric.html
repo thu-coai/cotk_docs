@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="LanguageGeneration" href="models/LanguageGeneration/index.html" />
+    <link rel="next" title="Resources" href="resources.html" />
     <link rel="prev" title="Word Vector" href="wordvector.html" /> 
 </head>
 
@@ -85,6 +85,7 @@
               <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
@@ -101,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#metric-like-class">Metric-like class</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -482,7 +484,8 @@ where “~” means different sizes in this dimension is allowed.</li>
 Default: <code class="docutils literal notranslate"><span class="pre">ref_length</span></code>.</li>
 <li><strong>gen_log_prob_key</strong> (<em>str</em>) – The key of <strong>log</strong> probability over words.
 Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – Whether <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> contains invalid vocab. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – Whether <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> contains <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">invalid vocab</span></a>.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 <li><strong>full_check</strong> (<em>bool</em>) – Whether perform a full check on <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> to make sure the sum
 of probability is 1. Otherwise, a random check will be performed for efficiency.
 If pytorch is used, a full check is always performed and this argument will be ignored.
@@ -495,8 +498,8 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <dl class="method">
 <dt id="cotk.metric.PerplexityMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Processing a batch of data. Smoothing will be performed for invalid vocabs.
-Unknowns vocabs will be ignored.</p>
+<dd><p>Processing a batch of data. Smoothing will be performed for <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">invalid vocabs</span></a>.
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">Unknowns vocabs</span></a> will be ignored.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -504,7 +507,8 @@ Unknowns vocabs will be ignored.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
 <li><strong>data[reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
-A 2-d jagged or padded array of int. Reference sentences with allvocabs in index form.
+A 2-d jagged or padded array of int. Reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~ref_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
@@ -567,7 +571,8 @@ for same evaluation settings.</li>
 Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_length</span></code>.</li>
 <li><strong>gen_log_prob_key</strong> (<em>str</em>) – The key of <strong>log</strong> probability over words.
 Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_gen_log_prob</span></code>.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> contains invalid vocab. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> contains <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">invalid vocab</span></a>.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 <li><strong>full_check</strong> (<em>bool</em>) – whether perform full checks on <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> to make sure the sum
 of probability is 1. Otherwise, a random check will be performed for efficiency.
 Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
@@ -587,9 +592,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
 <li><strong>data[multi_turn_reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
-A 3-d jagged or padded array of int. Multi-turn reference sentences with all vocabs
-with all vocabs. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
-Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
+A 3-d jagged or padded array of int. Multi-turn reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
+end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[multi_turn_reference_len_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 2-d jagged or padded array of int. <strong>If padded, redundant position must be set to</strong> <code class="docutils literal notranslate"><span class="pre">0</span></code>.
@@ -666,7 +671,8 @@ for same evaluation settings.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
 <li><strong>data[reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 2-d jagged or padded array of int. Reference sentences with allvocabs in index form.
+A 2-d jagged or padded array of int. Reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~ref_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
@@ -783,7 +789,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
-<li><strong>reference_test_key</strong> (<em>str</em>) – Reference sentences with all vocabs in test data
+<li><strong>reference_test_key</strong> (<em>str</em>) – Reference sentences with <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a> in test data
 are passed to <a class="reference internal" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="cotk.metric.FwBwBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">dataloader.data[&quot;test&quot;][self.reference_test_key]</span></code>.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 <li><strong>sample</strong> (<em>int</em>) – Number of examples sampled from the generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code>.</li>
@@ -875,9 +881,9 @@ for same evaluation settings.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
 <li><strong>data[multi_turn_reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 3-d jagged or padded array of int. Multi-turn reference sentences with all vocabs
-with all vocabs. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
-Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
+A 3-d jagged or padded array of int. Multi-turn reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
+end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[gen_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged or padded array of int. Sentences generated by model.
@@ -927,9 +933,9 @@ for same evaluation settings.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
-<li><strong>post_allvocabs_key</strong> (<em>str</em>) – The key of dialog posts with allvocabs.
+<li><strong>post_allvocabs_key</strong> (<em>str</em>) – The key of dialog posts with <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a>.
 Default: <code class="docutils literal notranslate"><span class="pre">post_allvocabs</span></code>.</li>
-<li><strong>resp_allvocabs_key</strong> (<em>str</em>) – The key of dialog responses with allvocabs.
+<li><strong>resp_allvocabs_key</strong> (<em>str</em>) – The key of dialog responses with <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a>.
 Default: <code class="docutils literal notranslate"><span class="pre">resp_allvocabs</span></code>.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 </ul>
@@ -948,12 +954,14 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp_allvo
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
 <li><strong>data[post_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 2-d jagged or padded array of int. Reference sentences with allvocabs in index form.
+A 2-d jagged or padded array of int. Reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~ref_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[resp_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 2-d jagged or padded array of int. Reference sentences with allvocabs in index form.
+A 2-d jagged or padded array of int. Reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
 Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~ref_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
@@ -1006,10 +1014,10 @@ sizes in this dimension is allowed.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
-<li><strong>multi_turn_context_allvocabs_key</strong> (<em>str</em>) – The key of dialog context with allvocabs.
-Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_context_allvocabs</span></code>.</li>
-<li><strong>multi_turn_reference_allvocabs_key</strong> (<em>str</em>) – The key of dialog references with allvocabs.
-Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_allvocabs</span></code>.</li>
+<li><strong>multi_turn_context_allvocabs_key</strong> (<em>str</em>) – The key of dialog context with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a>. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_context_allvocabs</span></code>.</li>
+<li><strong>multi_turn_reference_allvocabs_key</strong> (<em>str</em>) – The key of dialog references with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a>. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_allvocabs</span></code>.</li>
 <li><strong>multi_turn_gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_gen</span></code>.</li>
 <li><strong>turn_length</strong> (<em>str</em>) – The key of length of turns. Default: <code class="docutils literal notranslate"><span class="pre">turn_length</span></code>.</li>
 </ul>
@@ -1028,14 +1036,14 @@ Default: <code class="docutils literal notranslate"><span class="pre">multi_turn
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="last simple">
 <li><strong>data[multi_turn_context_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 3-d jagged or padded array of int. Multi-turn reference sentences with all vocabs
-with all vocabs. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
-Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
+A 3-d jagged or padded array of int. Multi-turn reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
+end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[multi_turn_reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 3-d jagged or padded array of int. Multi-turn reference sentences with all vocabs
-with all vocabs. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
-Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
+A 3-d jagged or padded array of int. Multi-turn reference sentences with
+<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
+end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[gen_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged or padded array of int. Sentences generated by model.
@@ -1205,7 +1213,7 @@ metric components returned.</td>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="models/LanguageGeneration/index.html" class="btn btn-neutral float-right" title="LanguageGeneration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="resources.html" class="btn btn-neutral float-right" title="Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="wordvector.html" class="btn btn-neutral float-left" title="Word Vector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

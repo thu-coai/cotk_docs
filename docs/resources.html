@@ -1,0 +1,986 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Resources &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LanguageGeneration" href="models/LanguageGeneration/index.html" />
+    <link rel="prev" title="Metric" href="metric.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#word-vector">Word Vector</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#glove50d">Glove50d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glove100d">Glove100d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glove200d">Glove200d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glove300d">Glove300d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#glove50d-small">Glove50d_small</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mscoco">MSCOCO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mscoco-small">MSCOCO_small</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opensubtitles">OpenSubtitles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opensubtitles-small">OpenSubtitles_small</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sst">SST</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#switchboardcorpus">SwitchboardCorpus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#switchboardcorpus-small">SwitchboardCorpus_small</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu">Ubuntu</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-small">Ubuntu_small</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Resources</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/resources.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="resources">
+<h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
+<p>Classes like <code class="xref py py-class docutils literal notranslate"><span class="pre">dataloder.Dataloader</span></code> usually need <code class="docutils literal notranslate"><span class="pre">file_id</span></code> to locate
+resources. The string will be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">_utils.file_utils.get_resource_file_path()</span></code> or
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_utils.file_utils.import_local_resources()</span></code>.</p>
+<p>The format  of <code class="docutils literal notranslate"><span class="pre">file_id</span></code> is <code class="docutils literal notranslate"><span class="pre">resources://name[&#64;source][#processor]</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">processor</span></code> are optional.</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code> can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li>A string start with “resources://”, indicating predefined resources.</li>
+<li>A string start with “<a class="reference external" href="https://">https://</a>” indicating online resources.</li>
+<li>A string indicating local path, absolute or relative to cwd.</li>
+</ul>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">source</span></code> only works when <code class="docutils literal notranslate"><span class="pre">name</span></code> indicating a predefined resources.
+It has to be one of a source defined for each resources, see the following
+sections for reference.</p>
+<p><code class="docutils literal notranslate"><span class="pre">preprocessor</span></code> is necessary when <code class="docutils literal notranslate"><span class="pre">name</span></code> is not a predefined resources.
+It has to be one of the subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.file_utils.ResourceProcessor</span></code>.</p>
+<p>Examples:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="5%" />
+<col width="11%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">file_id</th>
+<th class="head">name</th>
+<th class="head">source</th>
+<th class="head">processor</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>resources://MSCOCO</td>
+<td>MSCOCO</td>
+<td>default(amazon)</td>
+<td>Default(MSCOCOResourceProcessor)</td>
+</tr>
+<tr class="row-odd"><td>resources://MSCOCO&#64;tsinghua</td>
+<td>MSCOCO</td>
+<td>tsinghua</td>
+<td>Default(MSCOCOResourceProcessor)</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco.zip#MSCOCO">https://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco.zip#MSCOCO</a></td>
+<td>MSCOCO</td>
+<td>None</td>
+<td>MSCOCOResourceProcessor</td>
+</tr>
+<tr class="row-odd"><td>./mscoco.zip#MSCOCO</td>
+<td>MSCOCO</td>
+<td>None</td>
+<td>MSCOCOResourceProcessor</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="word-vector">
+<h2>Word Vector<a class="headerlink" href="#word-vector" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="glove50d">
+<h3>Glove50d<a class="headerlink" href="#glove50d" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>name: <code class="docutils literal notranslate"><span class="pre">Glove50d</span></code></li>
+<li>processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.Glove50dResourceProcessor</span></code></li>
+<li>source: <code class="docutils literal notranslate"><span class="pre">stanford</span></code></li>
+<li>usage: <a class="reference internal" href="wordvector.html#cotk.wordvector.Glove" title="cotk.wordvector.Glove"><code class="xref py py-class docutils literal notranslate"><span class="pre">wordvector.Glove</span></code></a></li>
+<li>dimension: 50</li>
+<li>vocabulary size: 400,000</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd>GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The version used in cotk is glove.6B, which is trained on Wikipedia2014 and Gigaword5. Refer to the link <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">https://nlp.stanford.edu/projects/glove/</a> to get more details about glove.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd>Pennington J, Socher R, Manning C. <a class="reference external" href="https://www.aclweb.org/anthology/D14-1162">Glove: Global vectors for word representation</a>//Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP). 2014: 1532-1543.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="glove100d">
+<h3>Glove100d<a class="headerlink" href="#glove100d" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>name: <code class="docutils literal notranslate"><span class="pre">Glove100d</span></code></li>
+<li>processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.Glove100dResourceProcessor</span></code></li>
+<li>source: <code class="docutils literal notranslate"><span class="pre">stanford</span></code></li>
+<li>usage: <a class="reference internal" href="wordvector.html#cotk.wordvector.Glove" title="cotk.wordvector.Glove"><code class="xref py py-class docutils literal notranslate"><span class="pre">wordvector.Glove</span></code></a></li>
+<li>dimension: 100</li>
+<li>vocabulary size: 400,000</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd>GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The version used in cotk is glove.6B, which is trained on Wikipedia2014 and Gigaword5. Refer to the link <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">https://nlp.stanford.edu/projects/glove/</a> to get more details about glove.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd>Pennington J, Socher R, Manning C. <a class="reference external" href="https://www.aclweb.org/anthology/D14-1162">Glove: Global vectors for word representation</a>//Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP). 2014: 1532-1543.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="glove200d">
+<h3>Glove200d<a class="headerlink" href="#glove200d" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>name: <code class="docutils literal notranslate"><span class="pre">Glove200d</span></code></li>
+<li>processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.Glove200dResourceProcessor</span></code></li>
+<li>source: <code class="docutils literal notranslate"><span class="pre">stanford</span></code></li>
+<li>usage: <a class="reference internal" href="wordvector.html#cotk.wordvector.Glove" title="cotk.wordvector.Glove"><code class="xref py py-class docutils literal notranslate"><span class="pre">wordvector.Glove</span></code></a></li>
+<li>dimension: 200</li>
+<li>vocabulary size: 400,000</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd>GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The version used in cotk is glove.6B, which is trained on Wikipedia2014 and Gigaword5. Refer to the link <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">https://nlp.stanford.edu/projects/glove/</a> to get more details about glove.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd>Pennington J, Socher R, Manning C. <a class="reference external" href="https://www.aclweb.org/anthology/D14-1162">Glove: Global vectors for word representation</a>//Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP). 2014: 1532-1543.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="glove300d">
+<h3>Glove300d<a class="headerlink" href="#glove300d" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>name: <code class="docutils literal notranslate"><span class="pre">Glove300d</span></code></li>
+<li>processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.Glove300dResourceProcessor</span></code></li>
+<li>source: <code class="docutils literal notranslate"><span class="pre">stanford</span></code></li>
+<li>usage: <a class="reference internal" href="wordvector.html#cotk.wordvector.Glove" title="cotk.wordvector.Glove"><code class="xref py py-class docutils literal notranslate"><span class="pre">wordvector.Glove</span></code></a></li>
+<li>dimension: 300</li>
+<li>vocabulary size: 400,000</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd>GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The version used in cotk is glove.6B, which is trained on Wikipedia2014 and Gigaword5. Refer to the link <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">https://nlp.stanford.edu/projects/glove/</a> to get more details about glove.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd>Pennington J, Socher R, Manning C. <a class="reference external" href="https://www.aclweb.org/anthology/D14-1162">Glove: Global vectors for word representation</a>//Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP). 2014: 1532-1543.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="glove50d-small">
+<h3>Glove50d_small<a class="headerlink" href="#glove50d-small" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">Glove50d_small</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.Glove50dResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="wordvector.html#cotk.wordvector.Glove" title="cotk.wordvector.Glove"><code class="xref py py-class docutils literal notranslate"><span class="pre">wordvector.Glove</span></code></a></p>
+</li>
+<li><p class="first">dimension: 50</p>
+</li>
+<li><p class="first">vocabulary size: 40,000</p>
+</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd><p class="first">GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The version used in cotk is glove.6B, which is trained on Wikipedia2014 and Gigaword5. Refer to the link <a class="reference external" href="https://nlp.stanford.edu/projects/glove/">https://nlp.stanford.edu/projects/glove/</a> to get more details about glove.</p>
+<p class="last">Glove50d_small contains the first 40,000 words of Glove50d.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd><p class="first last">Pennington J, Socher R, Manning C. <a class="reference external" href="https://www.aclweb.org/anthology/D14-1162">Glove: Global vectors for word representation</a>//Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP). 2014: 1532-1543.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mscoco">
+<h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">MSCOCO</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.MSCOCOResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code>, <code class="docutils literal notranslate"><span class="pre">tsinghua</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd><p class="first last">MSCOCO is a new dataset gathering images of complex everyday scenes containing common objects in their natural context. We neglect the images and just employ the corresponding caption. Refer to the link <a class="reference external" href="http://cocodataset.org/">http://cocodataset.org/</a> to get more details about raw data.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="60%" />
+<col width="15%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>591,753</td>
+<td>12,507</td>
+<td>12,507</td>
+</tr>
+<tr class="row-odd"><td>minimum length of sentences</td>
+<td>8</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>maximum length of uterrances</td>
+<td>50</td>
+<td>48</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>average length of uterrances</td>
+<td>13.55</td>
+<td>13.55</td>
+<td>12.52</td>
+</tr>
+<tr class="row-even"><td>std of number of uterrances</td>
+<td>2.51</td>
+<td>2.44</td>
+<td>2.44</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd><p class="first last">Lin T Y, Maire M, Belongie S, et al. <a class="reference external" href="https://arxiv.org/pdf/1405.0312.pdf">Microsoft COCO: Common Objects in Context</a>. In European Conference on Computer Vision (ECCV), 2014.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="mscoco-small">
+<h3>MSCOCO_small<a class="headerlink" href="#mscoco-small" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">MSCOCO_small</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.MSCOCOResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>59,175</td>
+<td>1,250</td>
+<td>1,250</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="opensubtitles">
+<h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.OpenSubtitlesResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code>, <code class="docutils literal notranslate"><span class="pre">tsinghua</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.OpenSubtitles" title="cotk.dataloader.OpenSubtitles"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.OpenSubtitles</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd><p class="first last">Opensubtitle dataset is collected from movie subtitles. To construct this dataset for single-turn dialogue generation, we regard a pair of adjacent sentences as one dialogue turn. We set the former sentence as a post and the latter one as the corresponding response. Refer to the link <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a> to get more details about raw data.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>1,144,949</td>
+<td>20,000</td>
+<td>10,000</td>
+</tr>
+<tr class="row-odd"><td>Average Length (post/response)</td>
+<td>9.08/9.10</td>
+<td>9.06/9.13</td>
+<td>9.04/9.05</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd><ol class="first last upperalpha simple" start="10">
+<li>Tiedemann, 2016, <a class="reference external" href="http://www.lrec-conf.org/proceedings/lrec2016/pdf/62_Paper.pdf">Finding Alternative Translations in a Large Corpus of Movie Subtitles</a>. In Proceedings of the 10th International Conference on Language Resources and Evaluation (LREC 2016)</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="opensubtitles-small">
+<h3>OpenSubtitles_small<a class="headerlink" href="#opensubtitles-small" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">OpenSubtitles_small</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.OpenSubtitlesResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.OpenSubtitles" title="cotk.dataloader.OpenSubtitles"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.OpenSubtitles</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>11,449</td>
+<td>2,000</td>
+<td>1,000</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="sst">
+<h3>SST<a class="headerlink" href="#sst" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">SST</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.SSTResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">stanford</span></code></p>
+</li>
+<li><p class="first">usage: <code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SST</span></code></p>
+</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd><p class="first last">Stanford Sentiment Treebank is the first corpus with fully labeled parse trees that allows for a complete analysis of the compositional effects of sentiment in language. Refer to the link <a class="reference external" href="https://nlp.stanford.edu/sentiment/">https://nlp.stanford.edu/sentiment/</a> to get more details about raw data.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>8,544</td>
+<td>1,101</td>
+<td>2,210</td>
+</tr>
+<tr class="row-odd"><td>Average Length</td>
+<td>19.14</td>
+<td>19.32</td>
+<td>19.19</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Reference</dt>
+<dd><p class="first last">Socher R, Perelygin A, Wu J, et al. <a class="reference external" href="https://nlp.stanford.edu/~socherr/EMNLP2013_RNTN.pdf">Recursive deep models for semantic compositionality over a sentiment treebank</a>//Proceedings of the 2013 conference on empirical methods in natural language processing. 2013: 1631-1642.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="switchboardcorpus">
+<h3>SwitchboardCorpus<a class="headerlink" href="#switchboardcorpus" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">SwitchboardCorpus</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.SwitchboardCorpusResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.SwitchboardCorpus" title="cotk.dataloader.SwitchboardCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SwitchboardCorpus</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd><p class="first">Switchboard is a collection of about 2,400 two-sided telephone conversations among 543 speakers (302 male, 241 female) from all areas of the United States. A computer-driven robot operator system handled the calls, giving the caller appropriate recorded prompts, selecting and dialing another person (the callee) to take part in a conversation, introducing a topic for discussion and recording the speech from the two subjects into separate channels until the conversation was finished. About 70 topics were provided, of which about 50 were used frequently. Selection of topics and callees was constrained so that: (1) no two speakers would converse together more than once and (2) no one spoke more than once on a given topic. Refer to the link <a class="reference external" href="https://catalog.ldc.upenn.edu/LDC97S62">https://catalog.ldc.upenn.edu/LDC97S62</a> to get more details about raw data.</p>
+<p class="last">We introduce the data processed by Zhao, Ran and Eskenazi. They extract multiple responses for single context by retrieval method and annotation on test set. Refer to the link <a class="reference external" href="https://github.com/snakeztc/NeuralDialog-CVAE">https://github.com/snakeztc/NeuralDialog-CVAE</a> to get more details.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="64%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>2,316</td>
+<td>60</td>
+<td>62</td>
+</tr>
+<tr class="row-odd"><td>minimum length of sentences</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>maximum length of sentences</td>
+<td>401</td>
+<td>185</td>
+<td>333</td>
+</tr>
+<tr class="row-odd"><td>average length of sentences</td>
+<td>19.03</td>
+<td>19.12</td>
+<td>20.15</td>
+</tr>
+<tr class="row-even"><td>std of number of sentences</td>
+<td>20.25</td>
+<td>19.65</td>
+<td>21.59</td>
+</tr>
+<tr class="row-odd"><td>minimum number of turns</td>
+<td>3</td>
+<td>19</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>maximum number of turns</td>
+<td>190</td>
+<td>144</td>
+<td>148</td>
+</tr>
+<tr class="row-odd"><td>average number of turns</td>
+<td>59.47</td>
+<td>58.92</td>
+<td>58.95</td>
+</tr>
+<tr class="row-even"><td>std of number of turns</td>
+<td>27.50</td>
+<td>26.91</td>
+<td>32.43</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Refenence</dt>
+<dd><p class="first">John J G and Edward H. <a class="reference external" href="https://catalog.ldc.upenn.edu/LDC97S62">Switchboard-1 release 2</a>. Linguistic Data Consortium, Philadelphia 1997.</p>
+<p class="last">Zhao, Tiancheng and Zhao, Ran and Eskenazi, Maxine. Learning Discourse-level Diversity for Neural Dialog Models using Conditional Variational Autoencoders. ACL 2017.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="switchboardcorpus-small">
+<h3>SwitchboardCorpus_small<a class="headerlink" href="#switchboardcorpus-small" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">SwitchboardCorpus_small</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.SwitchboardCorpusResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.SwitchboardCorpus" title="cotk.dataloader.SwitchboardCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SwitchboardCorpus</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>463</td>
+<td>12</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ubuntu">
+<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">Ubuntu</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.UbuntuResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code>, <code class="docutils literal notranslate"><span class="pre">tsinghua</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.UbuntuCorpus" title="cotk.dataloader.UbuntuCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.UbuntuCorpus</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Introduction</dt>
+<dd><p class="first last">Ubuntu Dialogue Corpus 2.0 is a dataset containing a mass of multi-turn dialogues. The dataset has both the multi-turn property of conversations in the Dialog State Tracking Challenge datasets, and the unstructured nature of interactions from microblog services such as Twitter. Refer to the link <a class="reference external" href="https://github.com/rkadlec/ubuntu-ranking-dataset-creator">https://github.com/rkadlec/ubuntu-ranking-dataset-creator</a> to get more details about raw data.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="48%" />
+<col width="20%" />
+<col width="20%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>1,000,000</td>
+<td>19,560</td>
+<td>18,920</td>
+</tr>
+<tr class="row-odd"><td>minimum length of sentences</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>maximum length of sentences</td>
+<td>977</td>
+<td>343</td>
+<td>817</td>
+</tr>
+<tr class="row-odd"><td>average length of sentences</td>
+<td>17.98</td>
+<td>19.40</td>
+<td>19.61</td>
+</tr>
+<tr class="row-even"><td>std of number of sentences</td>
+<td>16.26</td>
+<td>17.25</td>
+<td>17.94</td>
+</tr>
+<tr class="row-odd"><td>minimum number of turns</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>maximum number of turns</td>
+<td>19</td>
+<td>19</td>
+<td>19</td>
+</tr>
+<tr class="row-odd"><td>average number of turns</td>
+<td>4.95</td>
+<td>4.79</td>
+<td>4.85</td>
+</tr>
+<tr class="row-even"><td>std of number of turns</td>
+<td>2.97</td>
+<td>2.79</td>
+<td>2.85</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Refenence</dt>
+<dd><ol class="first last upperalpha simple" start="18">
+<li>Lowe, N. Pow, I. Serban, and J. Pineau. <a class="reference external" href="https://arxiv.org/pdf/1506.08909.pdf">The ubuntu dialogue corpus: A large dataset for research in unstructured multi-turn dialogue systems</a>. In Special Interest Group on Discourse and Dialogue (SIGDIAL), 2015a.</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="ubuntu-small">
+<h3>Ubuntu_small<a class="headerlink" href="#ubuntu-small" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">name: <code class="docutils literal notranslate"><span class="pre">Ubuntu_small</span></code></p>
+</li>
+<li><p class="first">processor: <code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.UbuntuResourceProcessor</span></code></p>
+</li>
+<li><p class="first">source: <code class="docutils literal notranslate"><span class="pre">amazon</span></code></p>
+</li>
+<li><p class="first">usage: <a class="reference internal" href="dataloader.html#cotk.dataloader.UbuntuCorpus" title="cotk.dataloader.UbuntuCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.UbuntuCorpus</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Statistic</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Train</th>
+<th class="head">Dev</th>
+<th class="head">Test</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Quantity</td>
+<td>10,001</td>
+<td>1,957</td>
+<td>1,893</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="models/LanguageGeneration/index.html" class="btn btn-neutral float-right" title="LanguageGeneration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="metric.html" class="btn btn-neutral float-left" title="Metric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

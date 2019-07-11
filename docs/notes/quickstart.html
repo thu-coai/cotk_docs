@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick Start &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GRU Language Model: Load Data and Evaluate Models" href="tutorial_core.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dataloader">Dataloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#metrics">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#publish-and-reproduce-experiments">Publish and Reproduce Experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#predefined-models">Predefined Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick Start</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notes/quickstart.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>Let us skim through the whole package to find what you want.</p>
+<div class="section" id="dataloader">
+<h2>Dataloader<a class="headerlink" href="#dataloader" title="Permalink to this headline">¶</a></h2>
+<p>Load common used dataset and preprocess for you:</p>
+<ul class="simple">
+<li>Download online resources or import from local</li>
+<li>Split training set, development set and test set</li>
+<li>Construct vocabulary list</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatically download online resources</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># or download from a url</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dl_url</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;http://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco_small.zip#MSCOCO&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># or import form local file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dl_zip</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;./MSCOCO.zip#MSCOCO&quot;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>
+<span class="go">[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]</span>
+</pre></div>
+</div>
+<p>Inspect vocabulary list</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vocabulary size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
+<span class="go">Vocabulary size: 2588</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Frist 10 tokens in vocabulary:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="go">Frist 10 tokens in vocabulary: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]</span>
+</pre></div>
+</div>
+<p>Convert between ids and strings</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Convert string to ids&quot;</span><span class="p">,</span> \
+<span class="gp">... </span>          <span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">([</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]))</span>
+<span class="go">Convert string to string [2, 1379, 1897, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Convert ids to string&quot;</span><span class="p">,</span> \
+<span class="gp">... </span>          <span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1379</span><span class="p">,</span> <span class="mi">1897</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Iterate over batches</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="go">{&#39;sent&#39;:</span>
+<span class="go">    array([[ 2, 181, 13, 26, 145, 177, 8, 22, 12, 5, 1, 1099, 4, 3]]),</span>
+<span class="go">    # &lt;go&gt; This is an old photo of people and a &lt;unk&gt; wagon.</span>
+<span class="go"> &#39;sent_allvocabs&#39;:</span>
+<span class="go">    array([[ 2, 181, 13, 26, 145, 177, 8, 22, 12, 5, 3755, 1099, 4, 3]]),</span>
+<span class="go">    # &lt;go&gt; This is an old photo of people and a horse-drawn wagon.</span>
+<span class="go"> &#39;sent_length&#39;: array([14])}</span>
+<span class="go">......</span>
+</pre></div>
+</div>
+<p>or using <code class="docutils literal notranslate"><span class="pre">while</span></code> if you like</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">restart</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">data</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_next_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">break</span>
+<span class="gp">... </span>   <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="metrics">
+<h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h2>
+<p>We found there are different versions of the same metric in released codes on Github,
+which leads to unfair compare between models. For example, whether considering
+<code class="docutils literal notranslate"><span class="pre">unk</span></code>, calculating the mean of NLL across sentences or tokens in
+<code class="docutils literal notranslate"><span class="pre">perplexity</span></code> may introduce <strong>an error of several times</strong> and <strong>extremely</strong> harm the evaluation.</p>
+<p>We provide unified metrics implementation for all models. The metric object
+receives data in batch.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
+<span class="gp">... </span>   <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
+<span class="gp">... </span>       <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
+<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;}</span>
+</pre></div>
+</div>
+<p>We also provide standard metrics for selected dataloader.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
+<span class="gp">... </span>   <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
+<span class="gp">... </span>       <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
+<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;,</span>
+<span class="go"> &#39;fw-bleu&#39;: 0.3831004349785445, &#39;bw-bleu&#39;: 0.025958979254273006, &#39;fw-bw-bleu&#39;: 0.04862323612604027,</span>
+<span class="go"> &#39;fw-bw-bleu hashvalue&#39;: &#39;530d449a096671d13705e514be13c7ecffafd80deb7519aa7792950a5468549e&#39;,</span>
+<span class="go"> &#39;gen&#39;: [</span>
+<span class="go">     [&#39;&lt;go&gt;&#39;, &#39;This&#39;, &#39;is&#39;, &#39;an&#39;, &#39;old&#39;, &#39;photo&#39;, &#39;of&#39;, &#39;people&#39;, &#39;and&#39;, &#39;a&#39;, &#39;horse-drawn&#39;, &#39;wagon&#39;, &#39;.&#39;],</span>
+<span class="go">     [&#39;&lt;go&gt;&#39;, &#39;An&#39;, &#39;old&#39;, &#39;stone&#39;, &#39;castle&#39;, &#39;tower&#39;, &#39;with&#39;, &#39;a&#39;, &#39;clock&#39;, &#39;on&#39;, &#39;it&#39;, &#39;.&#39;]</span>
+<span class="go"> ]}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Hash</span> <span class="pre">value</span></code> is provided for checking whether the same dataset is used.</p>
+</div>
+<div class="section" id="publish-and-reproduce-experiments">
+<h2>Publish and Reproduce Experiments<a class="headerlink" href="#publish-and-reproduce-experiments" title="Permalink to this headline">¶</a></h2>
+<p>We provide an online dashboard to manage your experiments.</p>
+<p>First initialize a git repo in your command line.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git init
+</pre></div>
+</div>
+<p>Then write your model with an entry function in <code class="docutils literal notranslate"><span class="pre">main.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cotk</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">dataloader</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span>
+    <span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">()</span>
+    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
+        <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
+            <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+    <span class="p">})</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;result.json&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Next, commit your changes and set upstream branch in your command line.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git add -A
+git commit -a -m <span class="s2">&quot;init&quot;</span>
+git remote add origin master https://github.com/USERNAME/REPONAME.git
+git push origin -f master
+</pre></div>
+</div>
+<p>Finally, type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--entry</span> <span class="pre">main</span></code> to run your model.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> will automatically collect your git repo, username, commit and <code class="docutils literal notranslate"><span class="pre">result.json</span></code>
+to the cotk dashboard (TO BE ONLINE).</p>
+<p>FILL AN IMAGE HERE</p>
+<p>The dashboard is a website where you can manage your experiments or share
+results with others.</p>
+<p>You can also download others’ experiments in dashboard
+and try to reproduce their results.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cotk download ID
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ID</span></code> comes from dashboard id.
+<code class="docutils literal notranslate"><span class="pre">cotk</span></code> will download the codes from dashboard and tell you how to run the models.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Fetching REPO/USERNAME/COMMIT
+13386B [00:00, 54414.25B/s]
+INFO: Codes from REPO/USERNAME/COMMIT fetched.
+INFO: Model running cmd written in run_model.sh
+Model running cmd:  cd ./PATH &amp;&amp; cotk run --only-run --main run
+</pre></div>
+</div>
+</div>
+<div class="section" id="predefined-models">
+<h2>Predefined Models<a class="headerlink" href="#predefined-models" title="Permalink to this headline">¶</a></h2>
+<p>We have provided some baselines for the classical tasks, see <code class="docutils literal notranslate"><span class="pre">MODEL</span> <span class="pre">ZOO</span></code> in docs for details.</p>
+<p>You can also use <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">download</span> <span class="pre">thu-coai/MODEL_NAME/master</span></code> to get the codes.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial_core.html" class="btn btn-neutral float-right" title="GRU Language Model: Load Data and Evaluate Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
