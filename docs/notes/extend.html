@@ -180,10 +180,10 @@
             
   <div class="section" id="extending-cotk-more-data-more-metrics">
 <h1>Extending Cotk: More Data, More Metrics!<a class="headerlink" href="#extending-cotk-more-data-more-metrics" title="Permalink to this headline">¶</a></h1>
-<p>We hope <code class="docutils literal notranslate"><span class="pre">cotk</span></code> can be adapted to more datasets
-and more tasks. Therefore, we will have a repository (TO BE ONLINE)
-to collect any contribution to cotk (regardless its quality).
-And our maintainer will choose modules with high-quality
+<p>We hope <code class="docutils literal notranslate"><span class="pre">cotk</span></code> can adapt to more datasets
+and more tasks. Therefore, we have a repository (TO BE ONLINE)
+to collect any contribution to cotk (<strong>regardless of its quality</strong>).
+Our maintainer will choose modules with high-quality
 and merge them to the main repository.</p>
 <div class="section" id="add-a-new-dataset">
 <h2>Add A New Dataset<a class="headerlink" href="#add-a-new-dataset" title="Permalink to this headline">¶</a></h2>
@@ -192,11 +192,22 @@ and merge them to the main repository.</p>
 <p>Now you have a new dataset and want to load it with <code class="docutils literal notranslate"><span class="pre">cotk</span></code> and
 the task is similar with the existed tasks, like <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
 <a class="reference internal" href="../dataloader.html#cotk.dataloader.SingleTurnDialog" title="cotk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SingleTurnDialog</span></code></a> or <a class="reference internal" href="../dataloader.html#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MultiTurnDialog</span></code></a>.
-The simplest way is to just adapt the format of dataset.</p>
-<p>For example, if you want to adapt your data to like <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
-you just have to generate 3 text file named <code class="docutils literal notranslate"><span class="pre">mscoco_train.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mscoco_dev.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mscoco_test.txt</span></code>.
-Each file has several lines of sentences.</p>
-<p>Then you can load them using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a local path.</p>
+The simplest way is to just adapt the format of your dataset.</p>
+<p>For example, if you want to adapt your data to <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
+you just have to generate 3 text files named <code class="docutils literal notranslate"><span class="pre">mscoco_train.txt</span></code>,
+<code class="docutils literal notranslate"><span class="pre">mscoco_dev.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mscoco_test.txt</span></code>.
+Each file contains several lines and each line is a sentences.
+The structure of your directory should be like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mscoco
+|---mscoco_train.txt
+|---mscoco_dev.txt
+|---mscoco_test.txt
+</pre></div>
+</div>
+<p>Then you can load your data using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a local path.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;./path/to/mscoco&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If you want to write your own <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> without changing data format,
@@ -207,15 +218,45 @@ see <a class="reference internal" href="#add-a-new-task">Add A New Task</a>.</p>
 <h3>Auto downloading<a class="headerlink" href="#auto-downloading" title="Permalink to this headline">¶</a></h3>
 <p>If you want to publish your dataset and make them can be
 downloaded automatically. You can zip your data and upload to an server.
-You should have an url path that every one can access it.</p>
+The url path should be accessible for every one.</p>
 <p>Using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a url path is adequate for
 the requirements.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;http://url/to/new_data.zip#MSCOCO&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The zip file is downloaded then processed by
+<code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.MSCOCOResourcesProcessor</span></code>.
+For more about <code class="docutils literal notranslate"><span class="pre">ResourcesProcessor</span></code>, refer to <a class="reference internal" href="../resources.html#resources-reference"><span class="std std-ref">this</span></a>.</p>
+</div>
 </div>
 <div class="section" id="use-a-resouces-name">
 <h3>Use a resouces name<a class="headerlink" href="#use-a-resouces-name" title="Permalink to this headline">¶</a></h3>
-<p>This time, you have to change some code in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. See the json file under
+<p>This time, you have to change some codes in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.
+First you have to understand the usage of resources at
+<a class="reference internal" href="../resources.html#resources-reference"><span class="std std-ref">here</span></a>. Then see the json file under
 <code class="docutils literal notranslate"><span class="pre">/cotk/resource_config/</span></code>, you will find each predefined resource
-corresponds to a json file, where a hash value is required for checksum.</p>
+corresponds to a json file, like</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;MSCOCO_small&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;MSCOCO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hashtag&quot;</span><span class="o">:</span> <span class="s2">&quot;68f6b8d764bff6f5440a63f87aeea97049a1d2e89942a7e524b7dabd475ffd79&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;default&quot;</span><span class="o">:</span><span class="s2">&quot;https://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco_small.zip&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;amazon&quot;</span><span class="o">:</span> <span class="s2">&quot;https://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco_small.zip&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are some places you have to pay attention:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">type</span></code> is the prefix of its <code class="docutils literal notranslate"><span class="pre">ResourcesProcessor</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">link.default</span></code> is necessary when no source is specified.</li>
+<li><code class="docutils literal notranslate"><span class="pre">hashtag</span></code> is required for checksum.</li>
+</ul>
+</div></blockquote>
 <p>We use the following codes to hash the zip file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_get_file_sha256</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get sha256 of given file&#39;&#39;&#39;</span>
@@ -226,14 +267,120 @@ corresponds to a json file, where a hash value is required for checksum.</p>
     <span class="k">return</span> <span class="n">hash_sha256</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>After accomplishment the config file, make a <strong>Pull Request</strong> and wait for update!</p>
+<p>After accomplishment the config file, make a <strong>Pull Request</strong> and
+wait for update! And soon you can use the following code to load the data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resouces://new_name&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="add-a-new-task">
 <h2>Add A New Task<a class="headerlink" href="#add-a-new-task" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you want to deal with a totally different task
+from the predefined ones.
+In that case, you have to implement a subclass of <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageProcessingBase</span></code></a>,
+and some necessary function is necessary for your dataloader. You can click
+on the following links for its input and outputs.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">__init__</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Dataloader._load_data()</span></code></li>
+<li><a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch" title="cotk.dataloader.LanguageProcessingBase.get_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessingBase.get_batch()</span></code></a></li>
+<li>(Optional) some function like <code class="docutils literal notranslate"><span class="pre">get_metric()</span></code> to define the standard metric.</li>
+</ul>
+<p>For example, we implement a new dataloader for sentence classification.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SentenceClassfication</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `LanguageProcessingBase.__init__`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># You have to generate vocabulary list</span>
+        <span class="n">valid_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">]</span>
+        <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;notcommonwords&quot;</span><span class="p">]</span>
+        <span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="n">valid_vocab</span> <span class="o">+</span> <span class="n">invalid_vocab</span>
+        <span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_vocab</span><span class="p">)</span>
+
+        <span class="c1"># In any format you like, just store data here for &quot;get_batch&quot;</span>
+        <span class="c1"># But we do recommand convert all sentences in to index form</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="p">[([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">)],</span>
+                    <span class="c1"># &quot;hello world&quot; for label 0</span>
+                    <span class="c1"># &quot;world hello&quot; for label 1</span>
+            <span class="s2">&quot;dev&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+            <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="o">...</span>
+        <span class="p">}</span>
+
+        <span class="n">data_size</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1"># 2 samples in train_set</span>
+            <span class="s2">&quot;dev&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+            <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="o">...</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
+
+
+    <span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.&#39;&#39;&#39;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="c1"># use the &quot;self.data&quot; you have stored</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># the return value is exactly what you will get when ``get_batches`` is called</span>
+        <span class="c1"># may be you want to do padding before return</span>
+        <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="add-a-new-metric">
 <h2>Add A New Metric<a class="headerlink" href="#add-a-new-metric" title="Permalink to this headline">¶</a></h2>
+<p>If you have a new way to evaluate the model, you should construct a
+metric class inheriting the <a class="reference internal" href="../metric.html#cotk.metric.MetricBase" title="cotk.metric.MetricBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricBase</span></code></a>.</p>
+<p>Here are some necessary functions you must implement. You can click on
+the link to find more details.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></li>
+<li><a class="reference internal" href="../metric.html#cotk.metric.MetricBase.forward" title="cotk.metric.MetricBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.forward()</span></code></a></li>
+<li><a class="reference internal" href="../metric.html#cotk.metric.MetricBase.close" title="cotk.metric.MetricBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.close()</span></code></a></li>
+</ul>
+<p>Here we give an example for calculating the average length of generated
+sentences.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AverageLengthMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sent_num</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">gen_key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">sent</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sent_num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;len_avg&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sent_num</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>There is some regulation to design an metric.</p>
+<ul class="simple">
+<li>Choosing <a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> for reference.</li>
+<li>Dealing with <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, which should be regarded as error or
+using some methods to do smoothing. Pay atention the difference
+between <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> and
+<a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">unknown vocabularies</span></a>.</li>
+<li>Record hash value. Hash value equal if and only if the metric is tested
+under the same settings. (In our case, there is no hash value
+because we don’t have input and the setting is always the same)</li>
+</ul>
 </div>
 </div>
 
