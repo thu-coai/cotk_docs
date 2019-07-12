@@ -89,7 +89,12 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extending Cotk: More Data, More Metrics!</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#add-a-new-dataset">Add A New Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-new-dataset">Add A New Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-local-use">For local use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-downloading">Auto downloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-a-resouces-name">Use a resouces name</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#add-a-new-task">Add A New Task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#add-a-new-metric">Add A New Metric</a></li>
 </ul>
@@ -175,8 +180,54 @@
             
   <div class="section" id="extending-cotk-more-data-more-metrics">
 <h1>Extending Cotk: More Data, More Metrics!<a class="headerlink" href="#extending-cotk-more-data-more-metrics" title="Permalink to this headline">¶</a></h1>
+<p>We hope <code class="docutils literal notranslate"><span class="pre">cotk</span></code> can be adapted to more datasets
+and more tasks. Therefore, we will have a repository (TO BE ONLINE)
+to collect any contribution to cotk (regardless its quality).
+And our maintainer will choose modules with high-quality
+and merge them to the main repository.</p>
 <div class="section" id="add-a-new-dataset">
 <h2>Add A New Dataset<a class="headerlink" href="#add-a-new-dataset" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="for-local-use">
+<h3>For local use<a class="headerlink" href="#for-local-use" title="Permalink to this headline">¶</a></h3>
+<p>Now you have a new dataset and want to load it with <code class="docutils literal notranslate"><span class="pre">cotk</span></code> and
+the task is similar with the existed tasks, like <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
+<a class="reference internal" href="../dataloader.html#cotk.dataloader.SingleTurnDialog" title="cotk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SingleTurnDialog</span></code></a> or <a class="reference internal" href="../dataloader.html#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MultiTurnDialog</span></code></a>.
+The simplest way is to just adapt the format of dataset.</p>
+<p>For example, if you want to adapt your data to like <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
+you just have to generate 3 text file named <code class="docutils literal notranslate"><span class="pre">mscoco_train.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mscoco_dev.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mscoco_test.txt</span></code>.
+Each file has several lines of sentences.</p>
+<p>Then you can load them using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a local path.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you want to write your own <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> without changing data format,
+see <a class="reference internal" href="#add-a-new-task">Add A New Task</a>.</p>
+</div>
+</div>
+<div class="section" id="auto-downloading">
+<h3>Auto downloading<a class="headerlink" href="#auto-downloading" title="Permalink to this headline">¶</a></h3>
+<p>If you want to publish your dataset and make them can be
+downloaded automatically. You can zip your data and upload to an server.
+You should have an url path that every one can access it.</p>
+<p>Using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a url path is adequate for
+the requirements.</p>
+</div>
+<div class="section" id="use-a-resouces-name">
+<h3>Use a resouces name<a class="headerlink" href="#use-a-resouces-name" title="Permalink to this headline">¶</a></h3>
+<p>This time, you have to change some code in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. See the json file under
+<code class="docutils literal notranslate"><span class="pre">/cotk/resource_config/</span></code>, you will find each predefined resource
+corresponds to a json file, where a hash value is required for checksum.</p>
+<p>We use the following codes to hash the zip file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_get_file_sha256</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get sha256 of given file&#39;&#39;&#39;</span>
+    <span class="n">hash_sha256</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">),</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">hash_sha256</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hash_sha256</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>After accomplishment the config file, make a <strong>Pull Request</strong> and wait for update!</p>
+</div>
 </div>
 <div class="section" id="add-a-new-task">
 <h2>Add A New Task<a class="headerlink" href="#add-a-new-task" title="Permalink to this headline">¶</a></h2>
