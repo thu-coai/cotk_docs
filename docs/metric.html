@@ -319,6 +319,16 @@ arXiv preprint arXiv:1703.10960.</p>
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Here is an Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reference</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
+<span class="go">0.150 # assume self.weights = [0.25,0.25,0.25,0.25]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -349,7 +359,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[candidate_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged list of index. Multiple reference sentences for a single context.
 Does not contain start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
@@ -362,6 +372,18 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">generated_num_per_context,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">multiple_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -418,6 +440,16 @@ Must be <code class="docutils literal notranslate"><span class="pre">avg</span><
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Here is an Example:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reference</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
+<span class="go">0.135 # assume self.mode = &#39;avg&#39;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -448,7 +480,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[candidate_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged list of index. Multiple reference sentences for a single context.
 Does not contain start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).
@@ -461,6 +493,18 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">generated_num_per_context,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">multiple_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -505,7 +549,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
 A 2-d jagged or padded array of int. Reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
@@ -516,8 +560,8 @@ where “~” means different sizes in this dimension is allowed.</li>
 Length of reference sentences. Contains start token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>)
 and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code>.</li>
 <li><strong>data[gen_log_prob_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
-Sentence generations model outputs of
-A 3-d jagged or padded array of int. <strong>log softmax</strong> probability.
+The <strong>log softmax</strong> probability of the sentence generations model outputs.
+A 3-d jagged or padded array of float.
 Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length,</span> <span class="pre">vocab_size]</span></code> for <code class="docutils literal notranslate"><span class="pre">invalid_vocab</span> <span class="pre">=</span> <span class="pre">False</span></code>, or
 <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length,</span> <span class="pre">all_vocab_size]</span></code> for <code class="docutils literal notranslate"><span class="pre">invalid_vocab</span> <span class="pre">=</span> <span class="pre">True</span></code>,
@@ -525,6 +569,20 @@ where “~” means different sizes in this dimension is allowed.
 If <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is used, the following data should also be
 <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="n">reference_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">... </span>            <span class="n">gen_log_prob_key</span><span class="p">:</span> <span class="p">[[[</span><span class="o">-</span><span class="mf">3.80666249</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.11351531</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7080502</span> <span class="p">,</span> <span class="o">-</span><span class="mf">2.42036813</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.19722458</span><span class="p">,</span>
+<span class="go">                        -2.01490302, -1.86075234, -1.72722095, -1.60943791],...],...]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -590,7 +648,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[multi_turn_reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
 A 3-d jagged or padded array of int. Multi-turn reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
@@ -602,7 +660,7 @@ Length of multi-turn reference sentences. Contains start token (eg:<code class="
 and end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[multi_turn_gen_log_prob_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or                                      <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>):
-Sentence generations model outputs of
+The <strong>log softmax</strong> probability of the sentence generations model outputs.
 A 4-d jagged or padded array. <strong>log softmax</strong> probability.
 Contains end token (eg:<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>), but without start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>).
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length,</span> <span class="pre">vocab_size]</span></code> for <code class="docutils literal notranslate"><span class="pre">invalid_vocab</span> <span class="pre">=</span> <span class="pre">False</span></code>, or
@@ -611,6 +669,21 @@ where “~” means different sizes in this dimension is allowed.
 If <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is used, the following data should also be
 <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_len_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="n">multi_turn_gen_log_prob_key</span><span class="p">:</span> <span class="p">[[[[</span><span class="o">-</span><span class="mf">3.80666249</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.11351531</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7080502</span><span class="p">,</span>
+<span class="go">                        -2.42036813, -2.19722458, -2.01490302, -1.86075234, -1.72722095,</span>
+<span class="go">                        -1.60943791], ...], ...], ...]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -619,7 +692,7 @@ If <code class="xref py py-class docutils literal notranslate"><span class="pre"
 <p class="first admonition-title">Warning</p>
 <p class="last"><code class="docutils literal notranslate"><span class="pre">data[multi_turn_gen_log_prob_key]</span></code> must be processed after log_softmax. That means,
 <code class="docutils literal notranslate"><span class="pre">np.sum(np.exp(multi_turn_gen_log_prob_key),</span> <span class="pre">-1)</span></code> equals
-<code class="docutils literal notranslate"><span class="pre">np.ones((batch_size,</span> <span class="pre">gen_sentence_length))</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">np.ones((batch_size,</span> <span class="pre">~gen_sentence_length))</span></code></p>
 </div>
 </dd></dl>
 
@@ -669,7 +742,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 2-d jagged or padded array of int. Reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
@@ -683,6 +756,18 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -747,7 +832,7 @@ or all available cpu will be used otherwise.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[gen_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 2-d jagged or padded array of int.
 Sentences generated by model. Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>),
@@ -755,6 +840,17 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -818,7 +914,7 @@ if the size of them is smaller than <code class="docutils literal notranslate"><
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[gen_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 2-d jagged or padded array of int.
 Sentences generated by model. Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>),
@@ -826,6 +922,17 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -879,7 +986,7 @@ for same evaluation settings.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[multi_turn_reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged or padded array of int. Multi-turn reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
@@ -894,6 +1001,19 @@ where “~” means different sizes in this dimension is allowed.</li>
 Length of turns in each sample.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code>.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">turn_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -952,7 +1072,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp_allvo
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[post_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 2-d jagged or padded array of int. Reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> in index form.
@@ -972,6 +1092,19 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">post_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="n">resp_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1034,7 +1167,7 @@ sizes in this dimension is allowed.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[multi_turn_context_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged or padded array of int. Multi-turn reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
@@ -1054,6 +1187,20 @@ where “~” means different sizes in this dimension is allowed.</li>
 Length of turns in each sample.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code>.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">multi_turn_context_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">multi_turn_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">turn_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -1111,7 +1258,7 @@ sizes in this dimension is allowed.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
-<ul class="last simple">
+<ul class="simple">
 <li><strong>data[gen_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 2-d jagged or padded array of int.
 Sentences generated by model. Contains end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>),
@@ -1119,6 +1266,17 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
+<dl class="last docutils">
+<dt>Here is an example for data:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
