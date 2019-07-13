@@ -88,9 +88,16 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CLI Usage: Fast Model Reproduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#downloading-codes-from-online">Downloading codes from online</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#make-your-model-reproducible">Make Your Model Reproducible</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#publish-your-model-and-compete-others">Publish Your Model and Compete Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#download-public-code">Download public code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-from-public-github-repositories">Download from public github repositories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-from-the-dashboard">Download from the dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#make-your-model-reproducible">Make Your Model Reproducible</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#publish-your-model-to-github">Publish your model to github</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#publish-your-model-to-dashboard">Publish your model to dashboard</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
@@ -175,15 +182,156 @@
             
   <div class="section" id="cli-usage-fast-model-reproduction">
 <h1>CLI Usage: Fast Model Reproduction<a class="headerlink" href="#cli-usage-fast-model-reproduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="downloading-codes-from-online">
-<h2>Downloading codes from online<a class="headerlink" href="#downloading-codes-from-online" title="Permalink to this headline">¶</a></h2>
-<p>from github / dashboard</p>
+<p>To facilitate the communication among researchers, we equip <code class="docutils literal notranslate"><span class="pre">cotk</span></code> with command line tools which allow you to</p>
+<ul class="simple">
+<li>download public code from github repositories or a dashboard we built for fair comparisons among models</li>
+<li>reproduce others’ work provided that the code complies with a small set of protocols</li>
+<li>publish model performance and code to the dashboard</li>
+</ul>
+<div class="section" id="download-public-code">
+<h2>Download public code<a class="headerlink" href="#download-public-code" title="Permalink to this headline">¶</a></h2>
+<p>The command line <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">download</span></code> helps download public code from github repositories or the dashboard.</p>
+<div class="section" id="download-from-public-github-repositories">
+<h3>Download from public github repositories<a class="headerlink" href="#download-from-public-github-repositories" title="Permalink to this headline">¶</a></h3>
+<p>Command line:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cotk download &lt;model&gt;
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;model&gt;</span></code> should be a string that indicates the code path. It can be:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>* url of a git repo / branch / commit.
+    Example:    https://github.com/USER/REPO
+                https://github.com/USER/REPO/tree/BRANCH
+                https://github.com/USER/REPO/commit/COMMIT (full commit id is needed)
+* a string specifying a git repo / branch / commit.
+    Example:    USER/REPO
+                USER/REPO/BRANCH
+                USER/REPO/COMMIT (full commit id is needed)
+</pre></div>
+</div>
+<p>The command line above will create the following files under the current working directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+├── REPO // the root of the code directory
+│   ├── .model_config.json
+│   └── ... // code files
+└── run_model.sh
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">run_model.sh</span></code> will be created only if the root of the git repository includes
+a file named <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code> that specifies run configurations
+(Refer to <a class="reference internal" href="#make-your-model-reproducible">Make Your Model Reproducible</a> for more details).</p>
+</div>
+<p>By running <code class="docutils literal notranslate"><span class="pre">run_model.sh</span></code>, the model will run and then generated a results file,
+usually named <code class="docutils literal notranslate"><span class="pre">result.json</span></code>.</p>
+</div>
+<div class="section" id="download-from-the-dashboard">
+<h3>Download from the dashboard<a class="headerlink" href="#download-from-the-dashboard" title="Permalink to this headline">¶</a></h3>
+<p>Command line:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cotk download &lt;model&gt; --result &lt;path_to_dump_information&gt;
+</pre></div>
+</div>
+<ul class="simple">
+<li><strong>model</strong>: An ID (a sequence of digits) on the dashboard.</li>
+<li><strong>path_to_dump_information</strong>: The path where you want to dump the information from the dashboard.
+This file includes evaluation results of the model as well as the run configurations for reproducing them.
+Default: <code class="docutils literal notranslate"><span class="pre">dashboard_result.json</span></code>.</li>
+</ul>
+<p>The command line above will create the following files under the current working directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+├── REPO // the root of the code directory
+│   └── ... // code files
+├── dashboard_result.json
+└── run_model.sh
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">REPO</span></code> here is the git repository associated with the specified model.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Different from <a class="reference internal" href="#download-from-public-github-repositories">Download from public github repositories</a>, <code class="docutils literal notranslate"><span class="pre">run_model.sh</span></code> can be created
+without <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code>.</p>
+</div>
+</div>
 </div>
 <div class="section" id="make-your-model-reproducible">
 <h2>Make Your Model Reproducible<a class="headerlink" href="#make-your-model-reproducible" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="publish-your-model-to-github">
+<h3>Publish your model to github<a class="headerlink" href="#publish-your-model-to-github" title="Permalink to this headline">¶</a></h3>
+<p>Suppose you have written your model under a directory named <code class="docutils literal notranslate"><span class="pre">PROJECT</span></code>.
+By complying with the following protocols, you are able to make your model easily reproduced by anyone with <code class="docutils literal notranslate"><span class="pre">cotk</span></code>:</p>
+<ul class="simple">
+<li>There exists an entry file named <code class="docutils literal notranslate"><span class="pre">&lt;entry&gt;.py</span></code> somewhere in <code class="docutils literal notranslate"><span class="pre">PROJECT</span></code>. This file defines an entry function named <code class="docutils literal notranslate"><span class="pre">run(*args)</span></code>.</li>
+<li>A file named <code class="docutils literal notranslate"><span class="pre">result.json</span></code> should be created, when the entry function <code class="docutils literal notranslate"><span class="pre">run()</span></code> is called with <code class="docutils literal notranslate"><span class="pre">&lt;args&gt;</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">result.json</span></code> contains the scores from <a class="reference internal" href="../metric.html#metric-ref"><span class="std std-ref">metric functions</span></a>. For example:</li>
+</ul>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;bw-bleu&#39;: 0.04871277607530735,
+ &#39;fw-bleu&#39;: 0.22873635755754274,
+ &#39;fw-bw-bleu&#39;: 0.08032018568655393,
+ &#39;fw-bw-bleu hashvalue&#39;: &#39;3018dc317f82b6013f011c1f8ccd90c5affed710b7d7d06a7235cf455c233542&#39;,
+ &#39;self-bleu&#39;: 0.07416490324471028,
+ &#39;self-bleu hashvalue&#39;: &#39;9f1121d3988ef4789943ef18c1c0b749eec0d8eee3f12270671605ce670225f6&#39;}
+</pre></div>
 </div>
-<div class="section" id="publish-your-model-and-compete-others">
-<h2>Publish Your Model and Compete Others<a class="headerlink" href="#publish-your-model-and-compete-others" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>There may exists a file named <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code> right below <code class="docutils literal notranslate"><span class="pre">PROJECT</span></code>.
+This file specifies run configurations which consist of <code class="docutils literal notranslate"><span class="pre">entry</span></code>, <code class="docutils literal notranslate"><span class="pre">args</span></code>, <code class="docutils literal notranslate"><span class="pre">working_dir</span></code>, <code class="docutils literal notranslate"><span class="pre">cotk_record_information</span></code>.<ul>
+<li><strong>entry</strong> (str): The name of your entry file. Default: “main”</li>
+<li><strong>args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>): The arguments passed to run(). For example: <code class="docutils literal notranslate"><span class="pre">[&quot;--batch_size&quot;,</span> <span class="pre">32]</span></code>. Default: “”</li>
+<li><strong>working_dir</strong> (str): The path relative to <code class="docutils literal notranslate"><span class="pre">PROJECT</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;entry&gt;.py</span></code> locates. Default: <code class="docutils literal notranslate"><span class="pre">./</span></code>.</li>
+<li><strong>cotk_record_information</strong> (dict, optional): some information for the support of dashboard.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">PROJECT</span></code> should be push to a public github repository with all your codes and configs.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code> can be generated by <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span></code> commands described in the following section.</p>
+</div>
+</div>
+<div class="section" id="publish-your-model-to-dashboard">
+<h3>Publish your model to dashboard<a class="headerlink" href="#publish-your-model-to-dashboard" title="Permalink to this headline">¶</a></h3>
+<p>The command line <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code> is to publish your model to the dashboard.
+Besides showing evaluation results of models, this dashboard also tells
+whether any two models refer to the same data, which aims at fair comparisons
+(Refer to <a class="reference internal" href="../metric.html#hash-ref"><span class="std std-ref">Metric</span></a> for more details).</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: cotk run [-h] [--token TOKEN] [--result RESULT] [--only-run]
+                [--only-upload] [--entry [ENTRY]]
+
+Run model and report performance to cotk dashboard.**More args can added at
+end of the command to pass to your model**.
+
+optional arguments:
+-h, --help       show this help message and exit
+--token TOKEN    Use a temporary token. (Specified your accounts on dashboard.)
+--result RESULT  Path to result file that your model generated. Default:
+                 result.json
+--only-run       Just run my model, save running information to local
+                 folder but do not upload anything.
+--only-upload    Don&#39;t run my model, just upload the existing result.
+--entry [ENTRY]  Entry file of your model, suffix name &#39;.py&#39; should not be
+                 included. Default: main
+</pre></div>
+</div>
+<ul class="simple">
+<li>When <code class="docutils literal notranslate"><span class="pre">--only-run</span></code> is set, you choose to run your model locally without publishing results to the dashboard.
+A <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code> will be generated.</li>
+<li>When <code class="docutils literal notranslate"><span class="pre">--only-upload</span></code> is set, you can upload your results of generated before by <code class="docutils literal notranslate"><span class="pre">--only-run</span></code>.</li>
+<li>When neither <code class="docutils literal notranslate"><span class="pre">--only-run</span></code> nor <code class="docutils literal notranslate"><span class="pre">--only-upload</span></code> is set, the model will run and then
+the results will be uploaded to the dashboard.</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">TOKEN</span></code> is a non-empty string for registration or identification on the dashboard.
+You can save it from saves you from typing it every time.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cotk config set token TOKEN
+</pre></div>
+</div>
+<p>After successfully publishing your model to the dashboard, <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code> will return a URL of the online report.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are to publish your model on dashboard, all the protocols in <a class="reference internal" href="#publish-your-model-to-github">Publish your model to github</a>
+should be satisfied except <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code> (which will generated by <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code> automatically and
+not necessarily be pushed to github).</p>
+</div>
+</div>
 </div>
 </div>
 
