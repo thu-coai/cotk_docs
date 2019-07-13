@@ -97,6 +97,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -207,25 +208,56 @@ loading wordvector automatically.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.wordvector.WordVector.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load word vector and return a numpy array. The ith row is the feature
-of the ith word in <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>.</p>
+<dt id="cotk.wordvector.WordVector.load_matrix">
+<code class="descname">load_matrix</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em>, <em>mean=0</em>, <em>std=0.1</em>, <em>default_embeddings=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector.load_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector.load_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load pretrained word vector and return a numpy 2-d array. The ith row is the feature
+of the ith word in <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>. If some feature is not included in pretrained
+word vector, it will be initialized by:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code>, if it is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li>normal distribution with <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code>, otherwise.</li>
+</ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>n_dims</strong> (<em>int</em>) – specify the dimension size of word vector. If <code class="docutils literal notranslate"><span class="pre">n_dims</span></code>
-is bigger than pretrained word vector, the rest feature will be
-randomly initialized by normal distriution.</li>
+is bigger than size of pretrained word vector, the rest embedding will be
+initialized by <code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code> or a normal distribution.</li>
 <li><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
-is any word not appeared in pretrained word vector, the feature will
-be randomly initialized by normal distribution</li>
+is any word not appeared in pretrained word vector, the embedding will be
+initialized by <code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code> or a normal distribution.</li>
+<li><strong>mean</strong> – The mean of normal distribution. Default: 0.</li>
+<li><strong>std</strong> – The standard deviation of normal distribution. Default: 0.1.</li>
+<li><strong>default_embeddings</strong> – The default embeddings, it size should be
+<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">ndims]</span></code>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – Size:<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">n_dims]</span></code>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – A  2-d array. Size:<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">n_dims]</span></code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.wordvector.WordVector.load_dict">
+<code class="descname">load_dict</code><span class="sig-paren">(</span><em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector.load_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector.load_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load word vector and return a dict that maps words to vectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
+is any word not appeared in pretrained word vector, the feature will
+not be returned.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> –<dl class="docutils">
+<dt>maps a word (str) to its pretrained embedding (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</dt>
+<dd>where its shape is [ndims].</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -252,14 +284,14 @@ Default: <code class="docutils literal notranslate"><span class="pre">resources:
 </tbody>
 </table>
 <dl class="method">
-<dt id="cotk.wordvector.Glove.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Refer to <a class="reference internal" href="#cotk.wordvector.WordVector.load" title="cotk.wordvector.WordVector.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load()</span></code></a>.</p>
+<dt id="cotk.wordvector.Glove.load_matrix">
+<code class="descname">load_matrix</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em>, <em>mean=0</em>, <em>std=0.1</em>, <em>default_embeddings=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refer to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load()</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.wordvector.Glove.load_pretrained_embed">
-<code class="descname">load_pretrained_embed</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load_pretrained_embed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load_pretrained_embed" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.wordvector.Glove.load_dict">
+<code class="descname">load_dict</code><span class="sig-paren">(</span><em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Refer to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load_pretrain_embed()</span></code>.</p>
 </dd></dl>
 

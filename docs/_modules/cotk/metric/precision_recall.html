@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk.metric.precision_recall &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk.metric.precision_recall</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk.metric.precision_recall</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Containing some classes and functions about precision and recall evaluating results of models.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
+<span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">_PrecisionRecallMetric</span>
+
+<div class="viewcode-block" id="BleuPrecisionRecallMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuPrecisionRecallMetric">[docs]</a><span class="k">class</span> <span class="nc">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="n">_PrecisionRecallMetric</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Metric for calculating sentence BLEU precision and recall.</span>
+
+<span class="sd">	References:</span>
+<span class="sd">		[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity</span>
+<span class="sd">		for neural dialog models using conditional variational autoencoders.</span>
+<span class="sd">		arXiv preprint arXiv:1703.10960.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		{_PrecisionRecallMetric.ARGUMENTS}</span>
+<span class="sd">		ngram (int): Specifies using BLEU-ngram.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
+				 <span class="n">ngram</span><span class="p">,</span> \
+				 <span class="n">generated_num_per_context</span><span class="p">,</span> \
+				 <span class="n">candidates_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">,</span> \
+				 <span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">,</span> <span class="n">candidates_allvocabs_key</span><span class="p">,</span> \
+				<span class="n">multiple_gen_key</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">ngram</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ngram should belong to [1, 4]&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ngram</span> <span class="o">=</span> <span class="n">ngram</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">ngram</span><span class="p">]</span> <span class="o">*</span> <span class="n">ngram</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span> <span class="o">=</span> <span class="s1">&#39;BLEU-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ngram</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">([</span><span class="n">ngram</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">])</span>
+
+	<span class="k">def</span> <span class="nf">_replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_input</span><span class="p">,</span> <span class="n">_target</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Auxiliary function for replacing the unknown words:</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			_input (list): the references or hypothesis.</span>
+<span class="sd">			_target: the target word index used to replace the unknown words.</span>
+
+<span class="sd">		Returns:</span>
+
+<span class="sd">			* list: processed result.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">_input</span><span class="p">:</span>
+			<span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_target</span> <span class="k">if</span> <span class="n">ele</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span> <span class="k">else</span> <span class="n">ele</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">output</span>
+
+<div class="viewcode-block" id="BleuPrecisionRecallMetric._score"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuPrecisionRecallMetric._score">[docs]</a>	<span class="k">def</span> <span class="nf">_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Score function of BLEU-ngram precision and recall.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			gen (list): list of generated word ids.</span>
+<span class="sd">			reference (list): list of word ids of a reference.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			int: score \in [0, 1].</span>
+
+<span class="sd">		Here is an Example:</span>
+<span class="sd">			&gt;&gt;&gt; gen = [4,5]</span>
+<span class="sd">			&gt;&gt;&gt; reference = [5,6]</span>
+<span class="sd">			&gt;&gt;&gt; self._score(gen, reference)</span>
+<span class="sd">			0.150 # assume self.weights = [0.25,0.25,0.25,0.25]</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_unk</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">([</span><span class="n">reference</span><span class="p">],</span> <span class="n">gen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method1</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="EmbSimilarityPrecisionRecallMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric">[docs]</a><span class="k">class</span> <span class="nc">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">_PrecisionRecallMetric</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Metric for calculating cosine similarity precision and recall.</span>
+
+<span class="sd">	References:</span>
+<span class="sd">		[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity</span>
+<span class="sd">		for neural dialog models using conditional variational autoencoders.</span>
+<span class="sd">		arXiv preprint arXiv:1703.10960.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		{_PrecisionRecallMetric.ARGUMENTS}</span>
+<span class="sd">		word2vec (dict): Maps a word (str) to its pretrained embedding (:class:`numpy.ndarray` or list)</span>
+<span class="sd">		mode (str): Specifies the operation that computes the bag-of-word representation.</span>
+<span class="sd">			Must be ``avg`` or ``extrema``:</span>
+
+<span class="sd">			* ``avg`` : element-wise average word embeddings.</span>
+<span class="sd">			* ``extrema`` : element-wise maximum word embeddings.</span>
+
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
+				 <span class="n">word2vec</span><span class="p">,</span> \
+				 <span class="n">mode</span><span class="p">,</span> \
+				 <span class="n">generated_num_per_context</span><span class="p">,</span> \
+				 <span class="n">candidates_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">,</span> \
+				 <span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">,</span> \
+			<span class="n">candidates_allvocabs_key</span><span class="p">,</span> <span class="n">multiple_gen_key</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word2vec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;word2vec has invalid type&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">word2vec</span><span class="p">:</span>
+			<span class="n">embed_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">word2vec</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="o">.</span><span class="n">shape</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">embed_shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">embed_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;word embeddings have inconsistent embedding size or are empty&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;avg&#39;</span><span class="p">,</span> <span class="s1">&#39;extrema&#39;</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mode should be &#39;avg&#39; or &#39;extrema&#39;.&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span> <span class="o">=</span> <span class="n">word2vec</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-bow&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">([</span><span class="n">mode</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">]</span> <span class="o">+</span> \
+				<span class="p">[(</span><span class="n">word</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">emb</span><span class="p">))</span> <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">emb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+
+<div class="viewcode-block" id="EmbSimilarityPrecisionRecallMetric._score"><a class="viewcode-back" href="../../../metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric._score">[docs]</a>	<span class="k">def</span> <span class="nf">_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Score function of cosine similarity precision and recall.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			gen (list): list of generated word ids.</span>
+<span class="sd">			reference (list): list of word ids of a reference.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			int: cosine similarity between two sentence embeddings \in [0, 1].</span>
+
+<span class="sd">		Here is an Example:</span>
+<span class="sd">			&gt;&gt;&gt; gen = [4,5]</span>
+<span class="sd">			&gt;&gt;&gt; reference = [5,6]</span>
+<span class="sd">			&gt;&gt;&gt; self._score(gen, reference)</span>
+<span class="sd">			0.135 # assume self.mode = &#39;avg&#39;</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">gen_vec</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">ref_vec</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span><span class="p">:</span>
+				<span class="n">gen_vec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span><span class="p">[</span><span class="n">word</span><span class="p">])</span>
+		<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span><span class="p">:</span>
+				<span class="n">ref_vec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word2vec</span><span class="p">[</span><span class="n">word</span><span class="p">])</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">gen_vec</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ref_vec</span><span class="p">:</span>
+			<span class="k">return</span> <span class="mi">0</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;avg&#39;</span><span class="p">:</span>
+			<span class="n">gen_embed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">gen_vec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+			<span class="n">ref_embed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">ref_vec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">gen_embed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">gen_vec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+			<span class="n">ref_embed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ref_vec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="n">cos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">gen_embed</span> <span class="o">*</span> <span class="n">ref_embed</span><span class="p">)</span> <span class="o">/</span> \
+			  <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">gen_embed</span> <span class="o">*</span> <span class="n">gen_embed</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ref_embed</span> <span class="o">*</span> <span class="n">ref_embed</span><span class="p">))</span>
+		<span class="n">norm</span> <span class="o">=</span> <span class="p">(</span><span class="n">cos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+		<span class="k">return</span> <span class="n">norm</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

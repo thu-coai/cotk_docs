@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; cotk  documentation</title>
+  <title>Downloader &mdash; cotk  documentation</title>
   
 
   
@@ -17,7 +17,6 @@
   
 
   
-    
   <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
@@ -30,14 +29,15 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LanguageGeneration" href="models/LanguageGeneration/index.html" />
+    <link rel="prev" title="Resources" href="resources.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -64,7 +64,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -92,12 +92,12 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Downloader</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -150,12 +150,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Downloader</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/downloader.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -167,24 +169,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="module-cotk.downloader">
+<span id="downloader"></span><h1>Downloader<a class="headerlink" href="#module-cotk.downloader" title="Permalink to this headline">¶</a></h1>
+<p>Utilities for working with the local dataset cache.</p>
+<dl class="function">
+<dt id="cotk.downloader.load_file_from_url">
+<code class="descclassname">cotk.downloader.</code><code class="descname">load_file_from_url</code><span class="sig-paren">(</span><em>url</em>, <em>force=False</em>, <em>cache_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/downloader.html#load_file_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.downloader.load_file_from_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a file from the given <code class="docutils literal notranslate"><span class="pre">url</span></code>. If the file has been downloaded, it will be
+cached in <code class="docutils literal notranslate"><span class="pre">cache_dir</span></code>. However, the function can’t check whether the file from <code class="docutils literal notranslate"><span class="pre">url</span></code>
+is changed online. If you have the wrong cache, you may manually delete the file cached
+located by the return value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> (<em>str</em>) – A url indicating the file online.</li>
+<li><strong>force</strong> (<em>bool</em>) – Force to download and ignore the existing file. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+<li><strong>cache_dir</strong> (<em>str, optional</em>) – A path indicating where the cache place.
+Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, a default cache path is used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(str) The local path of downloaded model.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">load_model_from_url</span><span class="p">(</span><span class="s1">&#39;https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="n">CACHE_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">resnet18</span><span class="o">-</span><span class="mi">5</span><span class="n">c106cde</span><span class="o">.</span><span class="n">pth</span>
+</pre></div>
+</div>
+</dd></dl>
 
-  
-  <div id="search-results">
-  
-  </div>
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="models/LanguageGeneration/index.html" class="btn btn-neutral float-right" title="LanguageGeneration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="resources.html" class="btn btn-neutral float-left" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -217,14 +251,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

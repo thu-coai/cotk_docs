@@ -103,6 +103,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -279,7 +280,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.metric.BleuPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ngram</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ngram</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating sentence BLEU precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -302,7 +303,7 @@ arXiv preprint arXiv:1703.10960.</p>
 </table>
 <dl class="method">
 <dt id="cotk.metric.BleuPrecisionRecallMetric._score">
-<code class="descname">_score</code><span class="sig-paren">(</span><em>gen</em>, <em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuPrecisionRecallMetric._score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric._score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_score</code><span class="sig-paren">(</span><em>gen</em>, <em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric._score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric._score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Score function of BLEU-ngram precision and recall.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -394,7 +395,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>word2vec</em>, <em>mode</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>word2vec</em>, <em>mode</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating cosine similarity precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -423,7 +424,7 @@ Must be <code class="docutils literal notranslate"><span class="pre">avg</span><
 </table>
 <dl class="method">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric._score">
-<code class="descname">_score</code><span class="sig-paren">(</span><em>gen</em>, <em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#EmbSimilarityPrecisionRecallMetric._score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric._score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_score</code><span class="sig-paren">(</span><em>gen</em>, <em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric._score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric._score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Score function of cosine similarity precision and recall.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -515,7 +516,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.PerplexityMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>reference_len_key='ref_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>reference_len_key='ref_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -541,7 +542,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </table>
 <dl class="method">
 <dt id="cotk.metric.PerplexityMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data. Smoothing will be performed for <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">invalid vocabs</span></a>.
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">Unknowns vocabs</span></a> will be ignored.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -596,7 +597,7 @@ If <code class="xref py py-class docutils literal notranslate"><span class="pre"
 
 <dl class="method">
 <dt id="cotk.metric.PerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#PerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -616,7 +617,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnPerplexityMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_reference_len_key='multi_turn_ref_length'</em>, <em>multi_turn_gen_log_prob_key='multi_turn_gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_reference_len_key='multi_turn_ref_length'</em>, <em>multi_turn_gen_log_prob_key='multi_turn_gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -641,7 +642,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </table>
 <dl class="method">
 <dt id="cotk.metric.MultiTurnPerplexityMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnPerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -698,7 +699,7 @@ If <code class="xref py py-class docutils literal notranslate"><span class="pre"
 
 <dl class="method">
 <dt id="cotk.metric.MultiTurnPerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -718,7 +719,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.BleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -735,7 +736,7 @@ for same evaluation settings.</li>
 </table>
 <dl class="method">
 <dt id="cotk.metric.BleuCorpusMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -776,7 +777,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.BleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -796,7 +797,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.SelfBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating Self-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -825,7 +826,7 @@ or all available cpu will be used otherwise.</li>
 </div>
 <dl class="method">
 <dt id="cotk.metric.SelfBleuCorpusMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SelfBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -859,7 +860,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.SelfBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SelfBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -877,7 +878,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.FwBwBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_key</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_key</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating FwBw-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -907,7 +908,7 @@ if the size of them is smaller than <code class="docutils literal notranslate"><
 </div>
 <dl class="method">
 <dt id="cotk.metric.FwBwBleuCorpusMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#FwBwBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -941,7 +942,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.FwBwBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#FwBwBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -961,7 +962,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>multi_turn_reference_allvocabs_key='reference_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>multi_turn_reference_allvocabs_key='reference_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -979,7 +980,7 @@ for same evaluation settings.</li>
 </table>
 <dl class="method">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1022,7 +1023,7 @@ Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]<
 
 <dl class="method">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1045,7 +1046,7 @@ for same evaluation settings.</li>
 <h2>Metric-like class<a class="headerlink" href="#metric-like-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.metric.SingleTurnDialogRecorder">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SingleTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>post_allvocabs_key='post_allvocabs'</em>, <em>resp_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SingleTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SingleTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>post_allvocabs_key='post_allvocabs'</em>, <em>resp_allvocabs_key='resp_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#SingleTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recording generated sentences and references.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1065,7 +1066,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp_allvo
 </table>
 <dl class="method">
 <dt id="cotk.metric.SingleTurnDialogRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1113,7 +1114,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.SingleTurnDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#SingleTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1139,7 +1140,7 @@ sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnDialogRecorder">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_context_allvocabs_key='multi_turn_context_allvocabs'</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_context_allvocabs_key='multi_turn_context_allvocabs'</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recording generated sentences and references.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1160,7 +1161,7 @@ sizes in this dimension is allowed.</li>
 </table>
 <dl class="method">
 <dt id="cotk.metric.MultiTurnDialogRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1209,7 +1210,7 @@ Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]<
 
 <dl class="method">
 <dt id="cotk.metric.MultiTurnDialogRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#MultiTurnDialogRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1235,7 +1236,7 @@ sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.LanguageGenerationRecorder">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">LanguageGenerationRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#LanguageGenerationRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">LanguageGenerationRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#LanguageGenerationRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recorder generated sentences.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1251,7 +1252,7 @@ sizes in this dimension is allowed.</li>
 </table>
 <dl class="method">
 <dt id="cotk.metric.LanguageGenerationRecorder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing a batch of data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1285,7 +1286,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.LanguageGenerationRecorder.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#LanguageGenerationRecorder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.close" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

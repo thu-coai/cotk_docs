@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk.metric.perplexity &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk.metric.perplexity</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk.metric.perplexity</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Containing some classes and functions about perplexity evaluating results of models.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
+<span class="kn">from</span> <span class="nn">.._utils.imports</span> <span class="k">import</span> <span class="n">DummyObject</span>
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">torch</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+	<span class="n">torch</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PerplexityMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">PerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Metric for calculating perplexity.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.REFERENCE_ALLVOCABS_KEY_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.REFERENCE_LEN_KEY_ARGUMENTS}</span>
+<span class="sd">		gen_log_prob_key (str): The key of **log** probability over words.</span>
+<span class="sd">			Default: ``gen_log_prob``.</span>
+<span class="sd">		invalid_vocab (bool): Whether ``gen_log_prob`` contains :ref:`invalid vocab &lt;vocab_ref&gt;`.</span>
+<span class="sd">			Default: ``False``.</span>
+<span class="sd">		full_check (bool): Whether perform a full check on ``gen_log_prob`` to make sure the sum</span>
+<span class="sd">			of probability is 1. Otherwise, a random check will be performed for efficiency.</span>
+<span class="sd">			If pytorch is used, a full check is always performed and this argument will be ignored.</span>
+<span class="sd">			Default: ``False``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
+					   <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span> \
+					   <span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;ref_length&quot;</span><span class="p">,</span> \
+					   <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span> \
+					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> \
+					   <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span> \
+			  <span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span> <span class="o">=</span> <span class="n">reference_allvocabs_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span> <span class="o">=</span> <span class="n">reference_len_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_log_prob_key</span> <span class="o">=</span> <span class="n">gen_log_prob_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span> <span class="o">=</span> <span class="n">invalid_vocab</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">full_check</span> <span class="o">=</span> <span class="n">full_check</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span> <span class="c1"># can be &#39;default&#39;, &#39;pytorch&#39; when first forward time</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="c1">#self.resp_length = []</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="PerplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data. Smoothing will be performed for :ref:`invalid vocabs &lt;vocab_ref&gt;`.</span>
+<span class="sd">		:ref:`Unknowns vocabs &lt;vocab_ref&gt;` will be ignored.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains the following keys:</span>
+
+<span class="sd">				{MetricBase.FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS_WITH_TORCH}</span>
+<span class="sd">				{MetricBase.FORWARD_REFERENCE_LEN_ARGUMENTS}</span>
+<span class="sd">				* **data[gen_log_prob_key]** (list or :class:`numpy.ndarray` or :class:`torch.Tensor`):</span>
+<span class="sd">				  The **log softmax** probability of the sentence generations model outputs.</span>
+<span class="sd">				  A 3-d jagged or padded array of float.</span>
+<span class="sd">				  Contains end token (eg:``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
+<span class="sd">				  Size: ``[batch_size, ~gen_sentence_length, vocab_size]`` for ``invalid_vocab = False``, or</span>
+<span class="sd">				  ``[batch_size, ~gen_sentence_length, all_vocab_size]`` for ``invalid_vocab = True``,</span>
+<span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.</span>
+<span class="sd">				  If :class:`torch.Tensor` is used, the following data should also be</span>
+<span class="sd">				  :class:`torch.Tensor`.</span>
+
+<span class="sd">				Here is an example for data:</span>
+<span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="sd">					&gt;&gt;&gt; data = {</span>
+<span class="sd">					... 	reference_allvocabs_key: [[2,4,3], [2,5,6,3]]</span>
+<span class="sd">					...		reference_len_key: [3,4]</span>
+<span class="sd">					...		gen_log_prob_key: [[[-3.80666249, -3.11351531, -2.7080502 , -2.42036813, -2.19722458,</span>
+<span class="sd">								-2.01490302, -1.86075234, -1.72722095, -1.60943791],...],...]</span>
+<span class="sd">					... }</span>
+<span class="sd">		Warning:</span>
+<span class="sd">			``data[gen_log_prob_key]`` must be processed after log_softmax. That means,</span>
+<span class="sd">			``np.sum(np.exp(gen_log_prob), -1)`` equals ``np.ones((batch_size, gen_sentence_length))``</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		<span class="n">resp_allvocabs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span><span class="p">]</span>
+		<span class="n">resp_length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span><span class="p">]</span>
+		<span class="n">gen_log_prob</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_log_prob_key</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for resp_allvocabs.&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for gen_log_prob&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp_length</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for resp_length&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">==</span> <span class="s2">&quot;unknown&quot;</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">=</span> <span class="s2">&quot;pytorch&quot;</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;If you want to use pytorch, `gen_log_prob` </span><span class="se">\</span>
+<span class="s2">				should always be torch.Tensor. It can&#39;t mix with list or numpy.ndarray.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+				<span class="n">resp_allvocabs</span> <span class="o">=</span> <span class="n">gen_log_prob</span><span class="o">.</span><span class="n">new_tensor</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
+			<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_pytorch_forward</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">resp_length</span><span class="p">,</span> <span class="n">gen_log_prob</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_normal_forward</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">resp_length</span><span class="p">,</span> <span class="n">gen_log_prob</span><span class="p">)</span></div>
+
+	<span class="k">def</span> <span class="nf">_normal_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">resp_length</span><span class="p">,</span> <span class="n">gen_log_prob</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_length</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num of arguments is not matched.&quot;</span><span class="p">)</span>
+
+		<span class="c1"># perform random check to assert the probability is valid</span>
+		<span class="n">checkid</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_length</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">resp_length</span><span class="p">[</span><span class="n">checkid</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resp_length must no less than 2, because &lt;go&gt; and &lt;eos&gt; are always included.&quot;</span><span class="p">)</span>
+		<span class="n">checkrow</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">resp_length</span><span class="p">[</span><span class="n">checkid</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+		<span class="n">random_check_expsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">checkid</span><span class="p">][</span><span class="n">checkrow</span><span class="p">]))</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">random_check_expsum</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_log_prob_key] must be processed after log_softmax. </span><span class="se">\</span>
+<span class="s2">				gen_log_prob[</span><span class="si">%d</span><span class="s2">][</span><span class="si">%d</span><span class="s2">] exp sum is equal to </span><span class="si">%f</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">checkid</span><span class="p">,</span> <span class="n">checkrow</span><span class="p">,</span> \
+				<span class="n">random_check_expsum</span><span class="p">))</span>
+
+		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">resp_len</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resp_length</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">resp_len</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resp_length must no less than 2, because &lt;go&gt; and &lt;eos&gt; are always included.&quot;</span><span class="p">)</span>
+
+			<span class="n">resp_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="n">resp_len</span><span class="p">])</span>
+			<span class="n">gen_now</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_now</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_now</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resp_allvocabs need to be 2 dimension&quot;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gen_log_prob need to be 3 dimension&quot;</span><span class="p">)</span>
+
+			<span class="c1"># perform full check to assert the probability is valid</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_check</span><span class="p">:</span>
+				<span class="n">expsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[:</span><span class="n">resp_len</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expsum</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">resp_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_log_prob_key] must be processed after log_softmax.&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to vocab_size when </span><span class="se">\</span>
+<span class="s2">						invalid_vocab = False, </span><span class="se">\</span>
+<span class="s2">						but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to all_vocab_size </span><span class="se">\</span>
+<span class="s2">						when invalid_vocab = True, </span><span class="se">\</span>
+<span class="s2">						but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">))</span>
+
+			<span class="n">resp</span> <span class="o">=</span> <span class="n">resp_now</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+			<span class="c1">#self.resp_length.append(resp_len)</span>
+
+			<span class="n">resp_known</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="n">resp_known</span><span class="p">[</span><span class="n">resp_known</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">resp_len</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">resp_known</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[:</span><span class="n">resp_len</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">])</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_pytorch_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp_allvocabs</span><span class="p">,</span> <span class="n">resp_length</span><span class="p">,</span> <span class="n">gen_log_prob</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_length</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num of arguments is not matched.&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resp_allvocabs need to be 2 dimension&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gen_log_prob need to be 3 dimension&quot;</span><span class="p">)</span>
+
+		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">resp_len</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">resp_length</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">resp_len</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resp_length must no less than 2, because &lt;go&gt; and &lt;eos&gt; are always included.&quot;</span><span class="p">)</span>
+
+			<span class="n">resp_now</span> <span class="o">=</span> <span class="n">resp_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="n">resp_len</span><span class="p">]</span>
+			<span class="n">gen_now</span> <span class="o">=</span> <span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="n">resp_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_now</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+			<span class="c1"># perform full check to assert the probability is valid</span>
+			<span class="n">expsum</span> <span class="o">=</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">expsum</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">expsum</span><span class="p">)):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data[gen_log_prob_key] must be processed after log_softmax.&quot;</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to vocab_size when </span><span class="se">\</span>
+<span class="s2">						invalid_vocab = False, </span><span class="se">\</span>
+<span class="s2">						but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The third dimension gen_log_prob should be equals to all_vocab_size </span><span class="se">\</span>
+<span class="s2">						when invalid_vocab = True, </span><span class="se">\</span>
+<span class="s2">						but </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">))</span>
+
+			<span class="n">resp_known</span> <span class="o">=</span> <span class="n">resp_now</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="n">resp_known</span><span class="p">[</span><span class="n">resp_known</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span>
+
+			<span class="n">unk_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span>
+			<span class="n">vocab_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span>
+			<span class="n">invalid_vocab_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">all_vocab_size</span> <span class="o">-</span> <span class="n">vocab_size</span>
+
+			<span class="c1"># calc normal vocab</span>
+			<span class="n">normal_mask</span> <span class="o">=</span> <span class="p">((</span><span class="n">resp_now</span> <span class="o">!=</span> <span class="n">unk_id</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">resp_now</span> <span class="o">&lt;</span> <span class="n">vocab_size</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+			<span class="n">word_loss</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">gen_now</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">resp_known</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">normal_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+			<span class="n">length_sum</span> <span class="o">=</span> <span class="n">normal_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+			<span class="c1"># calc invalid vocab</span>
+			<span class="c1"># smoothing from unk</span>
+			<span class="n">invalid_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">resp_now</span> <span class="o">&gt;=</span> <span class="n">vocab_size</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+			<span class="n">invalid_log_prob</span> <span class="o">=</span> <span class="p">(</span><span class="n">gen_now</span><span class="p">[:,</span> <span class="n">unk_id</span><span class="p">]</span> <span class="o">-</span> \
+						<span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">gen_now</span><span class="p">[:,</span> <span class="n">unk_id</span><span class="p">])</span> <span class="o">*</span> <span class="n">invalid_vocab_size</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">())</span> <span class="o">*</span> <span class="n">invalid_mask</span>
+
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">:</span>
+				<span class="n">extra_invalid_log_prob</span> <span class="o">=</span> <span class="n">gen_now</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">resp_now</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">invalid_mask</span>
+				<span class="n">word_loss</span> <span class="o">-=</span> <span class="p">((</span><span class="n">invalid_log_prob</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">+</span> <span class="n">extra_invalid_log_prob</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span><span class="o">.</span><span class="n">log</span><span class="p">()</span> \
+						<span class="o">*</span> <span class="n">invalid_mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">invalid_log_prob</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+			<span class="n">length_sum</span> <span class="o">+=</span> <span class="n">invalid_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="n">word_loss</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">length_sum</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span>
+
+	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">_run_f</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ele</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Auxiliary function for computing perplexity:</span>
+
+<span class="sd">		Returns:</span>
+
+<span class="sd">			* tuple: sum of log perplexity and sum of sentence length.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">valid_log_prob</span><span class="p">,</span> <span class="n">unk_log_prob</span><span class="p">,</span> <span class="n">resp_now</span><span class="p">,</span> \
+				<span class="n">invalid_vocab</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">all_vocab_size</span><span class="p">,</span> <span class="n">unk_id</span> <span class="o">=</span> <span class="n">ele</span>
+
+		<span class="c1"># calc normal vocab</span>
+		<span class="n">normal_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">resp_now</span> <span class="o">!=</span> <span class="n">unk_id</span><span class="p">,</span> \
+								<span class="n">resp_now</span> <span class="o">&lt;</span> <span class="n">vocab_size</span><span class="p">))</span>
+		<span class="n">word_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid_log_prob</span><span class="p">[</span><span class="n">normal_idx</span><span class="p">])</span>
+		<span class="n">length_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">normal_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="c1"># calc invalid vocab</span>
+		<span class="c1"># smoothing from unk</span>
+		<span class="n">invalid_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">resp_now</span> <span class="o">&gt;=</span> <span class="n">vocab_size</span><span class="p">)</span>
+		<span class="n">invalid_log_prob</span> <span class="o">=</span> <span class="n">unk_log_prob</span><span class="p">[</span><span class="n">invalid_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">all_vocab_size</span> <span class="o">-</span> <span class="n">vocab_size</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">invalid_vocab</span><span class="p">:</span>
+			<span class="n">extra_invalid_log_prob</span> <span class="o">=</span> <span class="n">valid_log_prob</span><span class="p">[</span><span class="n">invalid_idx</span><span class="p">]</span>
+			<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> \
+					<span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">extra_invalid_log_prob</span><span class="p">)</span> \
+				<span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">word_loss</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">invalid_log_prob</span><span class="p">)</span>
+		<span class="n">length_sum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">invalid_idx</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+		<span class="k">return</span> <span class="n">word_loss</span><span class="p">,</span> <span class="n">length_sum</span>
+
+<div class="viewcode-block" id="PerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		Returns:</span>
+<span class="sd">			(dict): Return a dict which contains</span>
+
+<span class="sd">			* **perplexity**: perplexity value.</span>
+<span class="sd">			* **perplexity hashvalue**: hash value for perplexity metric, same hash value stands</span>
+<span class="sd">			  for same evaluation settings.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_version</span> <span class="o">==</span> <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span>
+			<span class="c1"># pytorch is finished when forward</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has not been forwarded data correctly.&quot;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has not been forwarded data correctly.&quot;</span><span class="p">)</span>
+
+			<span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span>
+			<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> \
+							<span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">all_vocab_size</span><span class="p">,</span> <span class="n">loader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span> \
+							<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span><span class="p">))</span>
+
+			<span class="c1"># Multiprocessing seems can&#39;t boost the speed</span>
+			<span class="c1"># if len(self.gen_valid_log_prob) &gt; 100:</span>
+			<span class="c1"># 	pool = Pool(multiprocessing.cpu_count())</span>
+			<span class="c1"># 	for ans in tqdm.tqdm(pool.imap_unordered(self.run_f, tasks, chunksize=20), \</span>
+			<span class="c1"># 		total=len(self.gen_valid_log_prob)):</span>
+			<span class="c1"># 		self.word_loss += ans[0]</span>
+			<span class="c1"># 		self.length_sum += ans[1]</span>
+			<span class="c1"># 	pool.close()</span>
+			<span class="c1"># 	pool.join()</span>
+			<span class="c1"># else:</span>
+			<span class="k">for</span> <span class="n">ans</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_f</span><span class="p">,</span> <span class="n">tasks</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span> <span class="o">+=</span> <span class="n">ans</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_valid_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">gen_unk_log_prob</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">),</span> \
+				<span class="s2">&quot;perplexity hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
+		<span class="k">return</span> <span class="n">res</span></div></div>
+
+<div class="viewcode-block" id="MultiTurnPerplexityMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Metric for calculating multi-turn perplexity.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.MULTI_TURN_REFERENCE_ALLVOCABS_KEY_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.MULTI_TURN_REFERENCE_LEN_KEY_ARGUMENTS}</span>
+<span class="sd">		gen_log_prob_key (str): The key of **log** probability over words.</span>
+<span class="sd">			Default: ``multi_turn_gen_log_prob``.</span>
+<span class="sd">		invalid_vocab (bool): whether ``gen_log_prob`` contains :ref:`invalid vocab &lt;vocab_ref&gt;`.</span>
+<span class="sd">			Default: ``False``.</span>
+<span class="sd">		full_check (bool): whether perform full checks on ``gen_log_prob`` to make sure the sum</span>
+<span class="sd">			of probability is 1. Otherwise, a random check will be performed for efficiency.</span>
+<span class="sd">			Default: ``False``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span><span class="p">,</span> \
+					   <span class="n">multi_turn_reference_len_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_length&quot;</span><span class="p">,</span> \
+					   <span class="n">multi_turn_gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen_log_prob&quot;</span><span class="p">,</span> \
+					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> \
+					   <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span> \
+			  <span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_allvocabs_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_len_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_len_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_gen_log_prob_key</span> <span class="o">=</span> <span class="n">multi_turn_gen_log_prob_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">invalid_vocab</span> <span class="o">=</span> <span class="n">invalid_vocab</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span> <span class="o">=</span> <span class="n">PerplexityMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> \
+				<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span> \
+				<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;ref_length&quot;</span><span class="p">,</span> \
+				<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span> \
+				<span class="n">invalid_vocab</span><span class="o">=</span><span class="n">invalid_vocab</span><span class="p">,</span> \
+				<span class="n">full_check</span><span class="o">=</span><span class="n">full_check</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultiTurnPerplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains the following keys:</span>
+
+<span class="sd">				{MetricBase.FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS_WITH_TORCH}</span>
+<span class="sd">				{MetricBase.FORWARD_MULTI_TURN_REFERENCE_LEN_ARGUMENTS}</span>
+<span class="sd">				* **data[multi_turn_gen_log_prob_key]** (list or :class:`numpy.ndarray` or \</span>
+<span class="sd">					:class:`torch.Tensor`):</span>
+<span class="sd">				  The **log softmax** probability of the sentence generations model outputs.</span>
+<span class="sd">				  A 4-d jagged or padded array. **log softmax** probability.</span>
+<span class="sd">				  Contains end token (eg:``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
+<span class="sd">				  Size: ``[batch_size, ~gen_sentence_length, vocab_size]`` for ``invalid_vocab = False``, or</span>
+<span class="sd">				  ``[batch_size, ~gen_sentence_length, all_vocab_size]` for ``invalid_vocab = True``,</span>
+<span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.</span>
+<span class="sd">				  If :class:`torch.Tensor` is used, the following data should also be</span>
+<span class="sd">				  :class:`torch.Tensor`.</span>
+
+<span class="sd">				Here is an example for data:</span>
+<span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="sd">					&gt;&gt;&gt; data = {</span>
+<span class="sd">					... 	multi_turn_reference_allvocabs_key: [[[2,4,3], [2,5,6,3]], [[2,7,6,8,3]]]</span>
+<span class="sd">					...		multi_turn_reference_len_key: [[3, 4], [5]]</span>
+<span class="sd">					...		multi_turn_gen_log_prob_key: [[[[-3.80666249, -3.11351531, -2.7080502,</span>
+<span class="sd">								-2.42036813, -2.19722458, -2.01490302, -1.86075234, -1.72722095,</span>
+<span class="sd">								-1.60943791], ...], ...], ...]</span>
+<span class="sd">					... }</span>
+<span class="sd">		Warning:</span>
+<span class="sd">			``data[multi_turn_gen_log_prob_key]`` must be processed after log_softmax. That means,</span>
+<span class="sd">			``np.sum(np.exp(multi_turn_gen_log_prob_key), -1)`` equals</span>
+<span class="sd">			``np.ones((batch_size, ~gen_sentence_length))``</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		<span class="n">reference_allvocabs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_allvocabs_key</span><span class="p">]</span>
+		<span class="n">length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_len_key</span><span class="p">]</span>
+		<span class="n">gen_log_prob</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_gen_log_prob_key</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference_allvocabs</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for reference_allvocabs.&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for length&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for gen_log_prob&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_allvocabs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sent_length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+			<span class="c1"># Pass turn as batch for sub_metric, the result will be same.</span>
+			<span class="n">turn_length</span> <span class="o">=</span> <span class="n">sent_length</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">sent_length</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">sent_length</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">turn_length</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">turn_length</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Turn num is not matched.&quot;</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">:</span> <span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">turn_length</span><span class="p">],</span> \
+					<span class="s2">&quot;ref_length&quot;</span><span class="p">:</span> <span class="n">sent_length</span><span class="p">,</span> \
+					<span class="s2">&quot;gen_log_prob&quot;</span><span class="p">:</span> <span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">turn_length</span><span class="p">]})</span></div>
+
+<div class="viewcode-block" id="MultiTurnPerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		Returns:</span>
+<span class="sd">			(dict): Return a dict which contains</span>
+
+<span class="sd">			* **perplexity**: perplexity value.</span>
+<span class="sd">			* **perplexity hashvalue**: hash value for perplexity metric, same hash value stands</span>
+<span class="sd">			  for same evaluation settings.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+		<span class="k">return</span> <span class="n">res</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

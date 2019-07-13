@@ -95,6 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -176,40 +177,47 @@
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">pass</span>
 
-<div class="viewcode-block" id="WordVector.load"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.WordVector.load">[docs]</a>	<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Load word vector and return a numpy array. The ith row is the feature</span>
-<span class="sd">		of the ith word in ``vocab_list``.</span>
+<div class="viewcode-block" id="WordVector.load_matrix"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.WordVector.load_matrix">[docs]</a>	<span class="k">def</span> <span class="nf">load_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">default_embeddings</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Load pretrained word vector and return a numpy 2-d array. The ith row is the feature</span>
+<span class="sd">		of the ith word in ``vocab_list``. If some feature is not included in pretrained</span>
+<span class="sd">		word vector, it will be initialized by:</span>
+
+<span class="sd">		* ``default_embeddings``, if it is not ``None``.</span>
+<span class="sd">		* normal distribution with ``mean`` and ``std``, otherwise.</span>
 
 <span class="sd">		Parameters:</span>
 <span class="sd">			n_dims (int): specify the dimension size of word vector. If ``n_dims``</span>
-<span class="sd">				is bigger than pretrained word vector, the rest feature will be</span>
-<span class="sd">				randomly initialized by normal distriution.</span>
+<span class="sd">				is bigger than size of pretrained word vector, the rest embedding will be</span>
+<span class="sd">				initialized by ``default_embeddings`` or a normal distribution.</span>
 <span class="sd">			vocab_list (list): specify the vocab list used in data loader. If there</span>
-<span class="sd">				is any word not appeared in pretrained word vector, the feature will</span>
-<span class="sd">				be randomly initialized by normal distribution</span>
+<span class="sd">				is any word not appeared in pretrained word vector, the embedding will be</span>
+<span class="sd">				initialized by ``default_embeddings`` or a normal distribution.</span>
+<span class="sd">			mean: The mean of normal distribution. Default: 0.</span>
+<span class="sd">			std: The standard deviation of normal distribution. Default: 0.1.</span>
+<span class="sd">			default_embeddings: The default embeddings, it size should be</span>
+<span class="sd">				``[len(vocab_list), ndims]``.</span>
+
 
 <span class="sd">		Returns:</span>
 
-<span class="sd">			(:class:`numpy.ndarray`): Size:``[len(vocab_list), n_dims]``.</span>
+<span class="sd">			(:class:`numpy.ndarray`): A  2-d array. Size:``[len(vocab_list), n_dims]``.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load is a virtual function.&quot;</span><span class="p">)</span></div>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load_matrix is a virtual function.&quot;</span><span class="p">)</span></div>
 
-	<span class="k">def</span> <span class="nf">load_pretrained_embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">):</span>
+<div class="viewcode-block" id="WordVector.load_dict"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.WordVector.load_dict">[docs]</a>	<span class="k">def</span> <span class="nf">load_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Load word vector and return a dict that maps words to vectors.</span>
 
 <span class="sd">		Parameters:</span>
-<span class="sd">			n_dims (int): specify the dimension size of word vector. If ``n_dims``</span>
-<span class="sd">				is bigger than pretrained word vector, the rest feature will be</span>
-<span class="sd">				randomly initialized by normal distriution.</span>
 <span class="sd">			vocab_list (list): specify the vocab list used in data loader. If there</span>
 <span class="sd">				is any word not appeared in pretrained word vector, the feature will</span>
-<span class="sd">				be randomly initialized by normal distribution</span>
+<span class="sd">				not be returned.</span>
 
 <span class="sd">		Returns:</span>
 
-<span class="sd">			(dict): maps a word (str) to its pretrained embedding (:class:`numpy.ndarray` or list).</span>
+<span class="sd">			(dict): maps a word (str) to its pretrained embedding (:class:`numpy.ndarray`)</span>
+<span class="sd">				where its shape is [ndims].</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load_pretrain_embed is a virtual function.&quot;</span><span class="p">)</span></div>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load_dict is a virtual function.&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
