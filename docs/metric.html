@@ -1140,7 +1140,7 @@ sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnDialogRecorder">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_context_allvocabs_key='multi_turn_context_allvocabs'</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnDialogRecorder</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#MultiTurnDialogRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder" title="Permalink to this definition">¶</a></dt>
 <dd><p>A metric-like class for recording generated sentences and references.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1148,8 +1148,6 @@ sizes in this dimension is allowed.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
-<li><strong>multi_turn_context_allvocabs_key</strong> (<em>str</em>) – The key of dialog context with
-<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a>. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_context_allvocabs</span></code>.</li>
 <li><strong>multi_turn_reference_allvocabs_key</strong> (<em>str</em>) – The key of dialog references with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a>. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_ref_allvocabs</span></code>.</li>
 <li><strong>multi_turn_gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">multi_turn_gen</span></code>.</li>
@@ -1169,11 +1167,6 @@ sizes in this dimension is allowed.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> (<em>dict</em>) – A dict at least contains the following keys:</p>
 <ul class="simple">
-<li><strong>data[multi_turn_context_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 3-d jagged or padded array of int. Multi-turn reference sentences with
-<a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
-end token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>). Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sentence_length]</span></code>,
-where “~” means different sizes in this dimension is allowed.</li>
 <li><strong>data[multi_turn_reference_allvocabs_key]</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
 A 3-d jagged or padded array of int. Multi-turn reference sentences with
 <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a>. Contains start token (eg: <code class="docutils literal notranslate"><span class="pre">&lt;go&gt;</span></code>) and
@@ -1216,9 +1209,6 @@ Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]<
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>context</strong>: a list of post sentences. A jagged 3-d array of int.
-Size:<code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sent_length]</span></code>, where “~” means different
-sizes in this dimension is allowed.</li>
 <li><strong>reference</strong>: a list of response sentences. A jagged 3-d array of int.
 Size:<code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~turn_length,</span> <span class="pre">~sent_length]</span></code>, where “~” means different
 sizes in this dimension is allowed.</li>

@@ -178,8 +178,10 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="k">import</span> <span class="n">WordPunctTokenizer</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span><span class="p">,</span> <span class="n">BERTLanguageProcessingBase</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
+<span class="kn">from</span> <span class="nn">.bert_dataloader</span> <span class="k">import</span> <span class="n">BERTLanguageProcessingBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span>
 
 <span class="c1"># pylint: disable=W0223</span>
@@ -197,31 +199,27 @@
 	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
 	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
 
-<div class="viewcode-block" id="SingleTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			key (str): key name of dataset, must be contained in ``self.key_name``.</span>
-<span class="sd">			index (list): a list of specified index</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;{LanguageProcessingBase.GET_BATCH_DOC_WITHOUT_RETURNS}</span>
 
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): A dict at least contains:</span>
 
 <span class="sd">			* **post_length** (:class:`numpy.ndarray`): A 1-d array, the length of post in each batch.</span>
 <span class="sd">			  Size: ``[batch_size]``</span>
-<span class="sd">			* **post** (:class:`numpy.ndarray`): A 2-d padded array containing words of index form in posts.</span>
+<span class="sd">			* **post** (:class:`numpy.ndarray`): A 2-d padded array containing words of id form in posts.</span>
 <span class="sd">			  Only provide valid words. ``unk_id`` will be used if a word is not valid.</span>
 <span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
-<span class="sd">			* **post_allvocabs** (:class:`numpy.ndarray`): A 2-d padded array containing words of index</span>
+<span class="sd">			* **post_allvocabs** (:class:`numpy.ndarray`): A 2-d padded array containing words of id</span>
 <span class="sd">			  form in posts. Provide both valid and invalid vocabs.</span>
 <span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
 <span class="sd">			* **resp_length** (:class:`numpy.ndarray`): A 1-d array, the length of response in each batch.</span>
 <span class="sd">			  Size: ``[batch_size]``</span>
-<span class="sd">			* **resp** (:class:`numpy.ndarray`): A 2-d padded array containing words of index form</span>
+<span class="sd">			* **resp** (:class:`numpy.ndarray`): A 2-d padded array containing words of id form</span>
 <span class="sd">			  in responses. Only provide valid vocabs. ``unk_id`` will be used if a word is not valid.</span>
 <span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
 <span class="sd">			* **resp_allvocabs** (:class:`numpy.ndarray`):</span>
-<span class="sd">			  A 2-d padded array containing words of index form in responses.</span>
+<span class="sd">			  A 2-d padded array containing words of id form in responses.</span>
 <span class="sd">			  Provide both valid and invalid vocabs.</span>
 <span class="sd">			  Size: ``[batch_size, max(sent_length)]``</span>
 
@@ -255,12 +253,12 @@
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
+		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">indexes</span><span class="p">)))</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">indexes</span><span class="p">)))</span>
 		<span class="n">res_post</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 		<span class="n">res_resp</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indexes</span><span class="p">):</span>
 			<span class="n">post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
 			<span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
 			<span class="n">res_post</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">post</span><span class="p">)]</span> <span class="o">=</span> <span class="n">post</span>
@@ -413,17 +411,132 @@
 			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, </span><span class="se">\</span>
 <span class="s2">					cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
 					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div>
 
-<span class="k">class</span> <span class="nc">BERTOpenSubtitles</span><span class="p">(</span><span class="n">BERTLanguageProcessingBase</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenSubtitles.tokenize"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.OpenSubtitles.tokenize">[docs]</a>	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert sentence(str) to list of token(str)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			sentence (str)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			sent (list): list of token(str)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">WordPunctTokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="BERTSingleTurnDialog"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTSingleTurnDialog">[docs]</a><span class="k">class</span> <span class="nc">BERTSingleTurnDialog</span><span class="p">(</span><span class="n">BERTLanguageProcessingBase</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for single-turn dialog datasets **with BERT input**.</span>
+<span class="sd">	This is an abstract class.</span>
+
+<span class="sd">	This class is supported for sequence to sequence generation tasks, especially</span>
+<span class="sd">	single turn dialog tasks.</span>
+
+<span class="sd">	Arguments:{ARGUMENTS}</span>
+
+<span class="sd">	Attributes:{ATTRIBUTES}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">BERTLanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">BERTLanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+
+<div class="viewcode-block" id="BERTSingleTurnDialog.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;{LanguageProcessingBase.GET_BATCH_DOC_WITHOUT_RETURNS}</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			(dict): A dict at least contains:</span>
+
+<span class="sd">				* post_length (:class:`numpy.array`): A 1-d array, the length of post in each batch.</span>
+<span class="sd">			  	  Size: `[batch_size]`</span>
+<span class="sd">				* post (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
+<span class="sd">			  	  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* post_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
+<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">			  	* post_bert (:class:`numpy.array`): A 2-d padding array containing BERT id of words in posts.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* resp_length (:class:`numpy.array`): A 1-d array, the length of response in each batch.</span>
+<span class="sd">			  	  Size: `[batch_size]`</span>
+<span class="sd">				* resp (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
+<span class="sd">			  	  Only provide valid vocabs. `unk_id` will be used if a word is not valid.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">				* resp_allvocabs (:class:`numpy.array`):</span>
+<span class="sd">				  A 2-d padding array containing id of words in responses.</span>
+<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">			  	* resp_bert (:class:`numpy.array`):</span>
+<span class="sd">			  	  A 2-d padding array containing BERT id of words in responses.</span>
+<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">indexes</span><span class="p">)))</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">indexes</span><span class="p">)))</span>
+		<span class="n">res_post</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+		<span class="n">res_resp</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+		<span class="n">res_post_bert</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_bert&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+		<span class="n">res_resp_bert</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_bert&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indexes</span><span class="p">):</span>
+			<span class="n">post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+			<span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+			<span class="n">res_post</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">post</span><span class="p">)]</span> <span class="o">=</span> <span class="n">post</span>
+			<span class="n">res_resp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resp</span>
+
+			<span class="n">post_bert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post_bert&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+			<span class="n">resp_bert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp_bert&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+			<span class="n">res_post_bert</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">post_bert</span><span class="p">)]</span> <span class="o">=</span> <span class="n">post_bert</span>
+			<span class="n">res_resp_bert</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">resp_bert</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resp_bert</span>
+
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_post</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_resp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="n">res_post</span><span class="p">[</span><span class="n">res_post</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
+		<span class="n">res_resp</span><span class="p">[</span><span class="n">res_resp</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
+
+		<span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="BERTSingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
+
+<span class="sd">		It contains:</span>
+
+<span class="sd">		* :class:`.metric.PerplexityMetric`</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">metric</span></div>
+
+<div class="viewcode-block" id="BERTSingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
+
+<span class="sd">		It contains:</span>
+
+<span class="sd">		* :class:`.metric.BleuCorpusMetric`</span>
+<span class="sd">		* :class:`.metric.SingleDialogRecorder`</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			gen_key (str): default: &quot;gen&quot;. Refer to :class:`.metric.BleuCorpusMetric` or</span>
+<span class="sd">			               :class:`.metric.SingleDialogRecorder`</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">metric</span></div></div>
+
+
+<div class="viewcode-block" id="BERTOpenSubtitles"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTOpenSubtitles">[docs]</a><span class="k">class</span> <span class="nc">BERTOpenSubtitles</span><span class="p">(</span><span class="n">BERTSingleTurnDialog</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloader for OpenSubtitles dataset.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		file_id (str): a str indicates the source of OpenSubtitles dataset.</span>
 <span class="sd">		min_vocab_times (int): A cut-off threshold of `UNK` tokens. All tokens appear</span>
 <span class="sd">			less than `min_vocab_times`	will be replaced by `&lt;unk&gt;`. Default: 10.</span>
-<span class="sd">		max_sent_length (int): All sentences longer than `max_sen_length` will be shortened</span>
-<span class="sd">			to first `max_sen_length` tokens. Default: 50.</span>
+<span class="sd">		max_sent_length (int): All sentences longer than `max_sent_length` will be shortened</span>
+<span class="sd">			to first `max_sent_length` tokens. Default: 50.</span>
 <span class="sd">		invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
 <span class="sd">			not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
 <span class="sd">			marked as invalid vocabs. Otherwise, they are unknown words, both in training or</span>
@@ -442,13 +555,13 @@
 
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
 			<span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> \
-			<span class="n">bert_vocab</span><span class="o">=</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">):</span>
+			<span class="n">bert_vocab_name</span><span class="o">=</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span> <span class="o">=</span> <span class="n">max_sent_length</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
-		<span class="nb">super</span><span class="p">(</span><span class="n">BERTOpenSubtitles</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bert_vocab</span><span class="o">=</span><span class="n">bert_vocab</span><span class="p">)</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bert_vocab_name</span><span class="o">=</span><span class="n">bert_vocab_name</span><span class="p">)</span>
 
 	<span class="nd">@classmethod</span>
 	<span class="k">def</span> <span class="nf">_run_tokenize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ele</span><span class="p">):</span>
@@ -473,8 +586,8 @@
 		<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(),</span> \
 	      <span class="n">initializer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_tokenizer</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="p">))</span>
 		<span class="k">for</span> <span class="n">_post_tokens</span><span class="p">,</span> <span class="n">_post_bert_ids</span><span class="p">,</span> <span class="n">_resp_tokens</span><span class="p">,</span> <span class="n">_resp_bert_ids</span> <span class="ow">in</span> \
-			<span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_tokenize</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">500</span><span class="p">),</span> \
-			<span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">posts</span><span class="p">)):</span>
+				<span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_run_tokenize</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">500</span><span class="p">),</span> \
+				<span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">posts</span><span class="p">)):</span>
 			<span class="n">post_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_post_tokens</span><span class="p">)</span>
 			<span class="n">post_bert_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_post_bert_ids</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span><span class="p">])</span>
 			<span class="n">resp_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_resp_tokens</span><span class="p">)</span>
@@ -484,7 +597,7 @@
 
 		<span class="k">return</span> <span class="n">post_tokens</span><span class="p">,</span> <span class="n">post_bert_ids</span><span class="p">,</span> <span class="n">resp_tokens</span><span class="p">,</span> <span class="n">resp_bert_ids</span>
 
-	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BERTOpenSubtitles._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTOpenSubtitles._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `BERTLanguageProcessingBase.__init__`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;begin load data...&#39;</span><span class="p">)</span>
@@ -545,7 +658,7 @@
 			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, </span><span class="se">\</span>
 <span class="s2">					cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
 					<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div></div>
 </pre></div>
 
            </div>

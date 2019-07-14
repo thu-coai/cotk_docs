@@ -94,8 +94,19 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Loader</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#vocabulary">Vocabulary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#basic-classes">Basic Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vocabulary">Vocabulary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vocabulary-for-languageprocessingbase">Vocabulary for LanguageProcessingBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vocabulary-for-bertlanguageprocessingbase">Vocabulary for BERTLanguageProcessingBase</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-classes">Basic Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dataloader">Dataloader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#languageprocessingbase">LanguageProcessingBase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bertlanguageprocessingbase">BERTLanguageProcessingBase</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#languagegeneration">LanguageGeneration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#mscoco">MSCOCO</a></li>
 </ul>
@@ -104,11 +115,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#opensubtitles">OpenSubtitles</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#bertsingleturndialog">BERTSingleTurnDialog</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bertopensubtitles">BERTOpenSubtitles</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#multiturndialog">MultiTurnDialog</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ubuntucorpus">UbuntuCorpus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#switchboardcorpus">SwitchBoardCorpus</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#sentenceclassification">SentenceClassification</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
@@ -194,6 +210,8 @@ data and provide a fair dataset for every model. It also helps you adapt
 your model from one dataset to other datasets.</p>
 <div class="section" id="vocabulary">
 <span id="vocab-ref"></span><h2>Vocabulary<a class="headerlink" href="#vocabulary" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="vocabulary-for-languageprocessingbase">
+<h3>Vocabulary for LanguageProcessingBase<a class="headerlink" href="#vocabulary-for-languageprocessingbase" title="Permalink to this headline">¶</a></h3>
 <p>Language generation and evaluation highly depend on vocabulary,
 thus we introduce a common setting in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. All tokens appeared
 in dataset (including the ones only appear in test set) are splited into
@@ -333,9 +351,62 @@ they don’t have index.</li>
 </dd>
 </dl>
 </div></blockquote>
+<div class="section" id="vocabulary-for-bertlanguageprocessingbase">
+<h4>Vocabulary for BERTLanguageProcessingBase<a class="headerlink" href="#vocabulary-for-bertlanguageprocessingbase" title="Permalink to this headline">¶</a></h4>
+<p>Some pretrained model have its own vocabulary so it is hard directly adapted
+to our framework. Before stepping in out workaround, make sure you have read
+the previous section <cite>Vocabulary for LanguageProcessingBase</cite>.</p>
+<p>To make sure the pretrained model works correctly, we use the pretrained
+model’s tokenizer. It is defined in
+<a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.tokenize" title="cotk.dataloader.BERTLanguageProcessingBase.tokenize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase.tokenize()</span></code></a>.
+For example, BERTLanguageProcessingBase use BERTtokenizer for tokenizing.</p>
+<p>Then, we processing the tokenized sentences and define a mapping from
+tokenized words to all vocabularies. This process is the same with the one
+in the section <cite>Vocabulary for LanguageProcessingBase</cite>.</p>
+<p>Also, we can obtained a convertion between tokenized sentences and pretrained
+id from pretrained models. Now, we have 3 representation methods of sentences:</p>
+<ul class="simple">
+<li>Tokenized sentences.</li>
+<li>Pretrained model’s word ids.</li>
+<li>Our word ids. (Both for <code class="docutils literal notranslate"><span class="pre">all_vocabs</span></code> and <code class="docutils literal notranslate"><span class="pre">valid_vocabs</span></code>,
+because they share the id and the only difference is
+<code class="docutils literal notranslate"><span class="pre">valid_vocabs</span></code> is less than <code class="docutils literal notranslate"><span class="pre">all_vocabs</span></code>.)</li>
+</ul>
+<p>Here is the path of convertion.</p>
+<img alt="_images/convertion.png" src="_images/convertion.png" />
+<ol class="arabic simple">
+<li><a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_tokens" title="cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_tokens"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase.convert_bert_ids_to_tokens()</span></code></a>.
+May cause <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> due to model’s id can’t cover all tokens.
+(But this won’t happen in BERT, because BERT has a tokenizer
+that sentences will always split to what it konws.)</li>
+<li><a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_tokens" title="cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_tokens"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase.convert_ids_to_tokens()</span></code></a>.
+May cause <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> when there is unknown vocabs or invalid vocabs.</li>
+<li><a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens" title="cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessingBase.convert_ids_to_tokens()</span></code></a>.
+May cause <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> when there is unknown vocabs.</li>
+<li>The same except <code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">&gt;</span> <span class="pre">valid_vocab_size</span></code>.</li>
+<li><a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids" title="cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase.convert_tokens_to_bert_ids()</span></code></a>.
+No more <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>.</li>
+<li><a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids" title="cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessingBase.convert_tokens_to_ids()</span></code></a>
+No more <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>.</li>
+<li>The same. No more <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>.</li>
+</ol>
+<p>There is also other convertions:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_bert_ids" title="cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_bert_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase.convert_ids_to_bert_ids()</span></code></a> : Just
+equal to (2 or 3) + 1.</li>
+<li><a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_ids" title="cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase.convert_bert_ids_to_ids()</span></code></a> : Just
+equal to 1 + 6.</li>
+</ul>
+<p>In most time, dataloader will provide sentences both in bert id and
+our id. And unnecessary convertion should be avoided because it may
+cause information loss.</p>
+</div>
+</div>
 </div>
 <div class="section" id="basic-classes">
 <h2>Basic Classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="dataloader">
+<h3>Dataloader<a class="headerlink" href="#dataloader" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.Dataloader">
 <em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">Dataloader</code><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#Dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.Dataloader" title="Permalink to this definition">¶</a></dt>
@@ -372,6 +443,9 @@ they don’t have index.</li>
 
 </dd></dl>
 
+</div>
+<div class="section" id="languageprocessingbase">
+<h3>LanguageProcessingBase<a class="headerlink" href="#languageprocessingbase" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.LanguageProcessingBase">
 <em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">LanguageProcessingBase</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase" title="Permalink to this definition">¶</a></dt>
@@ -396,7 +470,7 @@ For example: <code class="docutils literal notranslate"><span class="pre">[&quot
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
 <li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</li>
-<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping all vocab to index. You don’t need to use it
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
 at most times, see <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids" title="cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
 </ul>
 </td>
@@ -507,15 +581,15 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageProcessingBase.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.</p>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
-<li><strong>index</strong> (<em>list</em>) – a list of specified index.</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
 </ul>
 </td>
 </tr>
@@ -575,9 +649,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.LanguageProcessingBase.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.trim_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trim a sentence represented by index. There will be two steps:</p>
+<dt id="cotk.dataloader.LanguageProcessingBase.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.trim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
 <li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
@@ -589,16 +663,16 @@ find first end token and abandon words after it (included the end token).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed index</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
@@ -609,7 +683,7 @@ find first end token and abandon words after it (included the end token).</li>
 <dl class="method">
 <dt id="cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids">
 <code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.convert_tokens_to_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from string to index representation.</p>
+<dd><p>Convert a sentence from string to ids representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -623,7 +697,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of indexes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
 </td>
 </tr>
 </tbody>
@@ -645,15 +719,15 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">
-<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.convert_ids_to_tokens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from index to string representation.</p>
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/dataloader.html#LanguageProcessingBase.convert_ids_to_tokens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.trim_index" title="cotk.dataloader.LanguageProcessingBase.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase.trim" title="cotk.dataloader.LanguageProcessingBase.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -677,6 +751,395 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 </dd></dl>
 
+</div>
+<div class="section" id="bertlanguageprocessingbase">
+<h3>BERTLanguageProcessingBase<a class="headerlink" href="#bertlanguageprocessingbase" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTLanguageProcessingBase</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em>, <em>bert_vocab_name='bert-base-uncased'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/bert_dataloader.html#BERTLanguageProcessingBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all BERT-based language processing with BERT tokenizer.
+This is an abstract class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code></li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code></li>
+<li><strong>bert_vocab_name</strong> (<em>str</em>) – A string indicates which bert model is used, it will be a
+parameter passed to <a class="reference external" href="https://github.com/huggingface/pytorch-pretrained-BERT#berttokenizer">pytorch-pretrained-BERT.BertTokenizer.from_pretrained</a>.
+It can be ‘bert-[base|large]-[uncased|cased]’ or a local path.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens, placed at beginning of <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>.
+For example: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code>.</li>
+<li><strong>pad_id</strong> (<em>int</em>) – token for padding, always equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</li>
+<li><strong>unk_id</strong> (<em>int</em>) – token for unknown words, always equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</li>
+<li><strong>go_id</strong> (<em>int</em>) – token at the beginning of sentences, always equal to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</li>
+<li><strong>eos_id</strong> (<em>int</em>) – token at the end of sentences, always equal to <code class="docutils literal notranslate"><span class="pre">3</span></code>.</li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
+<li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
+including valid vocabs and invalid vocabs.</li>
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
+at most times, see <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_ids" title="cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
+<li><strong>bert_id2word</strong> (<em>list</em>) – Vocabulary list mapping bert ids to tokens,
+including valid vocabs and invalid vocabs.</li>
+<li><strong>word2bert_id</strong> (<em>dict</em>) – A dict mapping all tokens to its bert id. You don’t need to use it
+at most times, see <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids" title="cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_bert_ids()</span></code></a> instead.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called during the initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(tuple)</em> – containing:<ul class="simple">
+<li><strong>all_vocab_list</strong> (list): vocabulary list of the datasets,
+including valid and invalid vocabs.</li>
+<li><strong>valid_vocab_len</strong> (int): the number of valid vocab.
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs.</li>
+<li><strong>data</strong> (dict): a dict contains data.</li>
+<li><strong>data_size</strong> (dict): a dict contains size of each item in data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/bert_dataloader.html#BERTLanguageProcessingBase.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of tokens(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of tokens(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize batches. This function be called before <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.get_next_batch" title="cotk.dataloader.BERTLanguageProcessingBase.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+or an epoch is end.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>batch_size</strong> (<em>int</em>) – the number of sample in a batch.
+default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, last <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is used.</li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict. See examples in subclasses.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next batch. It can be called only after Initializing batches (<a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.restart" title="cotk.dataloader.BERTLanguageProcessingBase.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – If the number of left samples is not equal to
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, ignore them. This make sure all batches have same number of samples.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.get_batch" title="cotk.dataloader.BERTLanguageProcessingBase.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.get_batches">
+<code class="descname">get_batches</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.get_batches" title="Permalink to this definition">¶</a></dt>
+<dd><p>An iterator over batches. It first call <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.restart" title="cotk.dataloader.BERTLanguageProcessingBase.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>, and then <code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batches()</span></code>                      until no more data is available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>batch_size</strong> (<em>int, optional</em>) – default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.  Use <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> by default.</li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – If the number of left samples is not equal to
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, ignore them. This make sure all batches have same number of samples.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An iterator where each element is like <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.get_batch" title="cotk.dataloader.BERTLanguageProcessingBase.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
+find first end token and abandon words after it (included the end token).</li>
+<li>ignore <code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code> s at the end of the sentence.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids">
+<code class="descname">convert_tokens_to_bert_ids</code><span class="sig-paren">(</span><em>sent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/bert_dataloader.html#BERTLanguageProcessingBase.convert_tokens_to_bert_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of token(str) to list of bert id(int)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sent</strong> (<em>list</em>) – list of token(str)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>bert_ids (list)</em> – list of bert id(int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_ids">
+<code class="descname">convert_bert_ids_to_ids</code><span class="sig-paren">(</span><em>bert_ids</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/bert_dataloader.html#BERTLanguageProcessingBase.convert_bert_ids_to_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of bert id(int) to list of id(int)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bert_ids</strong> (<em>list</em>) – list of bert id(int)</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <code class="docutils literal notranslate"><span class="pre">unk_id</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – list of id(int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_ids">
+<code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from string to ids representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sent</strong> (<em>list</em>) – a list of string, representing each token of the sentences.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <code class="docutils literal notranslate"><span class="pre">unk_id</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_bert_ids">
+<code class="descname">convert_ids_to_bert_ids</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/bert_dataloader.html#BERTLanguageProcessingBase.convert_ids_to_bert_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_bert_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of id(int) to list of bert id(int)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (<em>list</em>) – list of id(int)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>bert_ids (list)</em> – list of bert id(int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_tokens">
+<code class="descname">convert_bert_ids_to_tokens</code><span class="sig-paren">(</span><em>bert_ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/bert_dataloader.html#BERTLanguageProcessingBase.convert_bert_ids_to_tokens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of bert id(int) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bert_ids</strong> (<em>list</em>) – list of bert id(int)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_tokens">
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase.trim" title="cotk.dataloader.BERTLanguageProcessingBase.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of tokens</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="languagegeneration">
 <h2>LanguageGeneration<a class="headerlink" href="#languagegeneration" title="Permalink to this headline">¶</a></h2>
@@ -706,7 +1169,7 @@ For example: <code class="docutils literal notranslate"><span class="pre">[&quot
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
 <li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</li>
-<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping all vocab to index. You don’t need to use it
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
 at most times, see <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.convert_tokens_to_ids" title="cotk.dataloader.LanguageGeneration.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
 </ul>
 </td>
@@ -817,15 +1280,15 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.</p>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
-<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
 </ul>
 </td>
 </tr>
@@ -917,9 +1380,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.LanguageGeneration.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.trim_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trim a sentence represented by index. There will be two steps:</p>
+<dt id="cotk.dataloader.LanguageGeneration.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
 <li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
@@ -931,16 +1394,16 @@ find first end token and abandon words after it (included the end token).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed index</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
@@ -951,7 +1414,7 @@ find first end token and abandon words after it (included the end token).</li>
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.convert_tokens_to_ids">
 <code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from string to index representation.</p>
+<dd><p>Convert a sentence from string to ids representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -965,7 +1428,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of indexes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
 </td>
 </tr>
 </tbody>
@@ -987,15 +1450,15 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.convert_ids_to_tokens">
-<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from index to string representation.</p>
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.trim_index" title="cotk.dataloader.LanguageGeneration.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.LanguageGeneration.trim" title="cotk.dataloader.LanguageGeneration.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -1114,6 +1577,22 @@ model or metrics. Default: <code class="docutils literal notranslate"><span clas
 <dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageGeneration</span></code></a>.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="cotk.dataloader.MSCOCO.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1146,7 +1625,7 @@ For example: <code class="docutils literal notranslate"><span class="pre">[&quot
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
 <li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</li>
-<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping all vocab to index. You don’t need to use it
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
 at most times, see <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.convert_tokens_to_ids" title="cotk.dataloader.SingleTurnDialog.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
 </ul>
 </td>
@@ -1257,15 +1736,15 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.</p>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
-<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
 </ul>
 </td>
 </tr>
@@ -1273,19 +1752,19 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 <ul class="simple">
 <li><strong>post_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 1-d array, the length of post in each batch.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code></li>
-<li><strong>post</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 2-d padded array containing words of index form in posts.
+<li><strong>post</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 2-d padded array containing words of id form in posts.
 Only provide valid words. <code class="docutils literal notranslate"><span class="pre">unk_id</span></code> will be used if a word is not valid.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">max(sent_length)]</span></code></li>
-<li><strong>post_allvocabs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 2-d padded array containing words of index
+<li><strong>post_allvocabs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 2-d padded array containing words of id
 form in posts. Provide both valid and invalid vocabs.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">max(sent_length)]</span></code></li>
 <li><strong>resp_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 1-d array, the length of response in each batch.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code></li>
-<li><strong>resp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 2-d padded array containing words of index form
+<li><strong>resp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>): A 2-d padded array containing words of id form
 in responses. Only provide valid vocabs. <code class="docutils literal notranslate"><span class="pre">unk_id</span></code> will be used if a word is not valid.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">max(sent_length)]</span></code></li>
 <li><strong>resp_allvocabs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>):
-A 2-d padded array containing words of index form in responses.
+A 2-d padded array containing words of id form in responses.
 Provide both valid and invalid vocabs.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">max(sent_length)]</span></code></li>
 </ul>
@@ -1373,9 +1852,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.SingleTurnDialog.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trim a sentence represented by index. There will be two steps:</p>
+<dt id="cotk.dataloader.SingleTurnDialog.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
 <li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
@@ -1387,16 +1866,16 @@ find first end token and abandon words after it (included the end token).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed index</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
@@ -1407,7 +1886,7 @@ find first end token and abandon words after it (included the end token).</li>
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.convert_tokens_to_ids">
 <code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from string to index representation.</p>
+<dd><p>Convert a sentence from string to ids representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1421,7 +1900,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of indexes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
 </td>
 </tr>
 </tbody>
@@ -1443,15 +1922,15 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.convert_ids_to_tokens">
-<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from index to string representation.</p>
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.trim_index" title="cotk.dataloader.SingleTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog.trim" title="cotk.dataloader.SingleTurnDialog.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -1563,6 +2042,519 @@ Movie and TV Subtitles. LREC 2016.</p>
 <dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog" title="cotk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a>.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="cotk.dataloader.OpenSubtitles.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="bertsingleturndialog">
+<h2>BERTSingleTurnDialog<a class="headerlink" href="#bertsingleturndialog" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cotk.dataloader.BERTSingleTurnDialog">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTSingleTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em>, <em>bert_vocab_name='bert-base-uncased'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTSingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for single-turn dialog datasets <strong>with BERT input</strong>.
+This is an abstract class.</p>
+<p>This class is supported for sequence to sequence generation tasks, especially
+single turn dialog tasks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code></li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code></li>
+<li><strong>bert_vocab_name</strong> (<em>str</em>) – A string indicates which bert model is used, it will be a
+parameter passed to <a class="reference external" href="https://github.com/huggingface/pytorch-pretrained-BERT#berttokenizer">pytorch-pretrained-BERT.BertTokenizer.from_pretrained</a>.
+It can be ‘bert-[base|large]-[uncased|cased]’ or a local path.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens, placed at beginning of <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>.
+For example: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code>.</li>
+<li><strong>pad_id</strong> (<em>int</em>) – token for padding, always equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</li>
+<li><strong>unk_id</strong> (<em>int</em>) – token for unknown words, always equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</li>
+<li><strong>go_id</strong> (<em>int</em>) – token at the beginning of sentences, always equal to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</li>
+<li><strong>eos_id</strong> (<em>int</em>) – token at the end of sentences, always equal to <code class="docutils literal notranslate"><span class="pre">3</span></code>.</li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
+<li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
+including valid vocabs and invalid vocabs.</li>
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
+at most times, see <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_ids" title="cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
+<li><strong>bert_id2word</strong> (<em>list</em>) – Vocabulary list mapping bert ids to tokens,
+including valid vocabs and invalid vocabs.</li>
+<li><strong>word2bert_id</strong> (<em>dict</em>) – A dict mapping all tokens to its bert id. You don’t need to use it
+at most times, see <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_bert_ids" title="cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_bert_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_bert_ids()</span></code></a> instead.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called during the initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(tuple)</em> – containing:<ul class="simple">
+<li><strong>all_vocab_list</strong> (list): vocabulary list of the datasets,
+including valid and invalid vocabs.</li>
+<li><strong>valid_vocab_len</strong> (int): the number of valid vocab.
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs.</li>
+<li><strong>data</strong> (dict): a dict contains data.</li>
+<li><strong>data_size</strong> (dict): a dict contains size of each item in data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of tokens(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of tokens(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize batches. This function be called before <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.get_next_batch" title="cotk.dataloader.BERTSingleTurnDialog.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+or an epoch is end.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>batch_size</strong> (<em>int</em>) – the number of sample in a batch.
+default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, last <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is used.</li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTSingleTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p><em>(dict)</em> –</p>
+<p>A dict at least contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li>post_length (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the length of post in each batch.
+Size: <cite>[batch_size]</cite></li>
+<li>post (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
+Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>post_allvocabs (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in posts.
+Provide both valid and invalid vocabs.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>post_bert (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing BERT id of words in posts.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>resp_length (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the length of response in each batch.
+Size: <cite>[batch_size]</cite></li>
+<li>resp (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words in responses.
+Only provide valid vocabs. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>resp_allvocabs (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>):
+A 2-d padding array containing id of words in responses.
+Provide both valid and invalid vocabs.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>resp_bert (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>):
+A 2-d padding array containing BERT id of words in responses.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+</ul>
+</div></blockquote>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next batch. It can be called only after Initializing batches (<a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.restart" title="cotk.dataloader.BERTSingleTurnDialog.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – If the number of left samples is not equal to
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, ignore them. This make sure all batches have same number of samples.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.get_batch" title="cotk.dataloader.BERTSingleTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.get_batches">
+<code class="descname">get_batches</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_batches" title="Permalink to this definition">¶</a></dt>
+<dd><p>An iterator over batches. It first call <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.restart" title="cotk.dataloader.BERTSingleTurnDialog.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>, and then <code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batches()</span></code>                      until no more data is available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>batch_size</strong> (<em>int, optional</em>) – default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.  Use <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> by default.</li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – If the number of left samples is not equal to
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, ignore them. This make sure all batches have same number of samples.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An iterator where each element is like <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.get_batch" title="cotk.dataloader.BERTSingleTurnDialog.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
+find first end token and abandon words after it (included the end token).</li>
+<li>ignore <code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code> s at the end of the sentence.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_bert_ids">
+<code class="descname">convert_tokens_to_bert_ids</code><span class="sig-paren">(</span><em>sent</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_bert_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of token(str) to list of bert id(int)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sent</strong> (<em>list</em>) – list of token(str)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>bert_ids (list)</em> – list of bert id(int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.convert_bert_ids_to_ids">
+<code class="descname">convert_bert_ids_to_ids</code><span class="sig-paren">(</span><em>bert_ids</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.convert_bert_ids_to_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of bert id(int) to list of id(int)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bert_ids</strong> (<em>list</em>) – list of bert id(int)</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <code class="docutils literal notranslate"><span class="pre">unk_id</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – list of id(int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_ids">
+<code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from string to ids representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sent</strong> (<em>list</em>) – a list of string, representing each token of the sentences.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <code class="docutils literal notranslate"><span class="pre">unk_id</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.convert_ids_to_bert_ids">
+<code class="descname">convert_ids_to_bert_ids</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.convert_ids_to_bert_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of id(int) to list of bert id(int)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (<em>list</em>) – list of id(int)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>bert_ids (list)</em> – list of bert id(int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.convert_bert_ids_to_tokens">
+<code class="descname">convert_bert_ids_to_tokens</code><span class="sig-paren">(</span><em>bert_ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.convert_bert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert list of bert id(int) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bert_ids</strong> (<em>list</em>) – list of bert id(int)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.convert_ids_to_tokens">
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.BERTSingleTurnDialog.trim" title="cotk.dataloader.BERTSingleTurnDialog.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of tokens</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric">
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTSingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metric for teacher-forcing mode.</p>
+<p>It contains:</p>
+<ul class="simple">
+<li><a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.BERTSingleTurnDialog.get_inference_metric">
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTSingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metric for inference.</p>
+<p>It contains:</p>
+<ul class="simple">
+<li><a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="bertopensubtitles">
+<h3>BERTOpenSubtitles<a class="headerlink" href="#bertopensubtitles" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="cotk.dataloader.BERTOpenSubtitles">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTOpenSubtitles</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em>, <em>bert_vocab_name='bert-base-uncased'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dataloader for OpenSubtitles dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_id</strong> (<em>str</em>) – a str indicates the source of OpenSubtitles dataset.</li>
+<li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of <cite>UNK</cite> tokens. All tokens appear
+less than <cite>min_vocab_times</cite>     will be replaced by <cite>&lt;unk&gt;</cite>. Default: 10.</li>
+<li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sent_length</cite> will be shortened
+to first <cite>max_sent_length</cite> tokens. Default: 50.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid vocabs. Otherwise, they are unknown words, both in training or
+testing stages. Default: 0 (No unknown words).</li>
+<li><strong>bert_vocab</strong> (<em>str</em>) – The vocab file of BERT used for this task. It should be a bert model name
+or local path. Default: <cite>bert-base-uncased</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Refer to <a class="reference internal" href="#cotk.dataloader.BERTLanguageProcessingBase" title="cotk.dataloader.BERTLanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">BERTLanguageProcessingBase</span></code></a> for attributes and methods.</p>
+<p class="rubric">References</p>
+<p>[1] <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a></p>
+<p>[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from
+Movie and TV Subtitles. LREC 2016.</p>
+<dl class="method">
+<dt id="cotk.dataloader.BERTOpenSubtitles._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading dataset, invoked by <cite>BERTLanguageProcessingBase.__init__</cite></p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1593,7 +2585,7 @@ For example: <code class="docutils literal notranslate"><span class="pre">[&quot
 <li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
 <li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
 including valid vocabs and invalid vocabs.</li>
-<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping all vocab to index. You don’t need to use it
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
 at most times, see <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.convert_tokens_to_ids" title="cotk.dataloader.MultiTurnDialog.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
 </ul>
 </td>
@@ -1704,15 +2696,15 @@ default: if <code class="docutils literal notranslate"><span class="pre">None</s
 
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.</p>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
-<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
 </ul>
 </td>
 </tr>
@@ -1819,9 +2811,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.MultiTurnDialog.trim_index">
-<code class="descname">trim_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.trim_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trim a sentence represented by index. There will be two steps:</p>
+<dt id="cotk.dataloader.MultiTurnDialog.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
 <blockquote>
 <div><ul class="simple">
 <li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
@@ -1833,16 +2825,16 @@ find first end token and abandon words after it (included the end token).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed index</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
@@ -1851,8 +2843,8 @@ find first end token and abandon words after it (included the end token).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.MultiTurnDialog.multi_turn_trim_index">
-<code class="descname">multi_turn_trim_index</code><span class="sig-paren">(</span><em>index</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_trim_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.dataloader.MultiTurnDialog.multi_turn_trim">
+<code class="descname">multi_turn_trim</code><span class="sig-paren">(</span><em>index</em>, <em>turn_length=None</em>, <em>ignore_first_token=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.multi_turn_trim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.multi_turn_trim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trim indexes for multi turn dialog. There will be 3 steps:</p>
 <ul class="simple">
 <li>For every turn, if there is an <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>, find first <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code> and abandon words after it (included the <code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>).</li>
@@ -1880,7 +2872,7 @@ in this dimension is allowed.</li>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;Japan&quot;]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -1890,14 +2882,14 @@ in this dimension is allowed.</li>
 <span class="gp">... </span>        <span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="gp">... </span>    <span class="n">turn_length</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 <span class="go">[[2, 4, 5, 6, 7, 8], [2, 4, 5, 6, 7, 9]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
 <span class="gp">... </span>    <span class="n">turn_length</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_first_token</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 <span class="go">[[2, 4, 5, 6, 7, 8]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim_index</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">multi_turn_trim</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -1911,7 +2903,7 @@ in this dimension is allowed.</li>
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.convert_tokens_to_ids">
 <code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from string to index representation.</p>
+<dd><p>Convert a sentence from string to ids representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1925,7 +2917,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of indexes</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
 </td>
 </tr>
 </tbody>
@@ -1985,15 +2977,15 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.convert_ids_to_tokens">
-<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>index</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a sentence from index to string representation.</p>
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index</strong> (<em>list</em>) – a list of int.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.trim_index" title="cotk.dataloader.MultiTurnDialog.trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim_index()</span></code></a> before convertion.</li>
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.trim" title="cotk.dataloader.MultiTurnDialog.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
 </ul>
 </td>
 </tr>
@@ -2027,7 +3019,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <li><strong>index</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a jagged 2-d array of int.
 Size: <code class="docutils literal notranslate"><span class="pre">[turn_length,</span> <span class="pre">~sent_length]</span></code>, where where “~” means different sizes
 in this dimension is allowed.</li>
-<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.multi_turn_trim_index" title="cotk.dataloader.MultiTurnDialog.multi_turn_trim_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">multi_turn_trim_index()</span></code></a> before convertion.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog.multi_turn_trim" title="cotk.dataloader.MultiTurnDialog.multi_turn_trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">multi_turn_trim()</span></code></a> before convertion.</li>
 <li><strong>turn_length</strong> (<em>int</em>) – Only works when trim=``True``.
 If True, the session is trimmed according the turn_length. Default: None</li>
 <li><strong>ignore_first_token</strong> (<em>bool</em>) – Only works when trim=``True``.
@@ -2160,6 +3152,22 @@ for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</p>
 <dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a>.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="cotk.dataloader.UbuntuCorpus.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -2204,16 +3212,59 @@ testing stages. Default: <code class="docutils literal notranslate"><span class=
 </dd></dl>
 
 <dl class="method">
+<dt id="cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">
+<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>word2vec=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metrics for multiple references.</p>
+<p>It contains:</p>
+<ul class="simple">
+<li><a class="reference internal" href="metric.html#cotk.metric.BleuPrecisionRecallMetric" title="cotk.metric.BleuPrecisionRecallMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuPrecisionRecallMetric</span></code></a></li>
+<li><a class="reference internal" href="metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="cotk.metric.EmbSimilarityPrecisionRecallMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.EmbSimilarityPrecisionRecallMetric</span></code></a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
+<li><strong>word2vec</strong> (<em>dict</em>) – Maps words to word embeddings for embedding similarity.
+Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, using glove word embedding from <code class="docutils literal notranslate"><span class="pre">resources://Glove300d</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SwitchboardCorpus.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus.get_batch">
-<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a batch of specified <cite>index</cite>.</p>
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
-<li><strong>index</strong> (<em>list</em>) – a list of specified index</li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes of batched data.</li>
 </ul>
 </td>
 </tr>
@@ -2288,8 +3339,8 @@ in this dimension is allowed.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">
-<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>word2vec=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>word2vec=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Get metrics for multiple references.</p>
 <p>It contains:</p>
 <ul class="simple">
@@ -2317,6 +3368,412 @@ Default: if <code class="docutils literal notranslate"><span class="pre">None</s
 </dd></dl>
 
 </div>
+</div>
+<div class="section" id="sentenceclassification">
+<h2>SentenceClassification<a class="headerlink" href="#sentenceclassification" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cotk.dataloader.SentenceClassification">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SentenceClassification</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SentenceClassification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SentenceClassification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for sentence classification datasets. This is an abstract class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code></li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens, placed at beginning of <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>.
+For example: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code>.</li>
+<li><strong>pad_id</strong> (<em>int</em>) – token for padding, always equal to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</li>
+<li><strong>unk_id</strong> (<em>int</em>) – token for unknown words, always equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</li>
+<li><strong>go_id</strong> (<em>int</em>) – token at the beginning of sentences, always equal to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</li>
+<li><strong>eos_id</strong> (<em>int</em>) – token at the end of sentences, always equal to <code class="docutils literal notranslate"><span class="pre">3</span></code>.</li>
+<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. For example: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code>.</li>
+<li><strong>all_vocab_list</strong> (<em>list</em>) – vocabulary list of the datasets,
+including valid vocabs and invalid vocabs.</li>
+<li><strong>word2id</strong> (<em>dict</em>) – a dict mapping tokens to its id. You don’t need to use it
+at most times, see <a class="reference internal" href="#cotk.dataloader.SentenceClassification.convert_tokens_to_ids" title="cotk.dataloader.SentenceClassification.convert_tokens_to_ids"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_tokens_to_ids()</span></code></a> instead.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cotk.dataloader.SentenceClassification.vocab_list">
+<code class="descname">vocab_list</code><a class="headerlink" href="#cotk.dataloader.SentenceClassification.vocab_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>valid vocab list, equals to <code class="docutils literal notranslate"><span class="pre">all_vocab_list[：valid_vocab_len]</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cotk.dataloader.SentenceClassification.vocab_size">
+<code class="descname">vocab_size</code><a class="headerlink" href="#cotk.dataloader.SentenceClassification.vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">valid_vocab_len</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cotk.dataloader.SentenceClassification.all_vocab_size">
+<code class="descname">all_vocab_size</code><a class="headerlink" href="#cotk.dataloader.SentenceClassification.all_vocab_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>equals to <code class="docutils literal notranslate"><span class="pre">len(self.all_vocab_list)</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is called during the initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(tuple)</em> – containing:<ul class="simple">
+<li><strong>all_vocab_list</strong> (list): vocabulary list of the datasets,
+including valid and invalid vocabs.</li>
+<li><strong>valid_vocab_len</strong> (int): the number of valid vocab.
+<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
+while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs.</li>
+<li><strong>data</strong> (dict): a dict contains data.</li>
+<li><strong>data_size</strong> (dict): a dict contains size of each item in data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.tokenize">
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to list of token(str)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize batches. This function be called before <a class="reference internal" href="#cotk.dataloader.SentenceClassification.get_next_batch" title="cotk.dataloader.SentenceClassification.get_next_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batch()</span></code></a>
+or an epoch is end.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>batch_size</strong> (<em>int</em>) – the number of sample in a batch.
+default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, last <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is used.</li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.get_batch">
+<code class="descname">get_batch</code><span class="sig-paren">(</span><em>key</em>, <em>indexes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SentenceClassification.get_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SentenceClassification.get_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a batch of specified <cite>indexes</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – must be contained in <cite>key_name</cite></li>
+<li><strong>indexes</strong> (<em>list</em>) – a list of specified indexes</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p><em>(dict)</em> –</p>
+<p>A dict at least contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li>sent_length(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the length of sentence in each batch.
+Size: <cite>[batch_size]</cite></li>
+<li>sent(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
+Only provide valid words. <cite>unk_id</cite> will be used if a word is not valid.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+<li>label(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 1-d array, the label of sentence in each batch.</li>
+<li>sent_allvocabs(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>): A 2-d padding array containing id of words.
+Provide both valid and invalid words.
+Size: <cite>[batch_size, max(sent_length)]</cite></li>
+</ul>
+</div></blockquote>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;hello&quot;, &quot;i&quot;, &quot;am&quot;, &quot;fine&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;how&quot;, &quot;are&quot;, &quot;you&quot;, &quot;hello&quot;, &quot;i&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">{</span>
+<span class="go">        &quot;sent&quot;: numpy.array([</span>
+<span class="go">                        [2, 4, 5, 6, 3, 0],   # first sentence: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 3, 0, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 8, 1, 1, 3]    # third sentence: &lt;go&gt; hello i &lt;unk&gt; &lt;unk&gt; &lt;eos&gt;</span>
+<span class="go">                ]),</span>
+<span class="go">        &quot;label&quot;: numpy.array([1, 2, 0]) # label of sentences</span>
+<span class="go">        &quot;sent_length&quot;: numpy.array([5, 3, 6]), # length of sentences</span>
+<span class="go">        &quot;sent_allvocabs&quot;: numpy.array([</span>
+<span class="go">                        [2, 4, 5, 6, 3, 0],   # first sentence: &lt;go&gt; how are you &lt;eos&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 3, 0, 0, 0],   # second sentence:  &lt;go&gt; hello &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+<span class="go">                        [2, 7, 8, 9, 10, 3]   # third sentence: &lt;go&gt; hello i am fine &lt;eos&gt;</span>
+<span class="go">                ]),</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.get_next_batch">
+<code class="descname">get_next_batch</code><span class="sig-paren">(</span><em>key</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.get_next_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get next batch. It can be called only after Initializing batches (<a class="reference internal" href="#cotk.dataloader.SentenceClassification.restart" title="cotk.dataloader.SentenceClassification.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – If the number of left samples is not equal to
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, ignore them. This make sure all batches have same number of samples.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict like <a class="reference internal" href="#cotk.dataloader.SentenceClassification.get_batch" title="cotk.dataloader.SentenceClassification.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>, or None if the epoch is end.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.get_batches">
+<code class="descname">get_batches</code><span class="sig-paren">(</span><em>key</em>, <em>batch_size=None</em>, <em>shuffle=True</em>, <em>ignore_left_samples=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.get_batches" title="Permalink to this definition">¶</a></dt>
+<dd><p>An iterator over batches. It first call <a class="reference internal" href="#cotk.dataloader.SentenceClassification.restart" title="cotk.dataloader.SentenceClassification.restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">restart()</span></code></a>, and then <code class="xref py py-func docutils literal notranslate"><span class="pre">get_next_batches()</span></code>                      until no more data is available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key name of dataset, must be contained in <code class="docutils literal notranslate"><span class="pre">self.key_name</span></code>.</li>
+<li><strong>batch_size</strong> (<em>int, optional</em>) – default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.  Use <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> by default.</li>
+<li><strong>shuffle</strong> (<em>bool</em>) – whether to shuffle the data. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>ignore_left_samples</strong> (<em>bool</em>) – If the number of left samples is not equal to
+<code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, ignore them. This make sure all batches have same number of samples.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An iterator where each element is like <a class="reference internal" href="#cotk.dataloader.SentenceClassification.get_batch" title="cotk.dataloader.SentenceClassification.get_batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_batch()</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim a sentence represented by ids. There will be two steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li>If there is an end token (<code class="docutils literal notranslate"><span class="pre">&lt;eos&gt;</span></code>) in the sentence,
+find first end token and abandon words after it (included the end token).</li>
+<li>ignore <code class="docutils literal notranslate"><span class="pre">&lt;pad&gt;</span></code> s at the end of the sentence.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ids</strong> (list or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – a list of int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(list)</em> – a list of trimmed ids</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">... </span><span class="c1"># &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="c1"># &lt;go&gt; I have been to China</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.convert_tokens_to_ids">
+<code class="descname">convert_tokens_to_ids</code><span class="sig-paren">(</span><em>sent</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.convert_tokens_to_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from string to ids representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sent</strong> (<em>list</em>) – a list of string, representing each token of the sentences.</li>
+<li><strong>invalid_vocab</strong> (<em>bool</em>) – whether to provide invalid vocabs.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, invalid vocabs will be replaced by <code class="docutils literal notranslate"><span class="pre">unk_id</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, invalid vocabs will using their own id.
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of ids</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_size = 7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">],</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.convert_ids_to_tokens">
+<code class="descname">convert_ids_to_tokens</code><span class="sig-paren">(</span><em>ids</em>, <em>trim=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.convert_ids_to_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sentence from ids to string representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ids</strong> (<em>list</em>) – a list of int.</li>
+<li><strong>trim</strong> (<em>bool</em>) – if True, call <a class="reference internal" href="#cotk.dataloader.SentenceClassification.trim" title="cotk.dataloader.SentenceClassification.trim"><code class="xref py py-func docutils literal notranslate"><span class="pre">trim()</span></code></a> before convertion.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>(list)</em> – a list of tokens</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;have&quot;</span><span class="p">,</span> <span class="s2">&quot;been&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;China&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.dataloader.SentenceClassification.get_metric">
+<code class="descname">get_metric</code><span class="sig-paren">(</span><em>prediction_key='prediction'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SentenceClassification.get_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SentenceClassification.get_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metrics for accuracy. In other words, this function
+provides metrics for sentence classification task.</p>
+<p>It contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.AccuracyMetric</span></code></li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>prediction_key</strong> (<em>str</em>) – The key of prediction over sentences.
+Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">metric.AccuracyMetric</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">prediction</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.dataloader.SST">
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SST</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dataloader for preprocessed SST dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_id</strong> (<em>str</em>) – a str indicates the source of SST dataset.</li>
+<li><strong>file_type</strong> (<em>str</em>) – a str indicates the type of SST dataset. Default: “SST”</li>
+<li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
+not less than <cite>min_vocab_times</cite> in <strong>training set</strong> will be marked as valid words.
+Default: 10.</li>
+<li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sent_length</cite> will be shortened
+to first <cite>max_sent_length</cite> tokens. Default: 50.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, both in training or
+testing stages. Default: 0 (No unknown words).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Refer to <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageProcessingBase</span></code></a> for attributes and methods.</p>
+<p class="rubric">References</p>
+<p>[1] <a class="reference external" href="http://images.cocodataset.org/annotations/annotations_trainval2017.zip">http://images.cocodataset.org/annotations/annotations_trainval2017.zip</a></p>
+<p>[2] Lin T Y, Maire M, Belongie S, et al. Microsoft COCO: Common Objects in Context. ECCV 2014.</p>
+<dl class="method">
+<dt id="cotk.dataloader.SST._load_data">
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading dataset, invoked by <cite>LanguageProcessingBase.__init__</cite></p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 

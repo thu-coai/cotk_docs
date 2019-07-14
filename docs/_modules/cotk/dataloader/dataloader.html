@@ -172,7 +172,6 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">trim_before_target</span>
 <span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="k">import</span> <span class="n">DocStringInheritor</span><span class="p">,</span> <span class="n">LoadClassInterface</span>
-<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">PerplexityMetric</span><span class="p">,</span> <span class="n">BleuCorpusMetric</span><span class="p">,</span> <span class="n">SingleTurnDialogRecorder</span>
 
 <div class="viewcode-block" id="Dataloader"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Dataloader">[docs]</a><span class="k">class</span> <span class="nc">Dataloader</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base class of Dataloader.</span>
@@ -190,8 +189,7 @@
 
 	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">			ext_vocab (list): special tokens. Default: ``[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]``</span>
-<span class="s2">			key_name (list): name of subsets of the data. Default: ``[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]``</span>
-<span class="s2">	&quot;&quot;&quot;</span>
+<span class="s2">			key_name (list): name of subsets of the data. Default: ``[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]``&quot;&quot;&quot;</span>
 	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">			ext_vocab (list): special tokens, placed at beginning of ``vocab_list``.</span>
 <span class="s2">					For example: ``[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]``.</span>
@@ -202,9 +200,8 @@
 <span class="s2">			key_name (list): name of subsets of the data. For example: ``[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]``.</span>
 <span class="s2">			all_vocab_list (list): vocabulary list of the datasets,</span>
 <span class="s2">					including valid vocabs and invalid vocabs.</span>
-<span class="s2">			word2id (dict): a dict mapping all vocab to index. You don&#39;t need to use it </span>
-<span class="s2">					at most times, see :meth:`convert_tokens_to_ids` instead.</span>
-<span class="s2">	&quot;&quot;&quot;</span>
+<span class="s2">			word2id (dict): a dict mapping tokens to its id. You don&#39;t need to use it </span>
+<span class="s2">					at most times, see :meth:`convert_tokens_to_ids` instead.&quot;&quot;&quot;</span>
 
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
 				 <span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
@@ -263,6 +260,18 @@
 		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span> \
 			<span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span></div>
 
+	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert sentence(str) to list of token(str)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			sentence (str)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			sent (list): list of token(str)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span> \
+			<span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span>
+
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">vocab_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;int: equals to ``valid_vocab_len``.</span>
@@ -306,12 +315,16 @@
 				<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> \
 				<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="LanguageProcessingBase.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
 
-<span class="sd">		Arguments:</span>
-<span class="sd">				key (str): key name of dataset, must be contained in ``self.key_name``.</span>
-<span class="sd">				index (list): a list of specified index.</span>
+	<span class="n">GET_BATCH_DOC_WITHOUT_RETURNS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">		Get a batch of specified `indexes`.</span>
+
+<span class="s1">		Arguments:</span>
+<span class="s1">				key (str): key name of dataset, must be contained in ``self.key_name``.</span>
+<span class="s1">				indexes (list): a list of specified indexes of batched data.</span>
+<span class="s1">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="LanguageProcessingBase.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;{GET_BATCH_DOC_WITHOUT_RETURNS}</span>
 
 <span class="sd">		Returns:</span>
 <span class="sd">				A dict. See examples in subclasses.</span>
@@ -371,7 +384,7 @@
 			<span class="k">yield</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="LanguageProcessingBase.convert_tokens_to_ids"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids">[docs]</a>	<span class="k">def</span> <span class="nf">convert_tokens_to_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert a sentence from string to index representation.</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert a sentence from string to ids representation.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			sent (list): a list of string, representing each token of the sentences.</span>
@@ -381,7 +394,7 @@
 <span class="sd">					Default: ``False``</span>
 
 <span class="sd">		Returns:</span>
-<span class="sd">			(list): a list of indexes</span>
+<span class="sd">			(list): a list of ids</span>
 
 <span class="sd">		Examples:</span>
 <span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
@@ -400,42 +413,42 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_valid_word2id</span><span class="p">,</span> <span class="n">sent</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="LanguageProcessingBase.trim_index"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.trim_index">[docs]</a>	<span class="k">def</span> <span class="nf">trim_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Trim a sentence represented by index. There will be two steps:</span>
+<div class="viewcode-block" id="LanguageProcessingBase.trim"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.trim">[docs]</a>	<span class="k">def</span> <span class="nf">trim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Trim a sentence represented by ids. There will be two steps:</span>
 
 <span class="sd">			* If there is an end token (``&lt;eos&gt;``) in the sentence,</span>
 <span class="sd">			  find first end token and abandon words after it (included the end token).</span>
 <span class="sd">			* ignore ``&lt;pad&gt;`` s at the end of the sentence.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			index (list or :class:`numpy.ndarray`): a list of int</span>
+<span class="sd">			ids (list or :class:`numpy.ndarray`): a list of int</span>
 
 <span class="sd">		Returns:</span>
-<span class="sd">			(list): a list of trimmed index</span>
+<span class="sd">			(list): a list of trimmed ids</span>
 
 <span class="sd">		Examples:</span>
 
 <span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">			&gt;&gt;&gt; #	&quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.trim_index(</span>
+<span class="sd">			&gt;&gt;&gt; dataloader.trim(</span>
 <span class="sd">			...	[2, 4, 5, 6, 7, 8, 0, 0, 3, 4, 3, 0])</span>
 <span class="sd">			... # &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
 <span class="sd">			&gt;&gt;&gt; [2, 4, 5, 6, 7, 8] # &lt;go&gt; I have been to China</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 
-		<span class="n">index</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
-		<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-		<span class="k">while</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">index</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">:</span>
+		<span class="n">ids</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
+		<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+		<span class="k">while</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ids</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">:</span>
 			<span class="n">idx</span> <span class="o">-=</span> <span class="mi">1</span>
-		<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
-		<span class="k">return</span> <span class="n">index</span></div>
+		<span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">ids</span></div>
 
-<div class="viewcode-block" id="LanguageProcessingBase.convert_ids_to_tokens"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">[docs]</a>	<span class="k">def</span> <span class="nf">convert_ids_to_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert a sentence from index to string representation.</span>
+<div class="viewcode-block" id="LanguageProcessingBase.convert_ids_to_tokens"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">[docs]</a>	<span class="k">def</span> <span class="nf">convert_ids_to_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert a sentence from ids to string representation.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">				index (list): a list of int.</span>
-<span class="sd">				trim (bool): if True, call :func:`trim_index` before convertion.</span>
+<span class="sd">				ids (list): a list of int.</span>
+<span class="sd">				trim (bool): if True, call :func:`trim` before convertion.</span>
 
 <span class="sd">		Returns:</span>
 <span class="sd">			(list): a list of tokens</span>
@@ -452,227 +465,8 @@
 
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
-			<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span></div></div>
-
-
-<span class="k">try</span><span class="p">:</span>
-	<span class="kn">from</span> <span class="nn">pytorch_pretrained_bert</span> <span class="k">import</span> <span class="n">BertTokenizer</span>
-	<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-	<span class="kn">from</span> <span class="nn">.._utils.imports</span> <span class="k">import</span> <span class="n">DummyObject</span>
-	<span class="n">BertTokenizer</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-
-<span class="c1">#pylint: disable=abstract-method</span>
-<span class="k">class</span> <span class="nc">BERTLanguageProcessingBase</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for all BERT-based language processing with BERT tokenizer.</span>
-<span class="sd">	This is an abstract class.</span>
-
-<span class="sd">	Arguments:{ARGUMENTS}</span>
-
-<span class="sd">	Attributes:{ATTRIBUTES}</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
-
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
-					<span class="n">key_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
-					<span class="n">bert_vocab</span><span class="o">=</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">):</span>
-
-		<span class="c1"># initialize by default value. (can be overwritten by subclass)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;[PAD]&quot;</span><span class="p">,</span> <span class="s2">&quot;[UNK]&quot;</span><span class="p">,</span> <span class="s2">&quot;[CLS]&quot;</span><span class="p">,</span> <span class="s2">&quot;[SEP]&quot;</span><span class="p">]</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">bert_vocab</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_build_bert_vocab</span><span class="p">()</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_data</span> <span class="o">=</span> <span class="p">{}</span>
-
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="p">,</span> <span class="n">key_name</span><span class="p">)</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;[PAD]&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">go_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;[CLS]&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;[SEP]&quot;</span><span class="p">)</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">_build_ids_to_bert_ids</span><span class="p">()</span>
-
-	<span class="k">def</span> <span class="nf">_build_bert_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_id2word</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">bert_id2word</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_pad_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="p">[</span><span class="s2">&quot;[PAD]&quot;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_unk_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="p">[</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_go_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="p">[</span><span class="s2">&quot;[CLS]&quot;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bert_eos_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="p">[</span><span class="s2">&quot;[SEP]&quot;</span><span class="p">]</span>
-
-	<span class="k">def</span> <span class="nf">_build_ids_to_bert_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">id2bertid</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">bertid2id</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_word2id</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">id2bertid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">bertid2id</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert sentence(str) to list of token(str)</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">				sentence (str)</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				sent (list): list of token(str)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">convert_tokens_to_bert_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert list of token(str) to list of bert id(int)</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">				sent (list): list of token(str)</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				bert_ids (list): list of bert id(int)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">convert_bert_ids_to_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert list of bert id(int) to list of id(int)</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">				sent (list): list of bert id(int)</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				ids (list): list of id(int)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">new_sent</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="k">for</span> <span class="n">bert_id</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">:</span>
-			<span class="n">new_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bertid2id</span><span class="p">[</span><span class="n">bert_id</span><span class="p">]</span>
-			<span class="k">if</span> <span class="n">new_id</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">invalid_vocab</span><span class="p">:</span>
-				<span class="n">new_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
-			<span class="n">new_sent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_id</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">new_sent</span>
-
-	<span class="k">def</span> <span class="nf">convert_ids_to_bert_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert list of id(int) to list of bert id(int)</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">				index (list): list of id(int)</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				bert_ids (list): list of bert id(int)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id2bertid</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">index</span><span class="p">))</span>
-
-	<span class="k">def</span> <span class="nf">convert_bert_ids_to_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert list of bert id(int) to list of token(str)</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">				sent (list): list of bert id(int)</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				(list): list of token(str)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
-			<span class="n">sent</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">sent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_eos_id</span><span class="p">)</span>
-			<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
-			<span class="k">while</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sent</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_pad_id</span><span class="p">:</span>
-				<span class="n">idx</span> <span class="o">-=</span> <span class="mi">1</span>
-			<span class="n">sent</span> <span class="o">=</span> <span class="n">sent</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_id2word</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">sent</span><span class="p">))</span>
-
-	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			key (str): must be contained in `key_name`</span>
-<span class="sd">			index (list): a list of specified index</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): A dict at least contains:</span>
-
-<span class="sd">				* post_length (:class:`numpy.array`): A 1-d array, the length of post in each batch.</span>
-<span class="sd">			  	  Size: `[batch_size]`</span>
-<span class="sd">				* post (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  	  Only provide valid words. `unk_id` will be used if a word is not valid.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">				* post_allvocabs (:class:`numpy.array`): A 2-d padding array containing id of words in posts.</span>
-<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			  	* post_bert (:class:`numpy.array`): A 2-d padding array containing BERT id of words in posts.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">				* resp_length (:class:`numpy.array`): A 1-d array, the length of response in each batch.</span>
-<span class="sd">			  	  Size: `[batch_size]`</span>
-<span class="sd">				* resp (:class:`numpy.array`): A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  	  Only provide valid vocabs. `unk_id` will be used if a word is not valid.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">				* resp_allvocabs (:class:`numpy.array`):</span>
-<span class="sd">				  A 2-d padding array containing id of words in responses.</span>
-<span class="sd">			  	  Provide both valid and invalid vocabs.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">			  	* resp_bert (:class:`numpy.array`):</span>
-<span class="sd">			  	  A 2-d padding array containing BERT id of words in responses.</span>
-<span class="sd">			  	  Size: `[batch_size, max(sent_length)]`</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
-		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="p">)))</span>
-		<span class="n">res_post</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="n">res_resp</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="n">res_post_bert</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_bert&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="n">res_resp_bert</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_bert&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
-			<span class="n">post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-			<span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-			<span class="n">res_post</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">post</span><span class="p">)]</span> <span class="o">=</span> <span class="n">post</span>
-			<span class="n">res_resp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resp</span>
-
-			<span class="n">post_bert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;post_bert&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-			<span class="n">resp_bert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;resp_bert&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-			<span class="n">res_post_bert</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">post_bert</span><span class="p">)]</span> <span class="o">=</span> <span class="n">post_bert</span>
-			<span class="n">res_resp_bert</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">resp_bert</span><span class="p">)]</span> <span class="o">=</span> <span class="n">resp_bert</span>
-
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;post_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_post</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_resp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-		<span class="n">res_post</span><span class="p">[</span><span class="n">res_post</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
-		<span class="n">res_resp</span><span class="p">[</span><span class="n">res_resp</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
-
-		<span class="k">return</span> <span class="n">res</span>
-
-	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
-
-<span class="sd">		It contains:</span>
-
-<span class="sd">		* :class:`.metric.PerplexityMetric`</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span>
-
-	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
-
-<span class="sd">		It contains:</span>
-
-<span class="sd">		* :class:`.metric.BleuCorpusMetric`</span>
-<span class="sd">		* :class:`.metric.SingleDialogRecorder`</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			gen_key (str): default: &quot;gen&quot;. Refer to :class:`.metric.BleuCorpusMetric` or</span>
-<span class="sd">			               :class:`.metric.SingleDialogRecorder`</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span>
+			<span class="n">ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">ids</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>

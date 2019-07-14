@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk.dataloader.bert_dataloader &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk.dataloader.bert_dataloader</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk.dataloader.bert_dataloader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">A module for BERT dataloader</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">trim_before_target</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">pytorch_pretrained_bert</span> <span class="k">import</span> <span class="n">BertTokenizer</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">.._utils.imports</span> <span class="k">import</span> <span class="n">DummyObject</span>
+	<span class="n">BertTokenizer</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+<span class="c1">#pylint: disable=abstract-method</span>
+<div class="viewcode-block" id="BERTLanguageProcessingBase"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTLanguageProcessingBase">[docs]</a><span class="k">class</span> <span class="nc">BERTLanguageProcessingBase</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for all BERT-based language processing with BERT tokenizer.</span>
+<span class="sd">	This is an abstract class.</span>
+
+<span class="sd">	Arguments:{ARGUMENTS}</span>
+
+<span class="sd">	Attributes:{ATTRIBUTES}</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">BERT_VOCAB_NAME</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">			bert_vocab_name (str): A string indicates which bert model is used, it will be a</span>
+<span class="s2">					parameter passed to `pytorch-pretrained-BERT.BertTokenizer.from_pretrained</span>
+<span class="s2">					&lt;https://github.com/huggingface/pytorch-pretrained-BERT#berttokenizer&gt;`_.</span>
+<span class="s2">					It can be &#39;bert-[base|large]-[uncased|cased]&#39; or a local path.&quot;&quot;&quot;</span>
+
+	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span> <span class="o">+</span> <span class="n">BERT_VOCAB_NAME</span>
+
+	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">			bert_id2word (list): Vocabulary list mapping bert ids to tokens,</span>
+<span class="s2">					including valid vocabs and invalid vocabs.</span>
+<span class="s2">			word2bert_id (dict): A dict mapping all tokens to its bert id. You don&#39;t need to use it </span>
+<span class="s2">					at most times, see :meth:`convert_tokens_to_bert_ids` instead.</span>
+<span class="s2">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
+					<span class="n">key_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
+					<span class="n">bert_vocab_name</span><span class="o">=</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">):</span>
+
+		<span class="c1"># initialize by default value. (can be overwritten by subclass)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">=</span> <span class="n">ext_vocab</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;[PAD]&quot;</span><span class="p">,</span> <span class="s2">&quot;[UNK]&quot;</span><span class="p">,</span> <span class="s2">&quot;[CLS]&quot;</span><span class="p">,</span> <span class="s2">&quot;[SEP]&quot;</span><span class="p">]</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">bert_vocab_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_build_bert_vocab</span><span class="p">()</span>
+
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="p">,</span> <span class="n">key_name</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">_build_bert_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bert_id2word</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">bert_id2word</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">bert_pad_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span><span class="p">[</span><span class="s2">&quot;[PAD]&quot;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bert_unk_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span><span class="p">[</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bert_go_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span><span class="p">[</span><span class="s2">&quot;[CLS]&quot;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bert_eos_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2bert_id</span><span class="p">[</span><span class="s2">&quot;[SEP]&quot;</span><span class="p">]</span>
+
+	<span class="k">def</span> <span class="nf">_valid_bert_id_to_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bert_id</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function return the id for a valid bert id, otherwise return ``unk_id``.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			bert_id (str): a bert id.</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">			int</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bert_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">:</span>
+			<span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
+		<span class="k">return</span> <span class="n">idx</span>
+
+<div class="viewcode-block" id="BERTLanguageProcessingBase.tokenize"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.tokenize">[docs]</a>	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert sentence(str) to list of tokens(str)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">				sentence (str)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">				sent (list): list of tokens(str)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BERTLanguageProcessingBase.convert_tokens_to_bert_ids"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids">[docs]</a>	<span class="k">def</span> <span class="nf">convert_tokens_to_bert_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert list of token(str) to list of bert id(int)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">				sent (list): list of token(str)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">				bert_ids (list): list of bert id(int)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BERTLanguageProcessingBase.convert_bert_ids_to_tokens"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_tokens">[docs]</a>	<span class="k">def</span> <span class="nf">convert_bert_ids_to_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bert_ids</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert list of bert id(int) to list of token(str)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">				bert_ids (list): list of bert id(int)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">				(list): list of token(str)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
+			<span class="n">bert_ids</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">bert_ids</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_eos_id</span><span class="p">)</span>
+			<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bert_ids</span><span class="p">)</span>
+			<span class="k">while</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">bert_ids</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_pad_id</span><span class="p">:</span>
+				<span class="n">idx</span> <span class="o">-=</span> <span class="mi">1</span>
+			<span class="n">bert_ids</span> <span class="o">=</span> <span class="n">bert_ids</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
+		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert_id2word</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">bert_ids</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BERTLanguageProcessingBase.convert_bert_ids_to_ids"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_ids">[docs]</a>	<span class="k">def</span> <span class="nf">convert_bert_ids_to_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bert_ids</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert list of bert id(int) to list of id(int)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">				bert_ids (list): list of bert id(int)</span>
+<span class="sd">				invalid_vocab (bool): whether to provide invalid vocabs.</span>
+<span class="sd">					If ``False``, invalid vocabs will be replaced by ``unk_id``.</span>
+<span class="sd">					If ``True``, invalid vocabs will using their own id.</span>
+<span class="sd">					Default: ``False``</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">				(list): list of id(int)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span>\
+			<span class="bp">self</span><span class="o">.</span><span class="n">convert_bert_ids_to_tokens</span><span class="p">(</span><span class="n">bert_ids</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="n">invalid_vocab</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BERTLanguageProcessingBase.convert_ids_to_bert_ids"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_bert_ids">[docs]</a>	<span class="k">def</span> <span class="nf">convert_ids_to_bert_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Convert list of id(int) to list of bert id(int)</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">				ids (list): list of id(int)</span>
+
+<span class="sd">		Returns:</span>
+<span class="sd">				bert_ids (list): list of bert id(int)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_tokens_to_bert_ids</span><span class="p">(</span>\
+			<span class="bp">self</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

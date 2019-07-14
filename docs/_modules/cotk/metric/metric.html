@@ -170,16 +170,8 @@
 <span class="sd">``cotk.metrics`` provides classes and functions evaluating results of models.</span>
 <span class="sd">It provides a fair metric for every model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
-<span class="kn">from</span> <span class="nn">.._utils.imports</span> <span class="k">import</span> <span class="n">DummyObject</span>
 <span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="k">import</span> <span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">DocStringInheritor</span>
-<span class="k">try</span><span class="p">:</span>
-	<span class="kn">import</span> <span class="nn">torch</span>
-<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-	<span class="n">torch</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-	<span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MetricBase"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase">[docs]</a><span class="k">class</span> <span class="nc">MetricBase</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>
@@ -235,9 +227,6 @@
 	<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS_WITH_TORCH</span> <span class="o">=</span> \
 		<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list or :class:`numpy.ndarray`&quot;</span><span class="p">,</span> \
 			<span class="s2">&quot;list or :class:`numpy.ndarray` or :class:`torch.Tensor`&quot;</span><span class="p">)</span>
-	<span class="n">FORWARD_MULTI_TURN_CONTEXT_ALLVOCABS_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;reference_allvocabs_key&quot;</span><span class="p">,</span> \
-			<span class="s2">&quot;context_allvocabs_key&quot;</span><span class="p">)</span>
 
 	<span class="n">REFERENCE_LEN_KEY_ARGUMENTS</span> <span class="o">=</span> \
 		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;reference_len_key (str):</span>
@@ -336,129 +325,6 @@
 			<span class="k">return</span> <span class="p">{}</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has been closed.&quot;</span><span class="p">)</span></div></div>
-
-<span class="k">class</span> <span class="nc">_PrecisionRecallMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for precision recall metrics. This is an abstract class.</span>
-
-<span class="sd">	Arguments:</span>
-<span class="sd">		{ARGUMENTS}</span>
-<span class="sd">	Attributes:</span>
-<span class="sd">		res_prefix (str): Prefix added to the front of each key</span>
-<span class="sd">					in the result dict of `close`.</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">		</span><span class="si">{MetricBase.DATALOADER_ARGUMENTS}</span><span class="s2"></span>
-<span class="s2">		generated_num_per_context (int): The number of sentences generated per context.</span>
-<span class="s2">		candidate_allvocabs_key (str): The key of reference sentences. Default: ``candidate_allvocabs``.</span>
-<span class="s2">		multiple_gen_key (str):</span>
-<span class="s2">			The key of multiple generated sentences. Default: ``multiple_gen``.&quot;&quot;&quot;</span>
-
-
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
-				 <span class="n">generated_num_per_context</span><span class="p">,</span> \
-				 <span class="n">candidate_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">,</span> \
-				 <span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">candidate_allvocabs_key</span> <span class="o">=</span> <span class="n">candidate_allvocabs_key</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">multiple_gen_key</span> <span class="o">=</span> <span class="n">multiple_gen_key</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">generated_num_per_context</span> <span class="o">=</span> <span class="n">generated_num_per_context</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">prec_list</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-	<span class="k">def</span> <span class="nf">_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;This function is called by :func:`forward`.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			gen (list): list of generated word ids.</span>
-<span class="sd">			reference (list): list of word ids of a reference.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			int: score \in [0, 1].</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span> \
-			<span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			data (dict): A dict at least contains the following keys:</span>
-
-<span class="sd">				* **data[candidate_allvocabs_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 3-d jagged list of index. Multiple reference sentences for a single context.</span>
-<span class="sd">				  Does not contain start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
-<span class="sd">				  Size: ``[batch_size, ~sentence_num, ~word_num]``, where &quot;~&quot; means different sizes</span>
-<span class="sd">				  in this dimension is allowed.</span>
-<span class="sd">				* **data[multiple_gen_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 3-d jagged or padded array.</span>
-<span class="sd">				  Sentences generated by model. Contains end token (eg: ``&lt;eos&gt;``),</span>
-<span class="sd">				  but without start token (eg: ``&lt;go&gt;``).</span>
-<span class="sd">				  Size: ``[batch_size, generated_num_per_context, ~gen_sentence_length]``,</span>
-<span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.</span>
-
-<span class="sd">				Here is an example for data:</span>
-<span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					... 	candidate_allvocabs_key: [[[4], [5,6]], [[4,5,6]]]</span>
-<span class="sd">					...		multiple_gen_key: [[[5,6,3]], [[4,5,7,3], [8,3]]]</span>
-<span class="sd">					... }</span>
-
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-		<span class="n">candidate_allvocabs</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">candidate_allvocabs_key</span><span class="p">]</span>
-		<span class="n">multiple_gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">multiple_gen_key</span><span class="p">]</span>
-
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">candidate_allvocabs</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
-			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for candidate_allvocabs.&quot;</span><span class="p">)</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiple_gen</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
-			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for multiple_gen&quot;</span><span class="p">)</span>
-
-		<span class="n">references</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">cand</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">inst</span><span class="p">]</span> \
-					  <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">candidate_allvocabs</span><span class="p">]</span>
-		<span class="n">gens</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">cand</span><span class="p">)</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">inst</span><span class="p">]</span> \
-					  <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">multiple_gen</span><span class="p">]</span>
-
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">references</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gens</span><span class="p">):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Batch num is not matched.&quot;</span><span class="p">)</span>
-
-		<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">gens</span><span class="p">:</span>
-			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_num_per_context</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>\
-					<span class="s2">&quot;Number of geneated sentences per context does not equal to</span><span class="se">\</span>
-<span class="s2">					the specified `generated_num_per_context`&quot;</span><span class="p">)</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">references</span><span class="p">)))</span>
-		<span class="k">for</span> <span class="n">reference</span><span class="p">,</span> <span class="n">gen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">references</span><span class="p">,</span> <span class="n">gens</span><span class="p">):</span>
-			<span class="c1"># pylint: disable=no-member</span>
-			<span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-			<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">single_ref</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
-				<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">single_gen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
-					<span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">single_gen</span><span class="p">,</span> <span class="n">single_ref</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">prec_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">))</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">))</span>
-
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict) returns a dict which contains</span>
-
-<span class="sd">			* ``res_prefix`` **precision**: average precision.</span>
-<span class="sd">			* ``res_prefix`` **recall**: average recall.</span>
-<span class="sd">			* ``res_prefix`` **hashvalue**: hash value for precision &amp; recall metric, same hash value stands</span>
-<span class="sd">			  for same evaluation settings.</span>
-
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">prec_list</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span><span class="p">):</span>
-			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has not been forwarded data correctly.&quot;</span><span class="p">)</span>
-		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> precision&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prec_list</span><span class="p">),</span> \
-				<span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> recall&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span><span class="p">),</span> \
-				<span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> hashvalue&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_prefix</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">res</span>
 
 <div class="viewcode-block" id="MetricChain"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain">[docs]</a><span class="k">class</span> <span class="nc">MetricChain</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A metric-like class for stacked metric. You can use this class</span>
