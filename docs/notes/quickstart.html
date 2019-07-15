@@ -88,7 +88,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dataloader">Dataloader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#metrics">Metrics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#publish-and-reproduce-experiments">Publish and Reproduce Experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#publish-experiments">Publish Experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reproduce-experiments">Reproduce Experiments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#predefined-models">Predefined Models</a></li>
 </ul>
 </li>
@@ -281,9 +282,10 @@ receives data in batch.</p>
 <p class="last">If you want to know more about metrics, please refer to <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docs</span></code></a>.</p>
 </div>
 </div>
-<div class="section" id="publish-and-reproduce-experiments">
-<h2>Publish and Reproduce Experiments<a class="headerlink" href="#publish-and-reproduce-experiments" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="publish-experiments">
+<h2>Publish Experiments<a class="headerlink" href="#publish-experiments" title="Permalink to this headline">¶</a></h2>
 <p>We provide an online dashboard to manage your experiments.</p>
+<p>Here we give an simple example for you.</p>
 <p>First initialize a git repo in your command line.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git init
 </pre></div>
@@ -303,33 +305,58 @@ receives data in batch.</p>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;result.json&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The only requirement of your model is to output a file named <code class="docutils literal notranslate"><span class="pre">result.json</span></code>,
+you can do whatever you want (even don’t load data using <code class="docutils literal notranslate"><span class="pre">cotk</span></code>).</p>
+</div>
 <p>Next, commit your changes and set upstream branch in your command line.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git add -A
 git commit -a -m <span class="s2">&quot;init&quot;</span>
 git remote add origin master https://github.com/USERNAME/REPONAME.git
-git push origin -f master
+git push origin -u master
 </pre></div>
 </div>
-<p>Finally, type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--entry</span> <span class="pre">main</span></code> to run your model.</p>
+<p>Finally, type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code> to run your model and upload to cotk dashboard.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> will automatically collect your git repo, username, commit and <code class="docutils literal notranslate"><span class="pre">result.json</span></code>
-to the cotk dashboard (TO BE ONLINE).</p>
+to the cotk dashboard (TO BE ONLINE).The dashboard is a website where you can manage
+your experiments or share results with others.</p>
 <p>FILL AN IMAGE HERE</p>
-<p>The dashboard is a website where you can manage your experiments or share
-results with others.</p>
-<p>You can also download others’ experiments in dashboard
+<p>If you don’t want to use cotk’s dashboard, you can also choose to directly upload your model
+to github.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span></code> instead of <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code>, you will find a <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code>
+is generated. Commit the file and push it to github, the other can automatically download
+your model as the way described in next section.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The reproducibility should be maintained by the author. We only make sure all the input
+is the same, but difference can be introduced by different random seed, device or other
+affects. Before you upload, run <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span></code> twice and find whether the results
+is the same.</p>
+</div>
+</div>
+<div class="section" id="reproduce-experiments">
+<h2>Reproduce Experiments<a class="headerlink" href="#reproduce-experiments" title="Permalink to this headline">¶</a></h2>
+<p>You can download others’ model in dashboard
 and try to reproduce their results.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cotk download ID
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">ID</span></code> comes from dashboard id.
 <code class="docutils literal notranslate"><span class="pre">cotk</span></code> will download the codes from dashboard and tell you how to run the models.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Fetching REPO/USERNAME/COMMIT
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Fetching USERNAME/REPO/COMMIT
 13386B [00:00, 54414.25B/s]
-INFO: Codes from REPO/USERNAME/COMMIT fetched.
+INFO: Codes from USERNAME/REPO/COMMIT fetched.
 INFO: Model running cmd written in run_model.sh
-Model running cmd:  cd ./PATH &amp;&amp; cotk run --only-run --main run
+Model running cmd:  cd ./PATH &amp;&amp; cotk run --only-run --entry main
 </pre></div>
 </div>
+<p>Type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span> <span class="pre">--entry</span> <span class="pre">main</span></code> will reproduce the same experiments.</p>
+<p>You can also download directly from github if the maintainer has set the <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cotk download USER/REPO/COMMIT
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> will download the codes from github and generate commands by the config file.</p>
 </div>
 <div class="section" id="predefined-models">
 <h2>Predefined Models<a class="headerlink" href="#predefined-models" title="Permalink to this headline">¶</a></h2>
