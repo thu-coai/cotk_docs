@@ -2,6 +2,6 @@ LanguageGeneration
 =========================================
 .. toctree::
 
-   LM-tensorflow/readme
-   VAE-tensorflow/readme
    seqGAN-tensorflow/readme
+   VAE-tensorflow/readme
+   LM-tensorflow/readme
