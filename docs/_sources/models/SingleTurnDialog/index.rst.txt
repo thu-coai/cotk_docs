@@ -2,5 +2,5 @@ SingleTurnDialog
 =========================================
 .. toctree::
 
-   seq2seq-tensorflow/readme
    seq2seq-pytorch/readme
+   seq2seq-tensorflow/readme

@@ -174,6 +174,7 @@
 
 <span class="c1"># from .._utils.unordered_hash import UnorderedSha256</span>
 <span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">AccuracyMetric</span>
 
@@ -248,7 +249,8 @@
 		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="SentenceClassification.get_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification.get_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction_key</span><span class="o">=</span><span class="s2">&quot;prediction&quot;</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">()</span>
+	<span class="k">def</span> <span class="nf">get_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction_key</span><span class="o">=</span><span class="s2">&quot;prediction&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for accuracy. In other words, this function</span>
 <span class="sd">		provides metrics for sentence classification task.</span>
 
@@ -267,7 +269,7 @@
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">AccuracyMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
 					<span class="n">label_key</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> \
 					<span class="n">prediction_key</span><span class="o">=</span><span class="n">prediction_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span></div></div>
+		<span class="k">return</span> <span class="n">metric</span></div>
 
 <div class="viewcode-block" id="SST"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SST">[docs]</a><span class="k">class</span> <span class="nc">SST</span><span class="p">(</span><span class="n">SentenceClassification</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloader for preprocessed SST dataset.</span>
@@ -294,6 +296,7 @@
 
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_dataloader</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
 			<span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>

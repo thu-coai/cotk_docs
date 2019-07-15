@@ -1482,61 +1482,13 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metrics for teacher-forcing. In other words, this function
-provides metrics for language modelling task.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_log_prob_key</strong> (<em>str</em>) – The key of predicted log probablilty over words.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metrics for inference. In other words, this function provides metrics for
-language generation tasks.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#cotk.metric.FwBwBleuCorpusMetric" title="cotk.metric.FwBwBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.FwBwBleuCorpusMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#cotk.metric.LanguageGenerationRecorder" title="cotk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences in index form.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.LanguageGenerationRecorder" title="cotk.metric.LanguageGenerationRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.LanguageGenerationRecorder</span></code></a>.
-Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
-<li><strong>sample</strong> (<em>int</em>) – Sample numbers for self-bleu metric.
-It will be fast but inaccurate if this become small.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code>.</li>
-<li><strong>seed</strong> (<em>int</em>) – Random seed for sampling.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">1229</span></code>.</li>
-<li><strong>cpu_count</strong> (<em>int</em>) – Number of used cpu for multiprocessing.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCorpusMetric" title="cotk.metric.SelfBleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SelfBleuCorpusMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1544,7 +1496,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCor
 <h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.MSCOCO">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id='resources://MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for preprocessed MSCOCO dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1954,53 +1906,13 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metrics for teacher-forcing.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>gen_log_prob_key</strong> (<em>str</em>) – The key of predicted log probablilty over words.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</li>
-<li><strong>invalid_vocab</strong> (<em>bool</em>) – Whether <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code> contains invalid vocab.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metrics for inference.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#cotk.metric.SingleTurnDialogRecorder" title="cotk.metric.SingleTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleTurnDialogRecorder</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences in index form.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
-<a class="reference internal" href="metric.html#cotk.metric.SingleTurnDialogRecorder" title="cotk.metric.SingleTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleTurnDialogRecorder</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2008,7 +1920,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusM
 <h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.OpenSubtitles">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id='resources://OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2479,41 +2391,13 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>gen_log_prob_key='gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTSingleTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metric for teacher-forcing mode.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_prob_key</strong> (<em>str</em>) – default: <cite>gen_prob</cite>. Refer to <a class="reference internal" href="metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cotk.dataloader.BERTSingleTurnDialog.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTSingleTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metric for inference.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – default: “gen”. Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or
-<code class="xref py py-class docutils literal notranslate"><span class="pre">metric.SingleDialogRecorder</span></code></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.BERTSingleTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2521,7 +2405,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <h3>BERTOpenSubtitles<a class="headerlink" href="#bertopensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.BERTOpenSubtitles">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTOpenSubtitles</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em>, <em>bert_vocab_name='bert-base-uncased'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTOpenSubtitles</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3068,47 +2952,13 @@ If True, ignore first token of each turn (must be <cite>&lt;go&gt;</cite>).</li>
 
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">
-<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>multi_turn_gen_log_prob_key='multi_turn_gen_log_prob'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_teacher_forcing_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metric for teacher-forcing.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.MultiTurnPerplexityMetric" title="cotk.metric.MultiTurnPerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnPerplexityMetric</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_log_prob_key</strong> (<em>str</em>) – The key of predicted log probablilty over words.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.MultiTurnPerplexityMetric" title="cotk.metric.MultiTurnPerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnPerplexityMetric</span></code></a>. Default: <code class="docutils literal notranslate"><span class="pre">gen_log_prob</span></code>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_teacher_forcing_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cotk.dataloader.MultiTurnDialog.get_inference_metric">
-<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>multi_turn_gen_key='multi_turn_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#MultiTurnDialog.get_inference_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metric for inference.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#cotk.metric.MultiTurnDialogRecorder" title="cotk.metric.MultiTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnDialogRecorder</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences in index form.
-Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusMetric" title="cotk.metric.BleuCorpusMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuCorpusMetric</span></code></a> or <a class="reference internal" href="metric.html#cotk.metric.MultiTurnDialogRecorder" title="cotk.metric.MultiTurnDialogRecorder"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MultiTurnDialogRecorder</span></code></a>.
-Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_inference_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.MultiTurnDialog.get_inference_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -3116,7 +2966,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">gen</span>
 <h3>UbuntuCorpus<a class="headerlink" href="#ubuntucorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.UbuntuCorpus">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_id='resources://Ubuntu'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for Ubuntu dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3175,7 +3025,7 @@ for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</p>
 <h3>SwitchBoardCorpus<a class="headerlink" href="#switchboardcorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.SwitchboardCorpus">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>file_id='resources://SwitchboardCorpus'</em>, <em>min_vocab_times=5</em>, <em>max_sent_length=50</em>, <em>max_turn_length=1000</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for Switchboard dataset.</p>
 <p>In this dataset, all sessions start with a <code class="docutils literal notranslate"><span class="pre">&lt;d&gt;</span></code> representing empty context.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -3213,30 +3063,8 @@ testing stages. Default: <code class="docutils literal notranslate"><span class=
 
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">
-<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>word2vec=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metrics for multiple references.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.BleuPrecisionRecallMetric" title="cotk.metric.BleuPrecisionRecallMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuPrecisionRecallMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="cotk.metric.EmbSimilarityPrecisionRecallMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.EmbSimilarityPrecisionRecallMetric</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
-<li><strong>word2vec</strong> (<em>dict</em>) – Maps words to word embeddings for embedding similarity.
-Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, using glove word embedding from <code class="docutils literal notranslate"><span class="pre">resources://Glove300d</span></code>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cotk.dataloader.SwitchboardCorpus.tokenize">
@@ -3336,33 +3164,6 @@ in this dimension is allowed.</li>
 <span class="go">}</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">get_multi_ref_metric</code><span class="sig-paren">(</span><em>generated_num_per_context=20</em>, <em>word2vec=None</em>, <em>multiple_gen_key='multiple_gen_key'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus.get_multi_ref_metric"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Get metrics for multiple references.</p>
-<p>It contains:</p>
-<ul class="simple">
-<li><a class="reference internal" href="metric.html#cotk.metric.BleuPrecisionRecallMetric" title="cotk.metric.BleuPrecisionRecallMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.BleuPrecisionRecallMetric</span></code></a></li>
-<li><a class="reference internal" href="metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="cotk.metric.EmbSimilarityPrecisionRecallMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.EmbSimilarityPrecisionRecallMetric</span></code></a></li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>generated_num_per_context</strong> (<em>int</em>) – The number of sentences generated per context.</li>
-<li><strong>word2vec</strong> (<em>dict</em>) – Maps words to word embeddings for embedding similarity.
-Default: if <code class="docutils literal notranslate"><span class="pre">None</span></code>, using glove word embedding from <code class="docutils literal notranslate"><span class="pre">resources://Glove300d</span></code>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </dd></dl>
@@ -3713,33 +3514,14 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="method">
 <dt id="cotk.dataloader.SentenceClassification.get_metric">
-<code class="descname">get_metric</code><span class="sig-paren">(</span><em>prediction_key='prediction'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SentenceClassification.get_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SentenceClassification.get_metric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get metrics for accuracy. In other words, this function
-provides metrics for sentence classification task.</p>
-<p>It contains:</p>
-<blockquote>
-<div><ul class="simple">
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.AccuracyMetric</span></code></li>
-</ul>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>prediction_key</strong> (<em>str</em>) – The key of prediction over sentences.
-Refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">metric.AccuracyMetric</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">prediction</span></code>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference internal" href="metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricChain</span></code></a> object.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">get_metric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.get_metric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="cotk.dataloader.SST">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SST</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SST</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for preprocessed SST dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
