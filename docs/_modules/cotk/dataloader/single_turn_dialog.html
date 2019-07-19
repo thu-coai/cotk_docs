@@ -502,35 +502,46 @@
 		<span class="k">return</span> <span class="n">res</span></div>
 
 	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;teacher_forcing&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get metric for teacher-forcing mode.</span>
-
+	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span>\
+					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Get metrics for teacher-forcing.</span>
 <span class="sd">		It contains:</span>
-
 <span class="sd">		* :class:`.metric.PerplexityMetric`</span>
-
 <span class="sd">		Arguments:</span>
-<span class="sd">			gen_prob_key (str): default: `gen_prob`. Refer to :class:`.metric.PerplexityMetric`</span>
+<span class="sd">			gen_log_prob_key (str):  The key of predicted log probablilty over words.</span>
+<span class="sd">				Refer to :class:`.metric.PerplexityMetric`. Default: ``gen_log_prob``.</span>
+<span class="sd">			invalid_vocab (bool): Whether ``gen_log_prob`` contains invalid vocab.</span>
+<span class="sd">				Refer to :class:`.metric.PerplexityMetric`. Default: ``False``.</span>
+<span class="sd">		Returns:</span>
+<span class="sd">			A :class:`.metric.MetricChain` object.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>\
+			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span>\
+			<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span>\
+			<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">,</span>\
+			<span class="n">invalid_vocab</span><span class="o">=</span><span class="n">invalid_vocab</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span>
 
 	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;inference&quot;</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get metric for inference.</span>
+		<span class="sd">&#39;&#39;&#39;Get metrics for inference.</span>
 
 <span class="sd">		It contains:</span>
 
 <span class="sd">		* :class:`.metric.BleuCorpusMetric`</span>
-<span class="sd">		* :class:`.metric.SingleDialogRecorder`</span>
+<span class="sd">		* :class:`.metric.SingleTurnDialogRecorder`</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			gen_key (str): default: &quot;gen&quot;. Refer to :class:`.metric.BleuCorpusMetric` or</span>
-<span class="sd">			               :class:`.metric.SingleDialogRecorder`</span>
+<span class="sd">			gen_key (str): The key of generated sentences in index form.</span>
+<span class="sd">				Refer to :class:`.metric.BleuCorpusMetric` or</span>
+<span class="sd">				:class:`.metric.SingleTurnDialogRecorder`. Default: ``gen``.</span>
+<span class="sd">		Returns:</span>
+<span class="sd">			A :class:`.metric.MetricChain` object.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
-		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
+		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> \
+			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div>
 

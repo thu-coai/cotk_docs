@@ -190,8 +190,9 @@
 		<span class="n">binded</span> <span class="o">=</span> <span class="n">sign</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 		<span class="n">binded</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
 		<span class="n">binded</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">binded</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span>
+		<span class="bp">self</span> <span class="o">=</span> <span class="n">binded</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
 		<span class="k">del</span> <span class="n">binded</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
-		<span class="n">invoke_listener</span><span class="p">(</span><span class="s2">&quot;add_dataloader&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">binded</span><span class="p">)</span>
+		<span class="n">invoke_listener</span><span class="p">(</span><span class="s2">&quot;add_dataloader&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">binded</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 	<span class="k">return</span> <span class="n">wrapped</span>
 
@@ -203,8 +204,9 @@
 			<span class="n">binded</span> <span class="o">=</span> <span class="n">sign</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 			<span class="n">binded</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
 			<span class="n">binded</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">binded</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span>
+			<span class="bp">self</span> <span class="o">=</span> <span class="n">binded</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
 			<span class="k">del</span> <span class="n">binded</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
-			<span class="n">invoke_listener</span><span class="p">(</span><span class="s2">&quot;add_standard_metric&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">binded</span><span class="p">)</span>
+			<span class="n">invoke_listener</span><span class="p">(</span><span class="s2">&quot;add_standard_metric&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">binded</span><span class="p">)</span>
 			<span class="nb">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 			<span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">wrapped</span>
@@ -217,8 +219,9 @@
 		<span class="n">binded</span> <span class="o">=</span> <span class="n">sign</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 		<span class="n">binded</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
 		<span class="n">binded</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">binded</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span>
+		<span class="bp">self</span> <span class="o">=</span> <span class="n">binded</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
 		<span class="k">del</span> <span class="n">binded</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
-		<span class="n">invoke_listener</span><span class="p">(</span><span class="s2">&quot;add_wordvec&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">binded</span><span class="p">)</span>
+		<span class="n">invoke_listener</span><span class="p">(</span><span class="s2">&quot;add_wordvec&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">binded</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 	<span class="k">return</span> <span class="n">wrapped</span>
 
@@ -242,17 +245,26 @@
 			<span class="s2">&quot;standard_metric&quot;</span><span class="p">:</span> <span class="p">{},</span>
 			<span class="s2">&quot;wordvec&quot;</span><span class="p">:</span> <span class="p">{}</span>
 		<span class="p">}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader_id</span> <span class="o">=</span> <span class="p">{}</span>
 
 	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span>
 
-	<span class="k">def</span> <span class="nf">add_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">add_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+		<span class="nb">id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader_id</span><span class="p">)</span>
+		<span class="n">args</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;dataloader&quot;</span><span class="p">][</span><span class="n">dataloader</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+		<span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader_id</span><span class="p">[</span><span class="n">obj</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
+		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader_id</span><span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">add_standard_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">metric_type</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;standard_metric&quot;</span><span class="p">][</span><span class="n">dataloader</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">metric_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+	<span class="k">def</span> <span class="nf">add_standard_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">clsname</span><span class="p">,</span> <span class="n">metric_type</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+		<span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader_id</span><span class="p">)</span>
+		<span class="n">args</span><span class="p">[</span><span class="s1">&#39;dataloader_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader_id</span><span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;standard_metric&quot;</span><span class="p">][</span><span class="n">clsname</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">metric_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
 
-	<span class="k">def</span> <span class="nf">add_wordvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wordvec</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">add_wordvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">wordvec</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;wordvec&quot;</span><span class="p">][</span><span class="n">wordvec</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
 
 <span class="k">def</span> <span class="nf">start_recorder</span><span class="p">():</span>
