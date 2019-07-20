@@ -184,7 +184,7 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		_input (list): the references or hypothesis.</span>
-<span class="sd">		_unk_id (int): id for unkonwn words.</span>
+<span class="sd">		_unk_id (int): id for unknown words.</span>
 <span class="sd">		_target: the target word index used to replace the unknown words.</span>
 
 <span class="sd">	Returns:</span>
@@ -283,7 +283,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
 		<span class="k">try</span><span class="p">:</span>
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
-				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">),</span> \
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method3</span><span class="p">),</span> \
 				<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
 			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_smoothing_error</span><span class="p">:</span>
@@ -598,7 +598,7 @@
 
 		<span class="k">try</span><span class="p">:</span>
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
-				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method7</span><span class="p">),</span> \
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method3</span><span class="p">),</span> \
 				<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
 			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_smoothing_error</span><span class="p">:</span>
