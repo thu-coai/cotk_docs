@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Seq2Seq (PyTorch) &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Seq2Seq (TensorFlow)" href="../seq2seq-tensorflow/Readme.html" />
+    <link rel="prev" title="SingleTurnDialog" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">SingleTurnDialog</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Seq2Seq (PyTorch)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#require-packages">Require Packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorboard-example">TensorBoard Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#case-study-of-model-results">Case Study of Model Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#author">Author</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../seq2seq-tensorflow/Readme.html">Seq2Seq (TensorFlow)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">SingleTurnDialog</a> &raquo;</li>
+        
+      <li>Seq2Seq (PyTorch)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/models/SingleTurnDialog/seq2seq-pytorch/Readme.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <a class="reference external image-reference" href="https://coveralls.io/github/thu-coai/seq2seq-pytorch?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/thu-coai/seq2seq-pytorch/badge.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://travis-ci.com/thu-coai/seq2seq-pytorch"><img alt="Build Status" src="https://travis-ci.com/thu-coai/seq2seq-pytorch.svg?branch=master" /></a>
+<p>This is a model from cotk, click here to our <a class="reference external" href="https://github.com/thu-coai/cotk">main repo</a>.</p>
+<div class="section" id="seq2seq-pytorch">
+<h1>Seq2Seq (PyTorch)<a class="headerlink" href="#seq2seq-pytorch" title="Permalink to this headline">¶</a></h1>
+<p>Seq2seq with attention mechanism is a basic model for single turn dialog. In addition, batch normalization and dropout has been applied. You can also choose beamsearch, greedy, random sample, random sample from top k when decoding.</p>
+<p>You can refer to the following paper for details:</p>
+<p>Sutskever, I., Vinyals, O., &amp; Le, Q. V. (2014). Sequence to sequence learning with neural networks. In <em>Advances in neural information processing systems</em> (pp. 3104-3112).</p>
+<p>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. In <em>International Conference on Learning Representation</em>.</p>
+<div class="section" id="require-packages">
+<h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>python3</strong></li>
+<li>cotk</li>
+<li>pytorch == 1.0.0</li>
+<li>tensorboardX &gt;= 1.4</li>
+</ul>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Using <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">download</span> <span class="pre">thu-coai/seq2seq-pytorch/master</span></code> to download codes.</li>
+<li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
+<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class and <code class="docutils literal notranslate"><span class="pre">--datapath</span></code> to specify other data path (can be a local path, a url or a resources id). For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">OpenSubtitles</span> <span class="pre">--datapath</span> <span class="pre">resources://OpenSubtitles</span></code></li>
+<li>It doesn’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class and <code class="docutils literal notranslate"><span class="pre">--wvpath</span></code> to specify pretrained word embeddings. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">Glove</span> <span class="pre">--datapath</span> <span class="pre">resources://Glove300</span></code></li>
+<li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time for either training or test.</li>
+</ul>
+</li>
+<li>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.<ul>
+<li>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</li>
+</ul>
+</li>
+<li>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.<ul>
+<li>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">pretrained-opensubtitles</span></code> for loading <code class="docutils literal notranslate"><span class="pre">./model/pretrained-opensubtitles.model</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</li>
+<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">NAME_last</span></code> means last checkpoint with model named NAME. The same as<code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">NAME_best</span></code>.</li>
+</ul>
+</li>
+<li>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: run.py [-h] [--name NAME] [--restore RESTORE] [--mode MODE]
+              [--eh_size EH_SIZE] [--dh_size DH_SIZE] [--droprate DROPRATE]
+              [--batchnorm] [--decode_mode {max,sample,gumbel,samplek,beam}]
+              [--top_k TOP_K] [--length_penalty LENGTH_PENALTY]
+              [--dataset DATASET] [--datapath DATAPATH] [--epoch EPOCH]
+              [--wvclass WVCLASS] [--wvpath WVPATH] [--out_dir OUT_DIR]
+              [--log_dir LOG_DIR] [--model_dir MODEL_DIR]
+              [--cache_dir CACHE_DIR] [--cpu] [--debug] [--cache]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --name NAME           The name of your model, used for tensorboard, etc.
+                        Default: runXXXXXX_XXXXXX (initialized by current
+                        time)
+  --restore RESTORE     Checkpoints name to load. &quot;NAME_last&quot; for the last
+                        checkpoint of model named NAME. &quot;NAME_best&quot; means the
+                        best checkpoint. You can also use &quot;last&quot; and &quot;best&quot;,
+                        defaultly use last model you run. Attention:
+                        &quot;NAME_last&quot; and &quot;NAME_best&quot; are not guaranteed to work
+                        when 2 models with same name run in the same time.
+                        &quot;last&quot; and &quot;best&quot; are not guaranteed to work when 2
+                        models run in the same time. Default: None (dont load
+                        anything)
+  --mode MODE           &quot;train&quot; or &quot;test&quot;. Default: train
+  --eh_size EH_SIZE     Size of encoder GRU
+  --dh_size DH_SIZE     Size of decoder GRU
+  --droprate DROPRATE   The probability to be zerod in dropout. 0 indicates
+                        for dont use dropout
+  --batchnorm           Use bathnorm
+  --decode_mode {max,sample,gumbel,samplek,beam}
+                        The decode strategy when freerun. Choices: max,
+                        sample, gumbel(=sample), samplek(sample from topk),
+                        beam(beamsearch). Default: beam
+  --top_k TOP_K         The top_k when decode_mode == &quot;beam&quot; or &quot;samplek&quot;
+  --length_penalty LENGTH_PENALTY
+                        The beamsearch penalty for short sentences. The
+                        penalty will get larger when this becomes smaller.
+  --dataset DATASET     Dataloader class. Default: OpenSubtitles
+  --datapath DATAPATH   Directory for data set. Default: ./data
+  --epoch EPOCH         Epoch for trainning. Default: 100
+  --wvclass WVCLASS     Wordvector class, none for not using pretrained
+                        wordvec. Default: None
+  --wvpath WVPATH       Directory for pretrained wordvector. Default:
+                        ./wordvec
+  --out_dir OUT_DIR     Output directory for test output. Default: ./output
+  --log_dir LOG_DIR     Log directory for tensorboard. Default: ./tensorboard
+  --model_dir MODEL_DIR Checkpoints directory for model. Default: ./model
+  --cache_dir CACHE_DIR Checkpoints directory for cache. Default: ./cache
+  --cpu                 Use cpu.
+  --debug               Enter debug mode (using ptvsd).
+  --cache               Use cache for speeding up load data and wordvec. (It
+                        may cause problems when you switch dataset.)
+</pre></div>
+</div>
+</div>
+<div class="section" id="tensorboard-example">
+<h2>TensorBoard Example<a class="headerlink" href="#tensorboard-example" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>, you will see the plot in tensorboard pages:</p>
+<a class="reference external image-reference" href="./images/tensorboard_plot_example.png"><img alt="tensorboard_plot_example" src="../../../_images/tensorboard_plot_example.png" /></a>
+<p>Following plot are shown in this model:</p>
+<ul class="simple">
+<li>gen/loss (<code class="docutils literal notranslate"><span class="pre">gen</span></code> means training process)</li>
+<li>gen/perplexity (<code class="docutils literal notranslate"><span class="pre">=exp(gen/word_loss)</span></code>)</li>
+<li>gen/word_loss (<code class="docutils literal notranslate"><span class="pre">=gen/loss</span></code> in this model)</li>
+<li>dev/loss</li>
+<li>dev/perplexity_avg_on_batch</li>
+<li>test/loss</li>
+<li>test/perplexity_avg_on_batch</li>
+</ul>
+<p>And text output:</p>
+<a class="reference external image-reference" href="./images/tensorboard_text_example.png"><img alt="tensorboard_plot_example" src="../../../_images/tensorboard_text_example.png" /></a>
+<p>Following text are shown in this model:</p>
+<ul class="simple">
+<li>args</li>
+<li>dev/show_str%d (<code class="docutils literal notranslate"><span class="pre">%d</span></code> is according to <code class="docutils literal notranslate"><span class="pre">args.show_sample</span></code> in <code class="docutils literal notranslate"><span class="pre">run.py</span></code>)</li>
+</ul>
+</div>
+<div class="section" id="case-study-of-model-results">
+<h2>Case Study of Model Results<a class="headerlink" href="#case-study-of-model-results" title="Permalink to this headline">¶</a></h2>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code></p>
+<p>The following output will be in <code class="docutils literal notranslate"><span class="pre">./output/[name]_[dev|test].txt</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>perplexity:     48.194050
+bleu:    0.320098
+post:   my name is josie .
+resp:   &lt;unk&gt; &lt;unk&gt; , pennsylvania , the &lt;unk&gt; state .
+gen:    i&#39; m a teacher .
+post:   i put premium gasoline in her .
+resp:   josie , i told you .
+gen:    i don&#39; t know .
+post:   josie , dont hang up
+resp:   they do it to aii the new kids .
+gen:    aii right , you guys , you know what ?
+post:   about playing a part .
+resp:   and thats the theme of as you like it .
+gen:    i don&#39; t know .
+......
+</pre></div>
+</div>
+</div>
+<div class="section" id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">Perplexity</th>
+<th class="head">BLEU</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>OpenSubtitles</td>
+<td>51.45</td>
+<td>0.165</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="author">
+<h2>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/hzhwcmhf">HUANG Fei</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../seq2seq-tensorflow/Readme.html" class="btn btn-neutral float-right" title="Seq2Seq (TensorFlow)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="SingleTurnDialog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
