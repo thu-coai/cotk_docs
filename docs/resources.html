@@ -257,10 +257,11 @@ It has to be one of the subclass of <code class="xref py py-class docutils liter
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>If you already have the resources data at local, but <code class="docutils literal notranslate"><span class="pre">cotk</span></code> want to download them,
-you can use the following command line to import local resources into cache.</p>
+<p>If you already have the resources data at local, but <code class="docutils literal notranslate"><span class="pre">cotk</span></code> didn’t notice them and
+try to download again, you can use the following command to import local resources into cache.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">import</span> <span class="pre">&lt;file_id&gt;</span> <span class="pre">&lt;file_path&gt;</span></code></p>
-<p class="last">where <strong>file_path</strong> is the path to the local resource.</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">file_path</span></code> is the path to the local resource. For example:</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">import</span> <span class="pre">resources://MSCOCO</span> <span class="pre">./MSCOCO.zip</span></code></p>
 </div>
 <div class="section" id="word-vector">
 <h2>Word Vector<a class="headerlink" href="#word-vector" title="Permalink to this headline">¶</a></h2>
@@ -275,11 +276,11 @@ you can use the following command line to import local resources into cache.</p>
 </ul>
 <dl class="docutils">
 <dt>Introduction</dt>
-<dd><p class="first">This is a file containing vector representation for words pretrained by GloVe, which is an unsupervised learning
+<dd><p class="first">This is a file containing vector representation for words pretrained by <cite>GloVe</cite>, which is an unsupervised learning
 algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word
 co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures
 of the word vector space.</p>
-<p class="last">This file is a 50 dimension version from <code class="docutils literal notranslate"><span class="pre">glove.6B</span></code>, which is trained on Wikipedia2014 and Gigaword5.</p>
+<p class="last">This file is a 50 dimension version from <code class="docutils literal notranslate"><span class="pre">glove.6B</span></code>, which is trained on <cite>Wikipedia2014</cite> and <cite>Gigaword5</cite>.</p>
 </dd>
 <dt>Statistic</dt>
 <dd><table border="1" class="first last docutils">
@@ -322,7 +323,7 @@ of the word vector space.</p>
 <dl class="docutils">
 <dt>Introduction</dt>
 <dd><ul class="first last simple">
-<li>This is a file containing vector representation for words pretrained by GloVe.</li>
+<li>This is a file containing vector representation for words pretrained by <cite>GloVe</cite>.</li>
 <li>This file is a 100 dimension version from <code class="docutils literal notranslate"><span class="pre">glove.6B</span></code>.</li>
 <li>Refer to <a class="reference internal" href="#glove50d">Glove50d</a> for more information and references.</li>
 </ul>
@@ -363,7 +364,7 @@ of the word vector space.</p>
 <dl class="docutils">
 <dt>Introduction</dt>
 <dd><ul class="first last simple">
-<li>This is a file containing vector representation for words pretrained by GloVe.</li>
+<li>This is a file containing vector representation for words pretrained by <cite>GloVe</cite>.</li>
 <li>This file is a 200 dimension version from <code class="docutils literal notranslate"><span class="pre">glove.6B</span></code>.</li>
 <li>Refer to <a class="reference internal" href="#glove50d">Glove50d</a> for more information and references.</li>
 </ul>
@@ -404,7 +405,7 @@ of the word vector space.</p>
 <dl class="docutils">
 <dt>Introduction</dt>
 <dd><ul class="first last simple">
-<li>This is a file containing vector representation for words pretrained by GloVe.</li>
+<li>This is a file containing vector representation for words pretrained by <cite>GloVe</cite>.</li>
 <li>This file is a 300 dimension version from <code class="docutils literal notranslate"><span class="pre">glove.6B</span></code>.</li>
 <li>Refer to <a class="reference internal" href="#glove50d">Glove50d</a> for more information and references.</li>
 </ul>
@@ -445,7 +446,7 @@ of the word vector space.</p>
 <dl class="docutils">
 <dt>Introduction</dt>
 <dd><ul class="first last simple">
-<li>This is a file containing vector representation for words pretrained by GloVe.</li>
+<li>This is a file containing vector representation for words pretrained by <cite>GloVe</cite>.</li>
 <li>This file is a 50 dimension version from <code class="docutils literal notranslate"><span class="pre">glove.6B</span></code> and only contains the most frequency 40,000 words.</li>
 <li>Refer to <a class="reference internal" href="#glove50d">Glove50d</a> for more information and references.</li>
 </ul>
@@ -492,7 +493,7 @@ of the word vector space.</p>
 in their natural context. We neglect the images and just employ the corresponding caption.</p>
 <p class="last">The original data is <a class="reference external" href="http://images.cocodataset.org/annotations/annotations_trainval2017.zip">2017 Train/Val annotations [241MB]</a> .
 We use the same train set as original data, but split the val set into dev(odd-numbered sentences) and test set(even-numbered sentences).
-We extract the caption and use <cite>nltk.tokenize.word_tokenize</cite> for tokenization.
+We extract the caption and use <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.word_tokenize</span></code> for tokenization.
 We also capitalize each sentence and add full stop to it if it does not have one.</p>
 </dd>
 <dt>Statistic</dt>
@@ -740,9 +741,12 @@ In Proceedings of the 10th International Conference on Language Resources and Ev
 </ul>
 <dl class="docutils">
 <dt>Introduction</dt>
-<dd>Stanford Sentiment Treebank is the first corpus with fully labeled
+<dd><p class="first">Stanford Sentiment Treebank is the first corpus with fully labeled
 parse trees that allows for a complete analysis of the compositional
-effects of sentiment in language.</dd>
+effects of sentiment in language.</p>
+<p class="last">We remain the original split of dataset. The dataset is tokenized and
+contains capitalized letters.</p>
+</dd>
 <dt>Statistic</dt>
 <dd><table border="1" class="first last docutils">
 <colgroup>
@@ -822,8 +826,8 @@ same as theirs (in their version, utterances are lowercase and are not tokenized
 <p>However, there are two differences between our data with theirs:</p>
 <ul class="last simple">
 <li>We ensure that any two consecutive utterances come from different speakers,
-by concatenating the original consecutive utterances from the same speakers in
-data pre-processing of <a class="reference internal" href="dataloader.html#cotk.dataloader.SwitchboardCorpus" title="cotk.dataloader.SwitchboardCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SwitchboardCorpus</span></code></a>.
+by concatenating the original consecutive utterances from the same speakers
+during pre-processing of <a class="reference internal" href="dataloader.html#cotk.dataloader.SwitchboardCorpus" title="cotk.dataloader.SwitchboardCorpus"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SwitchboardCorpus</span></code></a>.
 (This is because we want to be compatible with other multi-turn dialog set.)</li>
 <li>To avoid the gap between training and test, we have to remove some samples
 from <code class="docutils literal notranslate"><span class="pre">multi_ref</span></code>, where the target speaker is the same as the last one in the context.</li>
@@ -980,7 +984,7 @@ from <code class="docutils literal notranslate"><span class="pre">multi_ref</spa
 The dataset has both the multi-turn property of conversations in the Dialog State Tracking Challenge datasets,
 and the unstructured nature of interactions from microblog services such as Twitter.</p>
 <dl class="last docutils">
-<dt>We build the dataset using the ubuntu-ranking-dataset-creator[1], without tokenization, lemmatization and stemming.</dt>
+<dt>We build the dataset using the ubuntu-ranking-dataset-creator[1], without tokenization, lemmatization or stemming.</dt>
 <dd>The dataset contains capital character. The positive example probability is set to 1.0 for training set.
 The examples for training/dev/test sets are set to 1,000,000/19,560/18,920 as default.
 Other settings are default.</dd>
