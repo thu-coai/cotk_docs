@@ -878,7 +878,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.FwBwBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_key</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_list</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating FwBw-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -886,8 +886,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataloader</strong> (<a class="reference internal" href="dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageProcessingBase</span></code></a>) – A language generation dataloader.</li>
-<li><strong>reference_test_key</strong> (<em>str</em>) – Reference sentences with <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a> in test data
-are passed to <a class="reference internal" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="cotk.metric.FwBwBleuCorpusMetric.forward"><code class="xref py py-func docutils literal notranslate"><span class="pre">forward()</span></code></a> by <code class="docutils literal notranslate"><span class="pre">dataloader.data[&quot;test&quot;][self.reference_test_key]</span></code>.</li>
+<li><strong>reference_test_list</strong> (<em>list</em>) – Reference sentences with <a class="reference internal" href="dataloader.html#vocab-ref"><span class="std std-ref">all vocabs</span></a> in test data.</li>
 <li><strong>gen_key</strong> (<em>str</em>) – The key of generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">gen</span></code>.</li>
 <li><strong>sample</strong> (<em>int</em>) – Number of examples sampled from the generated sentences. Default: <code class="docutils literal notranslate"><span class="pre">1000</span></code>.</li>
 <li><strong>seed</strong> (<em>int</em>) – random seed for sampling. Default: <code class="docutils literal notranslate"><span class="pre">1229</span></code>.</li>
