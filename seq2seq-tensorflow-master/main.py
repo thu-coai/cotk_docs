@@ -15,13 +15,19 @@ def create_model(sess, data, args, embed):
 		model.print_parameters()
 		latest_dir = '%s/checkpoint_latest' % args.model_dir
 		best_dir = '%s/checkpoint_best' % args.model_dir
-		if tf.train.get_checkpoint_state(latest_dir) and args.restore == "last":
-			print("Reading model parameters from %s" % latest_dir)
-			model.latest_saver.restore(sess, tf.train.latest_checkpoint(latest_dir))
+		if not os.path.isdir(args.model_dir):
+			os.mkdir(args.model_dir)
+		if not os.path.isdir(latest_dir):
+			os.mkdir(latest_dir)
+		if not os.path.isdir(best_dir):
+			os.mkdir(best_dir)
+		if tf.train.get_checkpoint_state(latest_dir, args.name) and args.restore == "last":
+			print("Reading model parameters from %s" % tf.train.latest_checkpoint(latest_dir, args.name))
+			model.latest_saver.restore(sess, tf.train.latest_checkpoint(latest_dir, args.name))
 		else:
-			if tf.train.get_checkpoint_state(best_dir) and args.restore == "best":
-				print('Reading model parameters from %s' % best_dir)
-				model.best_saver.restore(sess, tf.train.latest_checkpoint(best_dir))
+			if tf.train.get_checkpoint_state(best_dir, args.name) and args.restore == "best":
+				print('Reading model parameters from %s' % tf.train.latest_checkpoint(best_dir, args.name))
+				model.best_saver.restore(sess, tf.train.latest_checkpoint(best_dir, args.name))
 			else:
 				print("Created model with fresh parameters.")
 				global_variable = [gv for gv in tf.global_variables() if args.name in gv.name]

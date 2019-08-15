@@ -1,7 +1,7 @@
+[![Main Repo](https://img.shields.io/badge/Main_project-cotk-blue.svg?logo=github)](https://github.com/thu-coai/cotk)
+[![This Repo](https://img.shields.io/badge/Model_repo-tensorflow--seq2seq-blue.svg?logo=github)](https://github.com/thu-coai/seq2seq-tensorflow)
 [![Coverage Status](https://coveralls.io/repos/github/thu-coai/seq2seq-tensorflow/badge.svg?branch=master)](https://coveralls.io/github/thu-coai/seq2seq-tensorflow?branch=master)
 [![Build Status](https://travis-ci.com/thu-coai/seq2seq-tensorflow.svg?branch=master)](https://travis-ci.com/thu-coai/seq2seq-tensorflow)
-
-This is a model from cotk, click here to our [main repo](https://github.com/thu-coai/cotk).
 
 ## Seq2Seq (TensorFlow)
 

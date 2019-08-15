@@ -15,7 +15,8 @@ class BaseModel():
 	def __init__(self, param, net, optimizerList, checkpoint_manager, helperList=None):
 		self.param = param
 		self.args = args = param.args
-		self.param.other_weights = Storage()
+		if "other_weights" not in self.param:
+			self.param.other_weights = Storage()
 
 		self.net = net
 
@@ -43,15 +44,18 @@ class BaseModel():
 			Tensor(1)
 			logging.info("cuda initialized")
 
+		self.last_args = None
 		if args.restore is not None:
 			checkpoint = self.checkpoint_manager.restore(args.restore)
 			diff = args - checkpoint["args"]
+			self.last_args = checkpoint['args']
 			if diff:
 				logging.info("Args differences\n%s", json.dumps(diff, indent=2))
 			self.now_batch = checkpoint['now_batch']
 			self.now_epoch = checkpoint['now_epoch']
 			self.net.load_state_dict(checkpoint['weights'], param.volatile.load_exclude_set)
-			self.param.other_weights = checkpoint['other_weights']
+			if "restore_other_weights" in self.param.args and self.param.args.restore_other_weights:
+				self.param.other_weights = checkpoint['other_weights']
 			for name, optimizer in self.optimizerList.items():
 				if checkpoint[name]['state'] and self.param.args.restore_optimizer:
 					optimizer.load_state_dict(checkpoint[name])
@@ -116,19 +120,18 @@ class BaseModel():
 	def checkgrad(self):
 		logging.info("checkgrad:")
 		for name, p in self.net.named_parameters():
-			if p.grad is not None and p.abs().sum().tolist() > 0:
+			if p.grad is not None and p.grad.abs().sum().tolist() > 0:
 				logging.info("\t%s", name)
 
 def get_mean(loss_arr, key):
-	if key in loss_arr[0]:
-		return np.mean(list(map(lambda x: x[key].detach().cpu().numpy(), loss_arr)))
-	else:
-		return 0
+	return np.mean(list(map(lambda x: x[key].detach().cpu().numpy(), loss_arr)))
 
 def storage_to_list(incoming):
-	for i, j in incoming.items():
+	for i, j in incoming.listitems():
 		if "tolist" in dir(j):
 			incoming[i] = j.tolist()
+		elif isinstance(j, (float, int)):
+			incoming[i] = j
 	return incoming
 
 

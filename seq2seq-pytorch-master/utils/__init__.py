@@ -10,8 +10,10 @@ from .cuda_helper import cuda, zeros, ones, Tensor, LongTensor
 from .cuda_helper import init as cuda_init
 from .model_helper import BaseModel, get_mean, storage_to_list
 from .network_helper import BaseNetwork
+from .module_helper import BaseModule
 from .gumbel import gumbel_max, gumbel_max_with_mask, gumbel_softmax
 from .scheduler_helper import ReduceLROnLambda
 from .checkpoint_helper import CheckpointManager
 from .bn_helper import SequenceBatchNorm
 from .mmd import gaussMMD
+from .dp_helper import dpmax_hard, dpmin

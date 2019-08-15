@@ -15,15 +15,16 @@ class CheckpointManager:
 		self.best_checkpoint = ""
 		self.best_mode = best_mode
 		self.now_step = 0
-		
-		if best_mode == "max":
+		self.reset_best_value()
+
+	def reset_best_value(self):
+		if self.best_mode == "max":
 			self.best_value = -float("inf")
-		elif best_mode == "min":
+		elif self.best_mode == "min":
 			self.best_value = float("inf")
 
-	'''TODO checkpoint_list is not reliable for multiple processing
-		refer to https://blog.gocept.com/2013/07/15/reliable-file-updates-with-python/
-	'''
+	#TODO: checkpoint_list is not reliable for multiple processing
+	#      refer to https://blog.gocept.com/2013/07/15/reliable-file-updates-with-python/
 	def load_checkpoint_list(self):
 		try:
 			with open("%s/checkpoint_list" % self.model_dir, "r") as checkpoint_list_fp:
@@ -115,7 +116,7 @@ class CheckpointManager:
 	def state_dict(self):
 		return {key: value for key, value in self.__dict__.items() if key not in \
 					{"log_name", "model_dir", "checkpoint_steps", \
-					"checkpoint_max_to_keep", "checkpoint_list"}}
+					"checkpoint_max_to_keep", "checkpoint_list", "best_mode"}}
 
 	def load_state_dict(self, state_dict):
 		self.__dict__.update(state_dict)

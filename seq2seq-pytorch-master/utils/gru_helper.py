@@ -137,7 +137,7 @@ class DecoderRNN(nn.Module):
 		gen.w_pro = []
 		gen.w_o = []
 		gen.emb = []
-		flag = zeros(batch_size).byte()
+		flag = zeros(batch_size).int()
 		EOSmet = []
 
 		next_emb = first_emb
@@ -173,7 +173,7 @@ class DecoderRNN(nn.Module):
 			gen.emb.append(next_emb)
 
 			EOSmet.append(flag)
-			flag = flag | (w == dm.eos_id)
+			flag = flag | (w == dm.eos_id).int()
 			if torch.sum(flag).detach().cpu().numpy() == batch_size:
 				break
 
@@ -202,7 +202,7 @@ class DecoderRNN(nn.Module):
 		w_pro = []
 		w_o = []
 		emb = []
-		flag = zeros(batch_size, top_k).byte()
+		flag = zeros(batch_size, top_k).int()
 		EOSmet = []
 		score = zeros(batch_size, top_k)
 		score[:, 1:] = -1e9
@@ -257,7 +257,7 @@ class DecoderRNN(nn.Module):
 
 			EOSmet.append(flag)
 
-			flag = flag | (w == dm.eos_id)
+			flag = flag | (w == dm.eos_id).int()
 			if torch.sum(flag).detach().cpu().numpy() == batch_size * top_k:
 				break
 

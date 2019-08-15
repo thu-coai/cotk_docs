@@ -191,7 +191,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># or download from a url</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dl_url</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;http://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco_small.zip#MSCOCO&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># or import form local file</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># or import from local file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dl_zip</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;./MSCOCO.zip#MSCOCO&quot;</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>

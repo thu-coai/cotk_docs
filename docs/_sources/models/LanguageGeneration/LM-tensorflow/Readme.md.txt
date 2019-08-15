@@ -1,7 +1,7 @@
+[![Main Repo](https://img.shields.io/badge/Main_project-cotk-blue.svg?logo=github)](https://github.com/thu-coai/cotk)
+[![This Repo](https://img.shields.io/badge/Model_repo-LM--tensorflow-blue.svg?logo=github)](https://github.com/thu-coai/LM-tensorflow)
 [![Coverage Status](https://coveralls.io/repos/github/thu-coai/LM-tensorflow/badge.svg?branch=master)](https://coveralls.io/github/thu-coai/LM-tensorflow?branch=master)
 [![Build Status](https://travis-ci.com/thu-coai/LM-tensorflow.svg?branch=master)](https://travis-ci.com/thu-coai/LM-tensorflow)
-
-This is a model from cotk, click here to our [main repo](https://github.com/thu-coai/cotk).
 
 # Language Model (TensorFlow)
 

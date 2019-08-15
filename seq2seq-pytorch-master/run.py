@@ -67,6 +67,8 @@ def run(*argv):
 		help='Use cache for speeding up load data and wordvec. (It may cause problems when you switch dataset.)')
 	parser.add_argument('--seed', type=int, default=0,
 		help='Specify random seed. Default: 0')
+	parser.add_argument('--lr', type=float, default=1e-3,
+		help='Learning rate. Default: 0.001')
 	cargs = parser.parse_args(argv)
 
 
@@ -104,7 +106,7 @@ def run(*argv):
 	args.droprate = cargs.droprate
 	args.batchnorm = cargs.batchnorm
 
-	args.lr = 1e-3
+	args.lr = cargs.lr
 	args.batch_size = 64
 	args.batch_num_per_gradient = 4
 	args.grad_clip = 5

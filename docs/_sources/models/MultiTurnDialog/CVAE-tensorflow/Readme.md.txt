@@ -1,7 +1,7 @@
+[![Main Repo](https://img.shields.io/badge/Main_project-cotk-blue.svg?logo=github)](https://github.com/thu-coai/cotk)
+[![This Repo](https://img.shields.io/badge/Model_repo-CVAE--tensorflow-blue.svg?logo=github)](https://github.com/thu-coai/CVAE-tensorflow)
 [![Coverage Status](https://coveralls.io/repos/github/thu-coai/CVAE-tensorflow/badge.svg?branch=master)](https://coveralls.io/github/thu-coai/CVAE-tensorflow?branch=master)
 [![Build Status](https://travis-ci.com/thu-coai/CVAE-tensorflow.svg?branch=master)](https://travis-ci.com/thu-coai/CVAE-tensorflow)
-
-This is a model from cotk, click here to our [main repo](https://github.com/thu-coai/cotk).
 
 # CVAE (TensorFlow)
 

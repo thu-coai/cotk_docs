@@ -99,11 +99,11 @@ class Seq2SeqModel(object):
 		# create summary for tensorboard
 		self.create_summary(args)
 
-	def store_checkpoint(self, sess, path, key):
+	def store_checkpoint(self, sess, path, key, name):
 		if key == "latest":
-			self.latest_saver.save(sess, path, global_step = self.global_step)
+			self.latest_saver.save(sess, path, global_step = self.global_step, latest_filename = name)
 		else:
-			self.best_saver.save(sess, path, global_step = self.global_step)
+			self.best_saver.save(sess, path, global_step = self.global_step, latest_filename = name)
 			#self.best_global_step = self.global_step
 
 	def create_summary(self, args):
@@ -173,7 +173,7 @@ class Seq2SeqModel(object):
 							 time_step, show(np.exp(loss_step))))
 					self.trainSummary(self.global_step.eval() // args.checkpoint_steps, {'loss': loss_step, 'perplexity': np.exp(loss_step)})
 					#self.saver.save(sess, '%s/checkpoint_latest' % args.model_dir, global_step=self.global_step)\
-					self.store_checkpoint(sess, '%s/checkpoint_latest/checkpoint' % args.model_dir, "latest")
+					self.store_checkpoint(sess, '%s/checkpoint_latest/%s' % (args.model_dir, args.name), "latest", args.name)
 
 					dev_loss = self.evaluate(sess, data, args.batch_size, "dev")
 					self.devSummary(self.global_step.eval() // args.checkpoint_steps, {'loss': dev_loss, 'perplexity': np.exp(dev_loss)})
@@ -185,7 +185,7 @@ class Seq2SeqModel(object):
 						sess.run(self.learning_rate_decay_op)
 					if dev_loss < best_valid:
 						best_valid = dev_loss
-						self.store_checkpoint(sess, '%s/checkpoint_best/checkpoint' % args.model_dir, "best")
+						self.store_checkpoint(sess, '%s/checkpoint_best/%s' % (args.model_dir, args.name), "best", args.name)
 
 					previous_losses = previous_losses[1:] + [np.sum(loss_step)]
 					loss_step, time_step = np.zeros((1,)), .0

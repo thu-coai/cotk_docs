@@ -23,7 +23,8 @@ def gumbel_softmax(logits, tau=1, dim=-1):
 	  be probability distributions that sum to 1 across `dim`.
 	"""
 
-	gumbels = -torch.empty_like(logits).exponential_().log()  # ~Gumbel(0,1)
+	# workaround for bug in torch 1.1.0
+	gumbels = torch.min(-cuda(torch.empty_like(logits).cpu().exponential_()).log(), Tensor([1e10]))  # ~Gumbel(0,1)
 	gumbels = (logits + gumbels) / tau  # ~Gumbel(logits,tau)
 	y_soft = gumbels.softmax(dim)
 
@@ -31,7 +32,7 @@ def gumbel_softmax(logits, tau=1, dim=-1):
 	return ret
 
 def gumbel_max(logits, tau=1, dim=-1):
-	gumbels = -torch.empty_like(logits).exponential_().log()  # ~Gumbel(0,1)
+	gumbels = torch.min(-cuda(torch.empty_like(logits).cpu().exponential_()).log(), Tensor([1e10]))  # ~Gumbel(0,1)
 	gumbels = (logits + gumbels) / tau  # ~Gumbel(logits,tau)
 	y_soft = gumbels.softmax(dim)
 
@@ -42,7 +43,7 @@ def gumbel_max(logits, tau=1, dim=-1):
 	return ret
 
 def gumbel_max_with_mask(logits, mask, tau=1, dim=-1):
-	gumbels = -torch.empty_like(logits).exponential_().log()  # ~Gumbel(0,1)
+	gumbels = torch.min(-cuda(torch.empty_like(logits).cpu().exponential_()).log(), Tensor([1e10]))  # ~Gumbel(0,1)
 	gumbels = (logits + gumbels) / tau  # ~Gumbel(logits,tau)
 	gumbels = gumbels.masked_fill(mask==0, -1e9)
 	y_soft = gumbels.softmax(dim)

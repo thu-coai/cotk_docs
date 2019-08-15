@@ -4,9 +4,10 @@ from collections import OrderedDict
 
 from torch import nn
 from torch.nn import Parameter
+from .module_helper import BaseModule
 
 # pylint: disable=W0223, W0221
-class BaseNetwork(nn.Module):
+class BaseNetwork(BaseModule):
 	def __init__(self, param, collection_name=None):
 		super().__init__()
 		args = param.args
@@ -24,7 +25,7 @@ class BaseNetwork(nn.Module):
 
 	def in_collection(self, name, _set):
 		for cn in _set:
-			if "_" + cn in name:
+			if "_" + cn in name and ("_exclude_" + cn) not in name:
 				return True
 		return False
 

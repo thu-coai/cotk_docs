@@ -369,8 +369,12 @@
 
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+
+		<span class="n">rng_state</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+		<span class="n">random</span><span class="o">.</span><span class="n">setstate</span><span class="p">(</span><span class="n">rng_state</span><span class="p">)</span>
+
 		<span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">]</span>
 		<span class="n">_ref</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
 
@@ -485,9 +489,11 @@
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;`sample_refs` should be more than 1, </span><span class="se">\</span>
 <span class="s1">				whose value is `</span><span class="si">{}</span><span class="s1">`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_refs</span><span class="p">))</span>
 
+		<span class="n">rng_state</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+		<span class="n">random</span><span class="o">.</span><span class="n">setstate</span><span class="p">(</span><span class="n">rng_state</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
 
