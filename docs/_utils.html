@@ -1,0 +1,887 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>_utils &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Loader" href="dataloader.html" />
+    <link rel="prev" title="Frequently Asked Questions" href="notes/FAQ.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">_utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils._utils">_utils._utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils.file_utils">file_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils.hooks">hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils.imports">imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils.metaclass">metaclass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils.resource_processor">resources_processor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk._utils.unordered_hash">unordered_hash</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/_utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-cotk._utils">
+<span id="utils"></span><h1>_utils<a class="headerlink" href="#module-cotk._utils" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">cotk._utils</span></code> often is used by internal lib. The users should
+not find api here.</p>
+<div class="section" id="module-cotk._utils._utils">
+<span id="utils-utils"></span><h2>_utils._utils<a class="headerlink" href="#module-cotk._utils._utils" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cotk._utils</span></code> is a function lib for internal use.</p>
+<dl class="function">
+<dt id="cotk._utils._utils.trim_before_target">
+<code class="descclassname">cotk._utils._utils.</code><code class="descname">trim_before_target</code><span class="sig-paren">(</span><em>lists</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/_utils.html#trim_before_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils._utils.trim_before_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trim the list before the target. If there is no target,
+return the origin list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lists</strong> (<em>list</em>)</li>
+<li><strong>target</strong></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cotk._utils.file_utils">
+<span id="file-utils"></span><h2>file_utils<a class="headerlink" href="#module-cotk._utils.file_utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for working with the local dataset cache.
+This file is adapted from the AllenNLP library at <a class="reference external" href="https://github.com/allenai/allennlp">https://github.com/allenai/allennlp</a>
+Copyright by the AllenNLP authors.</p>
+<dl class="function">
+<dt id="cotk._utils.file_utils._url_to_filename">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_url_to_filename</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_url_to_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._url_to_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the url to sha256 as filename</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._get_config">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_get_config</code><span class="sig-paren">(</span><em>res_name</em>, <em>config_dir='/home/travis/build/thu-coai/cotk/cotk/_utils/../resource_config'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_get_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get config(dict) by the name of resource</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._http_get">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_http_get</code><span class="sig-paren">(</span><em>url</em>, <em>temp_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_http_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._http_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull a file directly from http</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._get_file_sha256">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_get_file_sha256</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_get_file_sha256"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._get_file_sha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get sha256 of given file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._get_hashtag">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_get_hashtag</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_get_hashtag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._get_hashtag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get sha256 of given directory or file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._parse_file_id">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_parse_file_id</code><span class="sig-paren">(</span><em>file_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_parse_file_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._parse_file_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>file_id contains one essential part and two optional parts</p>
+<p>file_id: name[&#64;source][#processor]</p>
+<p>examples:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>file_id=https://XXX/            name=https://XXX/   source=None      processor=Default
+file_id=MSCOCO@tsinghua#Glove   name=MSCOCO         source=tsinghua  processor=GloveProcessor
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._get_resource">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_get_resource</code><span class="sig-paren">(</span><em>file_id</em>, <em>cache_dir='/home/travis/.cotk_cache'</em>, <em>config_dir='/home/travis/build/thu-coai/cotk/cotk/_utils/../resource_config'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_get_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._get_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the resource with the given name.
+If not cached, download it using the URL stored in config file.
+If cached, check the hashtag.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._download_data">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_download_data</code><span class="sig-paren">(</span><em>url</em>, <em>cache_dir='/home/travis/.cotk_cache'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_download_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._download_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>If not cached, download the resource using url.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils._load_local_data">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">_load_local_data</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#_load_local_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils._load_local_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import temporary resources from local</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils.get_resource_file_path">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">get_resource_file_path</code><span class="sig-paren">(</span><em>file_id</em>, <em>cache_dir='/home/travis/.cotk_cache'</em>, <em>config_dir='/home/travis/build/thu-coai/cotk/cotk/_utils/../resource_config'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#get_resource_file_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils.get_resource_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get file_path of resource of all types</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils.import_local_resources">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">import_local_resources</code><span class="sig-paren">(</span><em>file_id</em>, <em>local_path</em>, <em>cache_dir='/home/travis/.cotk_cache'</em>, <em>config_dir='/home/travis/build/thu-coai/cotk/cotk/_utils/../resource_config'</em>, <em>ignore_exist_error=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#import_local_resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils.import_local_resources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import benchmark from local, if hashtag checked, save to cache.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.file_utils.load_file_from_url">
+<code class="descclassname">cotk._utils.file_utils.</code><code class="descname">load_file_from_url</code><span class="sig-paren">(</span><em>url</em>, <em>force=False</em>, <em>cache_dir='/home/travis/.cotk_cache'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/file_utils.html#load_file_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.file_utils.load_file_from_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>See cotk.downloader.load_file_from_url.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cotk._utils.hooks">
+<span id="hooks"></span><h2>hooks<a class="headerlink" href="#module-cotk._utils.hooks" title="Permalink to this headline">¶</a></h2>
+<p>A utils providing callback hooks.</p>
+<dl class="function">
+<dt id="cotk._utils.hooks.invoke_listener">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">invoke_listener</code><span class="sig-paren">(</span><em>method</em>, <em>*argv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#invoke_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.invoke_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoke listener with method</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.compress_dict">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">compress_dict</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#compress_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.compress_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy a dict and prepare converting to json. If a item is too big, use … instead.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.hook_dataloader">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">hook_dataloader</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#hook_dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.hook_dataloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator for dataloader.__init___</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.hook_metric">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">hook_metric</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#hook_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.hook_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator for metric.__init__</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.hook_metric_close">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">hook_metric_close</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#hook_metric_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.hook_metric_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator for metric.close</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.hook_wordvec">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">hook_wordvec</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#hook_wordvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.hook_wordvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator for wordvec.__init__</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.hooks.BaseHooksListener">
+<em class="property">class </em><code class="descclassname">cotk._utils.hooks.</code><code class="descname">BaseHooksListener</code><a class="reference internal" href="_modules/cotk/_utils/hooks.html#BaseHooksListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.BaseHooksListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract class implement the basic hook listener</p>
+<dl class="method">
+<dt id="cotk._utils.hooks.BaseHooksListener.add_dataloader">
+<code class="descname">add_dataloader</code><span class="sig-paren">(</span><em>obj</em>, <em>dataloader</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#BaseHooksListener.add_dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.BaseHooksListener.add_dataloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at dataloader.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<em>Dataloader</em>) – the obj created.</li>
+<li><strong>dataloader</strong> (<em>str</em>) – the string of obj’s class</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of dataloader.__init__ except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.BaseHooksListener.add_metric">
+<code class="descname">add_metric</code><span class="sig-paren">(</span><em>obj</em>, <em>metric</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#BaseHooksListener.add_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.BaseHooksListener.add_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at metric.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<a class="reference internal" href="metric.html#cotk.metric.MetricBase" title="cotk.metric.MetricBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricBase</span></code></a>) – the obj created.</li>
+<li><strong>metric</strong> (<em>str</em>) – the string of obj’s class</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of metric.__init__ except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.BaseHooksListener.invoke_metric_close">
+<code class="descname">invoke_metric_close</code><span class="sig-paren">(</span><em>obj</em>, <em>return_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#BaseHooksListener.invoke_metric_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.BaseHooksListener.invoke_metric_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at metric.close</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<a class="reference internal" href="metric.html#cotk.metric.MetricBase" title="cotk.metric.MetricBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricBase</span></code></a>) – the obj of metric</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of metric.close except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.BaseHooksListener.add_wordvec">
+<code class="descname">add_wordvec</code><span class="sig-paren">(</span><em>obj</em>, <em>wordvec</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#BaseHooksListener.add_wordvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.BaseHooksListener.add_wordvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at wordvec.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">wordvec.WordVector</span></code>) – the obj created.</li>
+<li><strong>wordvec</strong> (<em>str</em>) – the string of obj’s class</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of wordvec.__init__ except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.hooks.SimpleHooksListener">
+<em class="property">class </em><code class="descclassname">cotk._utils.hooks.</code><code class="descname">SimpleHooksListener</code><a class="reference internal" href="_modules/cotk/_utils/hooks.html#SimpleHooksListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.SimpleHooksListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>An simple recorder</p>
+<dl class="method">
+<dt id="cotk._utils.hooks.SimpleHooksListener.close">
+<code class="descname">close</code><span class="sig-paren">(</span><em>result_dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#SimpleHooksListener.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.SimpleHooksListener.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at dataloader.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>dict. At least containing</em> –<ul class="simple">
+<li>cotk_version (str)</li>
+<li>dataloader (list): each element is (dataset_args, [metric_args])</li>
+<li>wordvec (list): each element is wordvec_args</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.SimpleHooksListener.add_dataloader">
+<code class="descname">add_dataloader</code><span class="sig-paren">(</span><em>obj</em>, <em>dataloader</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#SimpleHooksListener.add_dataloader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.SimpleHooksListener.add_dataloader" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at dataloader.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<em>Dataloader</em>) – the obj created.</li>
+<li><strong>dataloader</strong> (<em>str</em>) – the string of obj’s class</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of dataloader.__init__ except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.SimpleHooksListener.add_metric">
+<code class="descname">add_metric</code><span class="sig-paren">(</span><em>obj</em>, <em>metric</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#SimpleHooksListener.add_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.SimpleHooksListener.add_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at metric.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<a class="reference internal" href="metric.html#cotk.metric.MetricBase" title="cotk.metric.MetricBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricBase</span></code></a>) – the obj created.</li>
+<li><strong>metric</strong> (<em>str</em>) – the string of obj’s class</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of metric.__init__ except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.SimpleHooksListener.invoke_metric_close">
+<code class="descname">invoke_metric_close</code><span class="sig-paren">(</span><em>obj</em>, <em>return_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#SimpleHooksListener.invoke_metric_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.SimpleHooksListener.invoke_metric_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at metric.close</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<a class="reference internal" href="metric.html#cotk.metric.MetricBase" title="cotk.metric.MetricBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.MetricBase</span></code></a>) – the obj of metric</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of metric.close except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.hooks.SimpleHooksListener.add_wordvec">
+<code class="descname">add_wordvec</code><span class="sig-paren">(</span><em>obj</em>, <em>wordvec</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#SimpleHooksListener.add_wordvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.SimpleHooksListener.add_wordvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>invoked at wordvec.__init__</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">wordvec.WordVector</span></code>) – the obj created.</li>
+<li><strong>wordvec</strong> (<em>str</em>) – the string of obj’s class</li>
+<li><strong>args</strong> (<em>tuple</em>) – the arguments of wordvec.__init__ except self</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.start_recorder">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">start_recorder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#start_recorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.start_recorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start recorder</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk._utils.hooks.close_recorder">
+<code class="descclassname">cotk._utils.hooks.</code><code class="descname">close_recorder</code><span class="sig-paren">(</span><em>result_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/hooks.html#close_recorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.hooks.close_recorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close recorder and return the recorded information.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cotk._utils.imports">
+<span id="imports"></span><h2>imports<a class="headerlink" href="#module-cotk._utils.imports" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cotk._utils.imports</span></code> provides classes that fake a uninstalled module.</p>
+<dl class="class">
+<dt id="cotk._utils.imports.DummyObject">
+<em class="property">class </em><code class="descclassname">cotk._utils.imports.</code><code class="descname">DummyObject</code><span class="sig-paren">(</span><em>err</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/imports.html#DummyObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.imports.DummyObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy Object for uninstalled modules.
+.. rubric:: Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="kn">import</span> <span class="nn">torch</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="n">torch</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+<span class="go">ModuleNotFoundError: No module named &#39;torch&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">err</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">()</span>
+<span class="go">ModuleNotFoundError: No module named &#39;torch&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cotk._utils.metaclass">
+<span id="metaclass"></span><h2>metaclass<a class="headerlink" href="#module-cotk._utils.metaclass" title="Permalink to this headline">¶</a></h2>
+<p>A lib for decorator and metaclass</p>
+<dl class="class">
+<dt id="cotk._utils.metaclass.DocStringInheritor">
+<em class="property">class </em><code class="descclassname">cotk._utils.metaclass.</code><code class="descname">DocStringInheritor</code><a class="reference internal" href="_modules/cotk/_utils/metaclass.html#DocStringInheritor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.metaclass.DocStringInheritor" title="Permalink to this definition">¶</a></dt>
+<dd><p>A meta class. It let the class have the following functions:</p>
+<ul class="simple">
+<li>Docstring can inherit the parent class.</li>
+<li>{STRING} in docs will be replaced by self.STRING</li>
+</ul>
+<p>A variation on
+<a class="reference external" href="http://groups.google.com/group/comp.lang.python/msg/26f7b4fcb4d66c95">http://groups.google.com/group/comp.lang.python/msg/26f7b4fcb4d66c95</a>
+by Paul McGuire
+from <a class="reference external" href="https://stackoverflow.com/questions/8100166/inheriting-methods-docstrings-in-python">https://stackoverflow.com/questions/8100166/inheriting-methods-docstrings-in-python</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.metaclass.LoadClassInterface">
+<em class="property">class </em><code class="descclassname">cotk._utils.metaclass.</code><code class="descname">LoadClassInterface</code><a class="reference internal" href="_modules/cotk/_utils/metaclass.html#LoadClassInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.metaclass.LoadClassInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>The support of dynamic class load.</p>
+<dl class="classmethod">
+<dt id="cotk._utils.metaclass.LoadClassInterface.get_all_subclasses">
+<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/metaclass.html#LoadClassInterface.get_all_subclasses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.metaclass.LoadClassInterface.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a generator of all subclasses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(generator) A iterator over all subclasses.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="cotk._utils.metaclass.LoadClassInterface.load_class">
+<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/metaclass.html#LoadClassInterface.load_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.metaclass.LoadClassInterface.load_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subclass of <code class="docutils literal notranslate"><span class="pre">class_name</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>class_name</strong> (<em>str</em>) – target class name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(class) The subclass specified by <code class="docutils literal notranslate"><span class="pre">class_name</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cotk._utils.resource_processor">
+<span id="resources-processor"></span><h2>resources_processor<a class="headerlink" href="#module-cotk._utils.resource_processor" title="Permalink to this headline">¶</a></h2>
+<p>Processor for resource after download and before read</p>
+<dl class="function">
+<dt id="cotk._utils.resource_processor.unzip_file">
+<code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">unzip_file</code><span class="sig-paren">(</span><em>src_path</em>, <em>dst_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#unzip_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.unzip_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>unzip the zip file in src_path to dst_dir</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.ResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">ResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#ResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.ResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for processor.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.DefaultResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">DefaultResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#DefaultResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.DefaultResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for default resource: do nothing.</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.DefaultResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#DefaultResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.DefaultResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.DefaultResourceProcessor.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#DefaultResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.DefaultResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.BaseResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">BaseResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#BaseResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.BaseResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic processor for MSCOCO, OpenSubtitles, Ubuntu…</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.BaseResourceProcessor.basepreprocess">
+<code class="descname">basepreprocess</code><span class="sig-paren">(</span><em>local_path</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#BaseResourceProcessor.basepreprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.BaseResourceProcessor.basepreprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.BaseResourceProcessor.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#BaseResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.BaseResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.MSCOCOResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">MSCOCOResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#MSCOCOResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.MSCOCOResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for MSCOCO dataset</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.MSCOCOResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#MSCOCOResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.MSCOCOResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.OpenSubtitlesResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">OpenSubtitlesResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#OpenSubtitlesResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for OpenSubtitles Dataset</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#OpenSubtitlesResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.UbuntuResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">UbuntuResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#UbuntuResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.UbuntuResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for UbuntuCorpus dataset</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.UbuntuResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#UbuntuResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.UbuntuResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">SwitchboardCorpusResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#SwitchboardCorpusResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for SwitchboardCorpus dataset</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#SwitchboardCorpusResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.SSTResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">SSTResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#SSTResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.SSTResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for SwitchboardCorpus dataset</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.SSTResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#SSTResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.SSTResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.GloveResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">GloveResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#GloveResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.GloveResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base Class for all dimension version of glove wordvector.</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.GloveResourceProcessor.basepreprocess">
+<code class="descname">basepreprocess</code><span class="sig-paren">(</span><em>local_path</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#GloveResourceProcessor.basepreprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.GloveResourceProcessor.basepreprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.GloveResourceProcessor.basepostprocess">
+<code class="descname">basepostprocess</code><span class="sig-paren">(</span><em>local_path</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#GloveResourceProcessor.basepostprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.GloveResourceProcessor.basepostprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.Glove50dResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">Glove50dResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove50dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove50dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove50d wordvector</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove50dResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove50dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove50dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove50dResourceProcessor.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove50dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove50dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.Glove100dResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">Glove100dResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove100dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove100dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove100d wordvector</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove100dResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove100dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove100dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove100dResourceProcessor.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove100dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove100dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.Glove200dResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">Glove200dResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove200dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove200dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove200d wordvector</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove200dResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove200dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove200dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove200dResourceProcessor.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove200dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove200dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk._utils.resource_processor.Glove300dResourceProcessor">
+<em class="property">class </em><code class="descclassname">cotk._utils.resource_processor.</code><code class="descname">Glove300dResourceProcessor</code><span class="sig-paren">(</span><em>cache_dir=None</em>, <em>config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove300dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove300dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove300d wordvector</p>
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove300dResourceProcessor.preprocess">
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove300dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove300dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.resource_processor.Glove300dResourceProcessor.postprocess">
+<code class="descname">postprocess</code><span class="sig-paren">(</span><em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/resource_processor.html#Glove300dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.resource_processor.Glove300dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cotk._utils.unordered_hash">
+<span id="unordered-hash"></span><h2>unordered_hash<a class="headerlink" href="#module-cotk._utils.unordered_hash" title="Permalink to this headline">¶</a></h2>
+<p>A module for hash unordered elements</p>
+<dl class="class">
+<dt id="cotk._utils.unordered_hash.UnorderedSha256">
+<em class="property">class </em><code class="descclassname">cotk._utils.unordered_hash.</code><code class="descname">UnorderedSha256</code><a class="reference internal" href="_modules/cotk/_utils/unordered_hash.html#UnorderedSha256"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.unordered_hash.UnorderedSha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using SHA256 on unordered elements</p>
+<dl class="method">
+<dt id="cotk._utils.unordered_hash.UnorderedSha256.update_data">
+<code class="descname">update_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/unordered_hash.html#UnorderedSha256.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.unordered_hash.UnorderedSha256.update_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>update digest by data. type(data)=bytes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.unordered_hash.UnorderedSha256.update_hash">
+<code class="descname">update_hash</code><span class="sig-paren">(</span><em>hashvalue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/unordered_hash.html#UnorderedSha256.update_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.unordered_hash.UnorderedSha256.update_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>update digest by hash. type(hashvalue)=bytes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk._utils.unordered_hash.UnorderedSha256.digest">
+<code class="descname">digest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/_utils/unordered_hash.html#UnorderedSha256.digest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk._utils.unordered_hash.UnorderedSha256.digest" title="Permalink to this definition">¶</a></dt>
+<dd><p>return unordered hashvalue</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dataloader.html" class="btn btn-neutral float-right" title="Data Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="notes/FAQ.html" class="btn btn-neutral float-left" title="Frequently Asked Questions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

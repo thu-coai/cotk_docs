@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -247,8 +248,7 @@
 		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;teacher_forcing&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGeneration.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for teacher-forcing. In other words, this function</span>
 <span class="sd">		provides metrics for language modelling task.</span>
 
@@ -268,10 +268,9 @@
 					<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;sent_allvocabs&#39;</span><span class="p">,</span> \
 					<span class="n">reference_len_key</span><span class="o">=</span><span class="s1">&#39;sent_length&#39;</span><span class="p">,</span> \
 					<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span>
+		<span class="k">return</span> <span class="n">metric</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;inference&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> <span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGeneration.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageGeneration.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> <span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for inference. In other words, this function provides metrics for</span>
 <span class="sd">		language generation tasks.</span>
 
@@ -308,7 +307,7 @@
 					<span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> \
 					<span class="n">cpu_count</span><span class="o">=</span><span class="n">cpu_count</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">LanguageGenerationRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span></div>
+		<span class="k">return</span> <span class="n">metric</span></div></div>
 
 <div class="viewcode-block" id="MSCOCO"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.MSCOCO">[docs]</a><span class="k">class</span> <span class="nc">MSCOCO</span><span class="p">(</span><span class="n">LanguageGeneration</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloader for preprocessed MSCOCO dataset.</span>

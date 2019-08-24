@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -177,6 +178,7 @@
 <span class="kn">import</span> <span class="nn">tqdm</span>
 <span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">corpus_bleu</span><span class="p">,</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
 <span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
 
 
 <span class="k">def</span> <span class="nf">_replace_unk</span><span class="p">(</span><span class="n">_input</span><span class="p">,</span> <span class="n">_unk_id</span><span class="p">,</span> <span class="n">_target</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
@@ -220,9 +222,13 @@
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;BleuCorpusMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">ignore_smoothing_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>\
 			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">ignore_smoothing_error</span> <span class="o">=</span> <span class="n">ignore_smoothing_error</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span> <span class="o">=</span> <span class="n">reference_allvocabs_key</span>
@@ -267,7 +273,8 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">reference</span><span class="p">])</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): Return a dict which contains</span>
@@ -292,7 +299,7 @@
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
 					<span class="mi">0</span><span class="p">,</span> \
 					<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">result</span></div></div>
+		<span class="k">return</span> <span class="n">result</span></div>
 
 <div class="viewcode-block" id="SelfBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Metric for calculating Self-BLEU.</span>
@@ -309,12 +316,16 @@
 <span class="sd">			will be less than ``sample`` if the size of hypotheses is smaller than ``sample``</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;SelfBleuCorpusMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
 		<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
 		<span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> \
 		<span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> \
 		<span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span>
@@ -351,7 +362,8 @@
 		<span class="k">for</span> <span class="n">gen_sen</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SelfBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): Return a dict which contains</span>
@@ -400,7 +412,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">])</span>
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;self-bleu&quot;</span> <span class="p">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bleu_irl</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleu_irl</span><span class="p">),</span>\
 					<span class="s2">&quot;self-bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">res</span></div></div>
+		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="FwBwBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.FwBwBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Metric for calculating FwBw-BLEU.</span>
@@ -418,13 +430,17 @@
 <span class="sd">		if the size of them is smaller than ``sample``.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;FwBwBleuCorpusMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
 			<span class="n">reference_test_list</span><span class="p">,</span> \
 			<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
 			<span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> \
 			<span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> \
 			<span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span> <span class="o">=</span> <span class="n">reference_test_list</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
@@ -462,8 +478,8 @@
 		<span class="k">for</span> <span class="n">gen_sen</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">)))</span></div>
 
-
-<div class="viewcode-block" id="FwBwBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.FwBwBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): Return a dict which contains</span>
@@ -544,7 +560,7 @@
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="n">sample_hyps</span><span class="p">,</span> <span class="n">sample_refs</span><span class="p">])</span>
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;fw-bw-bleu hashvalue&quot;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">res</span></div></div>
+		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="MultiTurnBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating multi-turn BLEU.</span>
@@ -555,12 +571,17 @@
 <span class="sd">		{MetricBase.MULTI_TURN_GEN_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_LENGTH_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MultiTurnBleuCorpusMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">ignore_smoothing_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>\
 					<span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;reference_allvocabs&quot;</span><span class="p">,</span> \
 					<span class="n">multi_turn_gen_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen&quot;</span><span class="p">,</span> \
 					<span class="n">turn_len_key</span><span class="o">=</span><span class="s2">&quot;turn_length&quot;</span> \
 			  <span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">ignore_smoothing_error</span> <span class="o">=</span> <span class="n">ignore_smoothing_error</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_allvocabs_key</span>
@@ -610,7 +631,8 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_session</span><span class="p">[</span><span class="n">j</span><span class="p">])))</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">ref_session</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">1</span><span class="p">:])])</span></div>
 
-<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): Return a dict which contains</span>
@@ -637,7 +659,7 @@
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
 					<span class="mi">0</span><span class="p">,</span> \
 					<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">result</span></div></div>
+		<span class="k">return</span> <span class="n">result</span></div>
 </pre></div>
 
            </div>

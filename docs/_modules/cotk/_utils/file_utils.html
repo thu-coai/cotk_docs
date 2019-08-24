@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk._utils.file_utils &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk._utils.file_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk._utils.file_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for working with the local dataset cache.</span>
+<span class="sd">This file is adapted from the AllenNLP library at https://github.com/allenai/allennlp</span>
+<span class="sd">Copyright by the AllenNLP authors.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">checksumdir</span> <span class="k">import</span> <span class="n">dirhash</span>
+
+<span class="kn">from</span> <span class="nn">.resource_processor</span> <span class="k">import</span> <span class="n">ResourceProcessor</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">LOGGER</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">FORMAT</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">SH</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<span class="n">SH</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">FORMAT</span><span class="p">)</span>
+<span class="n">LOGGER</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">SH</span><span class="p">)</span>
+<span class="n">CACHE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()),</span> <span class="s1">&#39;.cotk_cache&#39;</span><span class="p">)</span>
+<span class="n">CONFIG_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;../resource_config&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="_url_to_filename"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._url_to_filename">[docs]</a><span class="k">def</span> <span class="nf">_url_to_filename</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert the url to sha256 as filename</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">url_bytes</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+	<span class="n">url_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">url_bytes</span><span class="p">)</span>
+	<span class="n">filename</span> <span class="o">=</span> <span class="n">url_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="n">filename</span></div>
+
+
+<div class="viewcode-block" id="_get_config"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._get_config">[docs]</a><span class="k">def</span> <span class="nf">_get_config</span><span class="p">(</span><span class="n">res_name</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">CONFIG_DIR</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Get config(dict) by the name of resource&#39;&#39;&#39;</span>
+	<span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config_dir</span><span class="p">,</span> <span class="n">res_name</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_path</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;file </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_path</span><span class="p">))</span>
+	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file</span><span class="p">:</span>
+		<span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="_http_get"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._http_get">[docs]</a><span class="k">def</span> <span class="nf">_http_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">temp_file</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Pull a file directly from http&#39;&#39;&#39;</span>
+	<span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">content_length</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">)</span>
+	<span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">content_length</span><span class="p">)</span> <span class="k">if</span> <span class="n">content_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+	<span class="n">progress</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">req</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">65536</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+			<span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+			<span class="n">temp_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+	<span class="n">progress</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_get_file_sha256"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._get_file_sha256">[docs]</a><span class="k">def</span> <span class="nf">_get_file_sha256</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Get sha256 of given file&#39;&#39;&#39;</span>
+	<span class="n">hash_sha256</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4096</span><span class="p">),</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+			<span class="n">hash_sha256</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">hash_sha256</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_get_hashtag"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._get_hashtag">[docs]</a><span class="k">def</span> <span class="nf">_get_hashtag</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Get sha256 of given directory or file&#39;&#39;&#39;</span>
+	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">dirhash</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">_get_file_sha256</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="_parse_file_id"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._parse_file_id">[docs]</a><span class="k">def</span> <span class="nf">_parse_file_id</span><span class="p">(</span><span class="n">file_id</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	file_id contains one essential part and two optional parts</span>
+
+<span class="sd">	file_id: name[@source][#processor]</span>
+
+<span class="sd">	examples:</span>
+
+<span class="sd">	.. code-block:: text</span>
+
+<span class="sd">		file_id=https://XXX/            name=https://XXX/   source=None      processor=Default</span>
+<span class="sd">		file_id=MSCOCO@tsinghua#Glove   name=MSCOCO         source=tsinghua  processor=GloveProcessor</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="c1"># There may be # in name, so we process file_id reversely.</span>
+	<span class="c1"># TODO: what if there is # in name?</span>
+	<span class="n">source</span><span class="p">,</span> <span class="n">processor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+	<span class="n">name</span> <span class="o">=</span> <span class="n">file_id</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="k">if</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">file_id</span><span class="p">:</span>
+		<span class="n">processor</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="n">processor</span> <span class="o">=</span> <span class="n">processor</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="k">if</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">file_id</span><span class="p">:</span>
+		<span class="n">source</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">processor</span></div>
+
+<div class="viewcode-block" id="_get_resource"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._get_resource">[docs]</a><span class="k">def</span> <span class="nf">_get_resource</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="n">CACHE_DIR</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">CONFIG_DIR</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Get the resource with the given name.</span>
+<span class="sd">	If not cached, download it using the URL stored in config file.</span>
+<span class="sd">	If cached, check the hashtag.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="n">res_name</span><span class="p">,</span> <span class="n">src_name</span><span class="p">,</span> <span class="n">res_type</span> <span class="o">=</span> <span class="n">_parse_file_id</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
+	<span class="n">config</span> <span class="o">=</span> <span class="n">_get_config</span><span class="p">(</span><span class="n">res_name</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
+
+	<span class="n">src_name</span> <span class="o">=</span> <span class="n">src_name</span> <span class="ow">or</span> <span class="s1">&#39;default&#39;</span>
+	<span class="n">res_type</span> <span class="o">=</span> <span class="n">res_type</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;Default&#39;</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;name: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">res_name</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;source: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">src_name</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;processor type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">res_type</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">res_type</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;res_type </span><span class="si">{}</span><span class="s2"> differs with res_type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_type</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]))</span>
+
+	<span class="n">resource_processor</span> <span class="o">=</span> <span class="n">ResourceProcessor</span><span class="o">.</span><span class="n">load_class</span><span class="p">(</span><span class="n">res_type</span> <span class="o">+</span> <span class="s1">&#39;ResourceProcessor&#39;</span><span class="p">)</span>\
+			<span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">resource_processor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No resources type named </span><span class="si">%s</span><span class="s2">ResourcePreprocessor&quot;</span> <span class="o">%</span> <span class="n">res_type</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">src_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;link&#39;</span><span class="p">]:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;source </span><span class="si">{}</span><span class="s2"> wrong&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_name</span><span class="p">))</span>
+	<span class="n">url</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;link&#39;</span><span class="p">][</span><span class="n">src_name</span><span class="p">]</span>
+	<span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">_url_to_filename</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span>
+	<span class="n">meta_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">_url_to_filename</span><span class="p">(</span><span class="n">res_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">meta_path</span><span class="p">):</span>
+		<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span>  <span class="k">as</span> <span class="n">temp_file</span><span class="p">:</span>
+			<span class="n">_http_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">temp_file</span><span class="p">)</span>
+			<span class="n">temp_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> <span class="c1"># flush to avoid truncation</span>
+			<span class="n">temp_file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># shutil.copyfileobj() starts at the current position</span>
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cache_file</span><span class="p">:</span>
+				<span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="n">cache_file</span><span class="p">)</span>
+
+		<span class="c1"># filename hash for search, content hash for validation</span>
+		<span class="n">content_hash</span> <span class="o">=</span> <span class="n">_get_file_sha256</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+		<span class="n">cache_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">content_hash</span> <span class="o">==</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hashtag&#39;</span><span class="p">]:</span>
+			<span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;hashtag&#39;</span><span class="p">:</span> <span class="n">content_hash</span><span class="p">,</span> <span class="s1">&#39;local_path&#39;</span><span class="p">:</span> <span class="n">cache_path</span><span class="p">}</span>
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">meta_file</span><span class="p">:</span>
+				<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">meta_file</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bad hashtag </span><span class="si">{}</span><span class="s2">, correct is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">content_hash</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hashtag&#39;</span><span class="p">]))</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad hashtag of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span>
+
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">meta_file</span><span class="p">:</span>
+			<span class="n">meta</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">meta_file</span><span class="p">)</span>
+			<span class="n">cache_path</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;local_path&#39;</span><span class="p">]</span>
+			<span class="n">content_hash</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;hashtag&#39;</span><span class="p">]</span>
+
+		<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> exists in cache&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">content_hash</span> <span class="o">!=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hashtag&#39;</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad hashtag of </span><span class="si">{}</span><span class="s2">, name conflication or mismatched content. </span><span class="se">\</span>
+<span class="s2">							meta path </span><span class="si">{}</span><span class="s2">. cache path </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_name</span><span class="p">,</span> <span class="n">meta_path</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">))</span>
+
+	<span class="n">cache_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;resource cached at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">cache_path</span></div>
+
+<div class="viewcode-block" id="_download_data"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._download_data">[docs]</a><span class="k">def</span> <span class="nf">_download_data</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="n">CACHE_DIR</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;If not cached, download the resource using url.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="n">url</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">res_type</span> <span class="o">=</span> <span class="n">_parse_file_id</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+	<span class="n">res_type</span> <span class="o">=</span> <span class="n">res_type</span> <span class="ow">or</span> <span class="s1">&#39;Default&#39;</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;url: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;processor type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">res_type</span><span class="p">)</span>
+
+	<span class="n">resource_processor</span> <span class="o">=</span> <span class="n">ResourceProcessor</span><span class="o">.</span><span class="n">load_class</span><span class="p">(</span><span class="n">res_type</span> <span class="o">+</span> <span class="s1">&#39;ResourceProcessor&#39;</span><span class="p">)()</span>
+	<span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">_url_to_filename</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+	<span class="n">meta_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">_url_to_filename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">meta_path</span><span class="p">):</span>
+		<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_file</span><span class="p">:</span>
+			<span class="n">_http_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">temp_file</span><span class="p">)</span>
+			<span class="n">temp_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> <span class="c1"># flush to avoid truncation</span>
+			<span class="n">temp_file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># shutil.copyfileobj() starts at the current position</span>
+
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cache_file</span><span class="p">:</span>
+				<span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="n">cache_file</span><span class="p">)</span>
+			<span class="c1"># filename hash for search, content hash for validation</span>
+			<span class="n">content_hash</span> <span class="o">=</span> <span class="n">_get_file_sha256</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+			<span class="n">cache_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+
+			<span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;local_path&#39;</span><span class="p">:</span> <span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;hashtag&#39;</span><span class="p">:</span> <span class="n">content_hash</span><span class="p">}</span>
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">meta_file</span><span class="p">:</span>
+				<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">meta_file</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">meta_file</span><span class="p">:</span>
+			<span class="n">meta</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">meta_file</span><span class="p">)</span>
+			<span class="n">cache_path</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;local_path&#39;</span><span class="p">]</span>
+	<span class="n">cache_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;resource cached at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">cache_path</span></div>
+
+<div class="viewcode-block" id="_load_local_data"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils._load_local_data">[docs]</a><span class="k">def</span> <span class="nf">_load_local_data</span><span class="p">(</span><span class="n">local_path</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Import temporary resources from local&#39;&#39;&#39;</span>
+	<span class="n">local_path</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">res_type</span> <span class="o">=</span> <span class="n">_parse_file_id</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
+	<span class="n">res_type</span> <span class="o">=</span> <span class="n">res_type</span> <span class="ow">or</span> <span class="s1">&#39;Default&#39;</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;local path: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">local_path</span><span class="p">)</span>
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;processor type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">res_type</span><span class="p">)</span>
+	<span class="n">resource_processor</span> <span class="o">=</span> <span class="n">ResourceProcessor</span><span class="o">.</span><span class="n">load_class</span><span class="p">(</span><span class="n">res_type</span> <span class="o">+</span> <span class="s1">&#39;ResourceProcessor&#39;</span><span class="p">)()</span>
+	<span class="n">local_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_resource_file_path"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils.get_resource_file_path">[docs]</a><span class="k">def</span> <span class="nf">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="n">CACHE_DIR</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">CONFIG_DIR</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Get file_path of resource of all types</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">if</span> <span class="n">file_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;resources://&#39;</span><span class="p">):</span>
+		<span class="n">res_id</span> <span class="o">=</span> <span class="n">file_id</span><span class="p">[</span><span class="mi">12</span><span class="p">:]</span>
+		<span class="k">return</span> <span class="n">_get_resource</span><span class="p">(</span><span class="n">res_id</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="n">file_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">):</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="n">file_id</span>
+		<span class="k">return</span> <span class="n">_download_data</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">local_path</span> <span class="o">=</span> <span class="n">file_id</span>
+		<span class="k">return</span> <span class="n">_load_local_data</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="import_local_resources"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils.import_local_resources">[docs]</a><span class="k">def</span> <span class="nf">import_local_resources</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="n">CACHE_DIR</span><span class="p">,</span> \
+	<span class="n">config_dir</span><span class="o">=</span><span class="n">CONFIG_DIR</span><span class="p">,</span> <span class="n">ignore_exist_error</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Import benchmark from local, if hashtag checked, save to cache.&#39;&#39;&#39;</span>
+	<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">file_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;resources://&#39;</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;file_id must startswith </span><span class="se">\&#39;</span><span class="s2">resources://</span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="n">res_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_parse_file_id</span><span class="p">(</span><span class="n">file_id</span><span class="p">[</span><span class="mi">12</span><span class="p">:])</span>
+	<span class="n">config</span> <span class="o">=</span> <span class="n">_get_config</span><span class="p">(</span><span class="n">res_name</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
+
+	<span class="n">meta_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">_url_to_filename</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span>
+	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">meta_path</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">ignore_exist_error</span><span class="p">:</span>
+			<span class="k">return</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resources existed. If you want to delete the existing resources. </span><span class="se">\</span>
+<span class="s2">			Use `rm </span><span class="si">%s</span><span class="s2">`.&quot;</span> <span class="o">%</span> <span class="n">meta_path</span><span class="p">)</span>
+
+	<span class="n">local_hashtag</span> <span class="o">=</span> <span class="n">_get_hashtag</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">local_hashtag</span> <span class="o">==</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hashtag&#39;</span><span class="p">]:</span>
+		<span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">_url_to_filename</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cache_file</span><span class="p">:</span>
+			<span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">),</span> <span class="n">cache_file</span><span class="p">)</span>
+
+		<span class="n">res_type</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;Default&#39;</span><span class="p">)</span>
+		<span class="n">resource_processor</span> <span class="o">=</span> <span class="n">ResourceProcessor</span><span class="o">.</span><span class="n">load_class</span><span class="p">(</span><span class="n">res_type</span> <span class="o">+</span> <span class="s1">&#39;ResourceProcessor&#39;</span><span class="p">)</span> \
+				<span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">resource_processor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No resources type named </span><span class="si">%s</span><span class="s2">ResourcePreprocessor&quot;</span> <span class="o">%</span> <span class="n">res_type</span><span class="p">)</span>
+
+		<span class="n">cache_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+		<span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;local_path&#39;</span><span class="p">:</span> <span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;hashtag&#39;</span><span class="p">:</span> <span class="n">local_hashtag</span><span class="p">}</span>
+
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">meta_file</span><span class="p">:</span>
+			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">meta_file</span><span class="p">)</span>
+
+		<span class="n">cache_path</span> <span class="o">=</span> <span class="n">resource_processor</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">cache_path</span><span class="p">)</span>
+		<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;resource cached at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">cache_path</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad hashtag of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="load_file_from_url"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.file_utils.load_file_from_url">[docs]</a><span class="k">def</span> <span class="nf">load_file_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="n">CACHE_DIR</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;See cotk.downloader.load_file_from_url.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">parts</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+	<span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">parts</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+	<span class="n">cache_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force</span><span class="p">:</span>
+		<span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
+		<span class="c1"># raise ValueError(&quot;model existed. If you want to delete the existing model. \</span>
+		<span class="c1"># 	Use `rm %s`.&quot; % cache_path)</span>
+
+	<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">cache_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cache_path</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">cache_path</span>
+
+	<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_file</span><span class="p">:</span>
+		<span class="n">_http_get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">temp_file</span><span class="p">)</span>
+		<span class="n">temp_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> <span class="c1"># flush to avoid truncation</span>
+		<span class="n">temp_file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># shutil.copyfileobj() starts at the current position</span>
+
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cache_file</span><span class="p">:</span>
+			<span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="n">cache_file</span><span class="p">)</span>
+
+	<span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;model cached at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">cache_path</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

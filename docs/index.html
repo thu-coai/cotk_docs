@@ -85,13 +85,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
@@ -196,7 +197,7 @@ your models fairly with baselines.</p>
 <li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#predefined-models">Predefined Models</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notes/tutorial_core.html#preparing-the-data">Preparing the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notes/tutorial_core.html#training-models">Training models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notes/tutorial_core.html#evaluations">Evaluations</a></li>
@@ -223,6 +224,16 @@ your models fairly with baselines.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils._utils">_utils._utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.file_utils">file_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.hooks">hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.imports">imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.metaclass">metaclass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.resource_processor">resources_processor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.unordered_hash">unordered_hash</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dataloader.html#vocabulary">Vocabulary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataloader.html#basic-classes">Basic Classes</a></li>
@@ -256,14 +267,14 @@ your models fairly with baselines.</p>
 <p class="caption"><span class="caption-text">Model Zoo</span><a class="headerlink" href="#model-zoo" title="Permalink to this toctree">¶</a></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/VAE-tensorflow/Readme.html">VAE (TensorFlow)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/LM-tensorflow/Readme.html">Language Model (TensorFlow)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/VAE-tensorflow/Readme.html">VAE (TensorFlow)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models/LanguageGeneration/seqGAN-tensorflow/Readme.html">SeqGAN (TensorFlow)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models/SingleTurnDialog/seq2seq-tensorflow/Readme.html">Seq2Seq (TensorFlow)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models/SingleTurnDialog/seq2seq-pytorch/Readme.html">Seq2Seq (PyTorch)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/SingleTurnDialog/seq2seq-tensorflow/Readme.html">Seq2Seq (TensorFlow)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a><ul>

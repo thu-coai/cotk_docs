@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -173,6 +174,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
 <span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
 
 <span class="k">class</span> <span class="nc">_PrecisionRecallMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for precision recall metrics. This is an abstract class.</span>
@@ -192,11 +194,12 @@
 <span class="s2">			The key of multiple generated sentences. Default: ``multiple_gen``.&quot;&quot;&quot;</span>
 
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> \
+				 <span class="n">dataloader</span><span class="p">,</span> \
 				 <span class="n">generated_num_per_context</span><span class="p">,</span> \
 				 <span class="n">candidate_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">,</span> \
 				 <span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">candidate_allvocabs_key</span> <span class="o">=</span> <span class="n">candidate_allvocabs_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multiple_gen_key</span> <span class="o">=</span> <span class="n">multiple_gen_key</span>
@@ -278,6 +281,7 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">prec_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">))</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">rec_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">))</span>
 
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
 	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
@@ -310,12 +314,17 @@
 <span class="sd">		ngram (int): Specifies using BLEU-ngram.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;BleuPrecisionRecallMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
 				 <span class="n">ngram</span><span class="p">,</span> \
 				 <span class="n">generated_num_per_context</span><span class="p">,</span> \
 				 <span class="n">candidates_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">,</span> \
 				 <span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">,</span> <span class="n">candidates_allvocabs_key</span><span class="p">,</span> \
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">,</span> \
+				<span class="n">dataloader</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">,</span> <span class="n">candidates_allvocabs_key</span><span class="p">,</span> \
 				<span class="n">multiple_gen_key</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">ngram</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ngram should belong to [1, 4]&quot;</span><span class="p">)</span>
@@ -378,13 +387,17 @@
 
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;EmbSimilarityPrecisionRecallMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
 				 <span class="n">word2vec</span><span class="p">,</span> \
 				 <span class="n">mode</span><span class="p">,</span> \
 				 <span class="n">generated_num_per_context</span><span class="p">,</span> \
 				 <span class="n">candidates_allvocabs_key</span><span class="o">=</span><span class="s1">&#39;candidate_allvocabs&#39;</span><span class="p">,</span> \
 				 <span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">,</span> \
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">generated_num_per_context</span><span class="p">,</span> \
 			<span class="n">candidates_allvocabs_key</span><span class="p">,</span> <span class="n">multiple_gen_key</span><span class="p">)</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word2vec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;word2vec has invalid type&quot;</span><span class="p">)</span>

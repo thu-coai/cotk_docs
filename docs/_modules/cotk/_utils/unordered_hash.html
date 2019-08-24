@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cotk.wordvector.wordvector &mdash; cotk  documentation</title>
+  <title>cotk._utils.unordered_hash &mdash; cotk  documentation</title>
   
 
   
@@ -151,7 +151,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>cotk.wordvector.wordvector</li>
+      <li>cotk._utils.unordered_hash</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -166,59 +166,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for cotk.wordvector.wordvector</h1><div class="highlight"><pre>
+  <h1>Source code for cotk._utils.unordered_hash</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">A module for word vector</span>
+<span class="sd">A module for hash unordered elements</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="k">import</span> <span class="n">DocStringInheritor</span><span class="p">,</span> <span class="n">LoadClassInterface</span>
 
-<div class="viewcode-block" id="WordVector"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.WordVector">[docs]</a><span class="k">class</span> <span class="nc">WordVector</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Base of all word vector loader</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="UnorderedSha256"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.unordered_hash.UnorderedSha256">[docs]</a><span class="k">class</span> <span class="nc">UnorderedSha256</span><span class="p">:</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		Using SHA256 on unordered elements</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">pass</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WordVector.load_matrix"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.WordVector.load_matrix">[docs]</a>	<span class="k">def</span> <span class="nf">load_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_dims</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">default_embeddings</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Load pretrained word vector and return a numpy 2-d array. The ith row is the feature</span>
-<span class="sd">		of the ith word in ``vocab_list``. If some feature is not included in pretrained</span>
-<span class="sd">		word vector, it will be initialized by:</span>
+<div class="viewcode-block" id="UnorderedSha256.update_data"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.unordered_hash.UnorderedSha256.update_data">[docs]</a>	<span class="k">def</span> <span class="nf">update_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;update digest by data. type(data)=bytes&#39;&#39;&#39;</span>
+		<span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">update_hash</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span></div>
 
-<span class="sd">		* ``default_embeddings``, if it is not ``None``.</span>
-<span class="sd">		* normal distribution with ``mean`` and ``std``, otherwise.</span>
+<div class="viewcode-block" id="UnorderedSha256.update_hash"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.unordered_hash.UnorderedSha256.update_hash">[docs]</a>	<span class="k">def</span> <span class="nf">update_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hashvalue</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;update digest by hash. type(hashvalue)=bytes&#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">hashvalue</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span></div>
 
-<span class="sd">		Parameters:</span>
-<span class="sd">			n_dims (int): specify the dimension size of word vector. If ``n_dims``</span>
-<span class="sd">				is bigger than size of pretrained word vector, the rest embedding will be</span>
-<span class="sd">				initialized by ``default_embeddings`` or a normal distribution.</span>
-<span class="sd">			vocab_list (list): specify the vocab list used in data loader. If there</span>
-<span class="sd">				is any word not appeared in pretrained word vector, the embedding will be</span>
-<span class="sd">				initialized by ``default_embeddings`` or a normal distribution.</span>
-<span class="sd">			mean: The mean of normal distribution. Default: 0.</span>
-<span class="sd">			std: The standard deviation of normal distribution. Default: 0.1.</span>
-<span class="sd">			default_embeddings: The default embeddings, it size should be</span>
-<span class="sd">				``[len(vocab_list), ndims]``.</span>
-
-
-<span class="sd">		Returns:</span>
-
-<span class="sd">			(:class:`numpy.ndarray`): A  2-d array. Size:``[len(vocab_list), n_dims]``.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load_matrix is a virtual function.&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="WordVector.load_dict"><a class="viewcode-back" href="../../../wordvector.html#cotk.wordvector.WordVector.load_dict">[docs]</a>	<span class="k">def</span> <span class="nf">load_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_list</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Load word vector and return a dict that maps words to vectors.</span>
-
-<span class="sd">		Parameters:</span>
-<span class="sd">			vocab_list (list): specify the vocab list used in data loader. If there</span>
-<span class="sd">				is any word not appeared in pretrained word vector, the feature will</span>
-<span class="sd">				not be returned.</span>
-
-<span class="sd">		Returns:</span>
-
-<span class="sd">			(dict): maps a word (str) to its pretrained embedding (:class:`numpy.ndarray`)</span>
-<span class="sd">				where its shape is [ndims].</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;WordVector.load_dict is a virtual function.&quot;</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="UnorderedSha256.digest"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.unordered_hash.UnorderedSha256.digest">[docs]</a>	<span class="k">def</span> <span class="nf">digest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;return unordered hashvalue&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

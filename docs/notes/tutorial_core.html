@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>GRU Language Model: Load Data and Evaluate Models &mdash; cotk  documentation</title>
+  <title>Practice: Implement a GRU Language Model &mdash; cotk  documentation</title>
   
 
   
@@ -86,7 +86,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">GRU Language Model: Load Data and Evaluate Models</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Practice: Implement a GRU Language Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#preparing-the-data">Preparing the data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#training-models">Training models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#evaluations">Evaluations</a><ul>
@@ -104,6 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
@@ -161,7 +162,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>GRU Language Model: Load Data and Evaluate Models</li>
+      <li>Practice: Implement a GRU Language Model</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -180,8 +181,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gru-language-model-load-data-and-evaluate-models">
-<h1>GRU Language Model: Load Data and Evaluate Models<a class="headerlink" href="#gru-language-model-load-data-and-evaluate-models" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="practice-implement-a-gru-language-model">
+<h1>Practice: Implement a GRU Language Model<a class="headerlink" href="#practice-implement-a-gru-language-model" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial, we will train a neural language model on MSCOCO dataset.
 We will focus on how to use <code class="docutils literal notranslate"><span class="pre">cotk</span></code> rather than the neural networks,
 so we assume you have known how to construct a neural network.</p>
@@ -201,9 +202,10 @@ However, this tutorial constructs neural networks with
 <li>pytorch &gt;= 1.0.0</li>
 <li>livelossplot (optional, just for showing loss)</li>
 </ul>
-<p>You can click <a class="reference external" href="https://github.com/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_1.ipynb">here</a> for ipynb files. If you don’t have a suitable environment,
-you can also run <a class="reference external" href="http://colab.research.google.com/github/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_1.ipynb">the code</a>
-on google colab.</p>
+<p><strong>Source codes</strong></p>
+<p>You can click <a class="reference external" href="https://github.com/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_1.ipynb">here</a> for the following ipynb files.
+You can also run <a class="reference external" href="http://colab.research.google.com/github/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_1.ipynb">the code</a>
+<strong>online</strong> on google colab without installing any packages.</p>
 <div class="section" id="preparing-the-data">
 <h2>Preparing the data<a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> provides <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataloader</span></code></a> to download, import and preprocess data.
@@ -467,6 +469,7 @@ that help you downloading and get word vectors.</p>
 </pre></div>
 </div>
 <p>We can add these lines at the end of <code class="docutils literal notranslate"><span class="pre">LanguageModel.__init__</span></code>.</p>
+<p><strong>Source code</strong></p>
 <p>You can find the results and codes with pretrained word vector at
 <a class="reference external" href="https://github.com/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_2.ipynb">here</a> for ipynb files
 or run <a class="reference external" href="http://colab.research.google.com/github/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_2.ipynb">the code</a>

@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -283,8 +284,12 @@
 <span class="sd">			the environment variable ``CPU_COUNT`` will be used	when it is set,</span>
 <span class="sd">			or all available cpu will be used otherwise.&quot;&quot;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span> <span class="o">=</span> <span class="n">UnorderedSha256</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="MetricBase._hash_relevant_data"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase._hash_relevant_data">[docs]</a>	<span class="k">def</span> <span class="nf">_hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_list</span><span class="p">):</span>
@@ -337,8 +342,10 @@
 
 <span class="sd">	Todo: Give more examples to combining forward and close</span>
 <span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MetricChain&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">metric_list</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="MetricChain.add_metric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.add_metric">[docs]</a>	<span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>

@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -169,8 +170,13 @@
 <span></span><span class="sd">&quot;&quot;&quot;A lib for decorator and metaclass&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="k">class</span> <span class="nc">DocStringInheritor</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<div class="viewcode-block" id="DocStringInheritor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.DocStringInheritor">[docs]</a><span class="k">class</span> <span class="nc">DocStringInheritor</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	A meta class. It let the class have the following functions:</span>
+
+<span class="sd">	* Docstring can inherit the parent class.</span>
+<span class="sd">	* {STRING} in docs will be replaced by self.STRING</span>
+
 <span class="sd">	A variation on</span>
 <span class="sd">	http://groups.google.com/group/comp.lang.python/msg/26f7b4fcb4d66c95</span>
 <span class="sd">	by Paul McGuire</span>
@@ -241,11 +247,11 @@
 					<span class="k">else</span><span class="p">:</span>
 						<span class="c1">#print(attr, attribute, doc)</span>
 						<span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
-		<span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">)</span></div>
 
-<span class="k">class</span> <span class="nc">LoadClassInterface</span><span class="p">:</span>
-	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Implement two classmethods&quot;&quot;&quot;</span>
-	<span class="nd">@classmethod</span>
+<div class="viewcode-block" id="LoadClassInterface"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.LoadClassInterface">[docs]</a><span class="k">class</span> <span class="nc">LoadClassInterface</span><span class="p">:</span>
+	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;The support of dynamic class load.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="LoadClassInterface.get_all_subclasses"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.LoadClassInterface.get_all_subclasses">[docs]</a>	<span class="nd">@classmethod</span>
 	<span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a generator of all subclasses.</span>
 
@@ -254,9 +260,9 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
 			<span class="k">yield from</span> <span class="n">subclass</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">()</span>
-			<span class="k">yield</span> <span class="n">subclass</span>
+			<span class="k">yield</span> <span class="n">subclass</span></div>
 
-	<span class="nd">@classmethod</span>
+<div class="viewcode-block" id="LoadClassInterface.load_class"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.LoadClassInterface.load_class">[docs]</a>	<span class="nd">@classmethod</span>
 	<span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Return a subclass of ``class_name``.</span>
 
@@ -269,7 +275,7 @@
 		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">():</span>
 			<span class="k">if</span> <span class="n">subclass</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">class_name</span><span class="p">:</span>
 				<span class="k">return</span> <span class="n">subclass</span>
-		<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
 
            </div>

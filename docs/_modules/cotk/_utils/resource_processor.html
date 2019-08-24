@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk._utils.resource_processor &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk._utils.resource_processor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk._utils.resource_processor</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;Processor for resource after download and before read</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">.metaclass</span> <span class="k">import</span> <span class="n">LoadClassInterface</span>
+
+<div class="viewcode-block" id="unzip_file"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.unzip_file">[docs]</a><span class="k">def</span> <span class="nf">unzip_file</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;unzip the zip file in src_path to dst_dir</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">src_path</span><span class="p">):</span>
+		<span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_obj</span><span class="p">:</span>
+			<span class="n">zip_obj</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.ResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">ResourceProcessor</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Base class for processor.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">=</span> <span class="n">cache_dir</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span> <span class="o">=</span> <span class="n">config_dir</span></div>
+
+<div class="viewcode-block" id="DefaultResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">DefaultResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for default resource: do nothing.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="DefaultResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">local_path</span></div>
+
+<div class="viewcode-block" id="DefaultResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">local_path</span></div></div>
+
+<div class="viewcode-block" id="BaseResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.BaseResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">BaseResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Basic processor for MSCOCO, OpenSubtitles, Ubuntu...&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BaseResourceProcessor.basepreprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.BaseResourceProcessor.basepreprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepreprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">local_path</span><span class="p">):</span>
+			<span class="k">return</span> <span class="n">local_path</span>
+		<span class="n">dst_dir</span> <span class="o">=</span> <span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;_unzip&#39;</span>
+		<span class="n">unzip_file</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.BaseResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">local_path</span></div></div>
+
+<span class="c1">#TODO: merge the following Processor because of duplicate codes</span>
+<div class="viewcode-block" id="MSCOCOResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">MSCOCOResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for MSCOCO dataset</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="MSCOCOResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;mscoco&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="OpenSubtitlesResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">OpenSubtitlesResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for OpenSubtitles Dataset</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="OpenSubtitlesResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;opensubtitles&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="UbuntuResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">UbuntuResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for UbuntuCorpus dataset</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="UbuntuResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;ubuntu_dataset&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpusResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for SwitchboardCorpus dataset</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;switchboard_corpus&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SSTResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SSTResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">SSTResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for SwitchboardCorpus dataset</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="SSTResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SSTResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;trees&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="GloveResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.GloveResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">GloveResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Base Class for all dimension version of glove wordvector.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="GloveResourceProcessor.basepreprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.GloveResourceProcessor.basepreprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepreprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">dst_dir</span> <span class="o">=</span> <span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;_unzip&#39;</span>
+		<span class="n">unzip_file</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
+		<span class="n">filenames</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)):</span>
+				<span class="k">continue</span>
+			<span class="n">dim</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">dim</span> <span class="o">!=</span> <span class="n">name</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;resources://Glove</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dim</span><span class="p">),</span> \
+										<span class="n">local_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span><span class="p">])</span>
+				<span class="k">continue</span>
+			<span class="n">sub_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+			<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">,</span> <span class="s1">&#39;glove.txt&#39;</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">dst_dir</span></div>
+
+<div class="viewcode-block" id="GloveResourceProcessor.basepostprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.GloveResourceProcessor.basepostprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepostprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="kn">from</span> <span class="nn">.file_utils</span> <span class="k">import</span> <span class="n">import_local_resources</span>
+		<span class="k">for</span> <span class="n">glove</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span><span class="p">:</span>
+			<span class="n">import_local_resources</span><span class="p">(</span><span class="o">*</span><span class="n">glove</span><span class="p">,</span> <span class="n">ignore_exist_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Glove50dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove50dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for glove50d wordvector</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="Glove50dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;50d&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Glove50dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;50d&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Glove100dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove100dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for glove100d wordvector</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="Glove100dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;100d&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Glove100dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;100d&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Glove200dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove200dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for glove200d wordvector</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="Glove200dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;200d&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Glove200dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;200d&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Glove300dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove300dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for glove300d wordvector</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="Glove300dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;300d&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Glove300dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;300d&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

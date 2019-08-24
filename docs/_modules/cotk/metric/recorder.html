@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -183,9 +184,11 @@
 <span class="sd">			Default: ``resp_allvocabs``.</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;SingleTurnDialogRecorder&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">post_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;post_allvocabs&quot;</span><span class="p">,</span> \
 			<span class="n">resp_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">post_allvocabs_key</span> <span class="o">=</span> <span class="n">post_allvocabs_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">resp_allvocabs_key</span> <span class="o">=</span> <span class="n">resp_allvocabs_key</span>
@@ -261,11 +264,13 @@
 <span class="sd">		{MetricBase.MULTI_TURN_GEN_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_LENGTH_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MultiTurnDialogRecorder&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span>
 			<span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span><span class="p">,</span> \
 			<span class="n">multi_turn_gen_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen&quot;</span><span class="p">,</span> \
 			<span class="n">turn_len_key</span><span class="o">=</span><span class="s2">&quot;turn_length&quot;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_allvocabs_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_gen_key</span> <span class="o">=</span> <span class="n">multi_turn_gen_key</span>
@@ -343,8 +348,10 @@
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;LanguageGenerationRecorder&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>

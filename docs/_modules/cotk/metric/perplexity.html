@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -173,9 +174,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
 <span class="kn">from</span> <span class="nn">.._utils.imports</span> <span class="k">import</span> <span class="n">DummyObject</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
 <span class="k">try</span><span class="p">:</span>
 	<span class="kn">import</span> <span class="nn">torch</span>
-<span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="n">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
 	<span class="n">torch</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 	<span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
@@ -196,6 +198,10 @@
 <span class="sd">			Default: ``False``.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;PerplexityMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
 					   <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span> \
 					   <span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;ref_length&quot;</span><span class="p">,</span> \
@@ -203,7 +209,7 @@
 					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> \
 					   <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span> \
 			  <span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span> <span class="o">=</span> <span class="n">reference_allvocabs_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_len_key</span> <span class="o">=</span> <span class="n">reference_len_key</span>
@@ -437,7 +443,8 @@
 
 		<span class="k">return</span> <span class="n">word_loss</span><span class="p">,</span> <span class="n">length_sum</span>
 
-<div class="viewcode-block" id="PerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): Return a dict which contains</span>
@@ -481,7 +488,7 @@
 
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">),</span> \
 				<span class="s2">&quot;perplexity hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">res</span></div></div>
+		<span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="MultiTurnPerplexityMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating multi-turn perplexity.</span>
@@ -499,13 +506,17 @@
 <span class="sd">			Default: ``False``.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MultiTurnPerplexityMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span><span class="p">,</span> \
 					   <span class="n">multi_turn_reference_len_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_length&quot;</span><span class="p">,</span> \
 					   <span class="n">multi_turn_gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen_log_prob&quot;</span><span class="p">,</span> \
 					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> \
 					   <span class="n">full_check</span><span class="o">=</span><span class="kc">False</span> \
 			  <span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_allvocabs_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_len_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_len_key</span>
@@ -573,10 +584,11 @@
 			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">turn_length</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">turn_length</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Turn num is not matched.&quot;</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">:</span> <span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">turn_length</span><span class="p">],</span> \
-					<span class="s2">&quot;ref_length&quot;</span><span class="p">:</span> <span class="n">sent_length</span><span class="p">,</span> \
+					<span class="s2">&quot;ref_length&quot;</span><span class="p">:</span> <span class="n">sent_length</span><span class="p">[:</span><span class="n">turn_length</span><span class="p">],</span> \
 					<span class="s2">&quot;gen_log_prob&quot;</span><span class="p">:</span> <span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">turn_length</span><span class="p">]})</span></div>
 
-<div class="viewcode-block" id="MultiTurnPerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
 <span class="sd">			(dict): Return a dict which contains</span>
@@ -587,7 +599,7 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-		<span class="k">return</span> <span class="n">res</span></div></div>
+		<span class="k">return</span> <span class="n">res</span></div>
 </pre></div>
 
            </div>

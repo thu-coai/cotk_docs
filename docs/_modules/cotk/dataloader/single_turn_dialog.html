@@ -84,13 +84,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
@@ -272,8 +273,7 @@
 		<span class="n">res_resp</span><span class="p">[</span><span class="n">res_resp</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;teacher_forcing&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span>\
+<div class="viewcode-block" id="SingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span>\
 					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for teacher-forcing.</span>
 
@@ -297,10 +297,9 @@
 			<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span>\
 			<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">,</span>\
 			<span class="n">invalid_vocab</span><span class="o">=</span><span class="n">invalid_vocab</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span>
+		<span class="k">return</span> <span class="n">metric</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;inference&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for inference.</span>
 
 <span class="sd">		It contains:</span>
@@ -320,7 +319,7 @@
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> \
 			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span></div>
+		<span class="k">return</span> <span class="n">metric</span></div></div>
 
 <div class="viewcode-block" id="OpenSubtitles"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.OpenSubtitles">[docs]</a><span class="k">class</span> <span class="nc">OpenSubtitles</span><span class="p">(</span><span class="n">SingleTurnDialog</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloader for OpenSubtitles dataset.</span>
@@ -502,12 +501,14 @@
 
 		<span class="k">return</span> <span class="n">res</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;teacher_forcing&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span>\
+<div class="viewcode-block" id="BERTSingleTurnDialog.get_teacher_forcing_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_teacher_forcing_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">,</span>\
 					   <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for teacher-forcing.</span>
+
 <span class="sd">		It contains:</span>
+
 <span class="sd">		* :class:`.metric.PerplexityMetric`</span>
+
 <span class="sd">		Arguments:</span>
 <span class="sd">			gen_log_prob_key (str):  The key of predicted log probablilty over words.</span>
 <span class="sd">				Refer to :class:`.metric.PerplexityMetric`. Default: ``gen_log_prob``.</span>
@@ -522,10 +523,9 @@
 			<span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;resp_length&quot;</span><span class="p">,</span>\
 			<span class="n">gen_log_prob_key</span><span class="o">=</span><span class="n">gen_log_prob_key</span><span class="p">,</span>\
 			<span class="n">invalid_vocab</span><span class="o">=</span><span class="n">invalid_vocab</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span>
+		<span class="k">return</span> <span class="n">metric</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_standard_metric</span><span class="p">(</span><span class="s2">&quot;inference&quot;</span><span class="p">)</span>
-	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="BERTSingleTurnDialog.get_inference_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_inference_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_inference_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for inference.</span>
 
 <span class="sd">		It contains:</span>
@@ -544,7 +544,7 @@
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">,</span> \
 			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">))</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">metric</span></div>
+		<span class="k">return</span> <span class="n">metric</span></div></div>
 
 
 <div class="viewcode-block" id="BERTOpenSubtitles"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.BERTOpenSubtitles">[docs]</a><span class="k">class</span> <span class="nc">BERTOpenSubtitles</span><span class="p">(</span><span class="n">BERTSingleTurnDialog</span><span class="p">):</span>

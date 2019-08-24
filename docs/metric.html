@@ -86,13 +86,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">GRU Language Model: Load Data and Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Metric</a><ul>
@@ -222,7 +223,7 @@ value returned, can compare with each other.</p>
 <span id="metric-ref"></span><h2>Basic Classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.metric.MetricBase">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MetricBase</code><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MetricBase</code><span class="sig-paren">(</span><em>name</em>, <em>version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/metric.html#MetricBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MetricBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for metrics.</p>
 <dl class="method">
 <dt id="cotk.metric.MetricBase._hash_relevant_data">
@@ -280,7 +281,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.metric.BleuPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ngram</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuPrecisionRecallMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating sentence BLEU precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -334,18 +335,14 @@ arXiv preprint arXiv:1703.10960.</p>
 
 <dl class="method">
 <dt id="cotk.metric.BleuPrecisionRecallMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) returns a dict which contains<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">res_prefix</span></code> <strong>precision</strong>: average precision.</li>
-<li><code class="docutils literal notranslate"><span class="pre">res_prefix</span></code> <strong>recall</strong>: average recall.</li>
-<li><code class="docutils literal notranslate"><span class="pre">res_prefix</span></code> <strong>hashvalue</strong>: hash value for precision &amp; recall metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -395,7 +392,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>word2vec</em>, <em>mode</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating cosine similarity precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -455,18 +452,14 @@ Must be <code class="docutils literal notranslate"><span class="pre">avg</span><
 
 <dl class="method">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) returns a dict which contains<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">res_prefix</span></code> <strong>precision</strong>: average precision.</li>
-<li><code class="docutils literal notranslate"><span class="pre">res_prefix</span></code> <strong>recall</strong>: average recall.</li>
-<li><code class="docutils literal notranslate"><span class="pre">res_prefix</span></code> <strong>hashvalue</strong>: hash value for precision &amp; recall metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -516,7 +509,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.PerplexityMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>reference_len_key='ref_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -597,17 +590,14 @@ If <code class="xref py py-class docutils literal notranslate"><span class="pre"
 
 <dl class="method">
 <dt id="cotk.metric.PerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.PerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>perplexity</strong>: perplexity value.</li>
-<li><strong>perplexity hashvalue</strong>: hash value for perplexity metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -617,7 +607,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnPerplexityMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_reference_len_key='multi_turn_ref_length'</em>, <em>multi_turn_gen_log_prob_key='multi_turn_gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -699,17 +689,14 @@ If <code class="xref py py-class docutils literal notranslate"><span class="pre"
 
 <dl class="method">
 <dt id="cotk.metric.MultiTurnPerplexityMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>perplexity</strong>: perplexity value.</li>
-<li><strong>perplexity hashvalue</strong>: hash value for perplexity metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -719,7 +706,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.BleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -777,17 +764,14 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.BleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>bleu</strong>: bleu value.</li>
-<li><strong>bleu hashvalue</strong>: hash value for bleu metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -797,7 +781,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.SelfBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating Self-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -860,15 +844,14 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.SelfBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>self-bleu</strong>: self-bleu value.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -878,7 +861,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.FwBwBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_list</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating FwBw-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -941,17 +924,14 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="method">
 <dt id="cotk.metric.FwBwBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>fwbwbleu</strong>: fw/bw bleu value.</li>
-<li><strong>fw-bw-bleu hashvalue</strong>: hash value for fwbwbleu metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
@@ -961,7 +941,7 @@ for same evaluation settings.</li>
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>multi_turn_reference_allvocabs_key='reference_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1022,17 +1002,14 @@ Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]<
 
 <dl class="method">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">close</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the metric and return results. Once the metric is closed,
+any operation on the metric (e.g. forward or another close) will raise a ValueError.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> – Return a dict which contains<ul class="simple">
-<li><strong>bleu</strong>: bleu value.</li>
-<li><strong>bleu hashvalue</strong>: hash value for bleu metric, same hash value stands
-for same evaluation settings.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(dict) which contains results.</td>
 </tr>
 </tbody>
 </table>
