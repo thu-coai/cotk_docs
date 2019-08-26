@@ -174,7 +174,7 @@
 <span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">trim_before_target</span>
 
 <span class="k">try</span><span class="p">:</span>
-	<span class="kn">from</span> <span class="nn">pytorch_pretrained_bert</span> <span class="k">import</span> <span class="n">BertTokenizer</span>
+	<span class="kn">from</span> <span class="nn">pytorch_transformers</span> <span class="k">import</span> <span class="n">BertTokenizer</span>
 <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
 	<span class="kn">from</span> <span class="nn">.._utils.imports</span> <span class="k">import</span> <span class="n">DummyObject</span>
 	<span class="n">BertTokenizer</span> <span class="o">=</span> <span class="n">DummyObject</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -191,8 +191,8 @@
 
 	<span class="n">BERT_VOCAB_NAME</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">			bert_vocab_name (str): A string indicates which bert model is used, it will be a</span>
-<span class="s2">					parameter passed to `pytorch-pretrained-BERT.BertTokenizer.from_pretrained</span>
-<span class="s2">					&lt;https://github.com/huggingface/pytorch-pretrained-BERT#berttokenizer&gt;`_.</span>
+<span class="s2">					parameter passed to `pytorch-transformers.BertTokenizer.from_pretrained</span>
+<span class="s2">					&lt;https://github.com/huggingface/pytorch-transformers#berttokenizer&gt;`_.</span>
 <span class="s2">					It can be &#39;bert-[base|large]-[uncased|cased]&#39; or a local path.&quot;&quot;&quot;</span>
 
 	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span> <span class="o">+</span> <span class="n">BERT_VOCAB_NAME</span>
