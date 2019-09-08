@@ -302,6 +302,24 @@ arXiv preprint arXiv:1703.10960.</p>
 </tr>
 </tbody>
 </table>
+<p>Here is an exmaple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">candidate_allvocabs_key</span> <span class="o">=</span> <span class="s1">&#39;candidate_allvocabs&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">BleuPrecisionRecallMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">]]],</span>
+<span class="gp">... </span>            <span class="c1"># candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
+<span class="gp">... </span>    <span class="n">multiple_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>    <span class="c1"># multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;BLEU-2 precision&#39;: 0.12909944355487823,</span>
+<span class="go"> &#39;BLEU-2 recall&#39;: 0.12909944355487823,</span>
+<span class="go"> &#39;BLEU-2 hashvalue&#39;: &#39;1652cd40276078ec8722d367f18008bf14053572ac15ce10e270eb41eae34bbf&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.BleuPrecisionRecallMetric._score">
 <code class="descname">_score</code><span class="sig-paren">(</span><em>gen</em>, <em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric._score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric._score" title="Permalink to this definition">¶</a></dt>
@@ -321,16 +339,13 @@ arXiv preprint arXiv:1703.10960.</p>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Here is an Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<p>Here is an Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reference</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
 <span class="go">0.150 # assume self.weights = [0.25,0.25,0.25,0.25]</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -370,18 +385,15 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">generated_num_per_context,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]]</span>
+<span class="gp">... </span>    <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]],</span>
 <span class="gp">... </span>            <span class="n">multiple_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -419,6 +431,26 @@ Must be <code class="docutils literal notranslate"><span class="pre">avg</span><
 </tr>
 </tbody>
 </table>
+<p>Here is an exmaple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">candidate_allvocabs_key</span> <span class="o">=</span> <span class="s1">&#39;candidate_allvocabs&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multiple_gen_key</span><span class="o">=</span><span class="s1">&#39;multiple_gen&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wordvector</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">wordvector</span><span class="o">.</span><span class="n">Glove</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">EmbSimilarityPrecisionRecallMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">wordvector</span><span class="o">.</span><span class="n">load_dict</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">()),</span> <span class="s1">&#39;avg&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">]]],</span>
+<span class="gp">... </span>            <span class="c1"># candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
+<span class="gp">... </span>    <span class="n">multiple_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>    <span class="c1"># multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># metric.close() returns a dict like this.</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># {&#39;avg-bow precision&#39;: 0.0,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># &#39;avg-bow recall&#39;: 0.0,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># &#39;avg-bow hashvalue&#39;: &#39;5abaaa9a8e709b3f05467e3f6d0e27c6cc904fceebd3accb3b768928595e729a&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric._score">
 <code class="descname">_score</code><span class="sig-paren">(</span><em>gen</em>, <em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric._score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric._score" title="Permalink to this definition">¶</a></dt>
@@ -438,16 +470,13 @@ Must be <code class="docutils literal notranslate"><span class="pre">avg</span><
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Here is an Example:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<p>Here is an Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reference</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
 <span class="go">0.135 # assume self.mode = &#39;avg&#39;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -487,18 +516,15 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">generated_num_per_context,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]]</span>
+<span class="gp">... </span>    <span class="n">candidate_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]],</span>
 <span class="gp">... </span>            <span class="n">multiple_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -533,6 +559,27 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </tr>
 </tbody>
 </table>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;ref_length&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">PerplexityMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">reference_len_key</span><span class="o">=</span><span class="s2">&quot;ref_length&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;gen_log_prob&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="c1"># reference_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span>    <span class="n">reference_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">gen_log_prob_key</span><span class="p">:</span> <span class="p">[[[</span><span class="o">-</span><span class="mf">11.31</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.31</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.69</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.31</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.31</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.31</span><span class="p">],</span><span class="o">...</span><span class="p">],</span><span class="o">...</span><span class="p">]</span> <span class="c1"># shape == (batch, length, vocab_size)</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;perplexity&#39;: 81458.00000000006,</span>
+<span class="go"> &#39;perplexity hashvalue&#39;: &#39;7f9b88b8f9996f5d49a512258f250fbc56adee714952b2c696c0b36cce36f648&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.PerplexityMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -563,20 +610,17 @@ where “~” means different sizes in this dimension is allowed.
 If <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is used, the following data should also be
 <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
-<span class="gp">... </span>            <span class="n">reference_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="n">reference_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
 <span class="gp">... </span>            <span class="n">gen_log_prob_key</span><span class="p">:</span> <span class="p">[[[</span><span class="o">-</span><span class="mf">3.80666249</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.11351531</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7080502</span> <span class="p">,</span> <span class="o">-</span><span class="mf">2.42036813</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.19722458</span><span class="p">,</span>
 <span class="go">                        -2.01490302, -1.86075234, -1.72722095, -1.60943791],...],...]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -630,6 +674,30 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </tr>
 </tbody>
 </table>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multi_turn_reference_len_key</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_ref_length&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multi_turn_gen_log_prob_key</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_gen_log_prob&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_len_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_length&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">multi_turn_gen_log_prob_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen_log_prob&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">279</span><span class="p">,</span> <span class="mi">1460</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>    <span class="c1"># multi_turn_reference_allvocabs_key = [[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;],</span>
+<span class="gp">... </span>    <span class="c1">#       [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span>    <span class="c1">#       [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;machine&quot;, &quot;learning&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_len_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="n">multi_turn_gen_log_prob_key</span><span class="p">:</span> <span class="p">[[[[</span><span class="o">-</span><span class="mf">11.30784283</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.30784283</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.69312263</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.30784283</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.30784283</span><span class="p">,</span> <span class="o">-</span><span class="mf">11.30784283</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;perplexity&#39;: 81458.00000000006,</span>
+<span class="go"> &#39;perplexity hashvalue&#39;: &#39;3a7647507f2e0d05a235c1d3a29515dc8885650884d625a5b76d305541dca685&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.MultiTurnPerplexityMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -660,21 +728,18 @@ where “~” means different sizes in this dimension is allowed.
 If <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is used, the following data should also be
 <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
-<span class="gp">... </span>            <span class="n">multi_turn_reference_len_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">]]</span>
+<span class="gp">... </span>    <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_len_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">]],</span>
 <span class="gp">... </span>            <span class="n">multi_turn_gen_log_prob_key</span><span class="p">:</span> <span class="p">[[[[</span><span class="o">-</span><span class="mf">3.80666249</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.11351531</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7080502</span><span class="p">,</span>
 <span class="go">                        -2.42036813, -2.19722458, -2.01490302, -1.86075234, -1.72722095,</span>
 <span class="go">                        -1.60943791], ...], ...], ...]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -721,6 +786,26 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 </tr>
 </tbody>
 </table>
+<p>Here is an exmaple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reference_allvocabs_key</span> <span class="o">=</span> <span class="s2">&quot;ref_allvocabs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_key</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">BleuCorpusMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span>
+<span class="gp">... </span>                                                                            <span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="n">reference_allvocabs_key</span><span class="p">,</span>
+<span class="gp">... </span>                                                                            <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>    <span class="c1"># reference_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1028</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">285</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">851</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">2451</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="c1"># gen_key: [[&quot;I&quot;, &quot;love&quot;, &quot;java&quot;, &quot;very&quot;, &quot;much&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;bleu&#39;: 0.08582363099612991,</span>
+<span class="go"> &#39;bleu hashvalue&#39;: &#39;70e019630fef24d9477034a3d941a5349fcbff5a3dc6978a13ea3d85290114fb&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.BleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -744,18 +829,15 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>    <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span>
 <span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -808,6 +890,20 @@ or all available cpu will be used otherwise.</li>
 <dd>will be less than <code class="docutils literal notranslate"><span class="pre">sample</span></code> if the size of hypotheses is smaller than <code class="docutils literal notranslate"><span class="pre">sample</span></code></dd>
 </dl>
 </div>
+<p>Here is an exmaple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_key</span> <span class="o">=</span> <span class="s1">&#39;gen&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="c1"># gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;self-bleu&#39;: 0.13512001548070346,</span>
+<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;53cf55829c1b080c86c392c846a5d39a54340c70d838ec953f952aa6731118fb&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.SelfBleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -825,17 +921,14 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -888,6 +981,24 @@ or all available cpu will be used otherwise.</li>
 references. Therefore <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> may vary with the size of hypothesis or references
 if the size of them is smaller than <code class="docutils literal notranslate"><span class="pre">sample</span></code>.</p>
 </div>
+<p>Here is an exmaple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_key</span> <span class="o">=</span> <span class="s1">&#39;gen&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span>
+<span class="gp">... </span>                                                                                    <span class="n">reference_test_list</span><span class="o">=</span><span class="n">dl</span><span class="o">.</span><span class="n">get_all_batch</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>                                                                                    <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="c1"># gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;fw-bleu&#39;: 0.007688528488990184,</span>
+<span class="go"> &#39;bw-bleu&#39;: 0.0012482612634667945,</span>
+<span class="go"> &#39;fw-bw-bleu&#39;: 0.002147816509441494,</span>
+<span class="go"> &#39;fw-bw-bleu hashvalue&#39;: &#39;0e3f58a90225af615ff780f04c91613759e04a3c7b4329670b1d03b679adf8cd&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.FwBwBleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -905,17 +1016,14 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -957,6 +1065,33 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 </tr>
 </tbody>
 </table>
+<p>Here is an exmaple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="s2">&quot;reference_allvocabs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multi_turn_gen_key</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_gen&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turn_len_key</span> <span class="o">=</span> <span class="s2">&quot;turn_length&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">MultiTurnBleuCorpusMetric</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="n">multi_turn_reference_allvocabs_key</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">multi_turn_gen_key</span><span class="o">=</span><span class="n">multi_turn_gen_key</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">turn_len_key</span><span class="o">=</span><span class="n">turn_len_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">279</span><span class="p">,</span> <span class="mi">1460</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>    <span class="c1"># multi_turn_reference_allvocabs_key = [[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span>    <span class="c1">#       [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;machine&quot;, &quot;learning&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">turn_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="c1"># turn_len_key: [len(multi_turn_reference_allvocabs_key[0]), len(multi_turn_reference_allvocabs_key[1])]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">multi_turn_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">851</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">2451</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">393</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">34058</span><span class="p">,</span> <span class="mi">805</span><span class="p">,</span> <span class="mi">2601</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>    <span class="c1"># multi_turn_gen_key = [[[&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;], [&quot;PHP&quot;, &quot;is&quot;, &quot;best&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span>    <span class="c1">#       [[&quot;I&quot;, &quot;like&quot;, &quot;natural&quot;, &quot;language&quot;, &quot;processing&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;bleu&#39;: 0.12081744577265555,</span>
+<span class="go"> &#39;bleu hashvalue&#39;: &#39;c65b44c454dee5a8d393901644c7f1acfdb847bae3ab03823cb5b9f643958960&#39;}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric.forward" title="Permalink to this definition">¶</a></dt>
@@ -981,19 +1116,16 @@ where “~” means different sizes in this dimension is allowed.</li>
 Length of turns in each sample.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code>.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
-<span class="gp">... </span>            <span class="n">turn_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>            <span class="n">turn_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -1040,6 +1172,32 @@ Default: <code class="docutils literal notranslate"><span class="pre">resp_allvo
 </tr>
 </tbody>
 </table>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">post_allvocabs_key</span> <span class="o">=</span> <span class="s2">&quot;post_allvocabs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resp_allvocabs_key</span> <span class="o">=</span> <span class="s2">&quot;resp_allvocabs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gen_key</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SingleTurnDialogRecorder</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">post_allvocabs_key</span><span class="o">=</span><span class="n">post_allvocabs_key</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">resp_allvocabs_key</span><span class="o">=</span><span class="n">resp_allvocabs_key</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="n">post_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>    <span class="c1"># post_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">resp_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1214</span><span class="p">,</span> <span class="mi">479</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">2451</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="c1"># resp_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;prefer&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">2019</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">851</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">4124</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>    <span class="c1"># gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;powerful&quot;, &quot;&lt;eos&gt;&quot;]]</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;post&#39;: [[&#39;I&#39;, &#39;like&#39;, &#39;python&#39;], [&#39;I&#39;, &#39;use&#39;, &#39;python&#39;]],</span>
+<span class="go"> &#39;resp&#39;: [[&#39;I&#39;, &#39;prefer&#39;, &#39;java&#39;], [&#39;python&#39;, &#39;is&#39;, &#39;excellent&#39;]],</span>
+<span class="go"> &#39;gen&#39;: [[&#39;I&#39;, &#39;like&#39;, &#39;PHP&#39;], [&#39;python&#39;, &#39;is&#39;, &#39;powerful&#39;]]}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.SingleTurnDialogRecorder.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#SingleTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SingleTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
@@ -1069,19 +1227,16 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="n">post_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
-<span class="gp">... </span>            <span class="n">resp_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span>            <span class="n">post_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="n">resp_allvocabs_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span>
 <span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -1133,6 +1288,36 @@ sizes in this dimension is allowed.</li>
 </tr>
 </tbody>
 </table>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; multi_turn_reference_allvocabs_key = &quot;multi_turn_ref_allvocabs&quot;
+&gt;&gt;&gt; multi_turn_gen_key = &quot;multi_turn_gen&quot;
+&gt;&gt;&gt; turn_len_key = &quot;turn_length&quot;
+&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)
+&gt;&gt;&gt; metric = cotk.metric.MultiTurnDialogRecorder(dl,
+...     multi_turn_reference_allvocabs_key=multi_turn_reference_allvocabs_key,
+...     multi_turn_gen_key＝multi_turn_gen_key,
+...     turn_len_key=turn_len_key)
+&gt;&gt;&gt; data = {
+...             multi_turn_reference_allvocabs_key: [[[2, 10, 64, 851, 3], [2, 10, 64, 479, 3]], [[2, 10, 64, 279, 1460, 3]]],
+...     # multi_turn_reference_allvocabs_key = [[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;]],
+...     #       [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;machine&quot;, &quot;learning&quot;, &quot;&lt;eos&gt;&quot;]]]
+...
+...             turn_len_key: [2, 1],
+...     # turn_len_key: [len(multi_turn_reference_allvocabs_key[0]), len(multi_turn_reference_allvocabs_key[1])]
+...
+...             multi_turn_gen_key: [[[851, 17, 2451, 3], [2019, 17, 393, 3]], [[10, 64, 34058, 805, 2601, 3]]]
+...     # multi_turn_gen_key = [[[&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;], [&quot;PHP&quot;, &quot;is&quot;, &quot;best&quot;, &quot;&lt;eos&gt;&quot;]],
+...     #       [[&quot;I&quot;, &quot;like&quot;, &quot;natural&quot;, &quot;language&quot;, &quot;processing&quot;, &quot;&lt;eos&gt;&quot;]]]
+... }
+&gt;&gt;&gt; metric.forword(data)
+&gt;&gt;&gt; metric.close()
+{&#39;reference&#39;: [[[&#39;I&#39;, &#39;like&#39;, &#39;python&#39;], [&#39;I&#39;, &#39;like&#39;, &#39;java&#39;]],
+ [[&#39;I&#39;, &#39;like&#39;, &#39;machine&#39;, &#39;learning&#39;]]],
+ &#39;gen&#39;: [[[&#39;python&#39;, &#39;is&#39;, &#39;excellent&#39;],
+ [&#39;PHP&#39;, &#39;is&#39;, &#39;best&#39;]],
+ [[&#39;I&#39;, &#39;like&#39;, &#39;natural&#39;, &#39;language&#39;, &#39;processing&#39;]]]}
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.MultiTurnDialogRecorder.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#MultiTurnDialogRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnDialogRecorder.forward" title="Permalink to this definition">¶</a></dt>
@@ -1157,20 +1342,17 @@ where “~” means different sizes in this dimension is allowed.</li>
 Length of turns in each sample.
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size]</span></code>.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="n">multi_turn_context_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
-<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
-<span class="gp">... </span>            <span class="n">multi_turn_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+<span class="gp">... </span>            <span class="n">multi_turn_context_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>            <span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">]]],</span>
+<span class="gp">... </span>            <span class="n">multi_turn_gen_key</span><span class="p">:</span> <span class="p">[[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">]]],</span>
 <span class="gp">... </span>            <span class="n">turn_len_key</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -1216,6 +1398,19 @@ sizes in this dimension is allowed.</li>
 </tr>
 </tbody>
 </table>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gen_key</span> <span class="o">=</span> <span class="s2">&quot;gen_key&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dl</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">UbuntuCorpus</span><span class="p">(</span><span class="s1">&#39;resources://Ubuntu_small&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">LanguageGenerationRecorder</span><span class="p">(</span><span class="n">dl</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="n">gen_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">851</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>
+<span class="gp">... </span>            <span class="c1"># gen_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forword</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="go">{&#39;gen&#39;: [[&#39;&lt;go&gt;&#39;, &#39;I&#39;, &#39;like&#39;, &#39;python&#39;], [&#39;&lt;go&gt;&#39;, &#39;I&#39;, &#39;use&#39;, &#39;python&#39;]]}</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="cotk.metric.LanguageGenerationRecorder.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/recorder.html#LanguageGenerationRecorder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.LanguageGenerationRecorder.forward" title="Permalink to this definition">¶</a></dt>
@@ -1233,17 +1428,14 @@ but without start token (eg: <code class="docutils literal notranslate"><span cl
 Size: <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">~gen_sentence_length]</span></code>,
 where “~” means different sizes in this dimension is allowed.</li>
 </ul>
-<dl class="last docutils">
-<dt>Here is an example for data:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
+<p>Here is an example for data:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>            <span class="n">gen_key</span><span class="p">:</span> <span class="p">[[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>

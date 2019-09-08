@@ -108,6 +108,14 @@ class CheckpointManager:
 			logging.info("loading checkpoint %s", model_name)
 			checkpoint = torch.load("%s/%s.model" % (self.model_dir, model_name), \
 					map_location=lambda storage, loc: storage)
+		elif os.path.isfile("%s/%s" % (self.model_dir, model_name)):
+			logging.info("loading checkpoint %s", model_name)
+			checkpoint = torch.load("%s/%s" % (self.model_dir, model_name), \
+					map_location=lambda storage, loc: storage)
+		elif os.path.isfile("%s" % (model_name)):
+			logging.info("loading checkpoint %s", model_name)
+			checkpoint = torch.load("%s" % (model_name), \
+					map_location=lambda storage, loc: storage)
 		else:
 			raise ValueError("no checkpoint found at %s" % model_name)
 

@@ -15,13 +15,16 @@ def run(*argv):
 	parser.add_argument('--restore', type=str, default=None,
 		help='Checkpoints name to load. \
 			"NAME_last" for the last checkpoint of model named NAME. "NAME_best" means the best checkpoint. \
-			You can also use "last" and "best", defaultly use last model you run. \
+			You can also use "last" and "best", by default use last model you run. \
+			It can also be an url started with "http". \
 			Attention: "NAME_last" and "NAME_best" are not guaranteed to work when 2 models with same name run in the same time. \
 			"last" and "best" are not guaranteed to work when 2 models run in the same time.\
 			Default: None (don\'t load anything)')
 	parser.add_argument('--mode', type=str, default="train",
 		help='"train" or "test". Default: train')
 
+	parser.add_argument('--lr', type=float, default=1e-3,
+		help='Learning rate. Default: 0.001')
 	parser.add_argument('--eh_size', type=int, default=200,
 		help='Size of encoder GRU')
 	parser.add_argument('--dh_size', type=int, default=200,
@@ -40,16 +43,16 @@ def run(*argv):
 
 	parser.add_argument('--dataset', type=str, default='OpenSubtitles',
 		help='Dataloader class. Default: OpenSubtitles')
-	parser.add_argument('--datapath', type=str, default='OpenSubtitles',
-		help='Directory for data set. Default: OpenSubtitles')
+	parser.add_argument('--dataid', type=str, default='resources://OpenSubtitles',
+		help='Resource id for data set. It can be a resource name or a local path. Default: resources://OpenSubtitles')
 	parser.add_argument('--epoch', type=int, default=100,
-		help="Epoch for trainning. Default: 100")
+		help="Epoch for training. Default: 100")
 	parser.add_argument('--batch_per_epoch', type=int, default=1500,
 		help="Batches per epoch. Default: 1500")
 	parser.add_argument('--wvclass', type=str, default='Glove',
 		help="Wordvector class, none for not using pretrained wordvec. Default: Glove")
-	parser.add_argument('--wvpath', type=str, default="resources://Glove300d",
-		help="Directory for pretrained wordvector. Default: resources://Glove300d")
+	parser.add_argument('--wvid', type=str, default="resources://Glove300d",
+		help="Resource id for pretrained wordvector. Default: resources://Glove300d")
 
 	parser.add_argument('--out_dir', type=str, default="./output",
 		help='Output directory for test output. Default: ./output')
@@ -67,8 +70,7 @@ def run(*argv):
 		help='Use cache for speeding up load data and wordvec. (It may cause problems when you switch dataset.)')
 	parser.add_argument('--seed', type=int, default=0,
 		help='Specify random seed. Default: 0')
-	parser.add_argument('--lr', type=float, default=1e-3,
-		help='Learning rate. Default: 0.001')
+
 	cargs = parser.parse_args(argv)
 
 
@@ -77,10 +79,10 @@ def run(*argv):
 	args.restore = cargs.restore
 	args.mode = cargs.mode
 	args.dataset = cargs.dataset
-	args.datapath = cargs.datapath
+	args.datapath = cargs.dataid
 	args.epochs = cargs.epoch
 	args.wvclass = cargs.wvclass
-	args.wvpath = cargs.wvpath
+	args.wvpath = cargs.wvid
 	args.out_dir = cargs.out_dir
 	args.log_dir = cargs.log_dir
 	args.model_dir = cargs.model_dir

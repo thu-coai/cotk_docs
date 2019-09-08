@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="MultiTurnDialog" href="../../MultiTurnDialog/index.html" />
-    <link rel="prev" title="Seq2Seq (TensorFlow)" href="../seq2seq-tensorflow/Readme.html" /> 
+    <link rel="next" title="Seq2Seq (TensorFlow)" href="../seq2seq-tensorflow/Readme.html" />
+    <link rel="prev" title="SingleTurnDialog" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,7 +104,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../LanguageGeneration/index.html">LanguageGeneration</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">SingleTurnDialog</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../seq2seq-tensorflow/Readme.html">Seq2Seq (TensorFlow)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Seq2Seq (PyTorch)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#require-packages">Require Packages</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick Start</a></li>
@@ -113,13 +112,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#case-study-of-model-results">Case Study of Model Results</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#experiment">Experiment</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#subset-experiment">Subset Experiment</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#universal-set-experiment">Universal set experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fullset-experiment">Fullset experiment</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#author">Author</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../seq2seq-tensorflow/Readme.html">Seq2Seq (TensorFlow)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../MultiTurnDialog/index.html">MultiTurnDialog</a></li>
@@ -196,7 +196,7 @@
 <a class="reference external image-reference" href="https://travis-ci.com/thu-coai/seq2seq-pytorch"><img alt="Build Status" src="https://travis-ci.com/thu-coai/seq2seq-pytorch.svg?branch=master" /></a>
 <div class="section" id="seq2seq-pytorch">
 <h1>Seq2Seq (PyTorch)<a class="headerlink" href="#seq2seq-pytorch" title="Permalink to this headline">¶</a></h1>
-<p>Seq2seq with attention mechanism is a basic model for single turn dialog. In addition, batch normalization and dropout has been applied. You can also choose beamsearch, greedy, random sample, random sample from top k when decoding.</p>
+<p>Seq2seq with attention mechanism is a basic model for single turn dialog. In addition, batch normalization and dropout has been applied. You can also choose beamsearch, greedy, random sample, random sample from top-k when decoding.</p>
 <p>You can refer to the following paper for details:</p>
 <p>Sutskever, I., Vinyals, O., &amp; Le, Q. V. (2014). Sequence to sequence learning with neural networks. In <em>Advances in neural information processing systems</em> (pp. 3104-3112).</p>
 <p>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. In <em>International Conference on Learning Representation</em>.</p>
@@ -214,8 +214,8 @@
 <ul class="simple">
 <li>Using <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">download</span> <span class="pre">thu-coai/seq2seq-pytorch/master</span></code> to download codes.</li>
 <li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
-<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class and <code class="docutils literal notranslate"><span class="pre">--datapath</span></code> to specify other data path (can be a local path, a url or a resources id). For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">OpenSubtitles</span> <span class="pre">--datapath</span> <span class="pre">resources://OpenSubtitles</span></code></li>
-<li>It doesn’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class and <code class="docutils literal notranslate"><span class="pre">--wvpath</span></code> to specify pretrained word embeddings. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">Glove</span> <span class="pre">--datapath</span> <span class="pre">resources://Glove300</span></code></li>
+<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class and <code class="docutils literal notranslate"><span class="pre">--dataid</span></code> to specify other data path (can be a local path, a url or a resources id). For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">OpenSubtitles</span> <span class="pre">--dataid</span> <span class="pre">resources://OpenSubtitles</span></code></li>
+<li>It doesn’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class and <code class="docutils literal notranslate"><span class="pre">--wvpath</span></code> to specify pretrained word embeddings. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">Glove</span> <span class="pre">--dataid</span> <span class="pre">resources://Glove300</span></code></li>
 <li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time for either training or test.</li>
 </ul>
 </li>
@@ -234,14 +234,18 @@
 </div>
 <div class="section" id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: run.py [-h] [--name NAME] [--restore RESTORE] [--mode MODE]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: run.py [-h] [--name NAME] [--restore RESTORE] [--mode MODE] [--lr LR]
               [--eh_size EH_SIZE] [--dh_size DH_SIZE] [--droprate DROPRATE]
               [--batchnorm] [--decode_mode {max,sample,gumbel,samplek,beam}]
               [--top_k TOP_K] [--length_penalty LENGTH_PENALTY]
-              [--dataset DATASET] [--datapath DATAPATH] [--epoch EPOCH]
-              [--wvclass WVCLASS] [--wvpath WVPATH] [--out_dir OUT_DIR]
-              [--log_dir LOG_DIR] [--model_dir MODEL_DIR]
-              [--cache_dir CACHE_DIR] [--cpu] [--debug] [--cache]
+              [--dataset DATASET] [--dataid DATAID] [--epoch EPOCH]
+              [--batch_per_epoch BATCH_PER_EPOCH] [--wvclass WVCLASS]
+              [--wvid WVID] [--out_dir OUT_DIR] [--log_dir LOG_DIR]
+              [--model_dir MODEL_DIR] [--cache_dir CACHE_DIR] [--cpu]
+              [--debug] [--cache] [--seed SEED]
+
+A seq2seq model with GRU encoder and decoder. Attention, beamsearch, dropout
+and batchnorm is supported.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -251,17 +255,18 @@ optional arguments:
   --restore RESTORE     Checkpoints name to load. &quot;NAME_last&quot; for the last
                         checkpoint of model named NAME. &quot;NAME_best&quot; means the
                         best checkpoint. You can also use &quot;last&quot; and &quot;best&quot;,
-                        defaultly use last model you run. Attention:
+                        by default use last model you run. Attention:
                         &quot;NAME_last&quot; and &quot;NAME_best&quot; are not guaranteed to work
                         when 2 models with same name run in the same time.
                         &quot;last&quot; and &quot;best&quot; are not guaranteed to work when 2
-                        models run in the same time. Default: None (dont load
+                        models run in the same time. Default: None (don&#39;t load
                         anything)
   --mode MODE           &quot;train&quot; or &quot;test&quot;. Default: train
+  --lr LR               Learning rate. Default: 0.001
   --eh_size EH_SIZE     Size of encoder GRU
   --dh_size DH_SIZE     Size of decoder GRU
   --droprate DROPRATE   The probability to be zerod in dropout. 0 indicates
-                        for dont use dropout
+                        for don&#39;t use dropout
   --batchnorm           Use bathnorm
   --decode_mode {max,sample,gumbel,samplek,beam}
                         The decode strategy when freerun. Choices: max,
@@ -272,20 +277,26 @@ optional arguments:
                         The beamsearch penalty for short sentences. The
                         penalty will get larger when this becomes smaller.
   --dataset DATASET     Dataloader class. Default: OpenSubtitles
-  --datapath DATAPATH   Directory for data set. Default: ./data
-  --epoch EPOCH         Epoch for trainning. Default: 100
+  --dataid DATAID       Resource id for data set. It can be a resource name or
+                        a local path. Default: resources://OpenSubtitles
+  --epoch EPOCH         Epoch for training. Default: 100
+  --batch_per_epoch BATCH_PER_EPOCH
+                        Batches per epoch. Default: 1500
   --wvclass WVCLASS     Wordvector class, none for not using pretrained
                         wordvec. Default: Glove
-  --wvpath WVPATH       Directory for pretrained wordvector. Default:
-                        ./wordvec
+  --wvid WVID           Resource id for pretrained wordvector. Default:
+                        resources://Glove300d
   --out_dir OUT_DIR     Output directory for test output. Default: ./output
   --log_dir LOG_DIR     Log directory for tensorboard. Default: ./tensorboard
-  --model_dir MODEL_DIR Checkpoints directory for model. Default: ./model
-  --cache_dir CACHE_DIR Checkpoints directory for cache. Default: ./cache
+  --model_dir MODEL_DIR
+                        Checkpoints directory for model. Default: ./model
+  --cache_dir CACHE_DIR
+                        Checkpoints directory for cache. Default: ./cache
   --cpu                 Use cpu.
   --debug               Enter debug mode (using ptvsd).
   --cache               Use cache for speeding up load data and wordvec. (It
                         may cause problems when you switch dataset.)
+  --seed SEED           Specify random seed. Default: 0
 </pre></div>
 </div>
 </div>
@@ -340,14 +351,13 @@ gen:    i don&#39; t know .
 <p>Based on <code class="docutils literal notranslate"><span class="pre">OpenSubtitles_small</span></code> (a smaller version of <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>), we did the following experiments.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">encoder</th>
@@ -355,7 +365,6 @@ gen:    i don&#39; t know .
 <th class="head">batchnorm</th>
 <th class="head">learning rate</th>
 <th class="head">droprate</th>
-<th class="head">decode mode</th>
 <th class="head">dev perplexity</th>
 <th class="head">test perplexity</th>
 </tr>
@@ -366,7 +375,6 @@ gen:    i don&#39; t know .
 <td>no</td>
 <td>0.0001</td>
 <td>0.2</td>
-<td>samplek</td>
 <td>88.971</td>
 <td>94.698</td>
 </tr>
@@ -375,7 +383,6 @@ gen:    i don&#39; t know .
 <td>no</td>
 <td>0.0001</td>
 <td><strong>0</strong></td>
-<td>samplek</td>
 <td>95.207</td>
 <td>100.676</td>
 </tr>
@@ -384,7 +391,6 @@ gen:    i don&#39; t know .
 <td>no</td>
 <td>0.0001</td>
 <td>0.2</td>
-<td>samplek</td>
 <td>93.559</td>
 <td>99.287</td>
 </tr>
@@ -393,7 +399,6 @@ gen:    i don&#39; t know .
 <td><strong>yes</strong></td>
 <td>0.0001</td>
 <td><strong>0</strong></td>
-<td>samplek</td>
 <td>105.649</td>
 <td>112.818</td>
 </tr>
@@ -402,7 +407,6 @@ gen:    i don&#39; t know .
 <td><strong>yes</strong></td>
 <td>0.0001</td>
 <td>0.2</td>
-<td>samplek</td>
 <td>95.894</td>
 <td>102.243</td>
 </tr>
@@ -411,7 +415,6 @@ gen:    i don&#39; t know .
 <td>no</td>
 <td>0.0001</td>
 <td>0.2</td>
-<td>samplek</td>
 <td>90.153</td>
 <td>95.072</td>
 </tr>
@@ -420,60 +423,46 @@ gen:    i don&#39; t know .
 <td>no</td>
 <td>0.0001</td>
 <td>0.2</td>
-<td>samplek</td>
 <td>89.374</td>
 <td>94.272</td>
 </tr>
 <tr class="row-odd"><td>175</td>
 <td>175</td>
-<td>no</td>
-<td>0.0001</td>
-<td>0.2</td>
-<td><strong>beam</strong></td>
-<td>89.253</td>
-<td>93.674</td>
-</tr>
-<tr class="row-even"><td>175</td>
-<td>175</td>
 <td><strong>yes</strong></td>
 <td>0.0001</td>
 <td>0.2</td>
-<td>samplek</td>
 <td>97.704</td>
 <td>102.851</td>
 </tr>
-<tr class="row-odd"><td>175</td>
+<tr class="row-even"><td>175</td>
 <td>175</td>
 <td>no</td>
 <td>0.0001</td>
 <td><strong>0.1</strong></td>
-<td>samplek</td>
 <td>90.149</td>
 <td>95.310</td>
-</tr>
-<tr class="row-even"><td>175</td>
-<td>175</td>
-<td>no</td>
-<td>0.0001</td>
-<td><strong>0.3</strong></td>
-<td>samplek</td>
-<td>89.750</td>
-<td>95.042</td>
 </tr>
 <tr class="row-odd"><td>175</td>
 <td>175</td>
 <td>no</td>
+<td>0.0001</td>
+<td><strong>0.3</strong></td>
+<td>89.750</td>
+<td>95.042</td>
+</tr>
+<tr class="row-even"><td>175</td>
+<td>175</td>
+<td>no</td>
 <td><strong>0.0005</strong></td>
 <td>0.2</td>
-<td>samplek</td>
-<td>88.688</td>
-<td>93.421</td>
+<td><strong>88.688</strong></td>
+<td><strong>93.421</strong></td>
 </tr>
 </tbody>
 </table>
-<p>We can consider the parameters used in the first experiment are relatively best.</p>
-<p>To reproduce the best experiment, you should use <code class="docutils literal notranslate"><span class="pre">cotk</span></code> to load the dataset <code class="docutils literal notranslate"><span class="pre">OpenSubtitles_small</span></code> first. After that,  run the following command to train the model:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --datapath resources://OpenSubtitles_small --eh_size <span class="m">175</span> --dh_size <span class="m">175</span> --decode_mode samplek --droprate <span class="m">0</span>.2 --epoch <span class="m">35</span> --lr <span class="m">0</span>.0001
+<p>The following experiments are based on the parameters of the first experiment.</p>
+<p>To reproduce the experiment, run the following command to train the model:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --dataid resources://OpenSubtitles_small --eh_size <span class="m">175</span> --dh_size <span class="m">175</span> --droprate <span class="m">0</span>.2 --epoch <span class="m">35</span> --lr <span class="m">0</span>.0001
 </pre></div>
 </div>
 <p>Based on the best parameters,  we did another five experiments in order to analyze the model’s performance totally.</p>
@@ -489,63 +478,57 @@ gen:    i don&#39; t know .
 <tr class="row-odd"><th class="head">seed</th>
 <th class="head">dev perplexity</th>
 <th class="head">test perplexity</th>
-<th class="head">dev bleu</th>
-<th class="head">test bleu</th>
+<th class="head">dev bleu(x1e-3)</th>
+<th class="head">test bleu(x1e-3)</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>7913</td>
-<td>89.12259358</td>
-<td>93.89827661</td>
-<td>0.00324</td>
-<td>0.00282</td>
+<td>89.123</td>
+<td>93.898</td>
+<td>3.24</td>
+<td>2.82</td>
 </tr>
 <tr class="row-odd"><td>1640</td>
-<td>88.22384772</td>
-<td>94.01863079</td>
-<td>0.00451</td>
-<td>0.00413</td>
+<td>88.224</td>
+<td>94.019</td>
+<td>4.51</td>
+<td>4.13</td>
 </tr>
 <tr class="row-even"><td>3739</td>
-<td>87.96875635</td>
-<td>92.73027066</td>
-<td>0.00237</td>
-<td>0.00215</td>
+<td>87.969</td>
+<td>92.730</td>
+<td>2.37</td>
+<td>2.15</td>
 </tr>
 <tr class="row-odd"><td>972</td>
-<td>88.08311415</td>
-<td>93.51499326</td>
-<td>0.00299</td>
-<td>0.00234</td>
+<td>88.083</td>
+<td>93.515</td>
+<td>2.99</td>
+<td>2.34</td>
 </tr>
 <tr class="row-even"><td>3594</td>
-<td>87.93255996</td>
-<td>94.25819365</td>
-<td>0.00422</td>
-<td>0.00344</td>
+<td>87.933</td>
+<td>94.258</td>
+<td>4.22</td>
+<td>3.44</td>
 </tr>
 <tr class="row-odd"><td>Average</td>
-<td>88.26617435</td>
-<td>93.68407299</td>
-<td>0.00347</td>
-<td>0.00298</td>
-</tr>
-<tr class="row-even"><td>Standard deviation</td>
-<td>0.440116463</td>
-<td>0.533995032</td>
-<td>0.000792</td>
-<td>0.000729</td>
+<td>88.266 ± 0.440</td>
+<td>93.684 ± 0.534</td>
+<td>3.47 ± 7.92</td>
+<td>2.98 ± 7.29</td>
 </tr>
 </tbody>
 </table>
 <p>Run the following command to test the trained model:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --datapath resources://OpenSubtitles_small --eh_size <span class="m">175</span> --dh_size <span class="m">175</span> --decode_mode samplek --droprate <span class="m">0</span>.2 --epoch <span class="m">35</span> --mode <span class="nb">test</span> --restore <span class="o">[</span>model name<span class="o">]</span> --seed <span class="o">[</span>seed value<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --dataid resources://OpenSubtitles_small --eh_size <span class="m">175</span> --dh_size <span class="m">175</span> --decode_mode samplek --droprate <span class="m">0</span>.2 --epoch <span class="m">35</span> --mode <span class="nb">test</span> --restore <span class="o">[</span>model name<span class="o">]</span> --seed <span class="o">[</span>seed value<span class="o">]</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="universal-set-experiment">
-<h3>Universal set experiment<a class="headerlink" href="#universal-set-experiment" title="Permalink to this headline">¶</a></h3>
-<p>Based on the result of subset experiment, we did the following experiment on <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code></p>
+<div class="section" id="fullset-experiment">
+<h3>Fullset experiment<a class="headerlink" href="#fullset-experiment" title="Permalink to this headline">¶</a></h3>
+<p>Based on the result of subset experiment, we did the following experiment on <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
@@ -592,31 +575,31 @@ gen:    i don&#39; t know .
 <tr class="row-odd"><th class="head">decode mode</th>
 <th class="head">dev perplexity</th>
 <th class="head">test perplexity</th>
-<th class="head">dev bleu</th>
-<th class="head">test bleu</th>
+<th class="head">dev bleu(x1e-3)</th>
+<th class="head">test bleu(x1e-3)</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><strong>samplek</strong></td>
-<td>42.331</td>
-<td>44.904</td>
-<td>0.00324</td>
-<td>0.00282</td>
+<td>41.457</td>
+<td>43.868</td>
+<td>3.24</td>
+<td>2.82</td>
 </tr>
 <tr class="row-odd"><td><strong>beam</strong></td>
 <td>41.457</td>
 <td>43.868</td>
-<td>0.0115</td>
-<td>0.0104</td>
+<td>11.5</td>
+<td>10.4</td>
 </tr>
 </tbody>
 </table>
-<p>To reproduce the best experiment, you should use <code class="docutils literal notranslate"><span class="pre">cotk</span></code> to load the dataset <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code> first. After that,  run the following command to train the model:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --datapath resources://OpenSubtitles --eh_size <span class="m">256</span> --dh_size <span class="m">256</span> --decode_mode <span class="o">[</span>decode mode<span class="o">]</span> --droprate <span class="m">0</span>.2 --lr <span class="m">0</span>.0003 --epoch <span class="m">200</span>
+<p>To reproduce the experiment, run the following command to train the model:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --dataid resources://OpenSubtitles --eh_size <span class="m">256</span> --dh_size <span class="m">256</span> --droprate <span class="m">0</span>.2 --lr <span class="m">0</span>.0003 --epoch <span class="m">200</span>
 </pre></div>
 </div>
 <p>Run the following command to test the trained model:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --datapath resources://OpenSubtitles --eh_size <span class="m">256</span> --dh_size <span class="m">256</span> --decode_mode <span class="o">[</span>decode mode<span class="o">]</span> --droprate <span class="m">0</span>.2 --lr <span class="m">0</span>.0003 --epoch <span class="m">200</span> --mode <span class="nb">test</span> --restore best
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py --dataset<span class="o">=</span>OpenSubtitles --dataid resources://OpenSubtitles --eh_size <span class="m">256</span> --dh_size <span class="m">256</span> --decode_mode <span class="o">[</span>decode mode<span class="o">]</span> --droprate <span class="m">0</span>.2 --lr <span class="m">0</span>.0003 --epoch <span class="m">200</span> --mode <span class="nb">test</span> --restore best
 </pre></div>
 </div>
 </div>
@@ -637,8 +620,8 @@ gen:    i don&#39; t know .
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>OpenSubtitles</td>
-<td>51.45</td>
-<td>0.165</td>
+<td>43.868</td>
+<td>0.0115</td>
 </tr>
 </tbody>
 </table>
@@ -657,10 +640,10 @@ gen:    i don&#39; t know .
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../MultiTurnDialog/index.html" class="btn btn-neutral float-right" title="MultiTurnDialog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../seq2seq-tensorflow/Readme.html" class="btn btn-neutral float-right" title="Seq2Seq (TensorFlow)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../seq2seq-tensorflow/Readme.html" class="btn btn-neutral float-left" title="Seq2Seq (TensorFlow)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="SingleTurnDialog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

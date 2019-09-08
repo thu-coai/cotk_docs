@@ -240,10 +240,11 @@
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.</span>
 
 <span class="sd">				Here is an example for data:</span>
+
 <span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					... 	candidate_allvocabs_key: [[[4], [5,6]], [[4,5,6]]]</span>
+<span class="sd">					... 	candidate_allvocabs_key: [[[4], [5,6]], [[4,5,6]]],</span>
 <span class="sd">					...		multiple_gen_key: [[[5,6,3]], [[4,5,7,3], [8,3]]]</span>
 <span class="sd">					... }</span>
 
@@ -312,6 +313,24 @@
 <span class="sd">	Arguments:</span>
 <span class="sd">		{_PrecisionRecallMetric.ARGUMENTS}</span>
 <span class="sd">		ngram (int): Specifies using BLEU-ngram.</span>
+
+<span class="sd">	Here is an exmaple:</span>
+
+<span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
+<span class="sd">		&gt;&gt;&gt; candidate_allvocabs_key = &#39;candidate_allvocabs&#39;</span>
+<span class="sd">		&gt;&gt;&gt; multiple_gen_key=&#39;multiple_gen&#39;</span>
+<span class="sd">		&gt;&gt;&gt; metric = cotk.metric.BleuPrecisionRecallMetric(dl, 2, 2)</span>
+<span class="sd">		&gt;&gt;&gt; data = {</span>
+<span class="sd">		...		candidate_allvocabs_key: [[[10, 64, 851], [10, 48, 851]]],</span>
+<span class="sd">		...		# candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
+<span class="sd">		... 	multiple_gen_key: [[[10, 64, 479, 3], [10, 48, 2019, 3]]],</span>
+<span class="sd">		... 	# multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
+<span class="sd">		... }</span>
+<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.close()</span>
+<span class="sd">		{&#39;BLEU-2 precision&#39;: 0.12909944355487823,</span>
+<span class="sd"> 		 &#39;BLEU-2 recall&#39;: 0.12909944355487823,</span>
+<span class="sd"> 		 &#39;BLEU-2 hashvalue&#39;: &#39;1652cd40276078ec8722d367f18008bf14053572ac15ce10e270eb41eae34bbf&#39;}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;BleuPrecisionRecallMetric&#39;</span>
@@ -360,6 +379,7 @@
 <span class="sd">			int: score \in [0, 1].</span>
 
 <span class="sd">		Here is an Example:</span>
+
 <span class="sd">			&gt;&gt;&gt; gen = [4,5]</span>
 <span class="sd">			&gt;&gt;&gt; reference = [5,6]</span>
 <span class="sd">			&gt;&gt;&gt; self._score(gen, reference)</span>
@@ -385,6 +405,25 @@
 <span class="sd">			* ``avg`` : element-wise average word embeddings.</span>
 <span class="sd">			* ``extrema`` : element-wise maximum word embeddings.</span>
 
+<span class="sd">	Here is an exmaple:</span>
+
+<span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
+<span class="sd">		&gt;&gt;&gt; candidate_allvocabs_key = &#39;candidate_allvocabs&#39;</span>
+<span class="sd">		&gt;&gt;&gt; multiple_gen_key=&#39;multiple_gen&#39;</span>
+<span class="sd">		&gt;&gt;&gt; wordvector = cotk.wordvector.Glove()</span>
+<span class="sd">		&gt;&gt;&gt; metric = cotk.metric.EmbSimilarityPrecisionRecallMetric(dl, wordvector.load_dict(dl.all_vocab_list()), &#39;avg&#39;, 2)</span>
+<span class="sd">		&gt;&gt;&gt; data = {</span>
+<span class="sd">		...		candidate_allvocabs_key: [[[10, 64, 851], [10, 48, 851]]],</span>
+<span class="sd">		...		# candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
+<span class="sd">		... 	multiple_gen_key: [[[10, 64, 479, 3], [10, 48, 2019, 3]]],</span>
+<span class="sd">		... 	# multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
+<span class="sd">		... }</span>
+<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.close()</span>
+<span class="sd">		&gt;&gt;&gt; # metric.close() returns a dict like this.</span>
+<span class="sd">		&gt;&gt;&gt;	# {&#39;avg-bow precision&#39;: 0.0,</span>
+<span class="sd">		&gt;&gt;&gt;	# &#39;avg-bow recall&#39;: 0.0,</span>
+<span class="sd">		&gt;&gt;&gt;	# &#39;avg-bow hashvalue&#39;: &#39;5abaaa9a8e709b3f05467e3f6d0e27c6cc904fceebd3accb3b768928595e729a&#39;}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;EmbSimilarityPrecisionRecallMetric&#39;</span>
@@ -424,6 +463,7 @@
 <span class="sd">			int: cosine similarity between two sentence embeddings \in [0, 1].</span>
 
 <span class="sd">		Here is an Example:</span>
+
 <span class="sd">			&gt;&gt;&gt; gen = [4,5]</span>
 <span class="sd">			&gt;&gt;&gt; reference = [5,6]</span>
 <span class="sd">			&gt;&gt;&gt; self._score(gen, reference)</span>

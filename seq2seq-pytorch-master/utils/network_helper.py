@@ -90,7 +90,7 @@ class BaseNetwork(BaseModule):
 				own_state[name].copy_(param)
 			except:
 				print('While copying the parameter named %s, whose dimensions in the model are'\
-					  ' %d and whose dimensions in the checkpoint are %d, ...' %\
+					  ' %s and whose dimensions in the checkpoint are %s, ...' %\
 						  (name, own_state[name].size(), param.size()))
 				raise
 
