@@ -1546,7 +1546,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCor
 <h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.MSCOCO">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id='resources://MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for preprocessed MSCOCO dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2011,7 +2011,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusM
 <h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.OpenSubtitles">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id='resources://OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2536,7 +2536,7 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusM
 <h3>BERTOpenSubtitles<a class="headerlink" href="#bertopensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.BERTOpenSubtitles">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTOpenSubtitles</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">BERTOpenSubtitles</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em>, <em>bert_vocab_name='bert-base-uncased'</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3131,7 +3131,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">gen</span>
 <h3>UbuntuCorpus<a class="headerlink" href="#ubuntucorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.UbuntuCorpus">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">UbuntuCorpus</code><span class="sig-paren">(</span><em>file_id='resources://Ubuntu'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>max_turn_length=20</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for Ubuntu dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3190,7 +3190,7 @@ for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</p>
 <h3>SwitchBoardCorpus<a class="headerlink" href="#switchboardcorpus" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.SwitchboardCorpus">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SwitchboardCorpus</code><span class="sig-paren">(</span><em>file_id='resources://SwitchboardCorpus'</em>, <em>min_vocab_times=5</em>, <em>max_sent_length=50</em>, <em>max_turn_length=1000</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#SwitchboardCorpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SwitchboardCorpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for Switchboard dataset.</p>
 <p>In this dataset, all sessions start with a <code class="docutils literal notranslate"><span class="pre">&lt;d&gt;</span></code> representing empty context.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -3756,7 +3756,7 @@ Refer to <code class="xref py py-class docutils literal notranslate"><span class
 <h3>SST<a class="headerlink" href="#sst" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.SST">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SST</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SST</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for preprocessed SST dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
