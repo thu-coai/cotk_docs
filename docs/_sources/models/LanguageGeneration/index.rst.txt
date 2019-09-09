@@ -3,5 +3,5 @@ LanguageGeneration
 .. toctree::
 
    VAE-tensorflow/Readme
-   seqGAN-tensorflow/Readme
    LM-tensorflow/Readme
+   seqGAN-tensorflow/Readme

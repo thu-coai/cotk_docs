@@ -465,7 +465,7 @@
 
 		<span class="k">return</span> <span class="n">word_loss</span><span class="p">,</span> <span class="n">length_sum</span>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+<div class="viewcode-block" id="PerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.PerplexityMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
 	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
@@ -510,7 +510,7 @@
 
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">word_loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_sum</span><span class="p">),</span> \
 				<span class="s2">&quot;perplexity hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">res</span></div>
+		<span class="k">return</span> <span class="n">res</span></div></div>
 
 <div class="viewcode-block" id="MultiTurnPerplexityMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">MultiTurnPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating multi-turn perplexity.</span>
@@ -634,7 +634,7 @@
 					<span class="s2">&quot;ref_length&quot;</span><span class="p">:</span> <span class="n">sent_length</span><span class="p">[:</span><span class="n">turn_length</span><span class="p">],</span> \
 					<span class="s2">&quot;gen_log_prob&quot;</span><span class="p">:</span> <span class="n">gen_log_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="n">turn_length</span><span class="p">]})</span></div>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+<div class="viewcode-block" id="MultiTurnPerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnPerplexityMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
 	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">		Returns:</span>
@@ -646,7 +646,7 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-		<span class="k">return</span> <span class="n">res</span></div>
+		<span class="k">return</span> <span class="n">res</span></div></div>
 </pre></div>
 
            </div>
