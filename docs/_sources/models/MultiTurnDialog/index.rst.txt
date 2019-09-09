@@ -2,5 +2,5 @@ MultiTurnDialog
 =========================================
 .. toctree::
 
-   CVAE-tensorflow/Readme
    hred-tensorflow/Readme
+   CVAE-tensorflow/Readme

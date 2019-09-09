@@ -228,6 +228,7 @@
 <div class="viewcode-block" id="hook_metric"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.hooks.hook_metric">[docs]</a><span class="k">def</span> <span class="nf">hook_metric</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;decorator for metric.__init__&#39;&#39;&#39;</span>
 	<span class="n">sign</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+	<span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="n">bound</span> <span class="o">=</span> <span class="n">sign</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 		<span class="n">bound</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>

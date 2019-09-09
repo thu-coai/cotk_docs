@@ -281,7 +281,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 <h2>Metric class<a class="headerlink" href="#metric-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.metric.BleuPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuPrecisionRecallMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ngram</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#BleuPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating sentence BLEU precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -404,7 +404,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.EmbSimilarityPrecisionRecallMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">EmbSimilarityPrecisionRecallMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>word2vec</em>, <em>mode</em>, <em>generated_num_per_context</em>, <em>candidates_allvocabs_key='candidate_allvocabs'</em>, <em>multiple_gen_key='multiple_gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/precision_recall.html#EmbSimilarityPrecisionRecallMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.EmbSimilarityPrecisionRecallMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating cosine similarity precision and recall.</p>
 <p class="rubric">References</p>
 <p>[1] Zhao, T., Zhao, R., &amp; Eskenazi, M. (2017). Learning discourse-level diversity
@@ -535,7 +535,7 @@ where “~” means different sizes in this dimension is allowed.</li>
 
 <dl class="class">
 <dt id="cotk.metric.PerplexityMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">PerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>reference_len_key='ref_length'</em>, <em>gen_log_prob_key='gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#PerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.PerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -651,7 +651,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnPerplexityMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnPerplexityMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>multi_turn_reference_allvocabs_key='multi_turn_ref_allvocabs'</em>, <em>multi_turn_reference_len_key='multi_turn_ref_length'</em>, <em>multi_turn_gen_log_prob_key='multi_turn_gen_log_prob'</em>, <em>invalid_vocab=False</em>, <em>full_check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/perplexity.html#MultiTurnPerplexityMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnPerplexityMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn perplexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -771,7 +771,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 
 <dl class="class">
 <dt id="cotk.metric.BleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">BleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>reference_allvocabs_key='ref_allvocabs'</em>, <em>gen_key='gen'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#BleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.BleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -863,7 +863,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 
 <dl class="class">
 <dt id="cotk.metric.SelfBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">SelfBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#SelfBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.SelfBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating Self-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -954,7 +954,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 
 <dl class="class">
 <dt id="cotk.metric.FwBwBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">FwBwBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>reference_test_list</em>, <em>gen_key='gen'</em>, <em>sample=1000</em>, <em>seed=1229</em>, <em>cpu_count=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#FwBwBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.FwBwBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating FwBw-BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1049,7 +1049,7 @@ any operation on the metric (e.g. forward or another close) will raise a ValueEr
 
 <dl class="class">
 <dt id="cotk.metric.MultiTurnBleuCorpusMetric">
-<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.metric.</code><code class="descname">MultiTurnBleuCorpusMetric</code><span class="sig-paren">(</span><em>dataloader</em>, <em>ignore_smoothing_error=False</em>, <em>multi_turn_reference_allvocabs_key='reference_allvocabs'</em>, <em>multi_turn_gen_key='multi_turn_gen'</em>, <em>turn_len_key='turn_length'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/metric/bleu.html#MultiTurnBleuCorpusMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.metric.MultiTurnBleuCorpusMetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metric for calculating multi-turn BLEU.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
