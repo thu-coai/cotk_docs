@@ -183,6 +183,7 @@
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -215,29 +216,19 @@
       <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase._load_data">_load_data() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTOpenSubtitles._load_data">(cotk.dataloader.BERTOpenSubtitles method)</a>
-</li>
         <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog._load_data">(cotk.dataloader.BERTSingleTurnDialog method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._load_data">(cotk.dataloader.LanguageGeneration method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase._load_data">(cotk.dataloader.LanguageProcessingBase method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.MSCOCO._load_data">(cotk.dataloader.MSCOCO method)</a>
-</li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog._load_data">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.OpenSubtitles._load_data">(cotk.dataloader.OpenSubtitles method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SST._load_data">(cotk.dataloader.SST method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SentenceClassification._load_data">(cotk.dataloader.SentenceClassification method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog._load_data">(cotk.dataloader.SingleTurnDialog method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus._load_data">(cotk.dataloader.SwitchboardCorpus method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.UbuntuCorpus._load_data">(cotk.dataloader.UbuntuCorpus method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -366,6 +357,8 @@
         <li><a href="metric.html#cotk.metric.MultiTurnDialogRecorder.close">(cotk.metric.MultiTurnDialogRecorder method)</a>
 </li>
         <li><a href="metric.html#cotk.metric.MultiTurnPerplexityMetric.close">(cotk.metric.MultiTurnPerplexityMetric method)</a>
+</li>
+        <li><a href="metric.html#cotk.metric.NgramFwBwPerplexityMetric.close">(cotk.metric.NgramFwBwPerplexityMetric method)</a>
 </li>
         <li><a href="metric.html#cotk.metric.PerplexityMetric.close">(cotk.metric.PerplexityMetric method)</a>
 </li>
@@ -516,6 +509,8 @@
         <li><a href="metric.html#cotk.metric.MultiTurnDialogRecorder.forward">(cotk.metric.MultiTurnDialogRecorder method)</a>
 </li>
         <li><a href="metric.html#cotk.metric.MultiTurnPerplexityMetric.forward">(cotk.metric.MultiTurnPerplexityMetric method)</a>
+</li>
+        <li><a href="metric.html#cotk.metric.NgramFwBwPerplexityMetric.forward">(cotk.metric.NgramFwBwPerplexityMetric method)</a>
 </li>
         <li><a href="metric.html#cotk.metric.PerplexityMetric.forward">(cotk.metric.PerplexityMetric method)</a>
 </li>
@@ -737,6 +732,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="metric.html#cotk.metric.NgramFwBwPerplexityMetric">NgramFwBwPerplexityMetric (class in cotk.metric)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -767,7 +770,17 @@
 </li>
         <li><a href="_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.postprocess">(cotk._utils.resource_processor.Glove50dResourceProcessor method)</a>
 </li>
+        <li><a href="_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor.postprocess">(cotk._utils.resource_processor.MSCOCOResourceProcessor method)</a>
+</li>
+        <li><a href="_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.postprocess">(cotk._utils.resource_processor.OpenSubtitlesResourceProcessor method)</a>
+</li>
+        <li><a href="_utils.html#cotk._utils.resource_processor.SSTResourceProcessor.postprocess">(cotk._utils.resource_processor.SSTResourceProcessor method)</a>
+</li>
+        <li><a href="_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor.postprocess">(cotk._utils.resource_processor.UbuntuResourceProcessor method)</a>
+</li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.preprocess">preprocess() (cotk._utils.resource_processor.DefaultResourceProcessor method)</a>
 
       <ul>
@@ -853,10 +866,6 @@
       <ul>
         <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.tokenize">(cotk.dataloader.BERTSingleTurnDialog method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.MSCOCO.tokenize">(cotk.dataloader.MSCOCO method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.OpenSubtitles.tokenize">(cotk.dataloader.OpenSubtitles method)</a>
-</li>
         <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.tokenize">(cotk.dataloader.SentenceClassification method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.tokenize">(cotk.dataloader.SwitchboardCorpus method)</a>
@@ -864,8 +873,6 @@
         <li><a href="dataloader.html#cotk.dataloader.UbuntuCorpus.tokenize">(cotk.dataloader.UbuntuCorpus method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.trim">trim() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
 
       <ul>
@@ -882,6 +889,8 @@
         <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.trim">(cotk.dataloader.SingleTurnDialog method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_utils.html#cotk._utils._utils.trim_before_target">trim_before_target() (in module cotk._utils._utils)</a>
 </li>
   </ul></td>

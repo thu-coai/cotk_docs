@@ -1147,7 +1147,7 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <h2>LanguageGeneration<a class="headerlink" href="#languagegeneration" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.dataloader.LanguageGeneration">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">LanguageGeneration</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">LanguageGeneration</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times</em>, <em>max_sent_length</em>, <em>invalid_vocab_times</em>, <em>tokenizer</em>, <em>remains_capital</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for language modelling datasets. This is an abstract class.</p>
 <p>This class is supported for language modeling tasks or language generation tasks
 without any inputs.</p>
@@ -1156,8 +1156,18 @@ without any inputs.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code></li>
-<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code></li>
+<li><strong>file_id</strong> (<em>str</em>) – A string indicating the source of language generation dataset.</li>
+<li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
+not less than <code class="docutils literal notranslate"><span class="pre">min_vocab_times</span></code> in <strong>training set</strong> will be marked as valid words.</li>
+<li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> will be shortened
+to first <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> tokens.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, which are ignored both for
+model or metrics.</li>
+<li><strong>tokenizer</strong> (<em>str</em>) – How to tokenize sentence. <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.WordPunctTokenizer</span></code> is used if <code class="docutils literal notranslate"><span class="pre">nltk</span></code> is specified,
+python built-in <code class="docutils literal notranslate"><span class="pre">str.split</span></code> is used if <code class="docutils literal notranslate"><span class="pre">space</span></code> is specified.</li>
+<li><strong>remains_capital</strong> (<em>bool</em>) – Whether remaining capital letter in data or converting them to lower case.</li>
 </ul>
 </td>
 </tr>
@@ -1222,25 +1232,8 @@ at most times, see <a class="reference internal" href="#cotk.dataloader.Language
 
 <dl class="method">
 <dt id="cotk.dataloader.LanguageGeneration._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.LanguageGeneration._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is called during the initialization.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(tuple)</em> – containing:<ul class="simple">
-<li><strong>all_vocab_list</strong> (list): vocabulary list of the datasets,
-including valid and invalid vocabs.</li>
-<li><strong>valid_vocab_len</strong> (int): the number of valid vocab.
-<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
-while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs.</li>
-<li><strong>data</strong> (dict): a dict contains data.</li>
-<li><strong>data_size</strong> (dict): a dict contains size of each item in data.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#LanguageGeneration._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.LanguageGeneration._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageProcessingBase</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1546,17 +1539,16 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.SelfBleuCor
 <h3>MSCOCO<a class="headerlink" href="#mscoco" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.MSCOCO">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id='resources://MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">MSCOCO</code><span class="sig-paren">(</span><em>file_id='resources://MSCOCO'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em>, <em>tokenizer='nltk'</em>, <em>remains_capital=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for preprocessed MSCOCO dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_id</strong> (<em>str</em>) – A string indicating the source of MSCOCO dataset. Default: <code class="docutils literal notranslate"><span class="pre">resources://MSCOCO</span></code>.
-A preset dataset is downloaded and cached.</li>
+<li><strong>file_id</strong> (<em>str</em>) – A string indicating the source of language generation dataset. Default: <code class="docutils literal notranslate"><span class="pre">resources://MSCOCO</span></code>.</li>
 <li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
-not less than <cite>min_vocab_times</cite> in <strong>training set</strong> will be marked as valid words.
+not less than <code class="docutils literal notranslate"><span class="pre">min_vocab_times</span></code> in <strong>training set</strong> will be marked as valid words.
 Default: <code class="docutils literal notranslate"><span class="pre">10</span></code>.</li>
 <li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> will be shortened
 to first <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> tokens. Default: <code class="docutils literal notranslate"><span class="pre">50</span></code>.</li>
@@ -1564,6 +1556,9 @@ to first <code class="docutils literal notranslate"><span class="pre">max_sent_l
 not less than <code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code> in the <strong>whole dataset</strong> (except valid words) will be
 marked as invalid words. Otherwise, they are unknown words, which are ignored both for
 model or metrics. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code> (No unknown words).</li>
+<li><strong>tokenizer</strong> (<em>str</em>) – How to tokenize sentence. <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.WordPunctTokenizer</span></code> is used if <code class="docutils literal notranslate"><span class="pre">nltk</span></code> is specified,
+python built-in <code class="docutils literal notranslate"><span class="pre">str.split</span></code> is used if <code class="docutils literal notranslate"><span class="pre">space</span></code> is specified. Default: <code class="docutils literal notranslate"><span class="pre">nltk</span></code></li>
+<li><strong>remains_capital</strong> (<em>bool</em>) – Whether remaining capital letter in data or converting them to lower case. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
 </ul>
 </td>
 </tr>
@@ -1574,28 +1569,6 @@ model or metrics. Default: <code class="docutils literal notranslate"><span clas
 <p>[1] <a class="reference external" href="http://images.cocodataset.org/annotations/annotations_trainval2017.zip">http://images.cocodataset.org/annotations/annotations_trainval2017.zip</a></p>
 <p>[2] Chen X, Fang H, Lin T Y, et al. Microsoft COCO Captions:
 Data Collection and Evaluation Server. arXiv:1504.00325, 2015.</p>
-<dl class="method">
-<dt id="cotk.dataloader.MSCOCO._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageGeneration</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cotk.dataloader.MSCOCO.tokenize">
-<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/language_generation.html#MSCOCO.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.MSCOCO.tokenize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert sentence(str) to list of token(str)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -1604,7 +1577,7 @@ Data Collection and Evaluation Server. arXiv:1504.00325, 2015.</p>
 <h2>SingleTurnDialog<a class="headerlink" href="#singleturndialog" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cotk.dataloader.SingleTurnDialog">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>ext_vocab=None</em>, <em>key_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">SingleTurnDialog</code><span class="sig-paren">(</span><em>file_id</em>, <em>min_vocab_times</em>, <em>max_sent_length</em>, <em>invalid_vocab_times</em>, <em>tokenizer</em>, <em>remains_capital</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for single-turn dialog datasets. This is an abstract class.</p>
 <p>This class is supported for sequence to sequence generation tasks, especially
 single turn dialog tasks.</p>
@@ -1613,8 +1586,18 @@ single turn dialog tasks.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ext_vocab</strong> (<em>list</em>) – special tokens. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;&lt;pad&gt;&quot;,</span> <span class="pre">&quot;&lt;unk&gt;&quot;,</span> <span class="pre">&quot;&lt;go&gt;&quot;,</span> <span class="pre">&quot;&lt;eos&gt;&quot;]</span></code></li>
-<li><strong>key_name</strong> (<em>list</em>) – name of subsets of the data. Default: <code class="docutils literal notranslate"><span class="pre">[&quot;train&quot;,</span> <span class="pre">&quot;dev&quot;,</span> <span class="pre">&quot;test&quot;]</span></code></li>
+<li><strong>file_id</strong> (<em>str</em>) – A string indicating the source of single turn dialog dataset.</li>
+<li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
+not less than <code class="docutils literal notranslate"><span class="pre">min_vocab_times</span></code> in <strong>training set</strong> will be marked as valid words.</li>
+<li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> will be shortened
+to first <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> tokens.</li>
+<li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
+not less than <code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, which are ignored both for
+model or metrics.</li>
+<li><strong>tokenizer</strong> (<em>str</em>) – How to tokenize sentence. <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.WordPunctTokenizer</span></code> is used if <code class="docutils literal notranslate"><span class="pre">nltk</span></code> is specified,
+python built-in <code class="docutils literal notranslate"><span class="pre">str.split</span></code> is used if <code class="docutils literal notranslate"><span class="pre">space</span></code> is specified.</li>
+<li><strong>remains_capital</strong> (<em>bool</em>) – Whether remaining capital letter in data or converting them to lower case.</li>
 </ul>
 </td>
 </tr>
@@ -1679,25 +1662,8 @@ at most times, see <a class="reference internal" href="#cotk.dataloader.SingleTu
 
 <dl class="method">
 <dt id="cotk.dataloader.SingleTurnDialog._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is called during the initialization.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>(tuple)</em> – containing:<ul class="simple">
-<li><strong>all_vocab_list</strong> (list): vocabulary list of the datasets,
-including valid and invalid vocabs.</li>
-<li><strong>valid_vocab_len</strong> (int): the number of valid vocab.
-<code class="docutils literal notranslate"><span class="pre">vocab_list[:valid_vocab_len]</span></code> will be regarded as valid vocabs,
-while <code class="docutils literal notranslate"><span class="pre">vocab_list[valid_vocab_len:]</span></code> regarded as invalid vocabs.</li>
-<li><strong>data</strong> (dict): a dict contains data.</li>
-<li><strong>data_size</strong> (dict): a dict contains size of each item in data.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#SingleTurnDialog._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SingleTurnDialog._load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageProcessingBase</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2011,24 +1977,26 @@ Refer to <a class="reference internal" href="metric.html#cotk.metric.BleuCorpusM
 <h3>OpenSubtitles<a class="headerlink" href="#opensubtitles" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.dataloader.OpenSubtitles">
-<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id='resources://OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cotk.dataloader.</code><code class="descname">OpenSubtitles</code><span class="sig-paren">(</span><em>file_id='resources://OpenSubtitles'</em>, <em>min_vocab_times=10</em>, <em>max_sent_length=50</em>, <em>invalid_vocab_times=0</em>, <em>tokenizer='nltk'</em>, <em>remains_capital=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dataloader for OpenSubtitles dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_id</strong> (<em>str</em>) – A string indicating the source of OpenSubtitles dataset.
-Default: <code class="docutils literal notranslate"><span class="pre">resources://OpenSubtitles</span></code>. A preset dataset is downloaded and cached.</li>
-<li><strong>min_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
-not less than <cite>min_vocab_times</cite> in <strong>training set</strong> will be marked as valid words.
+<li><strong>file_id</strong> (<em>str</em>) – A string indicating the source of single turn dialog dataset. Default: <code class="docutils literal notranslate"><span class="pre">resources://OpenSubtitles</span></code>.</li>
+<li><strong>valid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of valid tokens. All tokens appear
+not less than <code class="docutils literal notranslate"><span class="pre">min_vocab_times</span></code> in <strong>training set</strong> will be marked as valid words.
 Default: <code class="docutils literal notranslate"><span class="pre">10</span></code>.</li>
-<li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <cite>max_sent_length</cite> will be shortened
-to first <cite>max_sent_length</cite> tokens. Default: <code class="docutils literal notranslate"><span class="pre">50</span></code>.</li>
+<li><strong>max_sent_length</strong> (<em>int</em>) – All sentences longer than <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> will be shortened
+to first <code class="docutils literal notranslate"><span class="pre">max_sent_length</span></code> tokens. Default: <code class="docutils literal notranslate"><span class="pre">50</span></code>.</li>
 <li><strong>invalid_vocab_times</strong> (<em>int</em>) – A cut-off threshold of invalid tokens. All tokens appear
-not less than <cite>invalid_vocab_times</cite> in the <strong>whole dataset</strong> (except valid words) will be
-marked as invalid vocabs. Otherwise, they are unknown words, both in training or
-testing stages. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code> (No unknown words).</li>
+not less than <code class="docutils literal notranslate"><span class="pre">invalid_vocab_times</span></code> in the <strong>whole dataset</strong> (except valid words) will be
+marked as invalid words. Otherwise, they are unknown words, which are ignored both for
+model or metrics. Default: <code class="docutils literal notranslate"><span class="pre">0</span></code> (No unknown words).</li>
+<li><strong>tokenizer</strong> (<em>str</em>) – How to tokenize sentence. <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.WordPunctTokenizer</span></code> is used if <code class="docutils literal notranslate"><span class="pre">nltk</span></code> is specified,
+python built-in <code class="docutils literal notranslate"><span class="pre">str.split</span></code> is used if <code class="docutils literal notranslate"><span class="pre">space</span></code> is specified. Default: <code class="docutils literal notranslate"><span class="pre">nltk</span></code></li>
+<li><strong>remains_capital</strong> (<em>bool</em>) – Whether remaining capital letter in data or converting them to lower case. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
 </ul>
 </td>
 </tr>
@@ -2039,28 +2007,6 @@ testing stages. Default: <code class="docutils literal notranslate"><span class=
 <p>[1] <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a></p>
 <p>[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from
 Movie and TV Subtitles. LREC 2016.</p>
-<dl class="method">
-<dt id="cotk.dataloader.OpenSubtitles._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.SingleTurnDialog" title="cotk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleTurnDialog</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cotk.dataloader.OpenSubtitles.tokenize">
-<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#OpenSubtitles.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.OpenSubtitles.tokenize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert sentence(str) to list of token(str)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -2564,12 +2510,6 @@ or local path. Default: <cite>bert-base-uncased</cite>.</li>
 <p>[1] <a class="reference external" href="http://opus.nlpl.eu/OpenSubtitles.php">http://opus.nlpl.eu/OpenSubtitles.php</a></p>
 <p>[2] P. Lison and J. Tiedemann, OpenSubtitles2016: Extracting Large Parallel Corpora from
 Movie and TV Subtitles. LREC 2016.</p>
-<dl class="method">
-<dt id="cotk.dataloader.BERTOpenSubtitles._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/single_turn_dialog.html#BERTOpenSubtitles._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.BERTOpenSubtitles._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loading dataset, invoked by <cite>BERTLanguageProcessingBase.__init__</cite></p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -3162,22 +3102,23 @@ testing stages. Default: <code class="docutils literal notranslate"><span class=
 <p>[2] Lowe R, Pow N, Serban I, et al. The Ubuntu Dialogue Corpus: A Large Dataset
 for Research in Unstructured Multi-Turn Dialogue Systems. SIGDIAL 2015.</p>
 <dl class="method">
-<dt id="cotk.dataloader.UbuntuCorpus._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loading dataset, invoked during the initialization of <a class="reference internal" href="#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTurnDialog</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="cotk.dataloader.UbuntuCorpus.tokenize">
-<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus.tokenize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert sentence(str) to list of token(str)</p>
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em>, <em>remains_capital=False</em>, <em>tokenizer='nltk'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/multi_turn_dialog.html#UbuntuCorpus.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.UbuntuCorpus.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to a list of tokens(str)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sentence</strong> (<em>str</em>) – a string to be tokenized</li>
+<li><strong>remains_capital</strong> (<em>bool</em>) – Whether remaining capital letter in data or converting them to lower case.</li>
+<li><strong>tokenizer</strong> (<em>str</em>) – How to tokenize sentence. <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.WordPunctTokenizer</span></code> is used if <code class="docutils literal notranslate"><span class="pre">nltk</span></code> is specified,
+python built-in <code class="docutils literal notranslate"><span class="pre">str.split</span></code> is used if <code class="docutils literal notranslate"><span class="pre">space</span></code> is specified.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>list</em> – a list of tokens(str)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -3484,15 +3425,22 @@ while <code class="docutils literal notranslate"><span class="pre">vocab_list[va
 
 <dl class="method">
 <dt id="cotk.dataloader.SentenceClassification.tokenize">
-<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.tokenize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert sentence(str) to list of token(str)</p>
+<code class="descname">tokenize</code><span class="sig-paren">(</span><em>sentence</em>, <em>remains_capital</em>, <em>tokenizer</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.dataloader.SentenceClassification.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert sentence(str) to a list of tokens(str)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sentence</strong> (<em>str</em>)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sentence</strong> (<em>str</em>) – a string to be tokenized</li>
+<li><strong>remains_capital</strong> (<em>bool</em>) – Whether remaining capital letter in data or converting them to lower case.</li>
+<li><strong>tokenizer</strong> (<em>str</em>) – How to tokenize sentence. <code class="docutils literal notranslate"><span class="pre">nltk.tokenize.WordPunctTokenizer</span></code> is used if <code class="docutils literal notranslate"><span class="pre">nltk</span></code> is specified,
+python built-in <code class="docutils literal notranslate"><span class="pre">str.split</span></code> is used if <code class="docutils literal notranslate"><span class="pre">space</span></code> is specified.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>sent (list)</em> – list of token(str)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>list</em> – a list of tokens(str)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -3783,12 +3731,6 @@ testing stages. Default: 0 (No unknown words).</li>
 <p class="rubric">References</p>
 <p>[1] <a class="reference external" href="http://images.cocodataset.org/annotations/annotations_trainval2017.zip">http://images.cocodataset.org/annotations/annotations_trainval2017.zip</a></p>
 <p>[2] Lin T Y, Maire M, Belongie S, et al. Microsoft COCO: Common Objects in Context. ECCV 2014.</p>
-<dl class="method">
-<dt id="cotk.dataloader.SST._load_data">
-<code class="descname">_load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/dataloader/sentence_classification.html#SST._load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.dataloader.SST._load_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loading dataset, invoked by <cite>LanguageProcessingBase.__init__</cite></p>
-</dd></dl>
-
 </dd></dl>
 
 </div>

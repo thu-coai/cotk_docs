@@ -202,8 +202,8 @@
 <p>Inspect vocabulary list</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vocabulary size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
 <span class="go">Vocabulary size: 2588</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Frist 10 tokens in vocabulary:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
-<span class="go">Frist 10 tokens in vocabulary: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens in vocabulary:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="go">First 10 tokens in vocabulary: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]</span>
 </pre></div>
 </div>
 <p>Convert between ids and strings</p>
@@ -237,7 +237,7 @@
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If you want to know more about data loader, please refer to <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docs</span></code></a>.</p>
+<p class="last">If you want to know more about data loader, please refer to <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataloader</span> <span class="pre">docs</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="metrics">
@@ -257,6 +257,22 @@ receives data in batch.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
 <span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
 <span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;}</span>
+</pre></div>
+</div>
+<p>You can merge multiple metrics together by :class:<code class="docutils literal notranslate"><span class="pre">.cotk.metric.MetricChain</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">MetricChain</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_test_list</span><span class="o">=</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_all_batch</span><span class="p">()[</span><span class="s1">&#39;sent_allvocabs&#39;</span><span class="p">],</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
+<span class="gp">... </span>   <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
+<span class="gp">... </span>       <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="gp">... </span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
+<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;,</span>
+<span class="go"> &#39;fw-bleu&#39;: 0.3831004349785445, &#39;bw-bleu&#39;: 0.025958979254273006, &#39;fw-bw-bleu&#39;: 0.04862323612604027,</span>
+<span class="go"> &#39;fw-bw-bleu hashvalue&#39;: &#39;530d449a096671d13705e514be13c7ecffafd80deb7519aa7792950a5468549e&#39;}</span>
 </pre></div>
 </div>
 <p>We also provide standard metrics for selected dataloader.</p>
@@ -280,12 +296,12 @@ receives data in batch.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Hash</span> <span class="pre">value</span></code> is provided for checking whether the same dataset is used.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If you want to know more about metrics, please refer to <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docs</span></code></a>.</p>
+<p class="last">If you want to know more about metrics, please refer to <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">metrics</span> <span class="pre">docs</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="publish-experiments">
 <h2>Publish Experiments<a class="headerlink" href="#publish-experiments" title="Permalink to this headline">¶</a></h2>
-<p>We provide an online dashboard to manage your experiments.</p>
+<p>We provide an online <a class="reference external" href="http://coai.cs.tsinghua.edu.cn/dashboard/">dashboard</a> to manage your experiments.</p>
 <p>Here we give an simple example for you.</p>
 <p>First initialize a git repo in your command line.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git init
@@ -320,9 +336,9 @@ git push origin -u master
 </div>
 <p>Finally, type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code> to run your model and upload to cotk dashboard.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> will automatically collect your git repo, username, commit and <code class="docutils literal notranslate"><span class="pre">result.json</span></code>
-to the cotk dashboard (TO BE ONLINE).The dashboard is a website where you can manage
+to the cotk dashboard.The dashboard is a website where you can manage
 your experiments or share results with others.</p>
-<p>FILL AN IMAGE HERE</p>
+<img alt="../_images/dashboard.png" src="../_images/dashboard.png" />
 <p>If you don’t want to use cotk’s dashboard, you can also choose to directly upload your model
 to github.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span></code> instead of <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code>, you will find a <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code>

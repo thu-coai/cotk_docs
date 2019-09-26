@@ -244,8 +244,8 @@
 <span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					... 	candidate_allvocabs_key: [[[4], [5,6]], [[4,5,6]]],</span>
-<span class="sd">					...		multiple_gen_key: [[[5,6,3]], [[4,5,7,3], [8,3]]]</span>
+<span class="sd">					...     candidate_allvocabs_key: [[[4], [5,6]], [[4,5,6]]],</span>
+<span class="sd">					...	    multiple_gen_key: [[[5,6,3]], [[4,5,7,3], [8,3]]]</span>
 <span class="sd">					... }</span>
 
 <span class="sd">		&#39;&#39;&#39;</span>
@@ -321,10 +321,10 @@
 <span class="sd">		&gt;&gt;&gt; multiple_gen_key=&#39;multiple_gen&#39;</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.BleuPrecisionRecallMetric(dl, 2, 2)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
-<span class="sd">		...		candidate_allvocabs_key: [[[10, 64, 851], [10, 48, 851]]],</span>
-<span class="sd">		...		# candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
-<span class="sd">		... 	multiple_gen_key: [[[10, 64, 479, 3], [10, 48, 2019, 3]]],</span>
-<span class="sd">		... 	# multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
+<span class="sd">		...	    candidate_allvocabs_key: [[[10, 64, 851], [10, 48, 851]]],</span>
+<span class="sd">		...	    # candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
+<span class="sd">		...     multiple_gen_key: [[[10, 64, 479, 3], [10, 48, 2019, 3]]],</span>
+<span class="sd">		...     # multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
 <span class="sd">		... }</span>
 <span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
@@ -413,10 +413,10 @@
 <span class="sd">		&gt;&gt;&gt; wordvector = cotk.wordvector.Glove()</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.EmbSimilarityPrecisionRecallMetric(dl, wordvector.load_dict(dl.all_vocab_list()), &#39;avg&#39;, 2)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
-<span class="sd">		...		candidate_allvocabs_key: [[[10, 64, 851], [10, 48, 851]]],</span>
-<span class="sd">		...		# candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
-<span class="sd">		... 	multiple_gen_key: [[[10, 64, 479, 3], [10, 48, 2019, 3]]],</span>
-<span class="sd">		... 	# multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
+<span class="sd">		...	    candidate_allvocabs_key: [[[10, 64, 851], [10, 48, 851]]],</span>
+<span class="sd">		...	    # candidate_allvocabs_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;]]],</span>
+<span class="sd">		...     multiple_gen_key: [[[10, 64, 479, 3], [10, 48, 2019, 3]]],</span>
+<span class="sd">		...     # multiple_gen_key: [[[&quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;]]],</span>
 <span class="sd">		... }</span>
 <span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>

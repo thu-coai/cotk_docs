@@ -170,6 +170,8 @@
 <span></span><span class="sd">&quot;&quot;&quot;Dataloader for language generation&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -178,6 +180,7 @@
 <span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
 <span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
 <span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">AccuracyMetric</span>
+
 
 <span class="c1"># pylint: disable=W0223</span>
 <div class="viewcode-block" id="SentenceClassification"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification">[docs]</a><span class="k">class</span> <span class="nc">SentenceClassification</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
@@ -267,9 +270,10 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">AccuracyMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
-					<span class="n">label_key</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> \
-					<span class="n">prediction_key</span><span class="o">=</span><span class="n">prediction_key</span><span class="p">))</span>
+										 <span class="n">label_key</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> \
+										 <span class="n">prediction_key</span><span class="o">=</span><span class="n">prediction_key</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">metric</span></div></div>
+
 
 <div class="viewcode-block" id="SST"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SST">[docs]</a><span class="k">class</span> <span class="nc">SST</span><span class="p">(</span><span class="n">SentenceClassification</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A dataloader for preprocessed SST dataset.</span>
@@ -298,7 +302,7 @@
 
 	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_dataloader</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
-			<span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+				 <span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
@@ -306,91 +310,20 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">SST</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SST._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SST._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `LanguageProcessingBase.__init__`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">def</span> <span class="nf">parseline</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-			<span class="n">label</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-			<span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
-			<span class="n">sent</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-			<span class="k">return</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">sent</span><span class="p">)</span>
-		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span> <span class="o">=</span> \
+			<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_general_load_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span>
+									<span class="p">[[</span><span class="s1">&#39;sent&#39;</span><span class="p">,</span> <span class="s1">&#39;sentence&#39;</span><span class="p">]],</span>
+									<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span><span class="p">,</span>
+									<span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span><span class="p">,</span>
+									<span class="kc">None</span><span class="p">,</span>
+									<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="n">f_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">.txt&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-			<span class="n">_origin_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
-				<span class="nb">map</span><span class="p">(</span><span class="n">parseline</span><span class="p">,</span> <span class="n">f_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()))</span>
-			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
-				<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">_origin_data</span><span class="p">))</span>
-			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
-				<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">_origin_data</span><span class="p">))</span>
-
-		<span class="n">raw_vocab_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">])))</span>
-		<span class="c1"># Important: Sort the words preventing the index changes between</span>
-		<span class="c1"># different runs</span>
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
-					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
-			<span class="nb">filter</span><span class="p">(</span> \
-				<span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span><span class="p">,</span> \
-				<span class="n">vocab</span><span class="p">))</span>
-		<span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">))</span>
-		<span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
-		<span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
-
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
-				<span class="k">continue</span>
-			<span class="n">raw_vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">]))))</span>
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
-					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-		<span class="n">left_vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
-			<span class="nb">filter</span><span class="p">(</span> \
-				<span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> \
-				<span class="n">vocab</span><span class="p">))</span>
-		<span class="n">vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">left_vocab</span><span class="p">)))</span>
-
-		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;valid vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">valid_vocab_len</span><span class="p">)</span>
-		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
-
-		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
-		<span class="k">def</span> <span class="nf">line2id</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-			<span class="k">return</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> \
-					<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word2id</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">word2id</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> \
-					<span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span><span class="p">]</span>
-
-		<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="n">data_size</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">line2id</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">]))</span>
-			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
-			<span class="n">data_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">])</span>
-
-			<span class="n">vocab</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">])))</span>
-			<span class="n">vocab_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
-			<span class="n">oov_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> \
-				<span class="nb">list</span><span class="p">(</span> \
-					<span class="nb">filter</span><span class="p">(</span> \
-						<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">word2id</span><span class="p">,</span> \
-						<span class="n">vocab</span><span class="p">)))</span>
-			<span class="n">invalid_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span> \
-				<span class="nb">list</span><span class="p">(</span> \
-					<span class="nb">filter</span><span class="p">(</span> \
-						<span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">,</span> \
-						<span class="n">vocab</span><span class="p">)))</span> <span class="o">-</span> <span class="n">oov_num</span>
-			<span class="n">length</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> \
-				<span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">]))</span>
-			<span class="n">cut_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> \
-				<span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span> \
-					<span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">-</span> \
-					<span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span> <span class="o">+</span> \
-					<span class="mi">1</span><span class="p">,</span> \
-					<span class="mi">0</span><span class="p">))</span>
-			<span class="nb">print</span><span class="p">(</span> \
-				<span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max length before cut: </span><span class="si">%d</span><span class="s2">, cut word rate: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> \
-				<span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">length</span><span class="p">),</span> <span class="n">cut_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span></div>
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;_labels.json&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+				<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
 
 	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert sentence(str) to list of token(str)</span>
@@ -401,7 +334,8 @@
 <span class="sd">		Returns:</span>
 <span class="sd">			sent (list): list of token(str)</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sentence</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span></div>
+		<span class="c1"># return [x.split(&#39; &#39;)[-1].lower() for x in sentence if x != &#39;&#39;]</span>
+		<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;space&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk.metric.ngram_perplexity &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk.metric.ngram_perplexity</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk.metric.ngram_perplexity</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&#39;&#39;&#39;Containing NgramFwBwPerplexityMetric&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
+<span class="kn">from</span> <span class="nn">..models.ngram_language_model</span> <span class="k">import</span> <span class="n">KneserNeyInterpolated</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
+
+<div class="viewcode-block" id="NgramFwBwPerplexityMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.NgramFwBwPerplexityMetric">[docs]</a><span class="k">class</span> <span class="nc">NgramFwBwPerplexityMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Metric for calculating n gram forward perplexity and backward perplexity.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">	    {MetricBase.DATALOADER_ARGUMENTS}</span>
+<span class="sd">	    ngram (int): order of ngram language model</span>
+<span class="sd">	    reference_test_list (list): Reference sentences with all vocabs in test data</span>
+<span class="sd">			are passed to :func:`forward` by ``dataloader.get_all_batch(&quot;test&quot;)[&quot;sent&quot;]``.</span>
+<span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
+
+<span class="sd">	Here is an exmaple:</span>
+
+<span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
+<span class="sd">		&gt;&gt;&gt; gen_key = &quot;gen&quot;</span>
+<span class="sd">		&gt;&gt;&gt; metric = cotk.metric.NgramFwBwPerplexityMetric(dl, 2, dl.get_all_batch(&#39;test&#39;)[&#39;sent&#39;][0], gen_key=gen_key)</span>
+<span class="sd">		&gt;&gt;&gt; data = {</span>
+<span class="sd">		...	    gen_key: [[10, 1028, 479, 285, 220, 3], [851, 17, 2451, 3]]</span>
+<span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;love&quot;, &quot;java&quot;, &quot;very&quot;, &quot;much&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		... }</span>
+<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.close()</span>
+<span class="sd">		{&#39;fwppl&#39;: 51.44751843841384,</span>
+<span class="sd"> 		 &#39;bwppl&#39;: 138.954327895075,</span>
+<span class="sd"> 		 &#39;fw-bw-ppl&#39;: 75.0922901656957,</span>
+<span class="sd"> 		 &#39;fw-bw-ppl hashvalue&#39;: &#39;2ea52377084692953f602e4ebad23e8a46e1c4bb527947d29a03c14b426efe67&#39;}</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;NgramFwBwPerplexityMetric&#39;</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">ngram</span><span class="p">,</span> <span class="n">reference_test_list</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ngram</span> <span class="o">=</span> <span class="n">ngram</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span> <span class="o">=</span> <span class="n">reference_test_list</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">=</span> <span class="n">cpu_count</span>
+
+<div class="viewcode-block" id="NgramFwBwPerplexityMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.NgramFwBwPerplexityMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			data (dict): A dict at least contains the following keys:</span>
+
+<span class="sd">				* data[gen_key] (list or :class:`numpy.ndarray` of `int`):</span>
+<span class="sd">					Sentences generated by model. Contains end token (eg: ``&lt;eos&gt;``),</span>
+<span class="sd">					but without start token (eg: ``&lt;go&gt;``).</span>
+<span class="sd">					Size: `[batch_size, gen_sentence_length]`.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
+		<span class="k">for</span> <span class="n">gen_sent</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">gen_sent</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="NgramFwBwPerplexityMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.NgramFwBwPerplexityMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
+	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains:</span>
+
+<span class="sd">			* **fwppl**: fw ppl value.</span>
+<span class="sd">			* **bwppl**: bw ppl value.</span>
+<span class="sd">			* **fw-bw-ppl**: Harmonic mean of fw and bw ppl value.</span>
+<span class="sd">			* **fw-bw-ppl hashvalue**: hash value of reference data.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="k">for</span> <span class="n">resp_sent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">resp_sent</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+
+		<span class="n">model</span> <span class="o">=</span> <span class="n">KneserNeyInterpolated</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">,</span> \
+					<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> \
+					<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cpu_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training forward&quot;</span><span class="p">)</span>
+		<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;scoring forward&quot;</span><span class="p">)</span>
+		<span class="n">fwppl</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">perplexity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+
+		<span class="n">model</span> <span class="o">=</span> <span class="n">KneserNeyInterpolated</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">,</span> \
+					<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> \
+					<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cpu_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training backward&quot;</span><span class="p">)</span>
+		<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;scoring backward&quot;</span><span class="p">)</span>
+		<span class="n">bwppl</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">perplexity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+
+		<span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fwppl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fwppl</span>
+		<span class="n">result</span><span class="p">[</span><span class="s2">&quot;bwppl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bwppl</span>
+		<span class="k">if</span> <span class="n">fwppl</span> <span class="o">+</span> <span class="n">bwppl</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-ppl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">fwppl</span> <span class="o">*</span> <span class="n">bwppl</span> <span class="o">/</span> <span class="p">(</span><span class="n">fwppl</span> <span class="o">+</span> <span class="n">bwppl</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-ppl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">])</span>
+		<span class="n">result</span><span class="p">[</span><span class="s2">&quot;fw-bw-ppl hashvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">result</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

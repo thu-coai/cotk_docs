@@ -227,19 +227,19 @@
 <span class="sd">		&gt;&gt;&gt; reference_allvocabs_key = &quot;ref_allvocabs&quot;</span>
 <span class="sd">		&gt;&gt;&gt; gen_key = &quot;gen&quot;</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.BleuCorpusMetric(dl,</span>
-<span class="sd">		...										reference_allvocabs_key=reference_allvocabs_key,</span>
-<span class="sd">		...										gen_key=gen_key)</span>
+<span class="sd">		...	    reference_allvocabs_key=reference_allvocabs_key,</span>
+<span class="sd">		...	    gen_key=gen_key)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
-<span class="sd">		... 	reference_allvocabs_key: [[2, 10, 64, 851, 3], [2, 10, 48, 851, 3]],</span>
-<span class="sd">		... 	# reference_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...     reference_allvocabs_key: [[2, 10, 64, 851, 3], [2, 10, 48, 851, 3]],</span>
+<span class="sd">		...     # reference_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		...</span>
-<span class="sd">		...		gen_key: [[10, 1028, 479, 285, 220, 3], [851, 17, 2451, 3]]</span>
-<span class="sd">		...		# gen_key: [[&quot;I&quot;, &quot;love&quot;, &quot;java&quot;, &quot;very&quot;, &quot;much&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...	    gen_key: [[10, 1028, 479, 285, 220, 3], [851, 17, 2451, 3]]</span>
+<span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;love&quot;, &quot;java&quot;, &quot;very&quot;, &quot;much&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
 <span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;bleu&#39;: 0.08582363099612991,</span>
-<span class="sd"> 		 &#39;bleu hashvalue&#39;: &#39;70e019630fef24d9477034a3d941a5349fcbff5a3dc6978a13ea3d85290114fb&#39;}</span>
+<span class="sd">		&#39;bleu hashvalue&#39;: &#39;70e019630fef24d9477034a3d941a5349fcbff5a3dc6978a13ea3d85290114fb&#39;}</span>
 
 <span class="sd">	&#39;&#39;&#39;</span>
 
@@ -271,8 +271,8 @@
 <span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					... 	reference_allvocabs_key: [[2,4,3], [2,5,6,3]],</span>
-<span class="sd">					...		gen_key: [[4,5,3], [6,7,8,3]]</span>
+<span class="sd">					...     reference_allvocabs_key: [[2,4,3], [2,5,6,3]],</span>
+<span class="sd">					...	    gen_key: [[4,5,3], [6,7,8,3]]</span>
 <span class="sd">					... }</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -343,13 +343,13 @@
 <span class="sd">		&gt;&gt;&gt; gen_key = &#39;gen&#39;</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.SelfBleuCorpusMetric(dl, gen_key=gen_key)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
-<span class="sd">		...		gen_key: [[10, 64, 851, 3], [10, 48, 851, 3]],</span>
-<span class="sd">		...		# gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...	    gen_key: [[10, 64, 851, 3], [10, 48, 851, 3]],</span>
+<span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
 <span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;self-bleu&#39;: 0.13512001548070346,</span>
-<span class="sd"> 		 &#39;self-bleu hashvalue&#39;: &#39;53cf55829c1b080c86c392c846a5d39a54340c70d838ec953f952aa6731118fb&#39;}</span>
+<span class="sd">		&#39;self-bleu hashvalue&#39;: &#39;53cf55829c1b080c86c392c846a5d39a54340c70d838ec953f952aa6731118fb&#39;}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;SelfBleuCorpusMetric&#39;</span>
@@ -387,7 +387,7 @@
 <span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					...		gen_key: [[4,5,3], [6,7,8,3]]</span>
+<span class="sd">					...	    gen_key: [[4,5,3], [6,7,8,3]]</span>
 <span class="sd">					... }</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -471,11 +471,11 @@
 <span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
 <span class="sd">		&gt;&gt;&gt; gen_key = &#39;gen&#39;</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.FwBwBleuCorpusMetric(dl,</span>
-<span class="sd">		...											reference_test_list=dl.get_all_batch(&#39;test&#39;)[&#39;sent&#39;][0],</span>
-<span class="sd">		...											gen_key=gen_key)</span>
+<span class="sd">		...	    reference_test_list=dl.get_all_batch(&#39;test&#39;)[&#39;sent&#39;][0],</span>
+<span class="sd">		...	    gen_key=gen_key)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
-<span class="sd">		...		gen_key: [[10, 64, 851, 3], [10, 48, 851, 3]],</span>
-<span class="sd">		...		# gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...	    gen_key: [[10, 64, 851, 3], [10, 48, 851, 3]],</span>
+<span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
 <span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
@@ -523,7 +523,7 @@
 <span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					...		gen_key: [[4,5,3], [6,7,8,3]]</span>
+<span class="sd">					...	    gen_key: [[4,5,3], [6,7,8,3]]</span>
 <span class="sd">					... }</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
@@ -634,25 +634,25 @@
 <span class="sd">		&gt;&gt;&gt; multi_turn_gen_key = &quot;multi_turn_gen&quot;</span>
 <span class="sd">		&gt;&gt;&gt; turn_len_key = &quot;turn_length&quot;</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.MultiTurnBleuCorpusMetric(dl,</span>
-<span class="sd">		&gt;&gt;&gt; 	multi_turn_reference_allvocabs_key=multi_turn_reference_allvocabs_key,</span>
-<span class="sd">		&gt;&gt;&gt; 	multi_turn_gen_key=multi_turn_gen_key,</span>
-<span class="sd">		&gt;&gt;&gt; 	turn_len_key=turn_len_key)</span>
+<span class="sd">		&gt;&gt;&gt;     multi_turn_reference_allvocabs_key=multi_turn_reference_allvocabs_key,</span>
+<span class="sd">		&gt;&gt;&gt;     multi_turn_gen_key=multi_turn_gen_key,</span>
+<span class="sd">		&gt;&gt;&gt;     turn_len_key=turn_len_key)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
-<span class="sd">		...		multi_turn_reference_allvocabs_key: [[[2, 10, 64, 851, 3], [2, 10, 64, 479, 3]], [[2, 10, 64, 279, 1460, 3]]],</span>
-<span class="sd">		... 	# multi_turn_reference_allvocabs_key = [[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;]],</span>
-<span class="sd">		... 	# 	[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;machine&quot;, &quot;learning&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
+<span class="sd">		...	    multi_turn_reference_allvocabs_key: [[[2, 10, 64, 851, 3], [2, 10, 64, 479, 3]], [[2, 10, 64, 279, 1460, 3]]],</span>
+<span class="sd">		...     # multi_turn_reference_allvocabs_key = [[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...     # 	[[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;machine&quot;, &quot;learning&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
 <span class="sd">		...</span>
-<span class="sd">		...		turn_len_key: [2, 1],</span>
-<span class="sd">		... 	# turn_len_key: [len(multi_turn_reference_allvocabs_key[0]), len(multi_turn_reference_allvocabs_key[1])]</span>
+<span class="sd">		...	    turn_len_key: [2, 1],</span>
+<span class="sd">		...     # turn_len_key: [len(multi_turn_reference_allvocabs_key[0]), len(multi_turn_reference_allvocabs_key[1])]</span>
 <span class="sd">		...</span>
-<span class="sd">		...		multi_turn_gen_key: [[[851, 17, 2451, 3], [2019, 17, 393, 3]], [[10, 64, 34058, 805, 2601, 3]]]</span>
-<span class="sd">		... 	# multi_turn_gen_key = [[[&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;], [&quot;PHP&quot;, &quot;is&quot;, &quot;best&quot;, &quot;&lt;eos&gt;&quot;]],</span>
-<span class="sd">		... 	# 	[[&quot;I&quot;, &quot;like&quot;, &quot;natural&quot;, &quot;language&quot;, &quot;processing&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
+<span class="sd">		...	    multi_turn_gen_key: [[[851, 17, 2451, 3], [2019, 17, 393, 3]], [[10, 64, 34058, 805, 2601, 3]]]</span>
+<span class="sd">		...     # multi_turn_gen_key = [[[&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;], [&quot;PHP&quot;, &quot;is&quot;, &quot;best&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...     # 	[[&quot;I&quot;, &quot;like&quot;, &quot;natural&quot;, &quot;language&quot;, &quot;processing&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
 <span class="sd">		... }</span>
 <span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;bleu&#39;: 0.12081744577265555,</span>
-<span class="sd"> 		 &#39;bleu hashvalue&#39;: &#39;c65b44c454dee5a8d393901644c7f1acfdb847bae3ab03823cb5b9f643958960&#39;}</span>
+<span class="sd">		&#39;bleu hashvalue&#39;: &#39;c65b44c454dee5a8d393901644c7f1acfdb847bae3ab03823cb5b9f643958960&#39;}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MultiTurnBleuCorpusMetric&#39;</span>
@@ -688,9 +688,9 @@
 <span class="sd">					&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
 <span class="sd">					&gt;&gt;&gt; #   &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
 <span class="sd">					&gt;&gt;&gt; data = {</span>
-<span class="sd">					...		multi_turn_reference_allvocabs_key: [[[2,4,3], [2,5,6,3]], [[2,7,6,8,3]]],</span>
-<span class="sd">					...		turn_len_key: [2, 1],</span>
-<span class="sd">					...		gen_key: [[[6,7,8,3], [4,5,3]], [[7,3]]]</span>
+<span class="sd">					...	    multi_turn_reference_allvocabs_key: [[[2,4,3], [2,5,6,3]], [[2,7,6,8,3]]],</span>
+<span class="sd">					...	    turn_len_key: [2, 1],</span>
+<span class="sd">					...	    gen_key: [[[6,7,8,3], [4,5,3]], [[7,3]]]</span>
 <span class="sd">					... }</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>

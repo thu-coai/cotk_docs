@@ -282,15 +282,15 @@ The difference between them is that <code class="docutils literal notranslate"><
         <span class="c1"># data is the dict returned by ``dataloader.get_batch``</span>
         <span class="n">sent</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">]</span>
         <span class="n">sent_length</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent_length&#39;</span><span class="p">]</span>
-        <span class="c1"># sent is a LongTensor whose shape is (batch_size, sent_length)</span>
+        <span class="c1"># sent is a LongTensor whose shape is (batch_size, max(sent_length))</span>
         <span class="c1"># sent_length is a list whose size is (batch_size)</span>
 
         <span class="n">incoming</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
-        <span class="c1"># incoming: (batch_size, sent_length, embedding_size)</span>
+        <span class="c1"># incoming: (batch_size, max(sent_length), embedding_size)</span>
         <span class="n">incoming</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
-        <span class="c1"># incoming: (batch_size, sent_length, hidden_size)</span>
+        <span class="c1"># incoming: (batch_size, max(sent_length), hidden_size)</span>
         <span class="n">incoming</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
-        <span class="c1"># incoming: (batch_size, sent_length, dataloader.vocab_size)</span>
+        <span class="c1"># incoming: (batch_size, max(sent_length), dataloader.vocab_size)</span>
 
         <span class="n">loss</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sent_length</span><span class="p">):</span>
