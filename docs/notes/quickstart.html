@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -88,24 +88,22 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dataloader">Dataloader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#metrics">Metrics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#publish-experiments">Publish Experiments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reproduce-experiments">Reproduce Experiments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#predefined-models">Predefined Models</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -179,44 +177,46 @@
             
   <div class="section" id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<p>Let us skim through the whole package to find what you want.</p>
+<p>Let’s skim through the whole package to find what you want.</p>
 <div class="section" id="dataloader">
 <h2>Dataloader<a class="headerlink" href="#dataloader" title="Permalink to this headline">¶</a></h2>
-<p>Load common used dataset and preprocess for you:</p>
+<p>Load common used dataset and do preprocessing:</p>
 <ul class="simple">
-<li>Download online resources or import from local</li>
-<li>Split training set, development set and test set</li>
-<li>Construct vocabulary list</li>
+<li><p>Download online resources or import from local path</p></li>
+<li><p>Split training set, development set and test set</p></li>
+<li><p>Construct vocabulary list</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatically download online resources</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cotk.dataloader</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatically download online resources</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># or download from a url</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dl_url</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;http://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco_small.zip#MSCOCO&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># or import from local file</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dl_zip</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;./MSCOCO.zip#MSCOCO&quot;</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>
-<span class="go">[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="go">dict_keys([&#39;train&#39;, &#39;dev&#39;, &#39;test&#39;])</span>
 </pre></div>
 </div>
 <p>Inspect vocabulary list</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vocabulary size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
-<span class="go">Vocabulary size: 2588</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens in vocabulary:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vocabulary size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_size</span><span class="p">)</span>
+<span class="go">Vocabulary size: 2597</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens in vocabulary:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
 <span class="go">First 10 tokens in vocabulary: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]</span>
 </pre></div>
 </div>
 <p>Convert between ids and strings</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Convert string to ids&quot;</span><span class="p">,</span> \
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Convert string to ids&quot;</span><span class="p">,</span> \
 <span class="gp">... </span>          <span class="n">dataloader</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">([</span><span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]))</span>
-<span class="go">Convert string to string [2, 1379, 1897, 3]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Convert ids to string&quot;</span><span class="p">,</span> \
+<span class="go">Convert string to ids [2, 6107, 1875, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Convert ids to string&quot;</span><span class="p">,</span> \
 <span class="gp">... </span>          <span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1379</span><span class="p">,</span> <span class="mi">1897</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="go">Convert ids to string [&#39;hello&#39;, &#39;world&#39;]</span>
 </pre></div>
 </div>
 <p>Iterate over batches</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batches</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="go">{&#39;sent&#39;:</span>
 <span class="go">    array([[ 2, 181, 13, 26, 145, 177, 8, 22, 12, 5, 1, 1099, 4, 3]]),</span>
 <span class="go">    # &lt;go&gt; This is an old photo of people and a &lt;unk&gt; wagon.</span>
@@ -227,153 +227,69 @@
 <span class="go">......</span>
 </pre></div>
 </div>
-<p>or using <code class="docutils literal notranslate"><span class="pre">while</span></code> if you like</p>
+<p>Or using <code class="docutils literal notranslate"><span class="pre">while</span></code> (another iteration method) if you like</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataloader</span><span class="o">.</span><span class="n">restart</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">data</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_next_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">)</span>
-<span class="gp">... </span>   <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">break</span>
-<span class="gp">... </span>   <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">break</span>
+<span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you want to know more about data loader, please refer to <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dataloader</span> <span class="pre">docs</span></code></a>.</p>
+<p class="admonition-title">Note</p>
+<p>If you want to know more about <code class="docutils literal notranslate"><span class="pre">Dataloader</span></code>, please refer to <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docs</span> <span class="pre">of</span> <span class="pre">dataloader</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="metrics">
 <h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h2>
-<p>We found there are different versions of the same metric in released codes on Github,
-which leads to unfair compare between models. For example, whether considering
+<p>We found there are different versions of the same metric in different papers,
+which leads to <strong>unfair comparison between models</strong>. For example, whether considering
 <code class="docutils literal notranslate"><span class="pre">unk</span></code>, calculating the mean of NLL across sentences or tokens in
-<code class="docutils literal notranslate"><span class="pre">perplexity</span></code> may introduce <strong>an error of several times</strong> and <strong>extremely</strong> harm the evaluation.</p>
-<p>We provide unified metrics implementation for all models. The metric object
-receives data in batch.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
+<code class="docutils literal notranslate"><span class="pre">perplexity</span></code> may introduce huge differences.</p>
+<p>We provide a unified implementation for metrics, where <code class="docutils literal notranslate"><span class="pre">hashvalue</span></code> is provided for
+checking whether the same data is used. The metric object receives mini-batches.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cotk.metric</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
 <span class="gp">... </span>   <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
 <span class="gp">... </span>       <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-<span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
-<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">{&#39;self-bleu&#39;: 0.02253475750490193, &#39;self-bleu hashvalue&#39;: &#39;f7d75c0d0dbf53ffba4b845d1f61487fd2d6d3c0594b075c43111816c84c65fc&#39;}</span>
 </pre></div>
 </div>
-<p>You can merge multiple metrics together by :class:<code class="docutils literal notranslate"><span class="pre">.cotk.metric.MetricChain</span></code></p>
+<p>You can merge multiple metrics together by <a class="reference internal" href="../metric.html#cotk.metric.MetricChain" title="cotk.metric.MetricChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">cotk.metric.MetricChain</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">MetricChain</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_test_list</span><span class="o">=</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_all_batch</span><span class="p">()[</span><span class="s1">&#39;sent_allvocabs&#39;</span><span class="p">],</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">cotk</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">FwBwBleuCorpusMetric</span><span class="p">(</span><span class="n">dataloader</span><span class="p">,</span> <span class="n">reference_test_list</span><span class="o">=</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_all_batch</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)[</span><span class="s1">&#39;sent_allvocabs&#39;</span><span class="p">],</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
 <span class="gp">... </span>   <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
 <span class="gp">... </span>       <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-<span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
-<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;,</span>
-<span class="go"> &#39;fw-bleu&#39;: 0.3831004349785445, &#39;bw-bleu&#39;: 0.025958979254273006, &#39;fw-bw-bleu&#39;: 0.04862323612604027,</span>
-<span class="go"> &#39;fw-bw-bleu hashvalue&#39;: &#39;530d449a096671d13705e514be13c7ecffafd80deb7519aa7792950a5468549e&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">100%|██████████| 1000/1000 [00:00&lt;00:00, 5281.95it/s]</span>
+<span class="go">{&#39;self-bleu&#39;: 0.02253475750490193, &#39;self-bleu hashvalue&#39;: &#39;f7d75c0d0dbf53ffba4b845d1f61487fd2d6d3c0594b075c43111816c84c65fc&#39;, &#39;fw-bleu&#39;: 0.28135593382545376, &#39;bw-bleu&#39;: 0.027021522872801896, &#39;fw-bw-bleu&#39;: 0.04930753293488745, &#39;fw-bw-bleu hashvalue&#39;: &#39;60a39f381e065e8df6fb5eb272984128c9aea7dee4ba50a43bfb768395a70762&#39;}</span>
 </pre></div>
 </div>
-<p>We also provide standard metrics for selected dataloader.</p>
+<p>We also provide recommended metrics for selected dataloader.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">(</span><span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
 <span class="gp">... </span>   <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
 <span class="gp">... </span>       <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
 <span class="gp">... </span>        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
 <span class="gp">... </span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-<span class="go">{&#39;self-bleu&#39;: 0.02206768072402293,</span>
-<span class="go"> &#39;self-bleu hashvalue&#39;: &#39;c206893c2272af489147b80df306ee703e71d9eb178f6bb06c73cb935f474452&#39;,</span>
-<span class="go"> &#39;fw-bleu&#39;: 0.3831004349785445, &#39;bw-bleu&#39;: 0.025958979254273006, &#39;fw-bw-bleu&#39;: 0.04862323612604027,</span>
-<span class="go"> &#39;fw-bw-bleu hashvalue&#39;: &#39;530d449a096671d13705e514be13c7ecffafd80deb7519aa7792950a5468549e&#39;,</span>
-<span class="go"> &#39;gen&#39;: [</span>
-<span class="go">     [&#39;&lt;go&gt;&#39;, &#39;This&#39;, &#39;is&#39;, &#39;an&#39;, &#39;old&#39;, &#39;photo&#39;, &#39;of&#39;, &#39;people&#39;, &#39;and&#39;, &#39;a&#39;, &#39;horse-drawn&#39;, &#39;wagon&#39;, &#39;.&#39;],</span>
-<span class="go">     [&#39;&lt;go&gt;&#39;, &#39;An&#39;, &#39;old&#39;, &#39;stone&#39;, &#39;castle&#39;, &#39;tower&#39;, &#39;with&#39;, &#39;a&#39;, &#39;clock&#39;, &#39;on&#39;, &#39;it&#39;, &#39;.&#39;]</span>
-<span class="go"> ]}</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">Hash</span> <span class="pre">value</span></code> is provided for checking whether the same dataset is used.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you want to know more about metrics, please refer to <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">metrics</span> <span class="pre">docs</span></code></a>.</p>
-</div>
-</div>
-<div class="section" id="publish-experiments">
-<h2>Publish Experiments<a class="headerlink" href="#publish-experiments" title="Permalink to this headline">¶</a></h2>
-<p>We provide an online <a class="reference external" href="http://coai.cs.tsinghua.edu.cn/dashboard/">dashboard</a> to manage your experiments.</p>
-<p>Here we give an simple example for you.</p>
-<p>First initialize a git repo in your command line.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git init
-</pre></div>
-</div>
-<p>Then write your model with an entry function in <code class="docutils literal notranslate"><span class="pre">main.py</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cotk.dataloader</span>
-<span class="kn">import</span> <span class="nn">json</span>
-
-<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
-    <span class="n">dataloader</span> <span class="o">=</span> <span class="n">cotk</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span>
-    <span class="n">metric</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_inference_metric</span><span class="p">()</span>
-    <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span>
-        <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
-            <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">177</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3755</span><span class="p">,</span> <span class="mi">1099</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-            <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1764</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
-    <span class="p">})</span>
-    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;result.json&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+<span class="go">100%|██████████| 1000/1000 [00:00&lt;00:00, 4857.36it/s]</span>
+<span class="go">100%|██████████| 1250/1250 [00:00&lt;00:00, 4689.29it/s]</span>
+<span class="go">{&#39;self-bleu&#39;: 0.02253475750490193, &#39;self-bleu hashvalue&#39;: &#39;f7d75c0d0dbf53ffba4b845d1f61487fd2d6d3c0594b075c43111816c84c65fc&#39;, &#39;fw-bleu&#39;: 0.3353037449663603, &#39;bw-bleu&#39;: 0.027327995838287513, &#39;fw-bw-bleu&#39;: 0.050537105917262654, &#39;fw-bw-bleu hashvalue&#39;: &#39;c254aa4008ae11b1bc4955e7cd1f7f3aad34b664178a585a218b1474970e3f23&#39;, &#39;gen&#39;: [[&#39;inside&#39;, &#39;is&#39;, &#39;an&#39;, &#39;elephant&#39;, &#39;shirt&#39;, &#39;of&#39;, &#39;people&#39;, &#39;and&#39;, &#39;a&#39;, &#39;grasslands&#39;, &#39;pulls&#39;, &#39;.&#39;], [&#39;An&#39;, &#39;elephant&#39;, &#39;girls&#39;, &#39;baggage&#39;, &#39;sidewalk&#39;, &#39;with&#39;, &#39;a&#39;, &#39;clock&#39;, &#39;on&#39;, &#39;it&#39;, &#39;.&#39;]]}</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The only requirement of your model is to output a file named <code class="docutils literal notranslate"><span class="pre">result.json</span></code>,
-you can do whatever you want (even don’t load data using <code class="docutils literal notranslate"><span class="pre">cotk</span></code>).</p>
+<p class="admonition-title">Note</p>
+<p>If you want to know more about metrics, please refer to <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docs</span> <span class="pre">of</span> <span class="pre">metrics</span></code></a>.</p>
 </div>
-<p>Next, commit your changes and set upstream branch in your command line.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git add -A
-git commit -a -m <span class="s2">&quot;init&quot;</span>
-git remote add origin master https://github.com/USERNAME/REPONAME.git
-git push origin -u master
-</pre></div>
-</div>
-<p>Finally, type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code> to run your model and upload to cotk dashboard.</p>
-<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> will automatically collect your git repo, username, commit and <code class="docutils literal notranslate"><span class="pre">result.json</span></code>
-to the cotk dashboard.The dashboard is a website where you can manage
-your experiments or share results with others.</p>
-<img alt="../_images/dashboard.png" src="../_images/dashboard.png" />
-<p>If you don’t want to use cotk’s dashboard, you can also choose to directly upload your model
-to github.</p>
-<p>Use <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span></code> instead of <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span></code>, you will find a <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code>
-is generated. Commit the file and push it to github, the other can automatically download
-your model as the way described in next section.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The reproducibility should be maintained by the author. We only make sure all the input
-is the same, but difference can be introduced by different random seed, device or other
-affects. Before you upload, run <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span></code> twice and find whether the results
-is the same.</p>
-</div>
-</div>
-<div class="section" id="reproduce-experiments">
-<h2>Reproduce Experiments<a class="headerlink" href="#reproduce-experiments" title="Permalink to this headline">¶</a></h2>
-<p>You can download others’ model in dashboard
-and try to reproduce their results.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cotk download ID
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">ID</span></code> comes from dashboard id.
-<code class="docutils literal notranslate"><span class="pre">cotk</span></code> will download the codes from dashboard and tell you how to run the models.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Fetching USERNAME/REPO/COMMIT
-13386B [00:00, 54414.25B/s]
-INFO: Codes from USERNAME/REPO/COMMIT fetched.
-INFO: Model running cmd written in run_model.sh
-Model running cmd:  cd ./PATH &amp;&amp; cotk run --only-run --entry main
-</pre></div>
-</div>
-<p>Type <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">run</span> <span class="pre">--only-run</span> <span class="pre">--entry</span> <span class="pre">main</span></code> will reproduce the same experiments.</p>
-<p>You can also download directly from github if the maintainer has set the <code class="docutils literal notranslate"><span class="pre">.model_config.json</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cotk download USER/REPO/COMMIT
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> will download the codes from github and generate commands by the config file.</p>
 </div>
 <div class="section" id="predefined-models">
 <h2>Predefined Models<a class="headerlink" href="#predefined-models" title="Permalink to this headline">¶</a></h2>

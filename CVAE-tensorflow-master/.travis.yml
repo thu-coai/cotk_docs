@@ -10,8 +10,8 @@ install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install pytest --upgrade
-  - pip install pytest-dependency pytest-mock requests-mock pytest>=3.6.0 pytest-cov==2.4.0 python-coveralls
-  - cd .. && git clone https://github.com/thu-coai/cotk.git && pip install ./cotk --progress-bar off && cd CVAE-tensorflow
+  - pip install pytest-dependency pytest-mock requests-mock pytest>=3.6.0 "coverage<5.0" pytest-cov==2.4.0 python-coveralls
+  - cd .. && git clone -b version_up https://github.com/thu-coai/cotk.git && pip install ./cotk --progress-bar off && cd CVAE-tensorflow
 
 script:
   - pytest test_CVAE_tensorflow.py --cov=. --cov-report term-missing

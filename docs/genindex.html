@@ -22,10 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -86,18 +86,18 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -197,62 +197,20 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.file_utils._download_data">_download_data() (in module cotk._utils.file_utils)</a>
+      <li><a href="metric.html#cotk.metric.MetricBase._hash_ordered_data">_hash_ordered_data() (cotk.metric.MetricBase method)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.file_utils._get_config">_get_config() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.file_utils._get_file_sha256">_get_file_sha256() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.file_utils._get_hashtag">_get_hashtag() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.file_utils._get_resource">_get_resource() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="metric.html#cotk.metric.MetricBase._hash_relevant_data">_hash_relevant_data() (cotk.metric.MetricBase method)</a>
+      <li><a href="metric.html#cotk.metric.MetricBase._hash_unordered_list">_hash_unordered_list() (cotk.metric.MetricBase method)</a>
 </li>
       <li><a href="metric.html#cotk.metric.MetricBase._hashvalue">_hashvalue() (cotk.metric.MetricBase method)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.file_utils._http_get">_http_get() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase._load_data">_load_data() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog._load_data">(cotk.dataloader.BERTSingleTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._load_data">(cotk.dataloader.LanguageGeneration method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase._load_data">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog._load_data">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification._load_data">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog._load_data">(cotk.dataloader.SingleTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus._load_data">(cotk.dataloader.SwitchboardCorpus method)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.file_utils._load_local_data">_load_local_data() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.file_utils._parse_file_id">_parse_file_id() (in module cotk._utils.file_utils)</a>
+      <li><a href="file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor._read_file">_read_file() (cotk.file_utils.SwitchboardCorpusResourceProcessor method)</a>
 </li>
       <li><a href="metric.html#cotk.metric.BleuPrecisionRecallMetric._score">_score() (cotk.metric.BleuPrecisionRecallMetric method)</a>
 
       <ul>
         <li><a href="metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric._score">(cotk.metric.EmbSimilarityPrecisionRecallMetric method)</a>
-</li>
-      </ul></li>
-      <li><a href="_utils.html#cotk._utils.file_utils._url_to_filename">_url_to_filename() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration._valid_word2id">_valid_word2id() (cotk.dataloader.LanguageGeneration method)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase._valid_word2id">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog._valid_word2id">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog._valid_word2id">(cotk.dataloader.SingleTurnDialog method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -261,42 +219,40 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.hooks.BaseHooksListener.add_dataloader">add_dataloader() (cotk._utils.hooks.BaseHooksListener method)</a>
+      <li><a href="metric.html#cotk.metric.MetricChain.add_metric">add_metric() (cotk.metric.MetricChain method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.add_special_to_ids">add_special_to_ids() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="_utils.html#cotk._utils.hooks.SimpleHooksListener.add_dataloader">(cotk._utils.hooks.SimpleHooksListener method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.add_special_to_ids">(cotk.dataloader.Sentence method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.add_special_to_ids">(cotk.dataloader.Session method)</a>
 </li>
       </ul></li>
-      <li><a href="_utils.html#cotk._utils.hooks.BaseHooksListener.add_metric">add_metric() (cotk._utils.hooks.BaseHooksListener method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Vocab.add_tokens">add_tokens() (cotk.dataloader.Vocab method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.all_vocab_list">all_vocab_list (cotk.dataloader.LanguageProcessing attribute)</a>
 
       <ul>
-        <li><a href="_utils.html#cotk._utils.hooks.SimpleHooksListener.add_metric">(cotk._utils.hooks.SimpleHooksListener method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.PretrainedVocab.all_vocab_list">(cotk.dataloader.PretrainedVocab attribute)</a>
 </li>
-        <li><a href="metric.html#cotk.metric.MetricChain.add_metric">(cotk.metric.MetricChain method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.all_vocab_list">(cotk.dataloader.Sentence attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="_utils.html#cotk._utils.hooks.BaseHooksListener.add_wordvec">add_wordvec() (cotk._utils.hooks.BaseHooksListener method)</a>
-
-      <ul>
-        <li><a href="_utils.html#cotk._utils.hooks.SimpleHooksListener.add_wordvec">(cotk._utils.hooks.SimpleHooksListener method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.all_vocab_list">(cotk.dataloader.Session attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.all_vocab_list">(cotk.dataloader.Vocab attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.all_vocab_size">all_vocab_size (cotk.dataloader.BERTLanguageProcessingBase attribute)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.all_vocab_size">all_vocab_size (cotk.dataloader.LanguageProcessing attribute)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.all_vocab_size">(cotk.dataloader.BERTSingleTurnDialog attribute)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.all_vocab_size">(cotk.dataloader.Sentence attribute)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.all_vocab_size">(cotk.dataloader.LanguageGeneration attribute)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.all_vocab_size">(cotk.dataloader.Session attribute)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.all_vocab_size">(cotk.dataloader.LanguageProcessingBase attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.all_vocab_size">(cotk.dataloader.MultiTurnDialog attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.all_vocab_size">(cotk.dataloader.SentenceClassification attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.all_vocab_size">(cotk.dataloader.SingleTurnDialog attribute)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.all_vocab_size">(cotk.dataloader.Vocab attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -305,29 +261,23 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.hooks.BaseHooksListener">BaseHooksListener (class in cotk._utils.hooks)</a>
+      <li><a href="file_utils.html#cotk.file_utils.GloveResourceProcessor.basepostprocess">basepostprocess() (cotk.file_utils.GloveResourceProcessor method)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.GloveResourceProcessor.basepostprocess">basepostprocess() (cotk._utils.resource_processor.GloveResourceProcessor method)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.BaseResourceProcessor.basepreprocess">basepreprocess() (cotk._utils.resource_processor.BaseResourceProcessor method)</a>
+      <li><a href="file_utils.html#cotk.file_utils.BaseResourceProcessor.basepreprocess">basepreprocess() (cotk.file_utils.BaseResourceProcessor method)</a>
 
       <ul>
-        <li><a href="_utils.html#cotk._utils.resource_processor.GloveResourceProcessor.basepreprocess">(cotk._utils.resource_processor.GloveResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.GloveResourceProcessor.basepreprocess">(cotk.file_utils.GloveResourceProcessor method)</a>
 </li>
       </ul></li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.BaseResourceProcessor">BaseResourceProcessor (class in cotk._utils.resource_processor)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase">BERTLanguageProcessingBase (class in cotk.dataloader)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTOpenSubtitles">BERTOpenSubtitles (class in cotk.dataloader)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog">BERTSingleTurnDialog (class in cotk.dataloader)</a>
+      <li><a href="file_utils.html#cotk.file_utils.BaseResourceProcessor">BaseResourceProcessor (class in cotk.file_utils)</a>
 </li>
       <li><a href="metric.html#cotk.metric.BleuCorpusMetric">BleuCorpusMetric (class in cotk.metric)</a>
 </li>
       <li><a href="metric.html#cotk.metric.BleuPrecisionRecallMetric">BleuPrecisionRecallMetric (class in cotk.metric)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Vocab.build_vocab">build_vocab() (cotk.dataloader.Vocab method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -335,7 +285,9 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.hooks.SimpleHooksListener.close">close() (cotk._utils.hooks.SimpleHooksListener method)</a>
+      <li><a href="_utils.html#cotk._utils.chain_sessions">chain_sessions() (in module cotk._utils)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Context.close">close() (cotk.dataloader.Context method)</a>
 
       <ul>
         <li><a href="metric.html#cotk.metric.BleuCorpusMetric.close">(cotk.metric.BleuCorpusMetric method)</a>
@@ -367,91 +319,63 @@
         <li><a href="metric.html#cotk.metric.SingleTurnDialogRecorder.close">(cotk.metric.SingleTurnDialogRecorder method)</a>
 </li>
       </ul></li>
-      <li><a href="_utils.html#cotk._utils.hooks.close_recorder">close_recorder() (in module cotk._utils.hooks)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Context">Context (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.hooks.compress_dict">compress_dict() (in module cotk._utils.hooks)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_ids">convert_bert_ids_to_ids() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.convert_ids_to_sentence">convert_ids_to_sentence() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.convert_bert_ids_to_ids">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.convert_ids_to_sentence">(cotk.dataloader.Sentence method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.convert_ids_to_sentence">(cotk.dataloader.Session method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_bert_ids_to_tokens">convert_bert_ids_to_tokens() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.convert_ids_to_tokens">convert_ids_to_tokens() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.convert_bert_ids_to_tokens">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.convert_ids_to_tokens">(cotk.dataloader.Sentence method)</a>
 </li>
-      </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_bert_ids">convert_ids_to_bert_ids() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.convert_ids_to_bert_ids">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.convert_ids_to_tokens">(cotk.dataloader.Session method)</a>
 </li>
-      </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_ids_to_tokens">convert_ids_to_tokens() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.convert_ids_to_tokens">(cotk.dataloader.BERTSingleTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.convert_ids_to_tokens">(cotk.dataloader.LanguageGeneration method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_ids_to_tokens">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.convert_ids_to_tokens">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.convert_ids_to_tokens">(cotk.dataloader.SingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.convert_ids_to_tokens">(cotk.dataloader.Vocab method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_multi_turn_ids_to_tokens">convert_multi_turn_ids_to_tokens() (cotk.dataloader.MultiTurnDialog method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Session.convert_multi_turn_ids_to_tokens">convert_multi_turn_ids_to_tokens() (cotk.dataloader.Session method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_multi_turn_tokens_to_ids">convert_multi_turn_tokens_to_ids() (cotk.dataloader.MultiTurnDialog method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Session.convert_multi_turn_tokens_to_ids">convert_multi_turn_tokens_to_ids() (cotk.dataloader.Session method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_bert_ids">convert_tokens_to_bert_ids() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.convert_sentence_to_ids">convert_sentence_to_ids() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_bert_ids">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.convert_sentence_to_ids">(cotk.dataloader.Sentence method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.convert_sentence_to_ids">(cotk.dataloader.Session method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.convert_tokens_to_ids">convert_tokens_to_ids() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.convert_tokens_to_ids">convert_tokens_to_ids() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.convert_tokens_to_ids">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.convert_tokens_to_ids">(cotk.dataloader.Sentence method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.convert_tokens_to_ids">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.convert_tokens_to_ids">(cotk.dataloader.Session method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.convert_tokens_to_ids">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.convert_tokens_to_ids">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.convert_tokens_to_ids">(cotk.dataloader.SingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.convert_tokens_to_ids">(cotk.dataloader.Vocab method)</a>
 </li>
       </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.Tokenizer.convert_tokens_to_sentence">convert_tokens_to_sentence() (cotk.dataloader.Tokenizer method)</a>
+</li>
       <li><a href="_utils.html#module-cotk._utils">cotk._utils (module)</a>
-</li>
-      <li><a href="_utils.html#module-cotk._utils._utils">cotk._utils._utils (module)</a>
-</li>
-      <li><a href="_utils.html#module-cotk._utils.file_utils">cotk._utils.file_utils (module)</a>
-</li>
-      <li><a href="_utils.html#module-cotk._utils.hooks">cotk._utils.hooks (module)</a>
 </li>
       <li><a href="_utils.html#module-cotk._utils.imports">cotk._utils.imports (module)</a>
 </li>
       <li><a href="_utils.html#module-cotk._utils.metaclass">cotk._utils.metaclass (module)</a>
 </li>
-      <li><a href="_utils.html#module-cotk._utils.resource_processor">cotk._utils.resource_processor (module)</a>
-</li>
       <li><a href="_utils.html#module-cotk._utils.unordered_hash">cotk._utils.unordered_hash (module)</a>
 </li>
       <li><a href="dataloader.html#module-cotk.dataloader">cotk.dataloader (module)</a>
 </li>
-      <li><a href="downloader.html#module-cotk.downloader">cotk.downloader (module)</a>
+      <li><a href="file_utils.html#module-cotk.file_utils">cotk.file_utils (module)</a>
 </li>
       <li><a href="metric.html#module-cotk.metric">cotk.metric (module)</a>
 </li>
@@ -465,15 +389,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dataloader.html#cotk.dataloader.Dataloader">Dataloader (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor">DefaultResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.DefaultResourceProcessor">DefaultResourceProcessor (class in cotk.file_utils)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.DenseLabel">DenseLabel (class in cotk.dataloader)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.unordered_hash.UnorderedSha256.digest">digest() (cotk._utils.unordered_hash.UnorderedSha256 method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.unordered_hash.UnorderedSha256.digest">digest() (cotk._utils.unordered_hash.UnorderedSha256 method)</a>
-</li>
       <li><a href="_utils.html#cotk._utils.metaclass.DocStringInheritor">DocStringInheritor (class in cotk._utils.metaclass)</a>
 </li>
       <li><a href="_utils.html#cotk._utils.imports.DummyObject">DummyObject (class in cotk._utils.imports)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.unordered_hash.dumps">dumps() (in module cotk._utils.unordered_hash)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.unordered_hash.dumps_json">dumps_json() (in module cotk._utils.unordered_hash)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -483,12 +413,28 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="metric.html#cotk.metric.EmbSimilarityPrecisionRecallMetric">EmbSimilarityPrecisionRecallMetric (class in cotk.metric)</a>
 </li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.eos_id">eos_id (cotk.dataloader.LanguageProcessing attribute)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.eos_id">(cotk.dataloader.Sentence attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.eos_id">(cotk.dataloader.Session attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.eos_id">(cotk.dataloader.Vocab attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#cotk.dataloader.Field">Field (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.FieldContext">FieldContext (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.fields">fields (cotk.dataloader.LanguageProcessing attribute)</a>
+</li>
       <li><a href="metric.html#cotk.metric.BleuCorpusMetric.forward">forward() (cotk.metric.BleuCorpusMetric method)</a>
 
       <ul>
@@ -521,6 +467,36 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.frequent_vocab_list">frequent_vocab_list (cotk.dataloader.LanguageProcessing attribute)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.PretrainedVocab.frequent_vocab_list">(cotk.dataloader.PretrainedVocab attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.frequent_vocab_list">(cotk.dataloader.Sentence attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.frequent_vocab_list">(cotk.dataloader.Session attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.frequent_vocab_list">(cotk.dataloader.Vocab attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.frequent_vocab_size">frequent_vocab_size (cotk.dataloader.LanguageProcessing attribute)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.frequent_vocab_size">(cotk.dataloader.Sentence attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.frequent_vocab_size">(cotk.dataloader.Session attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.frequent_vocab_size">(cotk.dataloader.Vocab attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.GeneralVocab.from_frequent_word">from_frequent_word() (cotk.dataloader.GeneralVocab static method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.GeneralVocab.from_frequent_word_of_vocab">from_frequent_word_of_vocab() (cotk.dataloader.GeneralVocab static method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.GeneralVocab.from_predefined">from_predefined() (cotk.dataloader.GeneralVocab static method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.GeneralVocab.from_predefined_vocab">from_predefined_vocab() (cotk.dataloader.GeneralVocab static method)</a>
+</li>
       <li><a href="metric.html#cotk.metric.FwBwBleuCorpusMetric">FwBwBleuCorpusMetric (class in cotk.metric)</a>
 </li>
   </ul></td>
@@ -529,53 +505,73 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#cotk.dataloader.GeneralVocab">GeneralVocab (class in cotk.dataloader)</a>
+</li>
+      <li><a href="wordvector.html#cotk.wordvector.GeneralWordVector">GeneralWordVector (class in cotk.wordvector)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Context.get">get() (cotk.dataloader.Context class method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_all_batch">get_all_batch() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
       <li><a href="_utils.html#cotk._utils.metaclass.LoadClassInterface.get_all_subclasses">get_all_subclasses() (cotk._utils.metaclass.LoadClassInterface class method)</a>
 
       <ul>
         <li><a href="dataloader.html#cotk.dataloader.Dataloader.get_all_subclasses">(cotk.dataloader.Dataloader class method)</a>
 </li>
+        <li><a href="dataloader.html#cotk.dataloader.Field.get_all_subclasses">(cotk.dataloader.Field class method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.get_all_subclasses">(cotk.dataloader.Vocab class method)</a>
+</li>
         <li><a href="wordvector.html#cotk.wordvector.WordVector.get_all_subclasses">(cotk.wordvector.WordVector class method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.get_batch">get_batch() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.DenseLabel.get_batch">get_batch() (cotk.dataloader.DenseLabel method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_batch">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Field.get_batch">(cotk.dataloader.Field method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_batch">(cotk.dataloader.LanguageGeneration method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch">(cotk.dataloader.LanguageProcessingBase method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_batch">(cotk.dataloader.LanguageProcessing method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_batch">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
+        <li><a href="dataloader.html#cotk.dataloader.SentenceBERT.get_batch">(cotk.dataloader.SentenceBERT method)</a>
+</li>
         <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.get_batch">(cotk.dataloader.SentenceClassification method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.SentenceDefault.get_batch">(cotk.dataloader.SentenceDefault method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.SentenceGPT2.get_batch">(cotk.dataloader.SentenceGPT2 method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.SessionBERT.get_batch">(cotk.dataloader.SessionBERT method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.SessionDefault.get_batch">(cotk.dataloader.SessionDefault method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.SessionGPT2.get_batch">(cotk.dataloader.SessionGPT2 method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.get_batch">(cotk.dataloader.SingleTurnDialog method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.get_batch">(cotk.dataloader.SwitchboardCorpus method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.SparseLabel.get_batch">(cotk.dataloader.SparseLabel method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.get_batches">get_batches() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_batches">get_batches() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_data_hash">get_data_hash() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_default_field">get_default_field() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_default_tokenizer">get_default_tokenizer() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_default_vocab">get_default_vocab() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_field">get_field() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_general_hash">get_general_hash() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_inference_metric">get_inference_metric() (cotk.dataloader.LanguageGeneration method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_batches">(cotk.dataloader.BERTSingleTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_batches">(cotk.dataloader.LanguageGeneration method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batches">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_batches">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.get_batches">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.get_batches">(cotk.dataloader.SingleTurnDialog method)</a>
-</li>
-      </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_inference_metric">get_inference_metric() (cotk.dataloader.BERTSingleTurnDialog method)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_inference_metric">(cotk.dataloader.LanguageGeneration method)</a>
-</li>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_inference_metric">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.get_inference_metric">(cotk.dataloader.SingleTurnDialog method)</a>
@@ -585,63 +581,91 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.get_metric">get_metric() (cotk.dataloader.SentenceClassification method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">get_multi_ref_metric() (cotk.dataloader.SwitchboardCorpus method)</a>, <a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.get_multi_ref_metric">[1]</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_next_batch">get_next_batch() (cotk.dataloader.LanguageProcessing method)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.get_next_batch">get_next_batch() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_raw_data_hash">get_raw_data_hash() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="file_utils.html#cotk.file_utils.get_resource_file_path">get_resource_file_path() (in module cotk.file_utils)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_setting_hash">get_setting_hash() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_next_batch">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Tokenizer.get_setting_hash">(cotk.dataloader.Tokenizer method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_next_batch">(cotk.dataloader.LanguageGeneration method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.get_next_batch">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_next_batch">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.get_next_batch">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.get_next_batch">(cotk.dataloader.SingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.get_setting_hash">(cotk.dataloader.Vocab method)</a>
 </li>
       </ul></li>
-      <li><a href="_utils.html#cotk._utils.file_utils.get_resource_file_path">get_resource_file_path() (in module cotk._utils.file_utils)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.get_teacher_forcing_metric">get_teacher_forcing_metric() (cotk.dataloader.BERTSingleTurnDialog method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_special_tokens_id">get_special_tokens_id() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.get_special_tokens_id">(cotk.dataloader.Sentence method)</a>
 </li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.get_special_tokens_id">(cotk.dataloader.Session method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.get_special_tokens_id">(cotk.dataloader.Vocab method)</a>
+</li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_special_tokens_mapping">get_special_tokens_mapping() (cotk.dataloader.LanguageProcessing method)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.get_special_tokens_mapping">(cotk.dataloader.Sentence method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.get_special_tokens_mapping">(cotk.dataloader.Session method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.get_special_tokens_mapping">(cotk.dataloader.Vocab method)</a>
+</li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.get_teacher_forcing_metric">get_teacher_forcing_metric() (cotk.dataloader.LanguageGeneration method)</a>
+
+      <ul>
         <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.get_teacher_forcing_metric">(cotk.dataloader.MultiTurnDialog method)</a>
 </li>
         <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.get_teacher_forcing_metric">(cotk.dataloader.SingleTurnDialog method)</a>
 </li>
       </ul></li>
+      <li><a href="file_utils.html#cotk.file_utils.BaseResourceProcessor.get_temp_dir">get_temp_dir() (cotk.file_utils.BaseResourceProcessor method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Field.get_tokenizer">get_tokenizer() (cotk.dataloader.Field method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.PretrainedTokenizer.get_tokenizer_class">get_tokenizer_class() (cotk.dataloader.PretrainedTokenizer method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Field.get_vocab">get_vocab() (cotk.dataloader.Field method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.get_vocab_hash">get_vocab_hash() (cotk.dataloader.LanguageProcessing method)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.get_vocab_hash">(cotk.dataloader.Vocab method)</a>
+</li>
+      </ul></li>
       <li><a href="wordvector.html#cotk.wordvector.Glove">Glove (class in cotk.wordvector)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor">Glove100dResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.Glove100dResourceProcessor">Glove100dResourceProcessor (class in cotk.file_utils)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor">Glove200dResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.Glove200dResourceProcessor">Glove200dResourceProcessor (class in cotk.file_utils)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor">Glove300dResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.Glove300dResourceProcessor">Glove300dResourceProcessor (class in cotk.file_utils)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor">Glove50dResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.Glove50dResourceProcessor">Glove50dResourceProcessor (class in cotk.file_utils)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.GloveResourceProcessor">GloveResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.GloveResourceProcessor">GloveResourceProcessor (class in cotk.file_utils)</a>
 </li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.go_id">go_id (cotk.dataloader.LanguageProcessing attribute)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.go_id">(cotk.dataloader.Sentence attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.go_id">(cotk.dataloader.Session attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.go_id">(cotk.dataloader.Vocab attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.hooks.hook_dataloader">hook_dataloader() (in module cotk._utils.hooks)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.hooks.hook_metric">hook_metric() (in module cotk._utils.hooks)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.hooks.hook_metric_close">hook_metric_close() (in module cotk._utils.hooks)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.hooks.hook_wordvec">hook_wordvec() (in module cotk._utils.hooks)</a>
+      <li><a href="_utils.html#cotk._utils.unordered_hash.UnorderedSha256.hexdigest">hexdigest() (cotk._utils.unordered_hash.UnorderedSha256 method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -649,18 +673,8 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.file_utils.import_local_resources">import_local_resources() (in module cotk._utils.file_utils)</a>
+      <li><a href="file_utils.html#cotk.file_utils.import_local_resources">import_local_resources() (in module cotk.file_utils)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.hooks.invoke_listener">invoke_listener() (in module cotk._utils.hooks)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.hooks.BaseHooksListener.invoke_metric_close">invoke_metric_close() (cotk._utils.hooks.BaseHooksListener method)</a>
-
-      <ul>
-        <li><a href="_utils.html#cotk._utils.hooks.SimpleHooksListener.invoke_metric_close">(cotk._utils.hooks.SimpleHooksListener method)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -671,36 +685,32 @@
 </li>
       <li><a href="metric.html#cotk.metric.LanguageGenerationRecorder">LanguageGenerationRecorder (class in cotk.metric)</a>
 </li>
-      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase">LanguageProcessingBase (class in cotk.dataloader)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing">LanguageProcessing (class in cotk.dataloader)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.imports.LazyModule">LazyModule (class in cotk._utils.imports)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.imports.LazyObject">LazyObject (class in cotk._utils.imports)</a>
 </li>
       <li><a href="_utils.html#cotk._utils.metaclass.LoadClassInterface.load_class">load_class() (cotk._utils.metaclass.LoadClassInterface class method)</a>
 
       <ul>
         <li><a href="dataloader.html#cotk.dataloader.Dataloader.load_class">(cotk.dataloader.Dataloader class method)</a>
 </li>
+        <li><a href="dataloader.html#cotk.dataloader.Field.load_class">(cotk.dataloader.Field class method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.load_class">(cotk.dataloader.Vocab class method)</a>
+</li>
         <li><a href="wordvector.html#cotk.wordvector.WordVector.load_class">(cotk.wordvector.WordVector class method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="wordvector.html#cotk.wordvector.Glove.load_dict">load_dict() (cotk.wordvector.Glove method)</a>
-
-      <ul>
-        <li><a href="wordvector.html#cotk.wordvector.WordVector.load_dict">(cotk.wordvector.WordVector method)</a>
+      <li><a href="wordvector.html#cotk.wordvector.GeneralWordVector.load_dict">load_dict() (cotk.wordvector.GeneralWordVector method)</a>
 </li>
-      </ul></li>
-      <li><a href="_utils.html#cotk._utils.file_utils.load_file_from_url">load_file_from_url() (in module cotk._utils.file_utils)</a>
-
-      <ul>
-        <li><a href="downloader.html#cotk.downloader.load_file_from_url">(in module cotk.downloader)</a>
+      <li><a href="file_utils.html#cotk.file_utils.load_file_from_url">load_file_from_url() (in module cotk.file_utils)</a>
 </li>
-      </ul></li>
-      <li><a href="wordvector.html#cotk.wordvector.Glove.load_matrix">load_matrix() (cotk.wordvector.Glove method)</a>
-
-      <ul>
-        <li><a href="wordvector.html#cotk.wordvector.WordVector.load_matrix">(cotk.wordvector.WordVector method)</a>
+      <li><a href="wordvector.html#cotk.wordvector.GeneralWordVector.load_matrix">load_matrix() (cotk.wordvector.GeneralWordVector method)</a>
 </li>
-      </ul></li>
       <li><a href="_utils.html#cotk._utils.metaclass.LoadClassInterface">LoadClassInterface (class in cotk._utils.metaclass)</a>
 </li>
   </ul></td>
@@ -715,11 +725,11 @@
 </li>
       <li><a href="dataloader.html#cotk.dataloader.MSCOCO">MSCOCO (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor">MSCOCOResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.MSCOCOResourceProcessor">MSCOCOResourceProcessor (class in cotk.file_utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.multi_turn_trim">multi_turn_trim() (cotk.dataloader.MultiTurnDialog method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Session.multi_turn_trim_in_ids">multi_turn_trim_in_ids() (cotk.dataloader.Session method)</a>
 </li>
       <li><a href="metric.html#cotk.metric.MultiTurnBleuCorpusMetric">MultiTurnBleuCorpusMetric (class in cotk.metric)</a>
 </li>
@@ -747,7 +757,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor">OpenSubtitlesResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.OpenSubtitlesResourceProcessor">OpenSubtitlesResourceProcessor (class in cotk.file_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -755,78 +765,104 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="metric.html#cotk.metric.PerplexityMetric">PerplexityMetric (class in cotk.metric)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.BaseResourceProcessor.postprocess">postprocess() (cotk._utils.resource_processor.BaseResourceProcessor method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.pad_id">pad_id (cotk.dataloader.LanguageProcessing attribute)</a>
 
       <ul>
-        <li><a href="_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.postprocess">(cotk._utils.resource_processor.DefaultResourceProcessor method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.pad_id">(cotk.dataloader.Sentence attribute)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor.postprocess">(cotk._utils.resource_processor.Glove100dResourceProcessor method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.pad_id">(cotk.dataloader.Session attribute)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor.postprocess">(cotk._utils.resource_processor.Glove200dResourceProcessor method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.pad_id">(cotk.dataloader.Vocab attribute)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor.postprocess">(cotk._utils.resource_processor.Glove300dResourceProcessor method)</a>
+      </ul></li>
+      <li><a href="metric.html#cotk.metric.PerplexityMetric">PerplexityMetric (class in cotk.metric)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.postprocess">(cotk._utils.resource_processor.Glove50dResourceProcessor method)</a>
+      <li><a href="file_utils.html#cotk.file_utils.BaseResourceProcessor.postprocess">postprocess() (cotk.file_utils.BaseResourceProcessor method)</a>
+
+      <ul>
+        <li><a href="file_utils.html#cotk.file_utils.DefaultResourceProcessor.postprocess">(cotk.file_utils.DefaultResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor.postprocess">(cotk._utils.resource_processor.MSCOCOResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove100dResourceProcessor.postprocess">(cotk.file_utils.Glove100dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.postprocess">(cotk._utils.resource_processor.OpenSubtitlesResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove200dResourceProcessor.postprocess">(cotk.file_utils.Glove200dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.SSTResourceProcessor.postprocess">(cotk._utils.resource_processor.SSTResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove300dResourceProcessor.postprocess">(cotk.file_utils.Glove300dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor.postprocess">(cotk._utils.resource_processor.UbuntuResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove50dResourceProcessor.postprocess">(cotk.file_utils.Glove50dResourceProcessor method)</a>
+</li>
+        <li><a href="file_utils.html#cotk.file_utils.MSCOCOResourceProcessor.postprocess">(cotk.file_utils.MSCOCOResourceProcessor method)</a>
+</li>
+        <li><a href="file_utils.html#cotk.file_utils.OpenSubtitlesResourceProcessor.postprocess">(cotk.file_utils.OpenSubtitlesResourceProcessor method)</a>
+</li>
+        <li><a href="file_utils.html#cotk.file_utils.SSTResourceProcessor.postprocess">(cotk.file_utils.SSTResourceProcessor method)</a>
+</li>
+        <li><a href="file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor.postprocess">(cotk.file_utils.SwitchboardCorpusResourceProcessor method)</a>
+</li>
+        <li><a href="file_utils.html#cotk.file_utils.UbuntuResourceProcessor.postprocess">(cotk.file_utils.UbuntuResourceProcessor method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.preprocess">preprocess() (cotk._utils.resource_processor.DefaultResourceProcessor method)</a>
+      <li><a href="file_utils.html#cotk.file_utils.DefaultResourceProcessor.preprocess">preprocess() (cotk.file_utils.DefaultResourceProcessor method)</a>
 
       <ul>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor.preprocess">(cotk._utils.resource_processor.Glove100dResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove100dResourceProcessor.preprocess">(cotk.file_utils.Glove100dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor.preprocess">(cotk._utils.resource_processor.Glove200dResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove200dResourceProcessor.preprocess">(cotk.file_utils.Glove200dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor.preprocess">(cotk._utils.resource_processor.Glove300dResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove300dResourceProcessor.preprocess">(cotk.file_utils.Glove300dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.preprocess">(cotk._utils.resource_processor.Glove50dResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.Glove50dResourceProcessor.preprocess">(cotk.file_utils.Glove50dResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor.preprocess">(cotk._utils.resource_processor.MSCOCOResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.MSCOCOResourceProcessor.preprocess">(cotk.file_utils.MSCOCOResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.preprocess">(cotk._utils.resource_processor.OpenSubtitlesResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.OpenSubtitlesResourceProcessor.preprocess">(cotk.file_utils.OpenSubtitlesResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.SSTResourceProcessor.preprocess">(cotk._utils.resource_processor.SSTResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.SSTResourceProcessor.preprocess">(cotk.file_utils.SSTResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor.preprocess">(cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor.preprocess">(cotk.file_utils.SwitchboardCorpusResourceProcessor method)</a>
 </li>
-        <li><a href="_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor.preprocess">(cotk._utils.resource_processor.UbuntuResourceProcessor method)</a>
+        <li><a href="file_utils.html#cotk.file_utils.UbuntuResourceProcessor.preprocess">(cotk.file_utils.UbuntuResourceProcessor method)</a>
 </li>
       </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.PretrainedTokenizer">PretrainedTokenizer (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.PretrainedVocab">PretrainedVocab (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.process_sentences">process_sentences() (cotk.dataloader.LanguageProcessing method)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.process_sentences">(cotk.dataloader.Sentence method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.process_sentences">(cotk.dataloader.Session method)</a>
+</li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.Session.process_sessions">process_sessions() (cotk.dataloader.Session method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.resource_processor.ResourceProcessor">ResourceProcessor (class in cotk._utils.resource_processor)</a>
-</li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.restart">restart() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.remove_special_in_ids">remove_special_in_ids() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.restart">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.remove_special_in_ids">(cotk.dataloader.Sentence method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.restart">(cotk.dataloader.LanguageGeneration method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.restart">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.restart">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.restart">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.restart">(cotk.dataloader.SingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.remove_special_in_ids">(cotk.dataloader.Session method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_utils.html#cotk._utils.replace_unk">replace_unk() (in module cotk._utils)</a>
+</li>
+      <li><a href="file_utils.html#cotk.file_utils.ResourceProcessor">ResourceProcessor (class in cotk.file_utils)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.restart">restart() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.restore_sessions">restore_sessions() (in module cotk._utils)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -835,25 +871,55 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="metric.html#cotk.metric.SelfBleuCorpusMetric">SelfBleuCorpusMetric (class in cotk.metric)</a>
 </li>
+      <li><a href="dataloader.html#cotk.dataloader.Sentence">Sentence (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SentenceBERT">SentenceBERT (class in cotk.dataloader)</a>
+</li>
       <li><a href="dataloader.html#cotk.dataloader.SentenceClassification">SentenceClassification (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.hooks.SimpleHooksListener">SimpleHooksListener (class in cotk._utils.hooks)</a>
+      <li><a href="dataloader.html#cotk.dataloader.SentenceDefault">SentenceDefault (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SentenceGPT2">SentenceGPT2 (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Session">Session (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SessionBERT">SessionBERT (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SessionDefault">SessionDefault (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SessionGPT2">SessionGPT2 (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.Context.set">set() (cotk.dataloader.Context class method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.set_default_field">set_default_field() (cotk.dataloader.LanguageProcessing method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#cotk.dataloader.FieldContext.set_parameters">set_parameters() (cotk.dataloader.FieldContext class method)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.VocabContext.set_parameters">(cotk.dataloader.VocabContext class method)</a>
+</li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.simple_create">simple_create() (cotk.dataloader.LanguageProcessing static method)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SimpleTokenizer">SimpleTokenizer (class in cotk.dataloader)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.SimpleVocab">SimpleVocab (class in cotk.dataloader)</a>
 </li>
       <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog">SingleTurnDialog (class in cotk.dataloader)</a>
 </li>
       <li><a href="metric.html#cotk.metric.SingleTurnDialogRecorder">SingleTurnDialogRecorder (class in cotk.metric)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dataloader.html#cotk.dataloader.SparseLabel">SparseLabel (class in cotk.dataloader)</a>
+</li>
       <li><a href="dataloader.html#cotk.dataloader.SST">SST (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.SSTResourceProcessor">SSTResourceProcessor (class in cotk._utils.resource_processor)</a>
-</li>
-      <li><a href="_utils.html#cotk._utils.hooks.start_recorder">start_recorder() (in module cotk._utils.hooks)</a>
+      <li><a href="file_utils.html#cotk.file_utils.SSTResourceProcessor">SSTResourceProcessor (class in cotk.file_utils)</a>
 </li>
       <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus">SwitchboardCorpus (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor">SwitchboardCorpusResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor">SwitchboardCorpusResourceProcessor (class in cotk.file_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -861,38 +927,46 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.tokenize">tokenize() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.tokenize">tokenize() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.tokenize">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.tokenize">(cotk.dataloader.Sentence method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.tokenize">(cotk.dataloader.SentenceClassification method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.tokenize">(cotk.dataloader.Session method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.SwitchboardCorpus.tokenize">(cotk.dataloader.SwitchboardCorpus method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.UbuntuCorpus.tokenize">(cotk.dataloader.UbuntuCorpus method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Tokenizer.tokenize">(cotk.dataloader.Tokenizer method)</a>
 </li>
       </ul></li>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.trim">trim() (cotk.dataloader.BERTLanguageProcessingBase method)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.tokenize_sentences">tokenize_sentences() (cotk.dataloader.LanguageProcessing method)</a>
 
       <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.trim">(cotk.dataloader.BERTSingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.tokenize_sentences">(cotk.dataloader.Sentence method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.trim">(cotk.dataloader.LanguageGeneration method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Session.tokenize_sentences">(cotk.dataloader.Session method)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.trim">(cotk.dataloader.LanguageProcessingBase method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.trim">(cotk.dataloader.MultiTurnDialog method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.trim">(cotk.dataloader.SentenceClassification method)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.trim">(cotk.dataloader.SingleTurnDialog method)</a>
+        <li><a href="dataloader.html#cotk.dataloader.Tokenizer.tokenize_sentences">(cotk.dataloader.Tokenizer method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils._utils.trim_before_target">trim_before_target() (in module cotk._utils._utils)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Session.tokenize_sessions">tokenize_sessions() (cotk.dataloader.Session method)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Tokenizer.tokenize_sessions">(cotk.dataloader.Tokenizer method)</a>
 </li>
+      </ul></li>
+      <li><a href="dataloader.html#cotk.dataloader.Tokenizer">Tokenizer (class in cotk.dataloader)</a>
+</li>
+      <li><a href="_utils.html#cotk._utils.trim_before_target">trim_before_target() (in module cotk._utils)</a>
+</li>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.trim_in_ids">trim_in_ids() (cotk.dataloader.LanguageProcessing method)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.trim_in_ids">(cotk.dataloader.Sentence method)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.trim_in_ids">(cotk.dataloader.Session method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -901,13 +975,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dataloader.html#cotk.dataloader.UbuntuCorpus">UbuntuCorpus (class in cotk.dataloader)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor">UbuntuResourceProcessor (class in cotk._utils.resource_processor)</a>
+      <li><a href="file_utils.html#cotk.file_utils.UbuntuResourceProcessor">UbuntuResourceProcessor (class in cotk.file_utils)</a>
 </li>
-      <li><a href="_utils.html#cotk._utils.unordered_hash.UnorderedSha256">UnorderedSha256 (class in cotk._utils.unordered_hash)</a>
+      <li><a href="dataloader.html#cotk.dataloader.LanguageProcessing.unk_id">unk_id (cotk.dataloader.LanguageProcessing attribute)</a>
+
+      <ul>
+        <li><a href="dataloader.html#cotk.dataloader.Sentence.unk_id">(cotk.dataloader.Sentence attribute)</a>
 </li>
+        <li><a href="dataloader.html#cotk.dataloader.Session.unk_id">(cotk.dataloader.Session attribute)</a>
+</li>
+        <li><a href="dataloader.html#cotk.dataloader.Vocab.unk_id">(cotk.dataloader.Vocab attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_utils.html#cotk._utils.resource_processor.unzip_file">unzip_file() (in module cotk._utils.resource_processor)</a>
+      <li><a href="_utils.html#cotk._utils.unordered_hash.UnorderedSha256">UnorderedSha256 (class in cotk._utils.unordered_hash)</a>
 </li>
       <li><a href="_utils.html#cotk._utils.unordered_hash.UnorderedSha256.update_data">update_data() (cotk._utils.unordered_hash.UnorderedSha256 method)</a>
 </li>
@@ -919,40 +1001,12 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.vocab_list">vocab_list (cotk.dataloader.BERTLanguageProcessingBase attribute)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.vocab_list">(cotk.dataloader.BERTSingleTurnDialog attribute)</a>
+      <li><a href="dataloader.html#cotk.dataloader.Vocab">Vocab (class in cotk.dataloader)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.vocab_list">(cotk.dataloader.LanguageGeneration attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.vocab_list">(cotk.dataloader.LanguageProcessingBase attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.vocab_list">(cotk.dataloader.MultiTurnDialog attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.vocab_list">(cotk.dataloader.SentenceClassification attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.vocab_list">(cotk.dataloader.SingleTurnDialog attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dataloader.html#cotk.dataloader.BERTLanguageProcessingBase.vocab_size">vocab_size (cotk.dataloader.BERTLanguageProcessingBase attribute)</a>
-
-      <ul>
-        <li><a href="dataloader.html#cotk.dataloader.BERTSingleTurnDialog.vocab_size">(cotk.dataloader.BERTSingleTurnDialog attribute)</a>
+      <li><a href="dataloader.html#cotk.dataloader.VocabContext">VocabContext (class in cotk.dataloader)</a>
 </li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageGeneration.vocab_size">(cotk.dataloader.LanguageGeneration attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.LanguageProcessingBase.vocab_size">(cotk.dataloader.LanguageProcessingBase attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.MultiTurnDialog.vocab_size">(cotk.dataloader.MultiTurnDialog attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SentenceClassification.vocab_size">(cotk.dataloader.SentenceClassification attribute)</a>
-</li>
-        <li><a href="dataloader.html#cotk.dataloader.SingleTurnDialog.vocab_size">(cotk.dataloader.SingleTurnDialog attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 

@@ -50,7 +50,7 @@ def main(args):
 		wordvec_class = Glove
 	if args.cache:
 		data = try_cache(data_class, (args.datapath,), args.cache_dir)
-		vocab = data.vocab_list
+		vocab = data.frequent_vocab_list
 		embed = try_cache(lambda wv, ez, vl: wordvec_class(wv).load_matrix(ez, vl),
 						  (args.wvpath, args.word_embedding_size, vocab),
 						  args.cache_dir, wordvec_class.__name__)
@@ -59,16 +59,15 @@ def main(args):
 						  args.cache_dir, wordvec_class.__name__)
 	else:
 		data = data_class(args.datapath,
-				min_vocab_times=args.min_vocab_times,
+				min_frequent_vocab_times=args.min_frequent_vocab_times,
 				max_sent_length=args.max_sent_length,
 				max_turn_length=args.max_turn_length)
 		wv = wordvec_class(args.wvpath)
-		vocab = data.vocab_list
+		vocab = data.frequent_vocab_list #dim:9508
 		embed = wv.load_matrix(args.word_embedding_size, vocab)
 		word2vec = wv.load_dict(vocab)
-
+		
 	embed = np.array(embed, dtype = np.float32)
-
 	with tf.Session(config=config) as sess:
 		model = create_model(sess, data, args, embed)
 		if args.mode == "train":

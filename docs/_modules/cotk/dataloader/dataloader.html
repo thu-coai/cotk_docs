@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -167,547 +167,612 @@
            <div itemprop="articleBody">
             
   <h1>Source code for cotk.dataloader.dataloader</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">A module for dataloader</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span></span><span class="sd">&#39;&#39;&#39;A module for dataloader&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="k">import</span> <span class="n">WordPunctTokenizer</span>
 
-<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">trim_before_target</span>
-<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="k">import</span> <span class="n">DocStringInheritor</span><span class="p">,</span> <span class="n">LoadClassInterface</span>
-
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="kn">import</span> <span class="n">trim_before_target</span>
+<span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="kn">import</span> <span class="n">UnorderedSha256</span><span class="p">,</span> <span class="n">dumps</span>
+<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="kn">import</span> <span class="n">DocStringInheritor</span><span class="p">,</span> <span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">copy_func</span><span class="p">,</span> <span class="n">copy_property</span>
+<span class="kn">from</span> <span class="nn">.._utils.typehint</span> <span class="kn">import</span> <span class="n">OrderedDictType</span>
+<span class="kn">from</span> <span class="nn">..file_utils</span> <span class="kn">import</span> <span class="n">get_resource_file_path</span>
+<span class="kn">from</span> <span class="nn">.tokenizer</span> <span class="kn">import</span> <span class="n">Tokenizer</span>
+<span class="kn">from</span> <span class="nn">.field</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">SentenceDefault</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">,</span> <span class="n">Sentence</span>
+<span class="kn">from</span> <span class="nn">.vocab</span> <span class="kn">import</span> <span class="n">Vocab</span><span class="p">,</span> <span class="n">GeneralVocab</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">FieldContext</span><span class="p">,</span> <span class="n">VocabContext</span>
 
 <div class="viewcode-block" id="Dataloader"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Dataloader">[docs]</a><span class="k">class</span> <span class="nc">Dataloader</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base class of Dataloader.</span>
-<span class="sd">	&#39;&#39;&#39;</span>
-
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">pass</span></div>
+<span class="sd">	&#39;&#39;&#39;</span></div>
 
 
-<div class="viewcode-block" id="LanguageProcessingBase"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase">[docs]</a><span class="k">class</span> <span class="nc">LanguageProcessingBase</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for all language processing tasks. This is an abstract class.</span>
 
-<span class="sd">	Arguments:{ARGUMENTS}</span>
+<div class="viewcode-block" id="LanguageProcessing"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing">[docs]</a><span class="k">class</span> <span class="nc">LanguageProcessing</span><span class="p">(</span><span class="n">Dataloader</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Bases: :class:`.dataloader.Dataloader`</span>
 
-<span class="sd">	Attributes:{ATTRIBUTES}</span>
+<span class="sd">	Base class for all language processing tasks. This is an abstract class.</span>
+
+<span class="sd">	During the initialization of a dataloader, :class:`Vocab`, :class:`Tokenizer` or :class:`Field` may be created.</span>
+<span class="sd">	See :ref:`how to create a dataloader&lt;customized_tasks_ref&gt;`.</span>
+
+<span class="sd">	Arguments:{FILE_ID_DOCS}{FIELD_DETAILS}</span>
+
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">			ext_vocab (list): special tokens. Default: ``[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]``</span>
-<span class="s2">			key_name (list): name of subsets of the data. Default: ``[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]``&quot;&quot;&quot;</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">			ext_vocab (list): special tokens, placed at beginning of ``vocab_list``.</span>
-<span class="s2">					For example: ``[&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;]``.</span>
-<span class="s2">			pad_id (int): token for padding, always equal to ``0``.</span>
-<span class="s2">			unk_id (int): token for unknown words, always equal to ``1``.</span>
-<span class="s2">			go_id (int): token at the beginning of sentences, always equal to ``2``.</span>
-<span class="s2">			eos_id (int): token at the end of sentences, always equal to ``3``.</span>
-<span class="s2">			key_name (list): name of subsets of the data. For example: ``[&quot;train&quot;, &quot;dev&quot;, &quot;test&quot;]``.</span>
-<span class="s2">			all_vocab_list (list): vocabulary list of the datasets,</span>
-<span class="s2">					including valid vocabs and invalid vocabs.</span>
-<span class="s2">			word2id (dict): a dict mapping tokens to its id. You don&#39;t need to use it </span>
-<span class="s2">					at most times, see :meth:`convert_tokens_to_ids` instead.&quot;&quot;&quot;</span>
+	<span class="n">FILE_ID_DOCS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">			file_id (str): A string indicating the source (path) of the dataset. It can be local path (``&quot;./data&quot;``), a resource name</span>
+<span class="s2">				(``&quot;resources://dataset&quot;``), or an url (``&quot;http://test.com/dataset.zip&quot;``).</span>
+<span class="s2">				See :ref:`the details of file id&lt;file_id&gt;`.&quot;&quot;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
-				 <span class="n">ext_vocab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
-				 <span class="n">key_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+	<span class="n">FIELD_DETAILS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">			fields (List, OrderedDict, Dict):</span>
+<span class="s2">				This arguments supports multiple input types:</span>
 
-		<span class="c1"># initialize by default value. (can be overwritten by subclass)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">=</span> <span class="n">ext_vocab</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;go&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span> <span class="o">=</span> <span class="mi">0</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span> <span class="o">=</span> <span class="mi">1</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">go_id</span> <span class="o">=</span> <span class="mi">2</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="mi">3</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">key_name</span> <span class="o">=</span> <span class="n">key_name</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]</span>
+<span class="s2">				* If ``OrderDict`` or ``List``, it specify ``data format`` of the ``&quot;train&quot;``, ``&quot;dev&quot;``, ``&quot;test&quot;`` set.</span>
 
-		<span class="c1"># initialize by subclass</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">()</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">)}</span>
+<span class="s2">						* A ``data format`` should be an ``OrderedDict`` or a ``List[Tuple]`` can be converted to ``OrderedDict``.</span>
+<span class="s2">						* The ``key`` of ``data format`` is the name of a Field (used by :meth:`.get_batch`),</span>
+<span class="s2">						  and the ``value`` is either a class name of a Field or a :class:`Field` object.</span>
+<span class="s2">						* Examples:</span>
 
-		<span class="c1"># postprocess initialization</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_size</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+<span class="s2">							&gt;&gt;&gt; postField = SentenceDefault(...)</span>
+<span class="s2">							&gt;&gt;&gt; respField = SentenceDefault(...)</span>
+<span class="s2">							&gt;&gt;&gt; data_format = [(&quot;post&quot;, postField), (&quot;resp&quot;, respField)]</span>
 
-<div class="viewcode-block" id="LanguageProcessingBase._valid_word2id"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase._valid_word2id">[docs]</a>	<span class="k">def</span> <span class="nf">_valid_word2id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;This function return the id for a valid word, otherwise return ``unk_id``.</span>
+<span class="s2">							or</span>
 
-<span class="sd">		Arguments:</span>
-<span class="sd">			word (str): a word.</span>
+<span class="s2">							&gt;&gt;&gt; data_format = [(&quot;post&quot;, &quot;SentenceDefault&quot;), (&quot;resp&quot;, &quot;SentenceDefault&quot;)]</span>
+<span class="s2">						* Examples:</span>
 
-<span class="sd">		Returns:</span>
-<span class="sd">			int</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">:</span>
-			<span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
-		<span class="k">return</span> <span class="n">idx</span></div>
+<span class="s2">							&gt;&gt;&gt; fields = data_format</span>
 
-	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">remains_capital</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert sentence(str) to a list of tokens(str)</span>
+<span class="s2">							equals to</span>
 
-<span class="sd">		Arguments:</span>
-<span class="sd">			sentence (str): a string to be tokenized</span>
-<span class="sd">			remains_capital(bool): Whether remaining capital letter in data or converting them to lower case.</span>
-<span class="sd">			tokenizer (str): How to tokenize sentence. ``nltk.tokenize.WordPunctTokenizer`` is used if ``nltk`` is specified,</span>
-<span class="sd">				python built-in ``str.split`` is used if ``space`` is specified.</span>
+<span class="s2">							&gt;&gt;&gt; fields = {&quot;train&quot;: data_format, &quot;dev&quot;: data_format, &quot;test&quot;: data_format}</span>
 
-<span class="sd">		Returns:</span>
-<span class="sd">			list: a list of tokens(str)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">remains_capital</span><span class="p">:</span>
-			<span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-		<span class="k">if</span> <span class="n">tokenizer</span> <span class="o">==</span> <span class="s1">&#39;nltk&#39;</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">WordPunctTokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
-		<span class="k">elif</span> <span class="n">tokenizer</span> <span class="o">==</span> <span class="s1">&#39;space&#39;</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;tokenizer of dataloader should be either &quot;nltk&quot; or &quot;space&quot;&#39;</span><span class="p">)</span>
+<span class="s2">				* If ``Dict``, ``fields[key]`` describes ``data format`` of the set named ``key``. Examples:</span>
 
-	<span class="k">def</span> <span class="nf">_general_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="p">,</span> <span class="n">max_sent_length</span><span class="p">,</span> <span class="n">max_turn_length</span><span class="p">,</span>
-						   <span class="n">invalid_vocab_times</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;This function implements a general loading process.</span>
+<span class="s2">					&gt;&gt;&gt; fields = {&quot;train&quot;: data_format, &quot;extra&quot;: data_format}</span>
 
-<span class="sd">		Arguments:</span>
-<span class="sd">			file_path (str): A string indicating the path of dataset.</span>
-<span class="sd">			data_format (list): A list of (key, data_type) pairs, which indicate what the dataset contains. data_type</span>
-<span class="sd">				must be in (&#39;label&#39;, &#39;sentence&#39;, &#39;session&#39;).</span>
-<span class="sd">				For example, data_format=[[&#39;key1&#39;, &#39;sentence&#39;], [&#39;key2&#39;, &#39;label&#39;]] means that, in the raw file,</span>
-<span class="sd">				the first line is a sentence and the second line is a label. They are saved in a dict.</span>
-<span class="sd">				dataset = {&#39;key1&#39;: [line1, line3, line5, ...], &#39;key2&#39;: [line2, line4, line6, ...]}</span>
+<span class="s2">				* See :ref:`how to create a dataloader&lt;customized_tasks_ref&gt;`.&quot;&quot;&quot;</span>
 
-<span class="sd">				data_format=[[&#39;key1&#39;, &#39;session], [&#39;key2&#39;, &#39;label&#39;]], means that, in the raw file, the first *several lines*</span>
-<span class="sd">				is a session, *followed by an empty line*, and the next line is a label.</span>
-<span class="sd">				dataset = {&#39;key1&#39;: [session1, session2, ...], &#39;key2&#39;: [label1, label2, ...]}</span>
-<span class="sd">			min_vocab_times (int): A cut-off threshold of valid tokens. All tokens appear</span>
-<span class="sd">				not less than `min_vocab_times` in **training set** will be marked as valid words.</span>
-<span class="sd">			max_sent_length (int): All sentences longer than ``max_sent_length`` will be shortened</span>
-<span class="sd">				to first ``max_sent_length`` tokens.</span>
-<span class="sd">			max_turn_length (int): All sessions, whose turn length is longer than ``max_turn_length`` will be shorten to</span>
-<span class="sd">				first ``max_turn_length`` sentences. If the dataset don&#39;t contains sessions, this parameter will be ignored.</span>
-<span class="sd">			invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
-<span class="sd">				not less than ``invalid_vocab_times`` in the **whole dataset** (except valid words) will be</span>
-<span class="sd">				marked as invalid words. Otherwise, they are unknown words, which are ignored both for</span>
-<span class="sd">				model or metrics.</span>
+	<span class="n">FIELD_REF</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">			fields (List, OrderedDict, Dict): See initialization of :class:`LanguageProcessing` for explanation. &quot;&quot;&quot;</span>
 
-<span class="sd">		Returns:</span>
-<span class="sd">			(tuple): containing:</span>
+	<span class="n">SHARED_ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span><span class="si">{LanguageProcessing.FILE_ID_DOCS}</span><span class="s1"> </span><span class="si">{_FILE_ID_DEFAULT}</span><span class="s1"></span>
+<span class="s1">			</span><span class="si">{LanguageProcessing.TOKENIZER_DOCS}</span><span class="s1"> </span><span class="si">{_TOKENIZER_DEFAULT}</span><span class="s1"></span>
+<span class="s1">			</span><span class="si">{LanguageProcessing.MAX_SENT_LENGTH_DOCS}</span><span class="s1"> </span><span class="si">{_MAX_SENT_LENGTH_DEFAULT}</span><span class="s1"></span>
+<span class="s1">			</span><span class="si">{LanguageProcessing.CONVERT_TO_LOWER_LETTER_DOCS}</span><span class="s1"> </span><span class="si">{_CONVERT_TO_LOWER_LETTER_DEFAULT}</span><span class="s1"></span>
+<span class="s1">			</span><span class="si">{LanguageProcessing.MIN_FREQUENT_VOCAB_TIMES_DOCS}</span><span class="s1"> </span><span class="si">{_MIN_FREQUENT_VOCAB_TIMES_DEFAULT}</span><span class="s1"></span>
+<span class="s1">			</span><span class="si">{LanguageProcessing.MIN_RARE_VOCAB_TIMES_DOCS}</span><span class="s1"> </span><span class="si">{_MIN_RARE_VOCAB_TIMES_DEFAULT}</span><span class="s1"></span>
+<span class="s1">			</span><span class="si">{LanguageProcessing.PRETRAINED_DOCS}</span><span class="s1"> </span><span class="si">{_PRETAINED_DEFAULT}</span><span class="s1">&#39;&#39;&#39;</span>
+	<span class="n">_FILE_ID_DEFAULT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+	<span class="n">TOKENIZER_DOCS</span> <span class="o">=</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">TOKENIZER_DOCS</span>
+	<span class="n">_TOKENIZER_DEFAULT</span> <span class="o">=</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">TOKENIZER_DEFAULT</span>
+	<span class="n">MAX_SENT_LENGTH_DOCS</span> <span class="o">=</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">MAX_SENT_LENGTH_DOCS</span>
+	<span class="n">_MAX_SENT_LENGTH_DEFAULT</span> <span class="o">=</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">MAX_SENT_LENGTH_DEFAULT</span>
+	<span class="n">CONVERT_TO_LOWER_LETTER_DOCS</span> <span class="o">=</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">CONVERT_TO_LOWER_LETTER_DOCS</span>
+	<span class="n">_CONVERT_TO_LOWER_LETTER_DEFAULT</span> <span class="o">=</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">CONVERT_TO_LOWER_LETTER_DEFAULT</span>
+	<span class="n">MIN_FREQUENT_VOCAB_TIMES_DOCS</span> <span class="o">=</span> <span class="n">GeneralVocab</span><span class="o">.</span><span class="n">MIN_FREQUENT_VOCAB_TIMES_DOCS</span>
+	<span class="n">_MIN_FREQUENT_VOCAB_TIMES_DEFAULT</span> <span class="o">=</span> <span class="n">GeneralVocab</span><span class="o">.</span><span class="n">MIN_FREQUENT_VOCAB_TIMES_DEFAULT</span>
+	<span class="n">MIN_RARE_VOCAB_TIMES_DOCS</span> <span class="o">=</span> <span class="n">GeneralVocab</span><span class="o">.</span><span class="n">MIN_RARE_VOCAB_TIMES_DOCS</span>
+	<span class="n">_MIN_RARE_VOCAB_TIMES_DEFAULT</span> <span class="o">=</span> <span class="n">GeneralVocab</span><span class="o">.</span><span class="n">MIN_RARE_VOCAB_TIMES_DEFAULT</span>
+	<span class="n">PRETRAINED_DOCS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">			pretrained (str, optional): Use :ref:`pretrained field&lt;pretrained_field_ref&gt;` instead of :class:`SentenceDefault`.&#39;&#39;&#39;</span>
+	<span class="n">_PRETAINED_DEFAULT</span> <span class="o">=</span> <span class="s2">&quot;Default: If ``None``, no pretrained field used.&quot;</span>
 
-<span class="sd">			* **all_vocab_list** (list): vocabulary list of the datasets,</span>
-<span class="sd">			  including valid and invalid vocabs.</span>
-<span class="sd">			* **valid_vocab_len** (int): the number of valid vocab.</span>
-<span class="sd">			  ``vocab_list[:valid_vocab_len]`` will be regarded as valid vocabs,</span>
-<span class="sd">			  while ``vocab_list[valid_vocab_len:]`` regarded as invalid vocabs.</span>
-<span class="sd">			* **data** (dict): a dict contains data.</span>
-<span class="sd">			* **data_size** (dict): a dict contains size of each item in data.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">unknown_type</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">type_</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;sentence&#39;</span><span class="p">,</span> <span class="s1">&#39;session&#39;</span><span class="p">}</span>
-		<span class="k">if</span> <span class="n">unknown_type</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data type must be in [&quot;label&quot;, &quot;sentence&quot;, &quot;session&quot;]. </span><span class="si">%s</span><span class="s1"> are not allowed&#39;</span> <span class="o">%</span> <span class="nb">list</span><span class="p">(</span><span class="n">unknown_type</span><span class="p">))</span>
+	<span class="c1"># for docstring</span>
+	<span class="n">fields</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;OrderedDict[str, Union[str, Field]]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="sd">&#39;&#39;&#39;This instance attribute shows fields of the dataloader (See the initialization of :class:`LanguageProcessing`).</span>
+<span class="sd">		For example, the fields can be printed as follows:</span>
 
-		<span class="k">def</span> <span class="nf">read_sentence</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-			<span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+<span class="sd">		.. code-block:: python</span>
 
-		<span class="k">def</span> <span class="nf">read_session</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-			<span class="n">session</span> <span class="o">=</span> <span class="p">[]</span>
-			<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-				<span class="k">try</span><span class="p">:</span>
-					<span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-					<span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
-						<span class="k">break</span>
-					<span class="n">session</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
-				<span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-					<span class="k">break</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="n">session</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">StopIteration</span>
-			<span class="k">return</span> <span class="n">session</span>
+<span class="sd">		    {</span>
+<span class="sd">		        &#39;train&#39;: OrderedDict([(&#39;sent&#39;, &lt;cotk.dataloader.field.SentenceDefault object at 0x000001E170F8B588&gt;)]),</span>
+<span class="sd">		        &#39;dev&#39;: OrderedDict([(&#39;sent&#39;, &lt;cotk.dataloader.field.SentenceDefault object at 0x000001E170F8BB48&gt;)]),</span>
+<span class="sd">		        &#39;test&#39;: OrderedDict([(&#39;sent&#39;, &lt;cotk.dataloader.field.SentenceDefault object at 0x000001E170F8BEC8&gt;)])}</span>
+<span class="sd">		    }</span>
+<span class="sd">	&#39;&#39;&#39;</span>
 
-		<span class="k">def</span> <span class="nf">read_label</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-			<span class="n">label</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-			<span class="k">return</span> <span class="n">label</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> \
+				 <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;OrderedDict[str, Union[str, Field]]&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]]],</span>\
+					 		   <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;OrderedDict[str, Union[str, Field]]&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]]]]]],</span> \
+				 <span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">file_id</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
 
-		<span class="n">read_functions</span> <span class="o">=</span> <span class="p">{</span>
-			<span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">read_label</span><span class="p">,</span>
-			<span class="s1">&#39;sentence&#39;</span><span class="p">:</span> <span class="n">read_sentence</span><span class="p">,</span>
-			<span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="n">read_session</span><span class="p">,</span>
-		<span class="p">}</span>
+		<span class="k">with</span> <span class="n">FieldContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">vocab</span><span class="o">=</span><span class="n">GeneralVocab</span><span class="p">(),</span> <span class="n">weak</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">field_context</span><span class="p">:</span>
 
-		<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
-			<span class="k">return</span> <span class="n">read_functions</span><span class="p">[</span><span class="n">type_</span><span class="p">](</span><span class="n">lines</span><span class="p">)</span>
-
-		<span class="k">def</span> <span class="nf">to_tokens</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">tokenize</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">element</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;sentence&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;session&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="p">[</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">element</span><span class="p">]</span>
-
-		<span class="k">def</span> <span class="nf">iter_sentence</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-				<span class="k">pass</span>
-			<span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;sentence&#39;</span><span class="p">:</span>
-				<span class="k">yield</span> <span class="n">element</span>
-			<span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;session&#39;</span><span class="p">:</span>
-				<span class="k">yield from</span> <span class="n">element</span>
+			<span class="n">fieldcontents</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+				<span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">set_name</span><span class="p">:</span> <span class="n">fields</span> <span class="k">for</span> <span class="n">set_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]}</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+				<span class="k">for</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">fields_in_one_set</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+					<span class="n">one_fields</span><span class="p">,</span> <span class="n">one_fieldcontents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_field_and_create_content</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">fields_in_one_set</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">one_fields</span>
+					<span class="n">fieldcontents</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">one_fieldcontents</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">pass</span>
+				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for fields&quot;</span><span class="p">)</span>
 
-		<span class="k">def</span> <span class="nf">iter_token</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
-			<span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">iter_sentence</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
-				<span class="k">yield from</span> <span class="n">sentence</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span><span class="n">fieldcontents</span><span class="p">)</span>
 
-		<span class="n">origin_data</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">data_key</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">data_key</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">}</span>
-			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">.txt&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_file</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">vocabs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_vocabs_from_fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+			<span class="c1"># self.default_vocab_id = 0 if len(self.vocabs) == 1 else None</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tokenizers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_tokenizers_from_fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+			<span class="c1"># self.default_tokenizer_id = 0 if len(self.tokenizers) == 1 else None</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">default_field_set_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">default_field_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_build_vocabs</span><span class="p">()</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_setting_hash</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_vocab_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_vocab_hash</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span><span class="n">fieldcontents</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_raw_data_hash</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_data_hash</span><span class="p">(</span><span class="n">fieldcontents</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_batch</span><span class="p">(</span><span class="n">fieldcontents</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LanguageProcessing.simple_create"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.simple_create">[docs]</a>	<span class="nd">@staticmethod</span>
+	<span class="k">def</span> <span class="nf">simple_create</span><span class="p">(</span><span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> \
+				<span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]],</span>\
+					 		   <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]]]],</span> \
+				<span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;A simple way to create a dataloader. Instead of using :class:`VocabContext`</span>
+<span class="sd">		and :class:`FieldContext`, specifying all the possible parameters here.</span>
+
+<span class="sd">		Arguments:{FILE_ID_DOCS}{FIELD_REF}</span>
+<span class="sd">			**kwargs: Arguments passed to created :class:`Vocab` and :class:`Field`.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">with</span> <span class="n">VocabContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+			<span class="k">with</span> <span class="n">FieldContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+				<span class="k">with</span> <span class="n">FieldContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="s2">&quot;space&quot;</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+					<span class="k">return</span> <span class="n">LanguageProcessing</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span></div>
+
+	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldcontents</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">]]):</span>
+		<span class="sd">&#39;&#39;&#39;Load data from file.</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			fieldcontents (Dict[str, OrderedDictType[str, _FieldContent]]): fieldcontents for each set</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">fieldcontents_in_one_set</span> <span class="ow">in</span> <span class="n">fieldcontents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">fieldcontents_in_one_set</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;no field specified&quot;</span><span class="p">)</span>
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">.txt&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">set_name</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_file</span><span class="p">:</span>
+				<span class="n">line_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+				<span class="n">file_iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f_file</span><span class="p">)</span>
 				<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 					<span class="k">try</span><span class="p">:</span>
-						<span class="k">for</span> <span class="n">data_key</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">:</span>
-							<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_tokens</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">f_file</span><span class="p">,</span> <span class="n">type_</span><span class="p">),</span> <span class="n">type_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenize</span><span class="p">))</span>
+						<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontent</span> <span class="ow">in</span> <span class="n">fieldcontents_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+							<span class="n">line_add</span> <span class="o">=</span> <span class="n">fieldcontent</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="n">file_iterator</span><span class="p">)</span>
+							<span class="k">if</span> <span class="n">line_add</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+								<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+									<span class="k">if</span> <span class="nb">next</span><span class="p">(</span><span class="n">file_iterator</span><span class="p">):</span>
+										<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;the file </span><span class="si">%s</span><span class="s2"> corrupted at line </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">line_cnt</span><span class="p">))</span>
+							<span class="n">line_cnt</span> <span class="o">+=</span> <span class="n">line_add</span>
 					<span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
 						<span class="k">break</span>
 
-		<span class="k">def</span> <span class="nf">chain_allvocab</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
-			<span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
-			<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">:</span>
-				<span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
-					<span class="n">li</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">iter_token</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span>
-			<span class="k">return</span> <span class="n">li</span>
+			<span class="n">sample_nums</span> <span class="o">=</span> <span class="p">[</span><span class="n">fieldcontent</span><span class="o">.</span><span class="n">get_data_number</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontent</span> <span class="ow">in</span> <span class="n">fieldcontents_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">sample_num</span> <span class="o">==</span> <span class="n">sample_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample_num</span> <span class="ow">in</span> <span class="n">sample_nums</span><span class="p">]):</span>
+				<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;the file </span><span class="si">%s</span><span class="s2"> corrupted at end of the file&quot;</span><span class="p">)</span>
 
-		<span class="n">raw_vocab_list</span> <span class="o">=</span> <span class="n">chain_allvocab</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">])</span>
-		<span class="c1"># Important: Sort the words preventing the index changes between</span>
-		<span class="c1"># different runs</span>
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
-					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-		<span class="n">left_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vocab</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_vocab_times</span><span class="p">]</span>
-		<span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">left_vocab</span><span class="p">)</span>
-		<span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
-		<span class="n">valid_vocab_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontents_in_one_set</span> <span class="ow">in</span> <span class="n">fieldcontents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontent</span> <span class="ow">in</span> <span class="n">fieldcontents_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">fieldcontent</span><span class="o">.</span><span class="n">process_before_vocab</span><span class="p">()</span>
 
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
-				<span class="k">continue</span>
-			<span class="n">raw_vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">chain_allvocab</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+	<span class="k">def</span> <span class="nf">_init_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldcontents</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">]])</span> <span class="o">-&gt;</span> \
+			<span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+		<span class="sd">&#39;&#39;&#39;Initialize the batches. Return a tuple contains</span>
+<span class="sd">		``index``, ``batch_id``, ``batch_size`` for each set.</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			fieldcontents (Dict[str, OrderedDictType[str, _FieldContent]]): fieldcontents for each set.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">index</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">batch_id</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">batch_size</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
-		<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">raw_vocab_list</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(),</span> \
-					   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">pair</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-		<span class="n">left_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vocab</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">invalid_vocab_times</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span><span class="p">]</span>
-		<span class="n">vocab_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">left_vocab</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">fieldcontents_in_one_set</span> <span class="ow">in</span> <span class="n">fieldcontents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">sample_nums</span> <span class="o">=</span> <span class="p">[</span><span class="n">fieldcontent</span><span class="o">.</span><span class="n">get_data_number</span><span class="p">()</span> \
+					<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontent</span> <span class="ow">in</span> <span class="n">fieldcontents_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+			<span class="n">batch_id</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="n">batch_size</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+			<span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">sample_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
-		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;valid vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">valid_vocab_len</span><span class="p">)</span>
-		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;vocab list length = </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">,</span> <span class="n">batch_size</span>
 
-		<span class="n">word2id</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab_list</span><span class="p">)}</span>
+	<span class="k">def</span> <span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldcontents</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">]])</span> <span class="o">-&gt;</span> \
+			<span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+		<span class="sd">&#39;&#39;&#39;Get the data from fieldcontents.</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			fieldcontents (Dict[str, OrderedDict[str, _FieldContent]]): fieldcontents for each set.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">fieldcontents_in_one_set</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fieldcontents</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+			<span class="n">data</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">fieldcontent</span> <span class="ow">in</span> <span class="n">fieldcontents_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">data</span><span class="p">[</span><span class="n">set_name</span><span class="p">][</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldcontent</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">data</span>
 
-		<span class="k">def</span> <span class="nf">line2id</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-			<span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">go_id</span><span class="p">]</span> <span class="o">+</span> \
-					<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="n">word2id</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">word2id</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> \
-					<span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">]</span>
+	<span class="k">def</span> <span class="nf">_build_vocabs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Invoke build vocab for each vocabulary&#39;&#39;&#39;</span>
+		<span class="k">for</span> <span class="n">vocab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocabs</span><span class="p">:</span>
+			<span class="n">vocab</span><span class="o">.</span><span class="n">build_vocab</span><span class="p">()</span>
 
-		<span class="k">def</span> <span class="nf">to_id</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">element</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;sentence&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">line2id</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;session&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="p">[</span><span class="n">line2id</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">element</span><span class="p">]</span>
+	<span class="k">def</span> <span class="nf">_collect_vocabs_from_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]])</span>\
+			<span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Vocab</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Collect all vocabulary instances (deduplicated).</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			fieldcontents (Dict[str, OrderedDict[str, Field]]): field for each set.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">vocabs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Vocab</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fields_in_one_set</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span> <span class="c1"># sort to keep order</span>
+			<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">vocab</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_vocab</span><span class="p">()</span>
+				<span class="k">if</span> <span class="n">vocab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vocab</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vocabs</span><span class="p">:</span>
+					<span class="n">vocabs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">vocabs</span>
 
-		<span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">element</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;sentence&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">element</span><span class="p">[:</span> <span class="n">max_sent_length</span><span class="p">]</span>
-			<span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;session&#39;</span><span class="p">:</span>
-				<span class="k">return</span> <span class="p">[</span><span class="n">sentence</span><span class="p">[:</span><span class="n">max_sent_length</span><span class="p">]</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">element</span><span class="p">[:</span><span class="n">max_turn_length</span><span class="p">]]</span>
+	<span class="k">def</span> <span class="nf">_collect_tokenizers_from_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]])</span>\
+			<span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tokenizer</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Collect all tokenizer instances (deduplicated).</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			fieldcontents (Dict[str, OrderedDict[str, Field]]): field for each set.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">tokenizers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tokenizer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">tokenizers_setting_hash</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fields_in_one_set</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span> <span class="c1"># sort to keep order</span>
+			<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">()</span>
+				<span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">get_setting_hash</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tokenizers_setting_hash</span><span class="p">:</span>
+					<span class="n">tokenizers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">)</span>
+					<span class="n">tokenizers_setting_hash</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">get_setting_hash</span><span class="p">())</span>
+		<span class="k">return</span> <span class="n">tokenizers</span>
 
-		<span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="n">data_size</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-			<span class="k">for</span> <span class="n">data_key</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">:</span>
-				<span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_id</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]]</span>
-				<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cut</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]]</span>
-				<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_size</span><span class="p">:</span>
-					<span class="n">data_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">])</span>
-				<span class="k">elif</span> <span class="n">data_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]):</span>
-					<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-						<span class="s2">&quot;The data of input </span><span class="si">%s</span><span class="s2">.txt contains different numbers of fields&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+	<span class="k">def</span> <span class="nf">_fill_field_and_create_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> \
+				<span class="n">Union</span><span class="p">[</span><span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]]]],</span> \
+				<span class="p">)</span> <span class="o">-&gt;</span> \
+					<span class="n">Tuple</span><span class="p">[</span><span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">],</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">]]:</span>
+		<span class="sd">&#39;&#39;&#39;Create and return fields and field contexts.</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			set_name(str): name of the set</span>
+<span class="sd">			field (OrderedDictType[str, Union[str, Field]]): fields for the set.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
 
-			<span class="n">vocab</span> <span class="o">=</span> <span class="n">chain_allvocab</span><span class="p">(</span><span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-			<span class="n">vocab_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
-			<span class="n">oov_num</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">word2id</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">])</span>
-			<span class="n">invalid_num</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_vocab_set</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">])</span> <span class="o">-</span> <span class="n">oov_num</span>
+		<span class="n">fieldcontents</span><span class="p">:</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_FieldContent</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+		<span class="n">new_fields</span><span class="p">:</span> <span class="n">OrderedDictType</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 
-			<span class="n">sent_length</span> <span class="o">=</span> <span class="p">[]</span>
-			<span class="k">for</span> <span class="n">data_key</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">type_</span> <span class="o">!=</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
-					<span class="n">sent_length</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">data_key</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">iter_sentence</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">type_</span><span class="p">)])</span>
+		<span class="n">fields_iter</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]]]</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">):</span>
+			<span class="n">fields_iter</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+			<span class="n">fields_iter</span> <span class="o">=</span> <span class="n">fields</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unexpected Type for fields&quot;</span><span class="p">)</span>
 
-			<span class="n">cut_word_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sent_length</span><span class="p">)</span> <span class="o">-</span> <span class="n">max_sent_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-			<span class="k">if</span> <span class="s1">&#39;session&#39;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">type_</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">data_format</span><span class="p">]:</span>
-				<span class="n">turn_length</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">origin_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;session&#39;</span><span class="p">]))</span>
-				<span class="n">max_turn_length_before_cut</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">turn_length</span><span class="p">)</span>
-				<span class="n">sent_num</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">turn_length</span><span class="p">)</span>
-				<span class="n">cut_sentence_rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">turn_length</span><span class="p">)</span> <span class="o">-</span> <span class="n">max_turn_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="n">sent_num</span>
+		<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">fields_iter</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+				<span class="n">field</span> <span class="o">=</span> <span class="n">Field</span><span class="o">.</span><span class="n">load_class</span><span class="p">(</span><span class="n">field_name</span><span class="p">)()</span>
+			<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">Field</span><span class="p">):</span>
+				<span class="n">field</span> <span class="o">=</span> <span class="n">field_name</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">max_turn_length_before_cut</span> <span class="o">=</span> <span class="mi">1</span>
-				<span class="n">cut_sentence_rate</span> <span class="o">=</span> <span class="mi">0</span>
-			<span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set. invalid rate: </span><span class="si">%f</span><span class="s2">, unknown rate: </span><span class="si">%f</span><span class="s2">, max sentence length before cut: </span><span class="si">%d</span><span class="s2">, &quot;</span> <span class="o">+</span> \
-				   <span class="s2">&quot;cut word rate: </span><span class="si">%f</span><span class="se">\n\t</span><span class="s2">max turn length before cut: </span><span class="si">%d</span><span class="s2">, cut sentence rate: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> \
-				  <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">invalid_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">oov_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">sent_length</span><span class="p">),</span> \
-				   <span class="n">cut_word_num</span> <span class="o">/</span> <span class="n">vocab_num</span><span class="p">,</span> <span class="n">max_turn_length_before_cut</span><span class="p">,</span> <span class="n">cut_sentence_rate</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
+				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Each value of `fields` must be a Field object or a string indicating the name of a Field class.&quot;</span><span class="p">)</span>
+			<span class="n">fieldcontent</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">_create</span><span class="p">(</span><span class="n">set_name</span><span class="p">)</span> <span class="c1">#pylint: disable=protected-access</span>
+			<span class="n">fieldcontents</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldcontent</span>
+			<span class="n">new_fields</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+		<span class="k">return</span> <span class="n">new_fields</span><span class="p">,</span> <span class="n">fieldcontents</span>
 
-<div class="viewcode-block" id="LanguageProcessingBase._load_data"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase._load_data">[docs]</a>	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;This function is called during the initialization.</span>
+	<span class="k">def</span> <span class="nf">_create_data_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldcontents</span><span class="p">):</span>
+		<span class="n">raw_data_hash</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">()</span>
+		<span class="n">data_hash</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontents_in_one_set</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fieldcontents</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+			<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fieldcontent</span> <span class="ow">in</span> <span class="n">fieldcontents_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">raw_data_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">fieldcontent</span><span class="o">.</span><span class="n">get_raw_data_hash</span><span class="p">()))</span>
+				<span class="n">data_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">fieldcontent</span><span class="o">.</span><span class="n">get_data_hash</span><span class="p">()))</span>
+		<span class="k">return</span> <span class="n">raw_data_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="n">data_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
-<span class="sd">		Returns:</span>
-<span class="sd">			(tuple): containing:</span>
+	<span class="k">def</span> <span class="nf">_create_setting_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">setting_hash</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fields_in_one_set</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+			<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_in_one_set</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">setting_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">_get_setting_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocabs</span><span class="p">)))</span> <span class="c1">#pylint: disable=protected-access</span>
+		<span class="k">for</span> <span class="n">vocab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocabs</span><span class="p">:</span>
+			<span class="n">setting_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">get_setting_hash</span><span class="p">()))</span>
+		<span class="k">for</span> <span class="n">tokenizer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizers</span><span class="p">:</span>
+			<span class="n">setting_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">get_setting_hash</span><span class="p">()))</span>
+		<span class="k">return</span> <span class="n">setting_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
-<span class="sd">			* **all_vocab_list** (list): vocabulary list of the datasets,</span>
-<span class="sd">			  including valid and invalid vocabs.</span>
-<span class="sd">			* **valid_vocab_len** (int): the number of valid vocab.</span>
-<span class="sd">			  ``vocab_list[:valid_vocab_len]`` will be regarded as valid vocabs,</span>
-<span class="sd">			  while ``vocab_list[valid_vocab_len:]`` regarded as invalid vocabs.</span>
-<span class="sd">			* **data** (dict): a dict contains data.</span>
-<span class="sd">			* **data_size** (dict): a dict contains size of each item in data.</span>
+	<span class="k">def</span> <span class="nf">_create_vocab_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">vocab_hash</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">vocab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocabs</span><span class="p">:</span>
+			<span class="n">vocab_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">get_vocab_hash</span><span class="p">()))</span>
+		<span class="k">return</span> <span class="n">vocab_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LanguageProcessing.get_default_vocab"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_default_vocab">[docs]</a>	<span class="k">def</span> <span class="nf">get_default_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vocab</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Get the default :class:`Vocab` in this dataloader.</span>
+<span class="sd">		It can be set by :meth:`.set_default_field`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span> \
-			<span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span></div>
+		<span class="n">vocab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_field</span><span class="p">()</span><span class="o">.</span><span class="n">get_vocab</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">vocab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This field do not have vocab&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">vocab</span></div>
 
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">vocab_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;int: equals to ``valid_vocab_len``.</span>
+<div class="viewcode-block" id="LanguageProcessing.get_default_tokenizer"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_default_tokenizer">[docs]</a>	<span class="k">def</span> <span class="nf">get_default_tokenizer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tokenizer</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Get the default :class:`Tokenizer` in this dataloader.</span>
+<span class="sd">		It can be set by :meth:`.set_default_field`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span>
+		<span class="n">tokenizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_field</span><span class="p">()</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This field do not have tokenizer&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">tokenizer</span></div>
 
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">all_vocab_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;int: equals to ``len(self.all_vocab_list)``.</span>
+<div class="viewcode-block" id="LanguageProcessing.get_default_field"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_default_field">[docs]</a>	<span class="k">def</span> <span class="nf">get_default_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Field</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Get the default :class:`Field` in this dataloader.</span>
+<span class="sd">		It can be set by :meth:`.set_default_field`.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field_set_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No default field. </span><span class="se">\</span>
+<span class="s2">				Specify the default field by set_default_field.&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_field_set_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">default_field_name</span><span class="p">]</span></div>
 
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">vocab_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;list: valid vocab list, equals to ``all_vocab_list[：valid_vocab_len]``.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="c1"># using utf-8 ：instead of : for avoiding bug in sphinx</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span>
+	<span class="n">SET_NAME_DESCRIPTION</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;set_name (str): The name of set. For example: ``&quot;train&quot;``, ``&quot;dev&quot;``, ``&quot;test&quot;``.&#39;&#39;&#39;</span>
+	<span class="n">FIELD_NAME_DESCRIPTION</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;field_name (str): The name of field.&#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="LanguageProcessingBase.restart"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.restart">[docs]</a>	<span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Initialize batches. This function be called before :func:`get_next_batch`</span>
-<span class="sd">		or an epoch is end.</span>
+<div class="viewcode-block" id="LanguageProcessing.set_default_field"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.set_default_field">[docs]</a>	<span class="k">def</span> <span class="nf">set_default_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Set the default :class:`Field` in this dataloader. In the meanwhile,</span>
+<span class="sd">		the default :class:`Vocab` and :class:`Tokenizer` is also set according</span>
+<span class="sd">		to the field (if the field have vocab and tokenizer).</span>
+
+<span class="sd">		The default field will affect the action in the following methods:</span>
+
+<span class="sd">		* :meth:`get_default_field`</span>
+<span class="sd">		* :meth:`tokenize`</span>
+<span class="sd">		* :meth:`tokenize_sentences`</span>
+<span class="sd">		* :meth:`convert_tokens_to_ids`</span>
+<span class="sd">		* :meth:`convert_ids_to_tokens`</span>
+<span class="sd">		* :meth:`convert_ids_to_sentence`</span>
+<span class="sd">		* :meth:`convert_sentence_to_ids`</span>
+<span class="sd">		* :meth:`add_special_to_ids`</span>
+<span class="sd">		* :meth:`remove_special_in_ids`</span>
+<span class="sd">		* :meth:`process_sentences`</span>
+<span class="sd">		* :meth:`trim_in_ids`</span>
+<span class="sd">		* :meth:`get_default_vocab`</span>
+<span class="sd">		* :meth:`get_special_tokens_mapping`</span>
+<span class="sd">		* :meth:`get_special_tokens_id`</span>
+<span class="sd">		* :meth:`get_default_tokenizer`</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">				key (str): key name of dataset, must be contained in ``self.key_name``.</span>
-<span class="sd">				batch_size (int): the number of sample in a batch.</span>
-<span class="sd">					default: if ``None``, last ``batch_size`` is used.</span>
-<span class="sd">				shuffle (bool): whether to shuffle the data. Default: ``True``.</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
+<span class="sd">			{FIELD_NAME_DESCRIPTION}</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">set_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No such set named </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">set_name</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">field_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">set_name</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No such field named </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">field_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">default_field_set_name</span> <span class="o">=</span> <span class="n">set_name</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">default_field_name</span> <span class="o">=</span> <span class="n">field_name</span></div>
+
+		<span class="c1"># tokenizer = self.fields[set_name][field_name].get_tokenizer()</span>
+		<span class="c1"># if tokenizer:</span>
+		<span class="c1"># 	self.set_default_tokenizer(tokenizer)</span>
+		<span class="c1"># vocab = self.fields[set_name][field_name].get_vocab()</span>
+		<span class="c1"># if vocab:</span>
+		<span class="c1"># 	self.set_default_vocab(vocab)</span>
+
+<div class="viewcode-block" id="LanguageProcessing.get_field"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_field">[docs]</a>	<span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Field</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Get :class:`Field` according to name of set and field.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
+<span class="sd">			{FIELD_NAME_DESCRIPTION}</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">set_name</span><span class="p">][</span><span class="n">field_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.get_general_hash"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_general_hash">[docs]</a>	<span class="k">def</span> <span class="nf">get_general_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;General hash. Identifying all details in dataloader,</span>
+<span class="sd">		including raw data before processed, tokenized data, vocabulary, and settings.</span>
+
+<span class="sd">		See :ref:`dataloader hash&lt;dataloader_hash_ref&gt;` for explaination.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">general_hash</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">()</span>
+		<span class="n">general_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_data_hash</span><span class="p">))</span>
+		<span class="n">general_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_hash</span><span class="p">))</span>
+		<span class="n">general_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vocab_hash</span><span class="p">))</span>
+		<span class="n">general_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">general_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.get_raw_data_hash"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_raw_data_hash">[docs]</a>	<span class="k">def</span> <span class="nf">get_raw_data_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Raw data hash. Identifying raw data before processed.</span>
+
+<span class="sd">		See :ref:`dataloader hash&lt;dataloader_hash_ref&gt;` for explaination.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_data_hash</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.get_data_hash"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_data_hash">[docs]</a>	<span class="k">def</span> <span class="nf">get_data_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Data hash. Identifying data after processed (tokenized).</span>
+
+<span class="sd">		See :ref:`dataloader hash&lt;dataloader_hash_ref&gt;` for explaination.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_hash</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.get_vocab_hash"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_vocab_hash">[docs]</a>	<span class="k">def</span> <span class="nf">get_vocab_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Vocab hash. Identifying vocabulary.</span>
+
+<span class="sd">		See :ref:`dataloader hash&lt;dataloader_hash_ref&gt;` for explaination.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocab_hash</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.get_setting_hash"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_setting_hash">[docs]</a>	<span class="k">def</span> <span class="nf">get_setting_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Setting hash, identifying settings to create the data loader.</span>
+
+<span class="sd">		See :ref:`dataloader hash&lt;dataloader_hash_ref&gt;` for explaination.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.restart"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.restart">[docs]</a>	<span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Initialize batches. This function be called before :func:`get_next_batch`</span>
+<span class="sd">		or an epoch is end. See :meth:`get_next_batch` for examples.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
+<span class="sd">			batch_size (int): the number of sample in a batch.</span>
+<span class="sd">				default: if ``None``, last ``batch_size`` is used.</span>
+<span class="sd">			shuffle (bool): whether to shuffle the data. Default: ``True``.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">set_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">set_name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need batch_size to initialize.&quot;</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
-			<span class="n">rng_state</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
-			<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-			<span class="n">random</span><span class="o">.</span><span class="n">setstate</span><span class="p">(</span><span class="n">rng_state</span><span class="p">)</span>
+			<span class="c1"># rng_state = random.getstate()</span>
+			<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">])</span>
+			<span class="c1"># random.setstate(rng_state)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 		<span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_size</span>
-		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set restart, </span><span class="si">%d</span><span class="s2"> batches and </span><span class="si">%d</span><span class="s2"> left&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> \
-														  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> \
-														  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span></div>
+			<span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_size</span>
+		<span class="n">batch_size_div</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span>
+		<span class="k">assert</span> <span class="n">batch_size_div</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> set restart, </span><span class="si">%d</span><span class="s2"> batches and </span><span class="si">%d</span><span class="s2"> left&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">set_name</span><span class="p">,</span> \
+						<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">])</span> <span class="o">//</span> <span class="n">batch_size_div</span><span class="p">,</span> \
+						<span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">])</span> <span class="o">%</span> <span class="n">batch_size_div</span><span class="p">))</span></div>
 
-	<span class="n">GET_BATCH_DOC_WITHOUT_RETURNS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">		Get a batch of specified `indexes`.</span>
+	<span class="n">_GET_BATCH_MORE_DOC</span> <span class="o">=</span> <span class="s2">&quot;Return a merged dict containing all the data from each field by calling :meth:`.field.get_batch`. &quot;</span> \
+		<span class="s2">&quot;See examples in subclasses for the return value of predefined tasks.&quot;</span>
+	<span class="n">_GET_BATCH_EXAMPLE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<div class="viewcode-block" id="LanguageProcessing.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indexes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Get a batch of data with specified ``indexes``.</span>
+<span class="sd">		{_GET_BATCH_MORE_DOC}</span>
 
-<span class="s1">		Arguments:</span>
-<span class="s1">				key (str): key name of dataset, must be contained in ``self.key_name``.</span>
-<span class="s1">				indexes (list): a list of specified indexes of batched data.</span>
-<span class="s1">	&#39;&#39;&#39;</span>
-
-<div class="viewcode-block" id="LanguageProcessingBase.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;{GET_BATCH_DOC_WITHOUT_RETURNS}</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">				A dict. See examples in subclasses.</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span> \
-			<span class="s2">&quot;This function should be implemented by subclasses.&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="LanguageProcessingBase.get_next_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_next_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_next_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Get next batch. It can be called only after Initializing batches (:func:`restart`).</span>
+<span class="sd">		:meth:`get_next_batch`, :meth:`get_batches`, :meth:`get_all_batch` provide other methods to get batched data,</span>
+<span class="sd">		Their return values are consistent with this methods.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			key (str): key name of dataset, must be contained in ``self.key_name``.</span>
-<span class="sd">			ignore_left_samples (bool): If the number of left samples is not equal to</span>
-<span class="sd">				``batch_size``, ignore them. This make sure all batches have same number of samples.</span>
-<span class="sd">				Default: ``False``</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
+<span class="sd">			indexes (list): a list of specified indexes of batched data.</span>
 
-<span class="sd">		Returns:</span>
-<span class="sd">			A dict like :func:`get_batch`, or None if the epoch is end.</span>
+<span class="sd">		{_GET_BATCH_EXAMPLE}</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> \
-				<span class="s2">&quot;Please run restart before calling this function.&quot;</span><span class="p">)</span>
-		<span class="n">batch_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-		<span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">batch_id</span> <span class="o">*</span> \
-					 <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="n">batch_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-		<span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
-			<span class="k">return</span> <span class="kc">None</span>
-		<span class="k">if</span> <span class="n">ignore_left_samples</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
-			<span class="k">return</span> <span class="kc">None</span>
-		<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
-		<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="k">if</span> <span class="n">set_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">set_name</span><span class="p">)</span>
+		<span class="n">res</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field_obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">field_obj</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">set_name</span><span class="p">][</span><span class="n">field_name</span><span class="p">],</span> <span class="n">indexes</span><span class="p">))</span> <span class="c1">#pylint: disable=protected-access</span>
 		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="LanguageProcessingBase.get_batches"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batches">[docs]</a>	<span class="k">def</span> <span class="nf">get_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;An iterator over batches. It first call :func:`restart`, and then :func:`get_next_batches`\</span>
-<span class="sd">			until no more data is available.</span>
+	<span class="n">IGNORE_LEFT_SAMPLES</span> <span class="o">=</span> <span class="s2">&quot;ignore_left_samples (bool): If the number of the samples is not divisible by ``batch_size``, &quot;</span> \
+			<span class="s2">&quot;ignore the left samples less than ``batch_size`` &quot;</span> \
+			<span class="s2">&quot;Setting it to ``True`` make that every batch will have the same number of samples. &quot;</span> \
+			<span class="s2">&quot;Default: ``False``.&quot;</span>
+<div class="viewcode-block" id="LanguageProcessing.get_next_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_next_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_next_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+		<span class="sd">&#39;&#39;&#39;Get next batch. It can be called only after Initializing batches (:func:`restart`).</span>
+<span class="sd">		Return a dict like :func:`get_batch`, or None if the epoch is end.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			key (str): key name of dataset, must be contained in ``self.key_name``.</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
+<span class="sd">			{IGNORE_LEFT_SAMPLES}</span>
+
+<span class="sd">		Examples:</span>
+
+<span class="sd">			&gt;&gt;&gt; dataloader.restart(&quot;train&quot;)</span>
+<span class="sd">			&gt;&gt;&gt; while True:</span>
+<span class="sd">			&gt;&gt;&gt;     data = dataloader.get_next_batch(&quot;train&quot;)</span>
+<span class="sd">			&gt;&gt;&gt;     if data:</span>
+<span class="sd">			&gt;&gt;&gt;         break</span>
+<span class="sd">            &gt;&gt;&gt;     print(data)</span>
+
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">set_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">set_name</span><span class="p">)</span>
+		<span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span> \
+				<span class="s2">&quot;Please run restart before calling this function.&quot;</span><span class="p">)</span>
+		<span class="n">batch_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span>
+
+		<span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">batch_id</span> <span class="o">*</span> \
+					 	<span class="n">batch_size</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span>
+		<span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">]):</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">if</span> <span class="n">ignore_left_samples</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">]):</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">][</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">batch_id</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="LanguageProcessing.get_batches"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_batches">[docs]</a>	<span class="k">def</span> <span class="nf">get_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+			<span class="n">ignore_left_samples</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+		<span class="sd">&#39;&#39;&#39;An iterable generator over batches. It first call :func:`restart`, and then :func:`get_next_batch`</span>
+<span class="sd">		until no more data is available. Returns an iterable generator where each element is like :func:`get_batch`.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
 <span class="sd">			batch_size (int, optional): default: ``None``.  Use ``batch_size`` by default.</span>
 <span class="sd">			shuffle (bool): whether to shuffle the data. Default: ``True``.</span>
-<span class="sd">			ignore_left_samples (bool): If the number of left samples is not equal to</span>
-<span class="sd">				``batch_size``, ignore them. This make sure all batches have same number of samples.</span>
-<span class="sd">				Default: ``False``.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			An iterator where each element is like :func:`get_batch`.</span>
+<span class="sd">			{IGNORE_LEFT_SAMPLES}</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">restart</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">restart</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">)</span>
 		<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-			<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_batch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="p">)</span>
+			<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_batch</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">ignore_left_samples</span><span class="p">)</span>
 			<span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="k">break</span>
 			<span class="k">yield</span> <span class="n">res</span></div>
 
-	<span class="k">def</span> <span class="nf">get_all_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageProcessing.get_all_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessing.get_all_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_all_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Concatenate all batches to a single dict, where padding will not be applied.</span>
-<span class="sd">		Exactly, this function called :func:`.get_batch` where ``len(indexes)==1`` multiple times</span>
+
+<span class="sd">		Returns a dict like :func:`get_batch` with all valid ``indexes``,</span>
+<span class="sd">		but all the sentences are not padded and their type will be converted to list.</span>
+<span class="sd">		Exactly, this function called :func:`get_batch` where ``len(indexes)==1`` multiple times</span>
 <span class="sd">		and concatenate all the values in the returned dicts.</span>
 
-
-<span class="sd">        Arguments:</span>
-<span class="sd">            key (str): key name of dataset, must be contained in ``self.key_name``.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A dict like :func:`get_batch`, but all the values are not padded</span>
-<span class="sd">            and their type will be converted to list.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
-			<span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			{SET_NAME_DESCRIPTION}</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">res</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">set_name</span><span class="p">]:</span>
+			<span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="p">[</span><span class="n">idx</span><span class="p">])</span>
 			<span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 				<span class="k">if</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
 					<span class="n">res</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
 					<span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
 				<span class="n">res</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">res</span>
+		<span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="LanguageProcessingBase.convert_tokens_to_ids"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_tokens_to_ids">[docs]</a>	<span class="k">def</span> <span class="nf">convert_tokens_to_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sent</span><span class="p">,</span> <span class="n">invalid_vocab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert a sentence from string to ids representation.</span>
+	<span class="c1"># copy some functions from vocab</span>
+	<span class="n">_VOCAB_MORE_DOCSTRING</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;It calls the identical method of the :class:`Vocab` instance ``vocab``,</span><span class="se">\</span>
+<span class="s1">		from :meth:`.get_default_vocab()`.&#39;&#39;&#39;</span>
+	<span class="n">frequent_vocab_size</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;frequent_vocab_size&quot;</span><span class="p">)</span>
+	<span class="n">all_vocab_size</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;all_vocab_size&quot;</span><span class="p">)</span>
+	<span class="n">frequent_vocab_list</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;frequent_vocab_list&quot;</span><span class="p">)</span>
+	<span class="n">all_vocab_list</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;all_vocab_list&quot;</span><span class="p">)</span>
+	<span class="n">get_special_tokens_mapping</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;get_special_tokens_mapping&quot;</span><span class="p">)</span>
+	<span class="n">get_special_tokens_id</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;get_special_tokens_id&quot;</span><span class="p">)</span>
+	<span class="n">pad_id</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;pad_id&quot;</span><span class="p">)</span>
+	<span class="n">unk_id</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;unk_id&quot;</span><span class="p">)</span>
+	<span class="n">go_id</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;go_id&quot;</span><span class="p">)</span>
+	<span class="n">eos_id</span> <span class="o">=</span> <span class="n">copy_property</span><span class="p">(</span><span class="n">get_default_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">,</span> <span class="s2">&quot;eos_id&quot;</span><span class="p">)</span>
 
-<span class="sd">		Arguments:</span>
-<span class="sd">			sent (list): a list of string, representing each token of the sentences.</span>
-<span class="sd">			invalid_vocab (bool): whether to provide invalid vocabs.</span>
-<span class="sd">					If ``False``, invalid vocabs will be replaced by ``unk_id``.</span>
-<span class="sd">					If ``True``, invalid vocabs will using their own id.</span>
-<span class="sd">					Default: ``False``</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(list): a list of ids</span>
-
-<span class="sd">		Examples:</span>
-<span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="sd">			&gt;&gt;&gt; #	&quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="sd">			&gt;&gt;&gt; # vocab_size = 7</span>
-<span class="sd">			&gt;&gt;&gt; # vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;]</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.convert_tokens_to_ids(</span>
-<span class="sd">			...	[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;&lt;eos&gt;&quot;], invalid_vocab=False)</span>
-<span class="sd">			&gt;&gt;&gt; [2, 4, 5, 6, 1, 1, 3]</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.convert_tokens_to_ids(</span>
-<span class="sd">			...	[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;&lt;eos&gt;&quot;], invalid_vocab=True)</span>
-<span class="sd">			&gt;&gt;&gt; [2, 4, 5, 6, 7, 8, 3]</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">invalid_vocab</span><span class="p">:</span>
-			<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">word2id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span><span class="p">),</span> <span class="n">sent</span><span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_valid_word2id</span><span class="p">,</span> <span class="n">sent</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="LanguageProcessingBase.trim"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.trim">[docs]</a>	<span class="k">def</span> <span class="nf">trim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Trim a sentence represented by ids. There will be two steps:</span>
-
-<span class="sd">			* If there is an end token (``&lt;eos&gt;``) in the sentence,</span>
-<span class="sd">			  find first end token and abandon words after it (included the end token).</span>
-<span class="sd">			* ignore ``&lt;pad&gt;`` s at the end of the sentence.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			ids (list or :class:`numpy.ndarray`): a list of int</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(list): a list of trimmed ids</span>
-
-<span class="sd">		Examples:</span>
-
-<span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="sd">			&gt;&gt;&gt; #	&quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.trim(</span>
-<span class="sd">			...	[2, 4, 5, 6, 7, 8, 0, 0, 3, 4, 3, 0])</span>
-<span class="sd">			... # &lt;go&gt; I have been to China &lt;pad&gt; &lt;pad&gt; &lt;eos&gt; I &lt;eos&gt; &lt;pad&gt;</span>
-<span class="sd">			&gt;&gt;&gt; [2, 4, 5, 6, 7, 8] # &lt;go&gt; I have been to China</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-
-		<span class="n">ids</span> <span class="o">=</span> <span class="n">trim_before_target</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
-		<span class="n">idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-		<span class="k">while</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ids</span><span class="p">[</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">:</span>
-			<span class="n">idx</span> <span class="o">-=</span> <span class="mi">1</span>
-		<span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
-		<span class="k">return</span> <span class="n">ids</span></div>
-
-<div class="viewcode-block" id="LanguageProcessingBase.convert_ids_to_tokens"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.LanguageProcessingBase.convert_ids_to_tokens">[docs]</a>	<span class="k">def</span> <span class="nf">convert_ids_to_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Convert a sentence from ids to string representation.</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">				ids (list): a list of int.</span>
-<span class="sd">				trim (bool): if True, call :func:`trim` before convertion.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(list): a list of tokens</span>
-
-<span class="sd">		Examples:</span>
-<span class="sd">			&gt;&gt;&gt; # all_vocab_list = [&quot;&lt;pad&gt;&quot;, &quot;&lt;unk&gt;&quot;, &quot;&lt;go&gt;&quot;, &quot;&lt;eos&gt;&quot;, &quot;I&quot;, &quot;have&quot;,</span>
-<span class="sd">			&gt;&gt;&gt; #	&quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.convert_ids_to_tokens(</span>
-<span class="sd">			...		[2, 4, 5, 6, 7, 8, 3, 0, 0], trim=True)</span>
-<span class="sd">			&gt;&gt;&gt; [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;China&quot;]</span>
-<span class="sd">			&gt;&gt;&gt; dataloader.convert_ids_to_tokens(</span>
-<span class="sd">			...		[2, 4, 5, 6, 7, 8, 3, 0, 0], trim=False)</span>
-<span class="sd">			&gt;&gt;&gt; [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;have&quot;, &quot;been&quot;, &quot;to&quot;, &quot;China&quot;, &quot;&lt;eos&gt;&quot;, &quot;&lt;pad&gt;&quot;, &quot;&lt;pad&gt;&quot;]</span>
-
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
-			<span class="n">ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-		<span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_vocab_list</span><span class="p">[</span><span class="n">word</span><span class="p">],</span> <span class="n">ids</span><span class="p">))</span></div></div>
+	<span class="n">_SENTENCE_MORE_DOCSTRING</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;It calls the identical method of the :class:`Sentence` instance ``sentence``,</span><span class="se">\</span>
+<span class="s1">		from :meth:`.get_default_field()`.&#39;&#39;&#39;</span>
+	<span class="n">_SESSION_MORE_DOCSTRING</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;It calls the identical method of the :class:`Session` instance ``session``,</span><span class="se">\</span>
+<span class="s1">		from :meth:`.get_default_field()`.&#39;&#39;&#39;</span>
+	<span class="n">tokenize</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;tokenize&quot;</span><span class="p">)</span>
+	<span class="n">tokenize_sentences</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;tokenize_sentences&quot;</span><span class="p">)</span>
+	<span class="n">convert_tokens_to_ids</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;convert_tokens_to_ids&quot;</span><span class="p">)</span>
+	<span class="n">convert_ids_to_tokens</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;convert_ids_to_tokens&quot;</span><span class="p">)</span>
+	<span class="n">convert_ids_to_sentence</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;convert_ids_to_sentence&quot;</span><span class="p">)</span>
+	<span class="n">convert_sentence_to_ids</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;convert_sentence_to_ids&quot;</span><span class="p">)</span>
+	<span class="n">add_special_to_ids</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;add_special_to_ids&quot;</span><span class="p">)</span>
+	<span class="n">remove_special_in_ids</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;remove_special_in_ids&quot;</span><span class="p">)</span>
+	<span class="n">process_sentences</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;process_sentences&quot;</span><span class="p">)</span>
+	<span class="n">trim_in_ids</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">get_default_field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">,</span> <span class="s2">&quot;trim_in_ids&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

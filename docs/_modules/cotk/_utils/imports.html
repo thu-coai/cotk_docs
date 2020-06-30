@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -170,8 +170,145 @@
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">``cotk._utils.imports`` provides classes that fake a uninstalled module.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<div class="viewcode-block" id="LazyModule"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.imports.LazyModule">[docs]</a><span class="k">class</span> <span class="nc">LazyModule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Lazy loading modules.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		module_name (str): The path of import. For example: ``cotk``.</span>
+<span class="sd">		global_dict (str): Override the global dictionary when the module is loaded.</span>
+
+<span class="sd">	Examples:</span>
+<span class="sd">		&gt;&gt;&gt; torch = LazyModule(&quot;torch&quot;, globals())</span>
+<span class="sd">		&gt;&gt;&gt; print(torch)</span>
+<span class="sd">		&lt;cotk._utils.imports.LazyModule object at 0x000001BE147682E8&gt;</span>
+<span class="sd">		&gt;&gt;&gt; torch.Tensor = LazyObject(&quot;torch.Tensor&quot;)</span>
+<span class="sd">		&gt;&gt;&gt; print(torch.Tensor)</span>
+<span class="sd">		&lt;cotk._utils.imports.LazyObject object at 0x000001BE1339CE80&gt;</span>
+<span class="sd">		&gt;&gt;&gt; print(torch.LongTensor)</span>
+<span class="sd">		&lt;class &#39;torch.LongTensor&#39;&gt;</span>
+<span class="sd">		&gt;&gt;&gt; print(torch.Tensor)</span>
+<span class="sd">		&lt;class &#39;torch.Tensor&#39;&gt;</span>
+<span class="sd">		&gt;&gt;&gt; print(torch)</span>
+<span class="sd">		&lt;module &#39;torch&#39;&gt;</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">global_dict</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span> <span class="o">=</span> <span class="n">module_name</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_global_dict</span> <span class="o">=</span> <span class="n">global_dict</span>
+
+	<span class="k">def</span> <span class="nf">_try_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">)]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+	<span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">))</span>
+		<span class="n">global_dict</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_global_dict&quot;</span><span class="p">)</span>
+		<span class="n">global_dict</span><span class="p">[</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">module</span>
+		<span class="k">return</span> <span class="n">module</span>
+
+	<span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+		<span class="n">loaded</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_try_load&quot;</span><span class="p">)()</span>
+		<span class="k">if</span> <span class="n">loaded</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">loaded</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="k">pass</span>
+
+		<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;__bases__&quot;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">tuple</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_load&quot;</span><span class="p">)(),</span> <span class="n">key</span><span class="p">)</span></div>
+
+	<span class="c1"># def __call__(self, *args, **kwargs):</span>
+	<span class="c1"># 	return self.__load()(*args, **kwargs)</span>
+
+<div class="viewcode-block" id="LazyObject"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.imports.LazyObject">[docs]</a><span class="k">class</span> <span class="nc">LazyObject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Lazy loading objects.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		object_name (str): The path of import. For example: ``cotk.dataloader.MSCOCO``.</span>
+
+<span class="sd">	Examples:</span>
+<span class="sd">		&gt;&gt;&gt; dataloader = LazyObject(&quot;cotk.dataloader&quot;)</span>
+<span class="sd">		&gt;&gt;&gt; print(dataloader)</span>
+<span class="sd">		&lt;cotk._utils.imports.LazyObject object at 0x000001BE1339CE48&gt;</span>
+<span class="sd">		&gt;&gt;&gt; print(dataloader.MSCOCO)</span>
+<span class="sd">		&lt;class &#39;cotk.dataloader.language_generation.MSCOCO&#39;&gt;</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_name</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_object_name</span> <span class="o">=</span> <span class="n">object_name</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span> <span class="o">=</span> <span class="n">object_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="k">def</span> <span class="nf">_try_load_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">)]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+	<span class="k">def</span> <span class="nf">_load_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_module_name&quot;</span><span class="p">))</span>
+		<span class="n">arr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_object_name&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+		<span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+			<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;No attribute </span><span class="si">%s</span><span class="s2"> in </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="n">i</span><span class="p">])))</span>
+		<span class="k">return</span> <span class="n">obj</span>
+
+	<span class="k">def</span> <span class="nf">_try_getattribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+		<span class="n">loaded</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_try_load_module&quot;</span><span class="p">)()</span>
+		<span class="k">if</span> <span class="n">loaded</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_load_object&quot;</span><span class="p">)(),</span> <span class="n">key</span><span class="p">)</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="k">pass</span>
+
+		<span class="k">return</span> <span class="kc">None</span>
+
+
+	<span class="k">def</span> <span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+		<span class="n">loaded</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_try_load_module&quot;</span><span class="p">)()</span>
+		<span class="k">if</span> <span class="n">loaded</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_load_object&quot;</span><span class="p">)(),</span> <span class="n">key</span><span class="p">)</span>
+
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="k">pass</span>
+
+		<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;__bases__&quot;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">tuple</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_load_object&quot;</span><span class="p">)(),</span> <span class="n">key</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_object</span><span class="p">()(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+	<span class="nd">@staticmethod</span>
+	<span class="k">def</span> <span class="nf">peek</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">LazyObject</span><span class="p">):</span>
+			<span class="n">loaded</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_try_load_module</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">loaded</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_try_getattribute</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span></div>
+
 <div class="viewcode-block" id="DummyObject"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.imports.DummyObject">[docs]</a><span class="k">class</span> <span class="nc">DummyObject</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Dummy Object for uninstalled modules.</span>
+	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Dummy Object for uninstalled modules. [deprecated]</span>
+
 <span class="sd">	Examples:</span>
 <span class="sd">		&gt;&gt;&gt; try:</span>
 <span class="sd">		...   import torch</span>
@@ -185,11 +322,11 @@
 <span class="sd">		&gt;&gt;&gt; torch.Tensor()</span>
 <span class="sd">		ModuleNotFoundError: No module named &#39;torch&#39;</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">err</span> <span class="o">=</span> <span class="n">err</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-	<span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 		<span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 		<span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;__bases__&quot;</span><span class="p">:</span>
@@ -197,13 +334,13 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;err&quot;</span><span class="p">]</span>
 
-	<span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 		<span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-	<span class="k">def</span> <span class="nf">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 		<span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-	<span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="k">raise</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;err&#39;</span><span class="p">]</span></div>
 </pre></div>
 

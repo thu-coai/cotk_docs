@@ -17,8 +17,8 @@ def run(*argv):
 		help='"train" or "test". Default: train')
 	parser.add_argument('--dataset', type=str, default='OpenSubtitles',
 		help='Dataloader class. Default: OpenSubtitles')
-	parser.add_argument('--datapath', type=str, default='OpenSubtitles',
-		help='Directory for data set. Default: OpenSubtitles')
+	parser.add_argument('--datapath', type=str, default='OpenSubtitles#OpenSubtitles',
+		help='Directory for data set. Default: OpenSubtitles#OpenSubtitles')
 	parser.add_argument('--epoch', type=int, default=100,
 		help="Epoch for trainning. Default: 100")
 	parser.add_argument('--wvclass', type=str, default='Glove',

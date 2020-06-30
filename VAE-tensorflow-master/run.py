@@ -17,8 +17,8 @@ def run(*argv):
 		help='"train" or "test". Default: train')
 	parser.add_argument('--dataset', type=str, default='MSCOCO',
 		help='Dataloader class. Default: MSCOCO')
-	parser.add_argument('--datapath', type=str, default='MSCOCO',
-		help='Directory for data set. Default: MSCOCO')
+	parser.add_argument('--datapath', type=str, default='MSCOCO#MSCOCO',
+		help='Directory for data set. Default: MSCOCO#MSCOCO')
 	parser.add_argument('--epoch', type=int, default=10,
 		help="Epoch for trainning. Default: 10")
 	parser.add_argument('--wvclass', type=str, default='Glove',

@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -170,36 +170,21 @@
 <span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Containing some classes and functions about bleu evaluating results of models.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tqdm</span>
-<span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="k">import</span> <span class="n">corpus_bleu</span><span class="p">,</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
-<span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
-<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
+<span class="kn">from</span> <span class="nn">nltk.translate.bleu_score</span> <span class="kn">import</span> <span class="n">corpus_bleu</span><span class="p">,</span> <span class="n">sentence_bleu</span><span class="p">,</span> <span class="n">SmoothingFunction</span>
 
+<span class="kn">from</span> <span class="nn">.metric</span> <span class="kn">import</span> <span class="n">MetricBase</span>
+<span class="kn">from</span> <span class="nn">..dataloader.tokenizer</span> <span class="kn">import</span> <span class="n">Tokenizer</span><span class="p">,</span> <span class="n">SimpleTokenizer</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="kn">import</span> <span class="n">replace_unk</span>
 
-<span class="k">def</span> <span class="nf">_replace_unk</span><span class="p">(</span><span class="n">_input</span><span class="p">,</span> <span class="n">_unk_id</span><span class="p">,</span> <span class="n">_target</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Auxiliary function for replacing the unknown words:</span>
-
-<span class="sd">	Arguments:</span>
-<span class="sd">		_input (list): the references or hypothesis.</span>
-<span class="sd">		_unk_id (int): id for unknown words.</span>
-<span class="sd">		_target: the target word index used to replace the unknown words.</span>
-
-<span class="sd">	Returns:</span>
-
-<span class="sd">		* list: processed result.</span>
-<span class="sd">	&#39;&#39;&#39;</span>
-	<span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
-	<span class="k">for</span> <span class="n">_list</span> <span class="ow">in</span> <span class="n">_input</span><span class="p">:</span>
-		<span class="n">_output</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">_list</span><span class="p">:</span>
-			<span class="n">_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_target</span> <span class="k">if</span> <span class="n">ele</span> <span class="o">==</span> <span class="n">_unk_id</span> <span class="k">else</span> <span class="n">ele</span><span class="p">)</span>
-		<span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_output</span><span class="p">)</span>
-	<span class="k">return</span> <span class="n">output</span>
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span> <span class="c1"># for type check # disable: using-constant-test</span>
+	<span class="kn">from</span> <span class="nn">..dataloader.dataloader</span> <span class="kn">import</span> <span class="n">LanguageProcessing</span>
 
 <span class="k">def</span> <span class="nf">_sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Auxiliary function for computing sentence bleu:</span>
@@ -211,17 +196,24 @@
 
 <span class="sd">		* int: **sentence-bleu** value.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method1</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">sentence_bleu</span><span class="p">(</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ele</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">ele</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">BleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Metric for calculating BLEU.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.NGRAM_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.TOKENIZER_ARGUMENTS}</span>
+<span class="sd">		reference_num (int, None, optional): The number of references used to calculate BLEU. If ``None``, the number of references \</span>
+<span class="sd">		is uncertain and will be determined by the argument of :meth:`.forward`. Default: ``1``.</span>
+<span class="sd">		{MetricBase.IGNORE_SMOOTHING_ERROR_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.REFERENCE_ALLVOCABS_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
+<span class="sd">		reference_str_key (str, optional): The key of reference sentences in the string form. Default: ``ref_str``.</span>
 
-<span class="sd">	Here is an exmaple:</span>
+<span class="sd">	Here is an example:</span>
 
 <span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
 <span class="sd">		&gt;&gt;&gt; reference_allvocabs_key = &quot;ref_allvocabs&quot;</span>
@@ -236,7 +228,7 @@
 <span class="sd">		...	    gen_key: [[10, 1028, 479, 285, 220, 3], [851, 17, 2451, 3]]</span>
 <span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;love&quot;, &quot;java&quot;, &quot;very&quot;, &quot;much&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;bleu&#39;: 0.08582363099612991,</span>
 <span class="sd">		&#39;bleu hashvalue&#39;: &#39;70e019630fef24d9477034a3d941a5349fcbff5a3dc6978a13ea3d85290114fb&#39;}</span>
@@ -244,20 +236,26 @@
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;BleuCorpusMetric&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">ignore_smoothing_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>\
-			<span class="n">reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span> <span class="n">ngram</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> \
+			<span class="n">tokenizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Tokenizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reference_num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> \
+			<span class="n">ignore_smoothing_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">reference_allvocabs_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ref_allvocabs&quot;</span><span class="p">,</span> \
+			<span class="n">gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="n">reference_str_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ref_str&quot;</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
+		<span class="c1">#self._hash_ordered_data(self.ngram)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ngram</span> <span class="o">=</span> <span class="n">ngram</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="o">=</span> <span class="n">reference_num</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">ignore_smoothing_error</span> <span class="o">=</span> <span class="n">ignore_smoothing_error</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span> <span class="o">=</span> <span class="n">reference_allvocabs_key</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">reference_str_key</span> <span class="o">=</span> <span class="n">reference_str_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="BleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="BleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -276,6 +274,12 @@
 <span class="sd">					... }</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_direct_forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_re_tokenize_forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+	<span class="k">def</span> <span class="nf">_direct_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
 		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span><span class="p">]</span>
 
@@ -289,17 +293,51 @@
 
 		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">gen_sen</span><span class="p">,</span> <span class="n">resp_sen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">))</span>
-			<span class="n">reference</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
-			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">reference</span><span class="p">])</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span></div>
+			<span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="n">refs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Require </span><span class="si">%d</span><span class="s2"> references but get </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">)))</span>
+				<span class="n">refs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">resp_single_sen</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">resp_single_sen</span> <span class="ow">in</span> <span class="n">resp_sen</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hyp</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refs</span><span class="p">)</span>
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refs</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_unordered_list</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+	<span class="k">def</span> <span class="nf">_re_tokenize_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+		<span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span><span class="p">]</span>
+		<span class="n">resp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_allvocabs_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+		<span class="n">resp_str</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_str_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for gen.&quot;</span><span class="p">)</span>
+		<span class="c1">#fill more typeerror hints</span>
+
+		<span class="n">relevant_data</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">gen_sen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
+			<span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_sentence</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">resp_str</span><span class="p">:</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+					<span class="n">refs</span> <span class="o">=</span> <span class="p">[</span><span class="n">resp_str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_str</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Require </span><span class="si">%d</span><span class="s2"> references but get </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp_str</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+					<span class="n">refs</span> <span class="o">=</span> <span class="n">resp_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+					<span class="n">refs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_sentence</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Require </span><span class="si">%d</span><span class="s2"> references but get </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_num</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+					<span class="n">refs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_sentence</span><span class="p">(</span><span class="n">resp_single_sen</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">resp_single_sen</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hyp</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refs</span><span class="p">)</span>
+			<span class="n">relevant_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refs</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_unordered_list</span><span class="p">(</span><span class="n">relevant_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.BleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
 <span class="sd">			* **bleu**: bleu value.</span>
 <span class="sd">			* **bleu hashvalue**: hash value for bleu metric, same hash value stands</span>
@@ -309,35 +347,55 @@
 		<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has not been forwarded data correctly.&quot;</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_do_tokenize</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="s2">&quot;unk&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_special_tokens_mapping</span><span class="p">():</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_special_tokens_mapping</span><span class="p">()[</span><span class="s2">&quot;unk&quot;</span><span class="p">])</span>
 		<span class="k">try</span><span class="p">:</span>
+			<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngram</span>
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
-				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method3</span><span class="p">),</span> \
+				<span class="n">corpus_bleu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">smoothing_function</span><span class="o">=</span><span class="n">SmoothingFunction</span><span class="p">()</span><span class="o">.</span><span class="n">method3</span><span class="p">),</span> \
 				<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
 		<span class="k">except</span> <span class="ne">ZeroDivisionError</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
 			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_smoothing_error</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s2">&quot;Bleu smoothing divided by zero. This is a known bug of corpus_bleu, </span><span class="se">\</span>
-<span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span>
+<span class="s2">				usually caused when there is only one sample and the sample length is 1.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \
 					<span class="mi">0</span><span class="p">,</span> \
 					<span class="s2">&quot;bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
-		<span class="k">return</span> <span class="n">result</span></div></div>
+		<span class="k">return</span> <span class="n">result</span></div>
+
+	<span class="k">def</span> <span class="nf">_do_tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">tokenizer</span><span class="p">:</span> <span class="n">Tokenizer</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+			<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">SimpleTokenizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">Tokenizer</span><span class="p">):</span>
+			<span class="n">tokenizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type of tokenizer&quot;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize_sessions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize_sentences</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="SelfBleuCorpusMetric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric">[docs]</a><span class="k">class</span> <span class="nc">SelfBleuCorpusMetric</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Metric for calculating Self-BLEU.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.NGRAM_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.TOKENIZER_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
-<span class="sd">		sample (int): Number of examples sampled from the generated sentences. Default: ``1000``.</span>
-<span class="sd">		seed (int): Random seed for sampling. Default: ``1229``.</span>
+<span class="sd">		{MetricBase.SAMPLE_ARGUMENTS_IN_BLEU}</span>
+<span class="sd">		{MetricBase.SEED_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.CPU_COUNT_ARGUMENTS}</span>
 
 <span class="sd">	Warning:</span>
 <span class="sd">		the calculation of ``hashvalue`` considers the actual sample size of hypotheses which</span>
-<span class="sd">			will be less than ``sample`` if the size of hypotheses is smaller than ``sample``</span>
+<span class="sd">		will be less than ``sample`` if the size of hypotheses is smaller than ``sample``.</span>
 
-<span class="sd">	Here is an exmaple:</span>
+<span class="sd">	Here is an example:</span>
 
 <span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
 <span class="sd">		&gt;&gt;&gt; gen_key = &#39;gen&#39;</span>
@@ -346,26 +404,28 @@
 <span class="sd">		...	    gen_key: [[10, 64, 851, 3], [10, 48, 851, 3]],</span>
 <span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;self-bleu&#39;: 0.13512001548070346,</span>
 <span class="sd">		&#39;self-bleu hashvalue&#39;: &#39;53cf55829c1b080c86c392c846a5d39a54340c70d838ec953f952aa6731118fb&#39;}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;SelfBleuCorpusMetric&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
-		<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
-		<span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> \
-		<span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> \
-		<span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span> <span class="n">ngram</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> \
+		<span class="n">tokenizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Tokenizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> \
+		<span class="n">gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
+		<span class="n">sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> \
+		<span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1229</span><span class="p">,</span> \
+		<span class="n">cpu_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ngram</span> <span class="o">=</span> <span class="n">ngram</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
 		<span class="k">if</span> <span class="n">cpu_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">=</span> <span class="n">cpu_count</span>
@@ -374,7 +434,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SelfBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="SelfBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -396,16 +456,14 @@
 		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for gen.&quot;</span><span class="p">)</span>
 
-		<span class="k">for</span> <span class="n">gen_sen</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">))</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SelfBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+<div class="viewcode-block" id="SelfBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SelfBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
 <span class="sd">			* **self-bleu**: self-bleu value.</span>
+<span class="sd">			* **self-bleu hashvalue**: hash value for self-bleu metric, same hash value stands</span>
+<span class="sd">			  for same evaluation settings.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">:</span>
@@ -425,11 +483,30 @@
 		<span class="n">random</span><span class="o">.</span><span class="n">setstate</span><span class="p">(</span><span class="n">rng_state</span><span class="p">)</span>
 
 		<span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">]</span>
-		<span class="n">_ref</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">:</span>
+			<span class="n">tokenizer</span><span class="p">:</span> <span class="n">Tokenizer</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+				<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">SimpleTokenizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+			<span class="n">ref</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_sentence</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">ref</span><span class="p">]</span>
+			<span class="n">ref</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize_sentences</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">ref</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">ref</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="s2">&quot;unk&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_special_tokens_mapping</span><span class="p">():</span>
+			<span class="n">_ref</span> <span class="o">=</span> <span class="n">replace_unk</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_special_tokens_mapping</span><span class="p">()[</span><span class="s2">&quot;unk&quot;</span><span class="p">])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">_ref</span> <span class="o">=</span> <span class="n">ref</span>
 
 		<span class="n">bleu_irl</span> <span class="o">=</span> <span class="p">[]</span>
 
-		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="n">ref</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">ref</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">],</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">))</span>
+		<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngram</span>
+		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="n">ref</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">ref</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">],</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weights</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">))</span>
+
+		<span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+		<span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&gt;=</span> <span class="mi">1000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="c1"># use multiprocessing</span>
 			<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">)</span>
@@ -446,7 +523,7 @@
 			<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 			<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_ordered_data</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">))</span>
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;self-bleu&quot;</span> <span class="p">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bleu_irl</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleu_irl</span><span class="p">),</span>\
 					<span class="s2">&quot;self-bleu hashvalue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
 		<span class="k">return</span> <span class="n">res</span></div></div>
@@ -456,28 +533,30 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
-<span class="sd">		reference_test_list (list): Reference sentences with :ref:`all vocabs &lt;vocab_ref&gt;` in test data.</span>
+<span class="sd">		{MetricBase.REFERENCE_TEST_LIST_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.NGRAM_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.TOKENIZER_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
-<span class="sd">		sample (int): Number of examples sampled from the generated sentences. Default: ``1000``.</span>
-<span class="sd">		seed (int): random seed for sampling. Default: ``1229``.</span>
+<span class="sd">		{MetricBase.SAMPLE_ARGUMENTS_IN_BLEU}</span>
+<span class="sd">		{MetricBase.SEED_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.CPU_COUNT_ARGUMENTS}</span>
 <span class="sd">	Warning:</span>
 <span class="sd">		The calculation of ``hashvalue`` considers the actual sample size of hypotheses and</span>
 <span class="sd">		references. Therefore ``hashvalue`` may vary with the size of hypothesis or references</span>
 <span class="sd">		if the size of them is smaller than ``sample``.</span>
 
-<span class="sd">	Here is an exmaple:</span>
+<span class="sd">	Here is an example:</span>
 
 <span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
 <span class="sd">		&gt;&gt;&gt; gen_key = &#39;gen&#39;</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.FwBwBleuCorpusMetric(dl,</span>
-<span class="sd">		...	    reference_test_list=dl.get_all_batch(&#39;test&#39;)[&#39;sent&#39;][0],</span>
+<span class="sd">		...	    reference_test_list=dl.get_all_batch(&#39;test&#39;)[&#39;session&#39;][0].tolist(),</span>
 <span class="sd">		...	    gen_key=gen_key)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
 <span class="sd">		...	    gen_key: [[10, 64, 851, 3], [10, 48, 851, 3]],</span>
 <span class="sd">		...	    # gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;fw-bleu&#39;: 0.007688528488990184,</span>
 <span class="sd"> 		 &#39;bw-bleu&#39;: 0.0012482612634667945,</span>
@@ -486,31 +565,32 @@
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;FwBwBleuCorpusMetric&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> \
-			<span class="n">reference_test_list</span><span class="p">,</span> \
-			<span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
-			<span class="n">sample</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> \
-			<span class="n">seed</span><span class="o">=</span><span class="mi">1229</span><span class="p">,</span> \
-			<span class="n">cpu_count</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span> \
+			<span class="n">reference_test_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">ngram</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> \
+			<span class="n">tokenizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Tokenizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> \
+			<span class="n">gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span><span class="p">,</span> \
+			<span class="n">sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> \
+			<span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1229</span><span class="p">,</span> \
+			<span class="n">cpu_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span> <span class="o">=</span> <span class="n">reference_test_list</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="o">=</span><span class="n">ngram</span>
 		<span class="k">if</span> <span class="n">cpu_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">=</span> <span class="n">cpu_count</span>
 		<span class="k">elif</span> <span class="s2">&quot;CPU_COUNT&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CPU_COUNT&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CPU_COUNT&quot;</span><span class="p">])</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="FwBwBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.FwBwBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="FwBwBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.FwBwBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -532,70 +612,95 @@
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown type for gen.&quot;</span><span class="p">)</span>
 
 		<span class="k">for</span> <span class="n">gen_sen</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">)))</span></div>
+			<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_in_ids</span><span class="p">(</span><span class="n">gen_sen</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="FwBwBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.FwBwBleuCorpusMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+<div class="viewcode-block" id="FwBwBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.FwBwBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
-<span class="sd">			* **fwbwbleu**: fw/bw bleu value.</span>
+<span class="sd">			* **fw-bleu**: fw bleu value.</span>
+<span class="sd">			* **bw-bleu**: bw bleu value.</span>
+<span class="sd">			* **fw-bw-bleu**: harmony mean of fw/bw bleu value.</span>
 <span class="sd">			* **fw-bw-bleu hashvalue**: hash value for fwbwbleu metric, same hash value stands</span>
 <span class="sd">			  for same evaluation settings.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has not been forwarded data correctly.&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Reference cannot be empty&quot;</span><span class="p">)</span>
 
-		<span class="k">for</span> <span class="n">resp_sen</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">resp_sen</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
+		<span class="n">sample_hyps_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
+		<span class="n">sample_refs_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span><span class="p">)</span>
 
-		<span class="n">sample_hyps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
-		<span class="n">sample_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">sample_hyps</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">sample_hyps_num</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;`sample_hyps` should be more than 1, </span><span class="se">\</span>
-<span class="s1">				whose value is `</span><span class="si">{}</span><span class="s1">`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_hyps</span><span class="p">))</span>
-		<span class="k">if</span> <span class="n">sample_refs</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+<span class="s1">				whose value is `</span><span class="si">{}</span><span class="s1">`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_hyps_num</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">sample_refs_num</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;`sample_refs` should be more than 1, </span><span class="se">\</span>
-<span class="s1">				whose value is `</span><span class="si">{}</span><span class="s1">`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_refs</span><span class="p">))</span>
+<span class="s1">				whose value is `</span><span class="si">{}</span><span class="s1">`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sample_refs_num</span><span class="p">))</span>
+
+		<span class="n">sample_hyps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[:</span><span class="n">sample_hyps_num</span><span class="p">]</span>
+		<span class="n">sample_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_test_list</span><span class="p">[:</span><span class="n">sample_refs_num</span><span class="p">]</span>
+
+		<span class="n">refs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+		<span class="n">hyps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">:</span>
+			<span class="n">tokenizer</span><span class="p">:</span> <span class="n">Tokenizer</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+				<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">SimpleTokenizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample_refs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">List</span><span class="p">):</span>
+				<span class="n">ref_sents</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_sentence</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">sample_refs</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">ref_sents</span> <span class="o">=</span> <span class="n">sample_refs</span>
+			<span class="n">refs</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize_sentences</span><span class="p">(</span><span class="n">ref_sents</span><span class="p">)</span>
+
+			<span class="n">hyp_sents</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_sentence</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">sample_hyps</span><span class="p">]</span>
+			<span class="n">hyps</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize_sentences</span><span class="p">(</span><span class="n">hyp_sents</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">refs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">sample_refs</span><span class="p">]</span>
+			<span class="n">hyps</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">sample_hyps</span><span class="p">]</span>
 
 		<span class="n">rng_state</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
-		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span>
-		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">hyps</span><span class="p">)</span>
+		<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">refs</span><span class="p">)</span>
 		<span class="n">random</span><span class="o">.</span><span class="n">setstate</span><span class="p">(</span><span class="n">rng_state</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
+		<span class="k">if</span> <span class="s2">&quot;unk&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_special_tokens_mapping</span><span class="p">():</span>
+			<span class="n">refs</span> <span class="o">=</span> <span class="n">replace_unk</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">get_special_tokens_mapping</span><span class="p">()[</span><span class="s2">&quot;unk&quot;</span><span class="p">])</span>
 
 
 		<span class="n">bleu_irl_fw</span><span class="p">,</span> <span class="n">bleu_irl_bw</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+		<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngram</span>
 
-		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_hyps</span><span class="p">))</span>
-		<span class="k">if</span> <span class="n">sample_hyps</span> <span class="o">&gt;=</span> <span class="mi">1000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="n">refs</span><span class="p">,</span> <span class="n">hyps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weights</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_hyps_num</span><span class="p">))</span>
+		<span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+		<span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">sample_hyps_num</span> <span class="o">&gt;=</span> <span class="mi">1000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">)</span>
 			<span class="n">values</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">_sentence_bleu</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span>
 			<span class="n">values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_sentence_bleu</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">sample_hyps</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
-			<span class="n">values</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">sample_hyps</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">sample_hyps_num</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
+			<span class="n">values</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">sample_hyps_num</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">ans</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
 			<span class="n">bleu_irl_fw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 			<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_refs</span><span class="p">))</span>
-		<span class="k">if</span> <span class="n">sample_refs</span> <span class="o">&gt;=</span> <span class="mi">1000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="n">tasks</span> <span class="o">=</span> <span class="p">((</span><span class="n">hyps</span><span class="p">,</span> <span class="n">refs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weights</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_refs_num</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">sample_refs_num</span> <span class="o">&gt;=</span> <span class="mi">1000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">)</span>
 			<span class="n">values</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">_sentence_bleu</span><span class="p">,</span> <span class="n">tasks</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span>
 			<span class="n">values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">_sentence_bleu</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">sample_refs</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
-			<span class="n">values</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">sample_refs</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">sample_refs_num</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">:</span>
+			<span class="n">values</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">sample_refs_num</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">ans</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
 			<span class="n">bleu_irl_bw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -614,7 +719,8 @@
 			<span class="s2">&quot;fw-bw-bleu&quot;</span> <span class="p">:</span> <span class="n">fw_bw_bleu</span> \
 		<span class="p">})</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="n">sample_hyps</span><span class="p">,</span> <span class="n">sample_refs</span><span class="p">])</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_unordered_list</span><span class="p">(</span><span class="n">refs</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_ordered_data</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ngram</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="n">sample_hyps_num</span><span class="p">,</span> <span class="n">sample_refs_num</span><span class="p">))</span>
 		<span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;fw-bw-bleu hashvalue&quot;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hashvalue</span><span class="p">()})</span>
 		<span class="k">return</span> <span class="n">res</span></div></div>
 
@@ -623,11 +729,12 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
+<span class="sd">		{MetricBase.IGNORE_SMOOTHING_ERROR_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_REFERENCE_ALLVOCABS_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_GEN_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_LENGTH_KEY_ARGUMENTS}</span>
 
-<span class="sd">	Here is an exmaple:</span>
+<span class="sd">	Here is an example:</span>
 
 <span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
 <span class="sd">		&gt;&gt;&gt; multi_turn_reference_allvocabs_key = &quot;reference_allvocabs&quot;</span>
@@ -649,20 +756,20 @@
 <span class="sd">		...     # multi_turn_gen_key = [[[&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;], [&quot;PHP&quot;, &quot;is&quot;, &quot;best&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		...     # 	[[&quot;I&quot;, &quot;like&quot;, &quot;natural&quot;, &quot;language&quot;, &quot;processing&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;bleu&#39;: 0.12081744577265555,</span>
 <span class="sd">		&#39;bleu hashvalue&#39;: &#39;c65b44c454dee5a8d393901644c7f1acfdb847bae3ab03823cb5b9f643958960&#39;}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MultiTurnBleuCorpusMetric&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">ignore_smoothing_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>\
-					<span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;reference_allvocabs&quot;</span><span class="p">,</span> \
-					<span class="n">multi_turn_gen_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen&quot;</span><span class="p">,</span> \
-					<span class="n">turn_len_key</span><span class="o">=</span><span class="s2">&quot;turn_length&quot;</span> \
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span> \
+					<span class="n">ignore_smoothing_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>\
+					<span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reference_allvocabs&quot;</span><span class="p">,</span> \
+					<span class="n">multi_turn_gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_gen&quot;</span><span class="p">,</span> \
+					<span class="n">turn_len_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;turn_length&quot;</span> \
 			  <span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
@@ -673,7 +780,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -712,14 +819,11 @@
 			<span class="n">gen_session</span> <span class="o">=</span> <span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 			<span class="n">ref_session</span> <span class="o">=</span> <span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">turn_length</span><span class="p">):</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">gen_session</span><span class="p">[</span><span class="n">j</span><span class="p">])))</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim</span><span class="p">(</span><span class="n">ref_session</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">1</span><span class="p">:])])</span></div>
+				<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_in_ids</span><span class="p">(</span><span class="n">gen_session</span><span class="p">[</span><span class="n">j</span><span class="p">])))</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_in_ids</span><span class="p">(</span><span class="n">ref_session</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">1</span><span class="p">:])])</span></div>
 
-<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric.close">[docs]</a>	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_metric_close</span>
-	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+<div class="viewcode-block" id="MultiTurnBleuCorpusMetric.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnBleuCorpusMetric.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
 <span class="sd">			* **bleu**: bleu value.</span>
 <span class="sd">			* **bleu hashvalue**: hash value for bleu metric, same hash value stands</span>
@@ -728,9 +832,9 @@
 		<span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The metric has not been forwarded data correctly.&quot;</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">_replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">hyps</span> <span class="o">=</span> <span class="n">replace_unk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">unk_id</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_unordered_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
 
 		<span class="k">try</span><span class="p">:</span>
 			<span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;bleu&quot;</span><span class="p">:</span> \

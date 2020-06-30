@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="_utils" href="../_utils.html" />
+    <link rel="next" title="Data Loader" href="../dataloader.html" />
     <link rel="prev" title="Extending Cotk: More Data, More Metrics!" href="extend.html" /> 
 </head>
 
@@ -87,21 +87,21 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#why-my-codes-seem-running-from-beginning-after-calling-metric-close">Why my codes seem running from beginning after calling metric.close ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#on-windows-why-my-codes-seem-running-from-beginning-after-calling-metric-close">On windows, why my codes seem running from beginning after calling metric.close ?</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -175,10 +175,10 @@
             
   <div class="section" id="frequently-asked-questions">
 <h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="why-my-codes-seem-running-from-beginning-after-calling-metric-close">
-<h2>Why my codes seem running from beginning after calling metric.close ?<a class="headerlink" href="#why-my-codes-seem-running-from-beginning-after-calling-metric-close" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="on-windows-why-my-codes-seem-running-from-beginning-after-calling-metric-close">
+<h2>On windows, why my codes seem running from beginning after calling metric.close ?<a class="headerlink" href="#on-windows-why-my-codes-seem-running-from-beginning-after-calling-metric-close" title="Permalink to this headline">¶</a></h2>
 <p><strong>TL;DR: Use if __name__ == “__main__” at your start point of program.</strong></p>
-<p>This happened when you use SelfBleuMetric, FwBwBleuMetric on windows. They use
+<p>This may happen when you use some metrics on windows. They use
 <code class="docutils literal notranslate"><span class="pre">multiprocess</span></code> for speed issue but this would call <code class="docutils literal notranslate"><span class="pre">fork()</span></code> of system. If you are
 on windows, which doesn’t support <code class="docutils literal notranslate"><span class="pre">fork()</span></code>, <code class="docutils literal notranslate"><span class="pre">Multiprocess</span></code> has to rerun your program
 for correctly importing packages.</p>
@@ -193,7 +193,7 @@ for correctly importing packages.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../_utils.html" class="btn btn-neutral float-right" title="_utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../dataloader.html" class="btn btn-neutral float-right" title="Data Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="extend.html" class="btn btn-neutral float-left" title="Extending Cotk: More Data, More Metrics!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

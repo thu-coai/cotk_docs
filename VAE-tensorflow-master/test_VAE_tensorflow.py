@@ -57,7 +57,7 @@ def modify_args(args):
 	args.wvclass = 'Glove'
 	args.epochs = 5
 	args.checkpoint_steps = 1
-	args.datapath = path + '/tests/dataloader/dummy_mscoco'
+	args.datapath = path + '/tests/dataloader/dummy_mscoco#MSCOCO'
 
 def test_train(mocker):
 	def side_effect_train(args):

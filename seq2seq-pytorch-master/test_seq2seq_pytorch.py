@@ -50,7 +50,7 @@ def modify_args(args):
 	args.epochs = 1
 	args.batch_per_epoch = 5
 	args.batch_size = 5
-	args.datapath = os.path.join(path, 'tests', 'dataloader', 'dummy_opensubtitles')
+	args.datapath = os.path.join(path, 'tests', 'dataloader', 'dummy_opensubtitles#OpenSubtitles')
 
 def test_train(mocker):
 	def side_effect_train(args, *others):

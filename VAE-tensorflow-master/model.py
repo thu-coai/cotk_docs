@@ -15,7 +15,7 @@ class VAEModel(object):
 				# build the embedding table and embedding input
 				if embed is None:
 					# initialize the embedding randomly
-					self.embed = tf.get_variable('embed', [data.vocab_size, args.embedding_size], tf.float32)
+					self.embed = tf.get_variable('embed', [data.frequent_vocab_size, args.embedding_size], tf.float32)
 				else:
 					# initialize the embedding by pre-trained word vectors
 					self.embed = tf.get_variable('embed', dtype=tf.float32, initializer=embed)
@@ -70,7 +70,7 @@ class VAEModel(object):
 			dec_init_state = tf.layers.dense(inputs=latent_sample, units=args.dh_size, activation=None)
 
 		with tf.variable_scope("output_layer", initializer=tf.orthogonal_initializer()):
-			self.output_layer = Dense(data.vocab_size, kernel_initializer=tf.truncated_normal_initializer(stddev=0.1),
+			self.output_layer = Dense(data.frequent_vocab_size, kernel_initializer=tf.truncated_normal_initializer(stddev=0.1),
 									  use_bias=True)
 
 		with tf.variable_scope("decode", initializer=tf.orthogonal_initializer()):
@@ -115,7 +115,7 @@ class VAEModel(object):
 			)
 			self.decoder_distribution = infer_output.rnn_output
 			self.generation_index = tf.argmax(tf.split(self.decoder_distribution,
-													   [2, data.vocab_size - 2], 2)[1], 2) + 2  # for removing UNK
+													   [2, data.frequent_vocab_size - 2], 2)[1], 2) + 2  # for removing UNK
 
 		self.kl_weights = tf.minimum(tf.to_float(self.global_step) / args.full_kl_step, 1.0)
 		self.kl_loss = self.kl_weights * tf.maximum(self.kld, args.min_kl)
@@ -315,7 +315,7 @@ class VAEModel(object):
 				else:
 					result_id = response_id_list
 				for token in response_token:
-					if token != data.ext_vocab[data.eos_id]:
+					if token != data.get_special_tokens_mapping()["eos"]:
 						result_token.append(token)
 					else:
 						break

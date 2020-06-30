@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk.dataloader.tokenizer &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk.dataloader.tokenizer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk.dataloader.tokenizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A module for Tokenizer&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="kn">import</span> <span class="n">WordPunctTokenizer</span>
+<span class="kn">from</span> <span class="nn">checksumdir</span> <span class="kn">import</span> <span class="n">dirhash</span>
+
+<span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="kn">import</span> <span class="n">dumps</span>
+<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="kn">import</span> <span class="n">DocStringInheritor</span>
+<span class="kn">from</span> <span class="nn">.._utils</span> <span class="kn">import</span> <span class="n">chain_sessions</span><span class="p">,</span> <span class="n">restore_sessions</span>
+
+<div class="viewcode-block" id="Tokenizer"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Tokenizer">[docs]</a><span class="k">class</span> <span class="nc">Tokenizer</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Tokenizer is used for spliting sentence to tokens.</span>
+<span class="sd">	This is an abstract base class.</span>
+<span class="sd">	It often works as a part of :class:`Field`&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Tokenizer.tokenize"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Tokenizer.tokenize">[docs]</a>	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Tokenize a sentence to a list of tokens.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			sentence (str): a sentence to tokenize.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Tokenizer.tokenize_sentences"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Tokenizer.tokenize_sentences">[docs]</a>	<span class="k">def</span> <span class="nf">tokenize_sentences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentences</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+		<span class="sd">&#39;&#39;&#39;Tokenize a list of sentences to a list of lists of tokens.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			sentences (List[str]): sentences to tokenize.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Tokenizer.tokenize_sessions"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Tokenizer.tokenize_sessions">[docs]</a>	<span class="k">def</span> <span class="nf">tokenize_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+		<span class="sd">&#39;&#39;&#39;Tokenize sessions to a 3-d list of tokens.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			sessions (List[List[str]]): sessions to tokenize.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">sentences</span><span class="p">,</span> <span class="n">session_lengths</span> <span class="o">=</span> <span class="n">chain_sessions</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span>
+		<span class="n">tokenized_sentences</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenize_sentences</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">restore_sessions</span><span class="p">(</span><span class="n">tokenized_sentences</span><span class="p">,</span> <span class="n">session_lengths</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tokenizer.convert_tokens_to_sentence"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Tokenizer.convert_tokens_to_sentence">[docs]</a>	<span class="k">def</span> <span class="nf">convert_tokens_to_sentence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Convert tokens to sentence.</span>
+<span class="sd">		It usually works like the reverse operation of :meth:`tokenize`, but it is not gauranteed.</span>
+<span class="sd">		It may like ``&quot; &quot;.join(tokens)``, but some special condition and tokens will be took care.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			tokens(List[str]): tokenized sentence</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Tokenizer.get_setting_hash"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Tokenizer.get_setting_hash">[docs]</a>	<span class="k">def</span> <span class="nf">get_setting_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Return the setting hash of this tokenizer instance.</span>
+<span class="sd">		See :ref:`here &lt;dataloader_hash_ref&gt;` for the explaination of ``setting hash``.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+<div class="viewcode-block" id="SimpleTokenizer"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SimpleTokenizer">[docs]</a><span class="k">class</span> <span class="nc">SimpleTokenizer</span><span class="p">(</span><span class="n">Tokenizer</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Bases: :class:`.dataloader.Tokenizer`</span>
+
+<span class="sd">	A simple tokenizer. ``method`` can either be ``nltk`` or ``space``.</span>
+<span class="sd">	If ``nltk``, use ``WordPunctTokenizer`` from ``nltk.tokenize``.</span>
+<span class="sd">	If ``space``, use ``str.split(&quot; &quot;)``.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		method (str): the tokenization method, ``nltk`` or ``space``.</span>
+<span class="sd">		special_tokens (List[str]): special tokens not to tokenize, such as ``&lt;go&gt;``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">special_tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span> <span class="o">=</span> <span class="n">special_tokens</span>
+
+		<span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;nltk&quot;</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_callable_tokenizer</span> <span class="o">=</span> <span class="n">WordPunctTokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span>
+		<span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;space&quot;</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_callable_tokenizer</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">split</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`method` is invalid value </span><span class="si">{}</span><span class="s1">, should be &quot;nltk&quot; or &quot;space&quot; &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">dumps</span><span class="p">([</span><span class="s2">&quot;adapter&quot;</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">special_tokens</span><span class="p">]))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callable_tokenizer</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+		<span class="n">regexPattern</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+		<span class="n">segments</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">regexPattern</span><span class="p">,</span> <span class="n">sentence</span><span class="p">)</span>
+		<span class="n">sent</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">seg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">special_tokens</span><span class="p">:</span>
+				<span class="n">sent</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callable_tokenizer</span><span class="p">(</span><span class="n">seg</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">sent</span> <span class="o">+=</span> <span class="p">[</span><span class="n">seg</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">sent</span>
+
+	<span class="k">def</span> <span class="nf">convert_tokens_to_sentence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;nltk&quot;</span><span class="p">:</span>
+			<span class="n">sent</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+			<span class="n">out_string</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; .&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; ?&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">)</span><span class="o">.</span> \
+				<span class="n">replace</span><span class="p">(</span><span class="s1">&#39; !&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; ,&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &#39; &quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span><span class="o">.</span> \
+				<span class="n">replace</span><span class="p">(</span><span class="s2">&quot; n&#39;t&quot;</span><span class="p">,</span> <span class="s2">&quot;n&#39;t&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &#39;m&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;m&quot;</span><span class="p">)</span><span class="o">.</span> \
+				<span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &#39;s&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;s&quot;</span><span class="p">)</span><span class="o">.</span> \
+				<span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &#39;ve&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;ve&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &#39;re&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;re&quot;</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">out_string</span>
+		<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;space&quot;</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No such tokenizer </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">get_setting_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span></div>
+
+<div class="viewcode-block" id="PretrainedTokenizer"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.PretrainedTokenizer">[docs]</a><span class="k">class</span> <span class="nc">PretrainedTokenizer</span><span class="p">(</span><span class="n">Tokenizer</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Bases: :class:`.dataloader.Tokenizer`</span>
+
+<span class="sd">	A wrapper for ``Pretrainedtokenizer`` from ``transformers`` package.</span>
+<span class="sd">	If you don&#39;t want to do tokenization on some special tokens, see</span>
+<span class="sd">	``transformers.Pretrainedtokenizer.add_special_tokens``.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		tokenizer (transformers.Pretrainedtokenizer): An</span>
+<span class="sd">			instance of ``transformers.Pretrainedtokenizer``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_tokenizer_class_name</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+		<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
+			<span class="n">tokenizer</span><span class="o">.</span><span class="n">save_pretrained</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">))</span>
+			<span class="n">tokenizer_hash</span> <span class="o">=</span> <span class="n">dirhash</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">),</span> <span class="s2">&quot;sha256&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">dumps</span><span class="p">([</span><span class="s2">&quot;pretrained&quot;</span><span class="p">,</span> <span class="n">tokenizer_hash</span><span class="p">]))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">convert_tokens_to_sentence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_tokens_to_string</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">get_setting_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setting_hash</span>
+
+<div class="viewcode-block" id="PretrainedTokenizer.get_tokenizer_class"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.PretrainedTokenizer.get_tokenizer_class">[docs]</a>	<span class="k">def</span> <span class="nf">get_tokenizer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Get the class name of pretrained tokenizer.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tokenizer_class_name</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

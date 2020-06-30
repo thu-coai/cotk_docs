@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -167,20 +167,21 @@
            <div itemprop="articleBody">
             
   <h1>Source code for cotk.metric.recorder</h1><div class="highlight"><pre>
-<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Containing some recorders.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.metric</span> <span class="k">import</span> <span class="n">MetricBase</span>
+<span class="kn">from</span> <span class="nn">.metric</span> <span class="kn">import</span> <span class="n">MetricBase</span>
 
 <div class="viewcode-block" id="SingleTurnDialogRecorder"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SingleTurnDialogRecorder">[docs]</a><span class="k">class</span> <span class="nc">SingleTurnDialogRecorder</span><span class="p">(</span><span class="n">MetricBase</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;A metric-like class for recording generated sentences and references.</span>
 
 <span class="sd">	Arguments:</span>
 <span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
-<span class="sd">		post_allvocabs_key (str): The key of dialog posts with :ref:`allvocabs &lt;vocab_ref&gt;`.</span>
+<span class="sd">		post_allvocabs_key (str, optional): The key of dialog posts with :ref:`allvocabs &lt;vocabulary_ref&gt;`.</span>
 <span class="sd">			Default: ``post_allvocabs``.</span>
-<span class="sd">		resp_allvocabs_key (str): The key of dialog responses with :ref:`allvocabs &lt;vocab_ref&gt;`.</span>
+<span class="sd">		resp_allvocabs_key (str, optional): The key of dialog responses with :ref:`allvocabs &lt;vocabulary_ref&gt;`.</span>
 <span class="sd">			Default: ``resp_allvocabs``.</span>
 <span class="sd">		{MetricBase.GEN_KEY_ARGUMENTS}</span>
 
@@ -200,12 +201,12 @@
 <span class="sd">		...     # post_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		...</span>
 <span class="sd">		...	    resp_allvocabs_key: [[2, 10, 1214, 479, 3], [2, 851, 17, 2451, 3]],</span>
-<span class="sd">		...	    # resp_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;prefer&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
+<span class="sd">		...	    # resp_allvocabs_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;prefe&quot;, &quot;java&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		...</span>
 <span class="sd">		...     gen_key: [[10, 64, 2019, 3], [851, 17, 4124, 3]],</span>
 <span class="sd">		...     # gen_key: [[&quot;I&quot;, &quot;like&quot;, &quot;PHP&quot;, &quot;&lt;eos&gt;&quot;], [&quot;python&quot;, &quot;is&quot;, &quot;powerful&quot;, &quot;&lt;eos&gt;&quot;]]</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;post&#39;: [[&#39;I&#39;, &#39;like&#39;, &#39;python&#39;], [&#39;I&#39;, &#39;use&#39;, &#39;python&#39;]],</span>
 <span class="sd"> 		 &#39;resp&#39;: [[&#39;I&#39;, &#39;prefer&#39;, &#39;java&#39;], [&#39;python&#39;, &#39;is&#39;, &#39;excellent&#39;]],</span>
@@ -213,9 +214,10 @@
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;SingleTurnDialogRecorder&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">post_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;post_allvocabs&quot;</span><span class="p">,</span> \
-			<span class="n">resp_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span> \
+			<span class="n">post_allvocabs_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;post_allvocabs&quot;</span><span class="p">,</span> \
+			<span class="n">resp_allvocabs_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;resp_allvocabs&quot;</span><span class="p">,</span> <span class="n">gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">post_allvocabs_key</span> <span class="o">=</span> <span class="n">post_allvocabs_key</span>
@@ -225,7 +227,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">resp_list</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="SingleTurnDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SingleTurnDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleTurnDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SingleTurnDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -264,10 +266,8 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">resp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">resp_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:]))</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="SingleTurnDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SingleTurnDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+<div class="viewcode-block" id="SingleTurnDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.SingleTurnDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
 <span class="sd">			* **post**: a list of post sentences. A jagged 2-d array of int.</span>
 <span class="sd">			  Size:``[batch_size, ~sent_length]``, where &quot;~&quot; means different</span>
@@ -287,9 +287,9 @@
 	<span class="sd">&#39;&#39;&#39;A metric-like class for recording generated sentences and references.</span>
 
 <span class="sd">	Arguments:</span>
-<span class="sd">		{MetricBase.DATALOADER_ARGUMENTS}</span>
-<span class="sd">		multi_turn_reference_allvocabs_key (str): The key of dialog references with</span>
-<span class="sd">			:ref:`allvocabs &lt;vocab_ref&gt;`. Default: ``multi_turn_ref_allvocabs``.</span>
+<span class="sd">		{MetricBase.MULTI_TURN_DATALOADER_ARGUMENTS}</span>
+<span class="sd">		multi_turn_reference_allvocabs_key (str, optional): The key of dialog references with \</span>
+<span class="sd">			:ref:`allvocabs &lt;vocabulary_ref&gt;`. Default: ``multi_turn_ref_allvocabs``.</span>
 <span class="sd">		{MetricBase.MULTI_TURN_GEN_KEY_ARGUMENTS}</span>
 <span class="sd">		{MetricBase.MULTI_TURN_LENGTH_KEY_ARGUMENTS}</span>
 
@@ -301,7 +301,7 @@
 <span class="sd">		&gt;&gt;&gt; dl = cotk.dataloader.UbuntuCorpus(&#39;resources://Ubuntu_small&#39;)</span>
 <span class="sd">		&gt;&gt;&gt; metric = cotk.metric.MultiTurnDialogRecorder(dl,</span>
 <span class="sd">		...     multi_turn_reference_allvocabs_key=multi_turn_reference_allvocabs_key,</span>
-<span class="sd">		...     multi_turn_gen_key＝multi_turn_gen_key,</span>
+<span class="sd">		...     multi_turn_gen_key=multi_turn_gen_key,</span>
 <span class="sd">		...     turn_len_key=turn_len_key)</span>
 <span class="sd">		&gt;&gt;&gt; data = {</span>
 <span class="sd">		...	    multi_turn_reference_allvocabs_key: [[[2, 10, 64, 851, 3], [2, 10, 64, 479, 3]], [[2, 10, 64, 279, 1460, 3]]],</span>
@@ -315,7 +315,7 @@
 <span class="sd">		...     # multi_turn_gen_key = [[[&quot;python&quot;, &quot;is&quot;, &quot;excellent&quot;, &quot;&lt;eos&gt;&quot;], [&quot;PHP&quot;, &quot;is&quot;, &quot;best&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		...     # 	[[&quot;I&quot;, &quot;like&quot;, &quot;natural&quot;, &quot;language&quot;, &quot;processing&quot;, &quot;&lt;eos&gt;&quot;]]]</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;reference&#39;: [[[&#39;I&#39;, &#39;like&#39;, &#39;python&#39;], [&#39;I&#39;, &#39;like&#39;, &#39;java&#39;]],</span>
 <span class="sd">		 [[&#39;I&#39;, &#39;like&#39;, &#39;machine&#39;, &#39;learning&#39;]]],</span>
@@ -325,11 +325,11 @@
 
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MultiTurnDialogRecorder&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span>
-			<span class="n">multi_turn_reference_allvocabs_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span><span class="p">,</span> \
-			<span class="n">multi_turn_gen_key</span><span class="o">=</span><span class="s2">&quot;multi_turn_gen&quot;</span><span class="p">,</span> \
-			<span class="n">turn_len_key</span><span class="o">=</span><span class="s2">&quot;turn_length&quot;</span><span class="p">):</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span>
+			<span class="n">multi_turn_reference_allvocabs_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_ref_allvocabs&quot;</span><span class="p">,</span> \
+			<span class="n">multi_turn_gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;multi_turn_gen&quot;</span><span class="p">,</span> \
+			<span class="n">turn_len_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;turn_length&quot;</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">multi_turn_reference_allvocabs_key</span> <span class="o">=</span> <span class="n">multi_turn_reference_allvocabs_key</span>
@@ -339,7 +339,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="MultiTurnDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiTurnDialogRecorder.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnDialogRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -378,18 +378,15 @@
 
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reference_allvocabs</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_multi_turn_ids_to_tokens</span><span class="p">(</span> \
-				<span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">turn_length</span><span class="o">=</span><span class="n">turn_length</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ignore_first_token</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+				<span class="n">reference_allvocabs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_multi_turn_ids_to_tokens</span><span class="p">(</span> \
-				<span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">turn_length</span><span class="o">=</span><span class="n">turn_length</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-
+				<span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">remove_special</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Reference turn num </span><span class="si">%d</span><span class="s2"> != gen turn num </span><span class="si">%d</span><span class="s2">.&quot;</span> <span class="o">%</span> \
 						<span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span></div>
 
-<div class="viewcode-block" id="MultiTurnDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+<div class="viewcode-block" id="MultiTurnDialogRecorder.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MultiTurnDialogRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
 <span class="sd">			* **reference**: a list of response sentences. A jagged 3-d array of int.</span>
 <span class="sd">			  Size:``[batch_size, ~turn_length, ~sent_length]``, where &quot;~&quot; means different</span>
@@ -418,19 +415,19 @@
 <span class="sd">		...	    gen_key: [[2, 10, 64, 851, 3], [2, 10, 48, 851, 3]],</span>
 <span class="sd">		...	    # gen_key: [[&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;like&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;], [&quot;&lt;go&gt;&quot;, &quot;I&quot;, &quot;use&quot;, &quot;python&quot;, &quot;&lt;eos&gt;&quot;]],</span>
 <span class="sd">		... }</span>
-<span class="sd">		&gt;&gt;&gt; metric.forword(data)</span>
+<span class="sd">		&gt;&gt;&gt; metric.forward(data)</span>
 <span class="sd">		&gt;&gt;&gt; metric.close()</span>
 <span class="sd">		{&#39;gen&#39;: [[&#39;&lt;go&gt;&#39;, &#39;I&#39;, &#39;like&#39;, &#39;python&#39;], [&#39;&lt;go&gt;&#39;, &#39;I&#39;, &#39;use&#39;, &#39;python&#39;]]}</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;LanguageGenerationRecorder&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">gen_key</span><span class="o">=</span><span class="s2">&quot;gen&quot;</span><span class="p">):</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LanguageProcessing&quot;</span><span class="p">,</span> <span class="s2">&quot;Sentence&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">],</span> <span class="n">gen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gen&quot;</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_key</span> <span class="o">=</span> <span class="n">gen_key</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="LanguageGenerationRecorder.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.LanguageGenerationRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="LanguageGenerationRecorder.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.LanguageGenerationRecorder.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -455,10 +452,8 @@
 		<span class="k">for</span> <span class="n">sen</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">gen_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">sen</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="LanguageGenerationRecorder.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.LanguageGenerationRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): Return a dict which contains</span>
+<div class="viewcode-block" id="LanguageGenerationRecorder.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.LanguageGenerationRecorder.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sd">&#39;&#39;&#39;Return a dict which contains</span>
 
 <span class="sd">			* **gen**: a list of generated sentences. A jagged 2-d array of int.</span>
 <span class="sd">			  Size:``[batch_size, ~sent_length]``, where &quot;~&quot; means different</span>

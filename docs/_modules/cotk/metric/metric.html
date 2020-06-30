@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -167,32 +167,55 @@
            <div itemprop="articleBody">
             
   <h1>Source code for cotk.metric.metric</h1><div class="highlight"><pre>
-<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">``cotk.metrics`` provides classes and functions evaluating results of models.</span>
 <span class="sd">It provides a fair metric for every model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="k">import</span> <span class="n">UnorderedSha256</span>
-<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="k">import</span> <span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">DocStringInheritor</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="kn">from</span> <span class="nn">.._utils.unordered_hash</span> <span class="kn">import</span> <span class="n">UnorderedSha256</span><span class="p">,</span> <span class="n">dumps</span>
+<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="kn">import</span> <span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">DocStringInheritor</span>
 
 <div class="viewcode-block" id="MetricBase"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase">[docs]</a><span class="k">class</span> <span class="nc">MetricBase</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base class for metrics.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 
 	<span class="n">DATALOADER_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;dataloader (:class:`.dataloader.LanguageProcessingBase`): A language generation dataloader.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;dataloader (:class:`.dataloader.LanguageProcessing`, :class:`.dataloader.Sentence`, :class:`.dataloader.Session`): \</span>
+<span class="sd">		 A language generation dataloader.&quot;&quot;&quot;</span>
+	<span class="n">MULTI_TURN_DATALOADER_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;dataloader (:class:`.dataloader.LanguageProcessing`, :class:`.dataloader.Session`): \</span>
+<span class="sd">		 A language generation dataloader.&quot;&quot;&quot;</span>
+	<span class="n">NGRAM_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;ngram (int, optional): The order of ngram to calculate metrics like BLEU and Perplexity. Default: ``4``.&quot;&quot;&quot;</span>
+	<span class="n">TOKENIZER_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;tokenizer (None, :class:`.dataloader.Tokenizer`, str, optional): Specifies the tokenizer used in \</span>
+<span class="sd">			the metric. Default: ``None``.&quot;&quot;&quot;</span>
+	<span class="n">IGNORE_SMOOTHING_ERROR_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;ignore_smoothing_error (bool, optional): Specifies whether to ignore the smoothing error when calculating \</span>
+<span class="sd">			BLEU. Default: ``False``.&quot;&quot;&quot;</span>
+	<span class="n">SAMPLE_ARGUMENTS_IN_BLEU</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;sample (int, optional): Number of examples sampled from the generated sentences. Default: ``1000``.&quot;&quot;&quot;</span>
+	<span class="n">SAMPLE_ARGUMENTS_IN_NGRAM_PERPLEXITY</span> <span class="o">=</span> \
+		<span class="n">SAMPLE_ARGUMENTS_IN_BLEU</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Default: ``1000``.&quot;</span><span class="p">,</span> <span class="s2">&quot;Default: ``10000``.&quot;</span><span class="p">)</span>
+	<span class="n">SEED_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;seed (int, optional): Random seed for sampling. Default: ``1229``.&quot;&quot;&quot;</span>
+	<span class="n">REFERENCE_TEST_LIST_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;reference_test_list (list): Reference sentences with :ref:`all vocabs &lt;vocabulary_ref&gt;` in test data.&quot;&quot;&quot;</span>
 	<span class="n">REFERENCE_ALLVOCABS_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;reference_allvocabs_key (str):</span>
+		<span class="sd">&quot;&quot;&quot;reference_allvocabs_key (str, optional): \</span>
 <span class="sd">			The key of reference sentences. Default: ``ref_allvocabs``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[reference_allvocabs_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 2-d jagged or padded array of int. Reference sentences with</span>
-<span class="sd">				  :ref:`allvocabs &lt;vocab_ref&gt;` in index form.</span>
-<span class="sd">				  Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``).</span>
-<span class="sd">				  Size: ``[batch_size, ~ref_sentence_length]``,</span>
+				<span class="sd">&quot;&quot;&quot;* **data[reference_allvocabs_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  A 2-d jagged or padded array of int. Reference sentences with \</span>
+<span class="sd">				  :ref:`allvocabs &lt;vocabulary_ref&gt;` in index form. \</span>
+<span class="sd">				  Contains start token (eg: ``&lt;go&gt;``) and end token (eg: ``&lt;eos&gt;``). \</span>
+<span class="sd">				  Size: ``[batch_size, ~ref_sentence_length]``, \</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS_WITH_TORCH</span> <span class="o">=</span> \
-		<span class="n">FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list or :class:`numpy.ndarray`&quot;</span><span class="p">,</span> \
-			<span class="s2">&quot;list or :class:`numpy.ndarray` or :class:`torch.Tensor`&quot;</span><span class="p">)</span>
+		<span class="n">FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list, :class:`numpy.ndarray`&quot;</span><span class="p">,</span> \
+			<span class="s2">&quot;list, :class:`numpy.ndarray`, :class:`torch.Tensor`&quot;</span><span class="p">)</span>
 	<span class="n">FORWARD_POST_ALLVOCABS_ARGUMENTS</span> <span class="o">=</span> \
 		<span class="n">FORWARD_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;reference_allvocabs_key&quot;</span><span class="p">,</span> \
 			<span class="s2">&quot;post_allvocabs_key&quot;</span><span class="p">)</span>
@@ -201,112 +224,126 @@
 			<span class="s2">&quot;resp_allvocabs_key&quot;</span><span class="p">)</span>
 
 	<span class="n">LABEL_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;label_key (str):</span>
+		<span class="sd">&quot;&quot;&quot;label_key (str): \</span>
 <span class="sd">			The key of reference sentence labels. Default: ``label``.&quot;&quot;&quot;</span>
-	<span class="n">LABEL_ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;* **data[label_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="s2">				  A 1-d array of int.</span>
-<span class="s2">				  Size: ``[batch_size]``,</span>
+	<span class="n">LABEL_ARGUMENTS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;* **data[label_key]** (list or :class:`numpy.ndarray`): </span><span class="se">\</span>
+<span class="s2">				  A 1-d array of int. </span><span class="se">\</span>
+<span class="s2">				  Size: ``[batch_size]``, </span><span class="se">\</span>
 <span class="s2">				  each element refers to label of one sample&quot;&quot;&quot;</span>
 
 	<span class="n">PREDICTION_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;prediction_key (str):</span>
+		<span class="sd">&quot;&quot;&quot;prediction_key (str): \</span>
 <span class="sd">			The key of reference sentence predictions. Default: ``prediction``.&quot;&quot;&quot;</span>
-	<span class="n">PREDICTION_ARGUMENTS</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;* **data[prediction_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="s2">				  A 1-d array of int.</span>
-<span class="s2">				  Size: ``[batch_size]``,</span>
+	<span class="n">PREDICTION_ARGUMENTS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;* **data[prediction_key]** (list or :class:`numpy.ndarray`): </span><span class="se">\</span>
+<span class="s2">				  A 1-d array of int. </span><span class="se">\</span>
+<span class="s2">				  Size: ``[batch_size]``, </span><span class="se">\</span>
 <span class="s2">				  each element refers to prediction for one sample&quot;&quot;&quot;</span>
 
 	<span class="n">MULTI_TURN_REFERENCE_ALLVOCABS_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;multi_turn_reference_allvocabs_key (str):</span>
+		<span class="sd">&quot;&quot;&quot;multi_turn_reference_allvocabs_key (str, optional): \</span>
 <span class="sd">			The key of reference sentences. Default: ``multi_turn_ref_allvocabs``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[multi_turn_reference_allvocabs_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 3-d jagged or padded array of int. Multi-turn reference sentences with</span>
-<span class="sd">				  :ref:`all vocabs &lt;vocab_ref&gt;`. Contains start token (eg: ``&lt;go&gt;``) and</span>
-<span class="sd">				  end token (eg: ``&lt;eos&gt;``). Size: ``[batch_size, ~turn_length, ~sentence_length]``,</span>
+				<span class="sd">&quot;&quot;&quot;* **data[multi_turn_reference_allvocabs_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  A 3-d jagged or padded array of int. Multi-turn reference sentences with \</span>
+<span class="sd">				  :ref:`all vocabs &lt;vocabulary_ref&gt;`. Contains start token (eg: ``&lt;go&gt;``) and \</span>
+<span class="sd">				  end token (eg: ``&lt;eos&gt;``). Size: ``[batch_size, ~turn_length, ~sentence_length]``, \</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS_WITH_TORCH</span> <span class="o">=</span> \
-		<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list or :class:`numpy.ndarray`&quot;</span><span class="p">,</span> \
-			<span class="s2">&quot;list or :class:`numpy.ndarray` or :class:`torch.Tensor`&quot;</span><span class="p">)</span>
+		<span class="n">FORWARD_MULTI_TURN_REFERENCE_ALLVOCABS_ARGUMENTS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list, :class:`numpy.ndarray`&quot;</span><span class="p">,</span> \
+			<span class="s2">&quot;list, :class:`numpy.ndarray`, :class:`torch.Tensor`&quot;</span><span class="p">)</span>
 
 	<span class="n">REFERENCE_LEN_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;reference_len_key (str):</span>
-<span class="sd">			The key of lengths of reference sentences.</span>
+		<span class="sd">&quot;&quot;&quot;reference_len_key (str, optional): \</span>
+<span class="sd">			The key of lengths of reference sentences. \</span>
 <span class="sd">			Default: ``ref_length``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_REFERENCE_LEN_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[reference_len_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  Length of reference sentences. Contains start token (eg:``&lt;go&gt;``)</span>
+				<span class="sd">&quot;&quot;&quot;* **data[reference_len_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  Length of reference sentences. Contains start token (eg:``&lt;go&gt;``) \</span>
 <span class="sd">				  and end token (eg:``&lt;eos&gt;``). Size: ``[batch_size]``.&quot;&quot;&quot;</span>
 
 	<span class="n">MULTI_TURN_REFERENCE_LEN_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;multi_turn_reference_len_key (str):</span>
-<span class="sd">			The key of lengths of reference sentences.</span>
+		<span class="sd">&quot;&quot;&quot;multi_turn_reference_len_key (str, optional): \</span>
+<span class="sd">			The key of lengths of reference sentences. \</span>
 <span class="sd">			Default: ``multi_turn_ref_length``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_REFERENCE_LEN_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[multi_turn_reference_len_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 2-d jagged or padded array of int. **If padded, redundant position must be set to** ``0``.</span>
-<span class="sd">				  Length of multi-turn reference sentences. Contains start token (eg:``&lt;go&gt;``)</span>
-<span class="sd">				  and end token (eg:``&lt;eos&gt;``). Size: ``[batch_size, ~turn_length]``,</span>
+				<span class="sd">&quot;&quot;&quot;* **data[multi_turn_reference_len_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  A 2-d jagged or padded array of int. **If padded, redundant position must be set to** ``0``. \</span>
+<span class="sd">				  Length of multi-turn reference sentences. Contains start token (eg:``&lt;go&gt;``) \</span>
+<span class="sd">				  and end token (eg:``&lt;eos&gt;``). Size: ``[batch_size, ~turn_length]``, \</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
 
 	<span class="n">GEN_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;gen_key (str):</span>
+		<span class="sd">&quot;&quot;&quot;gen_key (str, optional): \</span>
 <span class="sd">			The key of generated sentences. Default: ``gen``.&quot;&quot;&quot;</span>
+	<span class="n">GEN_LOG_PROB_KEY_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;gen_log_prob_key (str, optional): The key of predicted **log** probability over words. \</span>
+<span class="sd">			Default: ``gen_log_prob``.&quot;&quot;&quot;</span>
+	<span class="n">GENERATE_RARE_VOCAB_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;generate_rare_vocab (bool, optional): Whether ``gen_log_prob`` contains :ref:`invalid vocab &lt;vocabulary_ref&gt;`. \</span>
+<span class="sd">			Default: ``False``.&quot;&quot;&quot;</span>
+	<span class="n">FULL_CHECK_ARGUMENTS</span> <span class="o">=</span> \
+		<span class="sd">&quot;&quot;&quot;full_check (bool, optional): Whether to perform a full check on ``gen_log_prob`` to make sure the sum</span>
+<span class="sd">			of probability is 1. Otherwise, a random check will be performed for efficiency.</span>
+<span class="sd">			If PyTorch is used, a full check is always performed and this argument will be ignored.</span>
+<span class="sd">			Default: ``False``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_GEN_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[gen_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 2-d jagged or padded array of int.</span>
-<span class="sd">				  Sentences generated by model. Contains end token (eg: ``&lt;eos&gt;``),</span>
-<span class="sd">				  but without start token (eg: ``&lt;go&gt;``).</span>
-<span class="sd">				  Size: ``[batch_size, ~gen_sentence_length]``,</span>
+				<span class="sd">&quot;&quot;&quot;* **data[gen_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  A 2-d jagged or padded array of int. \</span>
+<span class="sd">				  Sentences generated by model. Contains end token (eg: ``&lt;eos&gt;``), \</span>
+<span class="sd">				  but without start token (eg: ``&lt;go&gt;``). \</span>
+<span class="sd">				  Size: ``[batch_size, ~gen_sentence_length]``, \</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
 
 	<span class="n">MULTI_TURN_GEN_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;multi_turn_gen_key (str):</span>
+		<span class="sd">&quot;&quot;&quot;multi_turn_gen_key (str, optional): \</span>
 <span class="sd">			The key of generated sentences. Default: ``multi_turn_gen``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_GEN_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[gen_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  A 3-d jagged or padded array of int. Sentences generated by model.</span>
-<span class="sd">				  Contains end token (eg: ``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``).</span>
-<span class="sd">				  Size: ``[batch_size, ~max_turn_length, ~gen_sentence_length]``,</span>
+				<span class="sd">&quot;&quot;&quot;* **data[gen_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  A 3-d jagged or padded array of int. Sentences generated by model. \</span>
+<span class="sd">				  Contains end token (eg: ``&lt;eos&gt;``), but without start token (eg: ``&lt;go&gt;``). \</span>
+<span class="sd">				  Size: ``[batch_size, ~max_turn_length, ~gen_sentence_length]``, \</span>
 <span class="sd">				  where &quot;~&quot; means different sizes in this dimension is allowed.&quot;&quot;&quot;</span>
 
 	<span class="n">MULTI_TURN_LENGTH_KEY_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;turn_length (str):</span>
+		<span class="sd">&quot;&quot;&quot;turn_length (str, optional): \</span>
 <span class="sd">			The key of length of turns. Default: ``turn_length``.&quot;&quot;&quot;</span>
 	<span class="n">FORWARD_MULTI_TURN_LENGTH_ARGUMENTS</span> <span class="o">=</span> \
-				<span class="sa">r</span><span class="sd">&quot;&quot;&quot;* **data[turn_len_key]** (list or :class:`numpy.ndarray`):</span>
-<span class="sd">				  Length of turns in each sample.</span>
+				<span class="sd">&quot;&quot;&quot;* **data[turn_len_key]** (list, :class:`numpy.ndarray`): \</span>
+<span class="sd">				  Length of turns in each sample. \</span>
 <span class="sd">				  Size: ``[batch_size]``.&quot;&quot;&quot;</span>
 
 	<span class="n">CPU_COUNT_ARGUMENTS</span> <span class="o">=</span> \
-		<span class="sa">r</span><span class="sd">&quot;&quot;&quot;cpu_count (int): Number of used cpu for multiprocessing. Multiprocessing will **NOT** be used</span>
-<span class="sd">			when ``cpu_count`` is set to ``1`` or the dataset is small. Default: if ``None``,</span>
-<span class="sd">			the environment variable ``CPU_COUNT`` will be used	when it is set,</span>
+		<span class="sd">&quot;&quot;&quot;cpu_count (int, optional): Number of used cpu for multiprocessing. Multiprocessing will **NOT** be used \</span>
+<span class="sd">			when ``cpu_count`` is set to ``1`` or the dataset is small. Default: If ``None``, \</span>
+<span class="sd">			the environment variable ``CPU_COUNT`` will be used when available, \</span>
 <span class="sd">			or all available cpu will be used otherwise.&quot;&quot;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span> <span class="o">=</span> <span class="n">UnorderedSha256</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ordered_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_hash_ordered_data</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="MetricBase._hash_relevant_data"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase._hash_relevant_data">[docs]</a>	<span class="k">def</span> <span class="nf">_hash_relevant_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_list</span><span class="p">):</span>
+<div class="viewcode-block" id="MetricBase._hash_unordered_list"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase._hash_unordered_list">[docs]</a>	<span class="k">def</span> <span class="nf">_hash_unordered_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Invoked by :meth:`.forward` or :meth:`.close` to hash relevant data when computing a metric.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			data_list (list): relevant data organized as list.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span></div>
+			<span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">item</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MetricBase._hash_ordered_data"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase._hash_ordered_data">[docs]</a>	<span class="k">def</span> <span class="nf">_hash_ordered_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">ordered_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="MetricBase._hashvalue"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase._hashvalue">[docs]</a>	<span class="k">def</span> <span class="nf">_hashvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Invoked by :meth:`.close` to return the recorded hash value.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span></div>
+		<span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">dumps</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ordered_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unordered_hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="MetricBase.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="MetricBase.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -317,13 +354,10 @@
 		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Data must be a dict.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MetricBase.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MetricBase.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricBase.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Close the metric and return results. Once the metric is closed,</span>
+<span class="sd">		Close the metric and return a dict containing results. Once the metric is closed,</span>
 <span class="sd">		any operation on the metric (e.g. forward or another close) will raise a ValueError.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict) which contains results.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -343,22 +377,22 @@
 <span class="sd">	Todo: Give more examples to combining forward and close</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;MetricChain&#39;</span>
-	<span class="n">_version</span> <span class="o">=</span> <span class="mi">1</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">metric_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="MetricChain.add_metric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.add_metric">[docs]</a>	<span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+<div class="viewcode-block" id="MetricChain.add_metric"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.add_metric">[docs]</a>	<span class="k">def</span> <span class="nf">add_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="s2">&quot;MetricBase&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Add metric for processing.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			metric (MetricBase): a metric class.</span>
+<span class="sd">			metric (:class:`.metric.MetricBase`): a metric class.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">MetricBase</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Metric must be a subclass of MetricBase&quot;</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">metric_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MetricChain.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="MetricChain.forward"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.forward">[docs]</a>	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 		<span class="sd">&#39;&#39;&#39;Processing a batch of data.</span>
 
 <span class="sd">		Arguments:</span>
@@ -369,11 +403,8 @@
 		<span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_list</span><span class="p">:</span>
 			<span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MetricChain.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Returns:</span>
-<span class="sd">			(dict): A dict which contains the items which all the</span>
-<span class="sd">			metric components returned.</span>
+<div class="viewcode-block" id="MetricChain.close"><a class="viewcode-back" href="../../../metric.html#cotk.metric.MetricChain.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Return a dict containing the items which all the metric components return.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 		<span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_list</span><span class="p">:</span>

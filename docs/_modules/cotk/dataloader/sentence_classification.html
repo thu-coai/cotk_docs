@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -168,37 +168,81 @@
             
   <h1>Source code for cotk.dataloader.sentence_classification</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Dataloader for language generation&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.field</span> <span class="kn">import</span> <span class="n">Sentence</span><span class="p">,</span> <span class="n">SentenceGPT2</span><span class="p">,</span> <span class="n">SentenceBERT</span>
+<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="kn">import</span> <span class="n">LanguageProcessing</span>
+<span class="kn">from</span> <span class="nn">.context</span> <span class="kn">import</span> <span class="n">FieldContext</span><span class="p">,</span> <span class="n">VocabContext</span>
+<span class="kn">from</span> <span class="nn">.vocab</span> <span class="kn">import</span> <span class="n">GeneralVocab</span><span class="p">,</span> <span class="n">PretrainedVocab</span>
+<span class="kn">from</span> <span class="nn">.tokenizer</span> <span class="kn">import</span> <span class="n">PretrainedTokenizer</span>
+<span class="kn">from</span> <span class="nn">.field</span> <span class="kn">import</span> <span class="n">Sentence</span>
 
-<span class="c1"># from .._utils.unordered_hash import UnorderedSha256</span>
-<span class="kn">from</span> <span class="nn">.._utils.file_utils</span> <span class="k">import</span> <span class="n">get_resource_file_path</span>
-<span class="kn">from</span> <span class="nn">.._utils</span> <span class="k">import</span> <span class="n">hooks</span>
-<span class="kn">from</span> <span class="nn">.dataloader</span> <span class="k">import</span> <span class="n">LanguageProcessingBase</span>
-<span class="kn">from</span> <span class="nn">..metric</span> <span class="k">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">AccuracyMetric</span>
-
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span> <span class="c1"># for type check # pylint: disable=using-constant-test</span>
+	<span class="kn">from</span> <span class="nn">..metric</span> <span class="kn">import</span> <span class="n">MetricChain</span> <span class="c1">#pylint: disable=unused-import</span>
 
 <span class="c1"># pylint: disable=W0223</span>
-<div class="viewcode-block" id="SentenceClassification"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification">[docs]</a><span class="k">class</span> <span class="nc">SentenceClassification</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
+<div class="viewcode-block" id="SentenceClassification"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification">[docs]</a><span class="k">class</span> <span class="nc">SentenceClassification</span><span class="p">(</span><span class="n">LanguageProcessing</span><span class="p">):</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for sentence classification datasets. This is an abstract class.</span>
 
-<span class="sd">	Arguments:{ARGUMENTS}</span>
+<span class="sd">	Arguments:</span>
 
-<span class="sd">	Attributes:{ATTRIBUTES}</span>
+<span class="sd">	Notes:</span>
+<span class="sd">		A :class:`Sentence` field must be set as default field. When invoking :meth:`__init__` of :class:`SentenceClassification`,</span>
+<span class="sd">		the default field, which may be reset in subclass, is set as self.fields[&#39;train&#39;][&#39;sent&#39;].</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">ARGUMENTS</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ARGUMENTS</span>
-	<span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="n">LanguageProcessingBase</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+	<span class="n">_version</span> <span class="o">=</span> <span class="mi">2</span>
 
-<div class="viewcode-block" id="SentenceClassification.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+				 <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+				 <span class="n">max_sent_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+				 <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+				 <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+				 <span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+				 <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+				 <span class="n">pretrained</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_pretrained</span> <span class="o">=</span> <span class="n">pretrained</span>
+
+		<span class="k">if</span> <span class="n">pretrained</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">fields</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;sent&#39;</span><span class="p">,</span> <span class="s1">&#39;SentenceDefault&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;DenseLabel&#39;</span><span class="p">)])</span>
+			<span class="k">with</span> <span class="n">FieldContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+											 <span class="n">max_sent_length</span><span class="o">=</span><span class="n">max_sent_length</span><span class="p">,</span>
+											 <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="n">convert_to_lower_letter</span><span class="p">):</span>
+				<span class="k">with</span> <span class="n">VocabContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="n">min_rare_vocab_times</span><span class="p">,</span>
+												 <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="n">min_frequent_vocab_times</span><span class="p">):</span>
+					<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">pretrained</span> <span class="o">==</span> <span class="s1">&#39;gpt2&#39;</span> <span class="ow">or</span> <span class="n">pretrained</span> <span class="o">==</span> <span class="s1">&#39;bert&#39;</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="n">fields</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;sent&#39;</span><span class="p">,</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">get_pretrained_class</span><span class="p">(</span><span class="n">pretrained</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;DenseLabel&#39;</span><span class="p">)])</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">PretrainedTokenizer</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tokenize should be loaded first if you want a </span><span class="si">%s</span><span class="s2"> dataloader&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pretrained</span><span class="p">))</span>
+			<span class="n">vocab</span> <span class="o">=</span> <span class="n">PretrainedVocab</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span>
+			<span class="k">with</span> <span class="n">FieldContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+											 <span class="n">vocab</span><span class="o">=</span><span class="n">vocab</span><span class="p">,</span>
+											 <span class="n">max_sent_length</span><span class="o">=</span><span class="n">max_sent_length</span><span class="p">,</span>
+											 <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="n">convert_to_lower_letter</span><span class="p">):</span>
+				<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No pretrained name </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">pretrained</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">set_default_field</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;sent&#39;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">pretrained</span> <span class="o">==</span> <span class="s1">&#39;gpt2&#39;</span> <span class="ow">or</span> <span class="n">pretrained</span> <span class="o">==</span> <span class="s1">&#39;bert&#39;</span><span class="p">:</span>
+			<span class="c1"># check whether SentenceGPT2 or SentenceBERT is used.</span>
+			<span class="k">for</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">set_fields</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">set_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+					<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Sentence</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">get_pretrained_class</span><span class="p">(</span><span class="n">pretrained</span><span class="p">)):</span>
+						<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;If you want to use a </span><span class="si">%s</span><span class="s2"> sentence_classification, you&#39;d better use </span><span class="si">%s</span><span class="s2"> instead of </span><span class="si">%s</span><span class="s2">.&quot;</span>
+									  <span class="o">%</span> <span class="p">(</span><span class="n">pretrained</span><span class="p">,</span> <span class="n">Sentence</span><span class="o">.</span><span class="n">get_pretrained_class</span><span class="p">(</span><span class="n">pretrained</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+<div class="viewcode-block" id="SentenceClassification.get_batch"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification.get_batch">[docs]</a>	<span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_name</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get a batch of specified `indexes`.</span>
 
 <span class="sd">		Arguments:</span>
-<span class="sd">			key (str): must be contained in `key_name`</span>
+<span class="sd">			set_name (str): must be contained in `key_name`</span>
 <span class="sd">			indexes (list): a list of specified indexes</span>
 
 <span class="sd">		Returns:</span>
@@ -235,23 +279,7 @@
 <span class="sd">					]),</span>
 <span class="sd">			}</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No set named </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
-		<span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
-		<span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> \
-			<span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]),</span> <span class="n">indexes</span><span class="p">)))</span>
-		<span class="n">res_sent</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> \
-			<span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_length&quot;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indexes</span><span class="p">):</span>
-			<span class="n">sentence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sentence</span>
-			<span class="n">res</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-
-		<span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent_allvocabs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_sent</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-		<span class="n">res_sent</span><span class="p">[</span><span class="n">res_sent</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_vocab_len</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unk_id</span>
-		<span class="k">return</span> <span class="n">res</span></div>
+		<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="n">set_name</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SentenceClassification.get_metric"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.SentenceClassification.get_metric">[docs]</a>	<span class="k">def</span> <span class="nf">get_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction_key</span><span class="o">=</span><span class="s2">&quot;prediction&quot;</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Get metrics for accuracy. In other words, this function</span>
@@ -268,6 +296,7 @@
 <span class="sd">		Returns:</span>
 <span class="sd">			A :class:`.metric.MetricChain` object.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
+		<span class="kn">from</span> <span class="nn">..metric</span> <span class="kn">import</span> <span class="n">MetricChain</span><span class="p">,</span> <span class="n">AccuracyMetric</span>
 		<span class="n">metric</span> <span class="o">=</span> <span class="n">MetricChain</span><span class="p">()</span>
 		<span class="n">metric</span><span class="o">.</span><span class="n">add_metric</span><span class="p">(</span><span class="n">AccuracyMetric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> \
 										 <span class="n">label_key</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> \
@@ -280,18 +309,17 @@
 
 <span class="sd">	Arguments:</span>
 <span class="sd">			file_id (str): a str indicates the source of SST dataset.</span>
-<span class="sd">			file_type (str): a str indicates the type of SST dataset. Default: &quot;SST&quot;</span>
-<span class="sd">			valid_vocab_times (int): A cut-off threshold of valid tokens. All tokens appear</span>
-<span class="sd">					not less than `min_vocab_times` in **training set** will be marked as valid words.</span>
+<span class="sd">			min_frequent_vocab_times (int): A cut-off threshold of valid tokens. All tokens appear</span>
+<span class="sd">					not less than `min_frequent_vocab_times` in **training set** will be marked as frequent words.</span>
 <span class="sd">					Default: 10.</span>
 <span class="sd">			max_sent_length (int): All sentences longer than `max_sent_length` will be shortened</span>
 <span class="sd">					to first `max_sent_length` tokens. Default: 50.</span>
-<span class="sd">			invalid_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
-<span class="sd">					not less than `invalid_vocab_times` in the **whole dataset** (except valid words) will be</span>
-<span class="sd">					marked as invalid words. Otherwise, they are unknown words, both in training or</span>
+<span class="sd">			min_rare_vocab_times (int):  A cut-off threshold of invalid tokens. All tokens appear</span>
+<span class="sd">					not less than `min_rare_vocab_times` in the **whole dataset** (except valid words) will be</span>
+<span class="sd">					marked as rare words. Otherwise, they are unknown words, both in training or</span>
 <span class="sd">					testing stages. Default: 0 (No unknown words).</span>
 
-<span class="sd">	Refer to :class:`.LanguageProcessingBase` for attributes and methods.</span>
+<span class="sd">	Refer to :class:`.SentenceClassification` for attributes and methods.</span>
 
 <span class="sd">	References:</span>
 <span class="sd">		[1] http://images.cocodataset.org/annotations/annotations_trainval2017.zip</span>
@@ -300,42 +328,15 @@
 
 <span class="sd">	&#39;&#39;&#39;</span>
 
-	<span class="nd">@hooks</span><span class="o">.</span><span class="n">hook_dataloader</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
-				 <span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">invalid_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span> <span class="o">=</span> <span class="n">min_vocab_times</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span> <span class="o">=</span> <span class="n">max_sent_length</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
-		<span class="nb">super</span><span class="p">(</span><span class="n">SST</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-	<span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `LanguageProcessingBase.__init__`</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span> <span class="o">=</span> \
-			<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_general_load_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span>
-									<span class="p">[[</span><span class="s1">&#39;sent&#39;</span><span class="p">,</span> <span class="s1">&#39;sentence&#39;</span><span class="p">]],</span>
-									<span class="bp">self</span><span class="o">.</span><span class="n">_min_vocab_times</span><span class="p">,</span>
-									<span class="bp">self</span><span class="o">.</span><span class="n">_max_sent_length</span><span class="p">,</span>
-									<span class="kc">None</span><span class="p">,</span>
-									<span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span><span class="p">)</span>
-		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_name</span><span class="p">:</span>
-			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;_labels.json&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-				<span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
-
-	<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
-		<span class="sa">r</span><span class="sd">&#39;&#39;&#39;Convert sentence(str) to list of token(str)</span>
-
-<span class="sd">		Arguments:</span>
-<span class="sd">			sentence (str)</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			sent (list): list of token(str)</span>
-<span class="sd">		&#39;&#39;&#39;</span>
-		<span class="c1"># return [x.split(&#39; &#39;)[-1].lower() for x in sentence if x != &#39;&#39;]</span>
-		<span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;space&#39;</span><span class="p">)</span></div>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
+				 <span class="n">max_sent_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="s1">&#39;space&#39;</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span>
+						 <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+						 <span class="n">max_sent_length</span><span class="o">=</span><span class="n">max_sent_length</span><span class="p">,</span>
+						 <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+						 <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="n">min_frequent_vocab_times</span><span class="p">,</span>
+						 <span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="n">min_rare_vocab_times</span><span class="p">,</span>
+						 <span class="n">pretrained</span><span class="o">=</span><span class="n">pretrained</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

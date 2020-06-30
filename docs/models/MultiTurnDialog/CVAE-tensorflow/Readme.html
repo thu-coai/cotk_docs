@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -86,18 +86,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul class="current">
@@ -195,30 +195,33 @@
 <div class="section" id="require-packages">
 <h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>cotk</li>
-<li>TensorFlow == 1.13.1</li>
-<li>TensorBoardX &gt;= 1.4</li>
+<li><p>cotk</p></li>
+<li><p>TensorFlow == 1.13.1</p></li>
+<li><p>TensorBoardX &gt;= 1.4</p></li>
 </ul>
 </div>
 <div class="section" id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
-<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">SwitchboardCorpus</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</li>
-<li>It don’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code></li>
-<li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time.</li>
+<li><p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.</p>
+<ul>
+<li><p>The default dataset is <code class="docutils literal notranslate"><span class="pre">SwitchboardCorpus</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class.</p></li>
+<li><p>It don’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code></p></li>
+<li><p>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time.</p></li>
 </ul>
 </li>
-<li>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.<ul>
-<li>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</li>
+<li><p>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.</p>
+<ul>
+<li><p>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</p></li>
 </ul>
 </li>
-<li>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.<ul>
-<li>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</li>
+<li><p>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.</p>
+<ul>
+<li><p>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</p></li>
 </ul>
 </li>
-<li>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</li>
+<li><p>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</p></li>
 </ul>
 </div>
 <div class="section" id="arguments">
@@ -270,12 +273,12 @@ advanced arguments:
 <a class="reference external image-reference" href="./images/CVAE-plot-example.png"><img alt="CVAE_plot_example" src="../../../_images/CVAE-plot-example.png" /></a>
 <p>Following plot are shown in this model:</p>
 <ul class="simple">
-<li>train/loss</li>
-<li>train/perplexity</li>
-<li>dev/loss</li>
-<li>dev/perplexity</li>
-<li>test/loss</li>
-<li>test/perplexity</li>
+<li><p>train/loss</p></li>
+<li><p>train/perplexity</p></li>
+<li><p>dev/loss</p></li>
+<li><p>dev/perplexity</p></li>
+<li><p>test/loss</p></li>
+<li><p>test/perplexity</p></li>
 </ul>
 </div>
 <div class="section" id="case-study-of-model-results">
@@ -315,55 +318,55 @@ session:    0
 </div>
 <div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">&#160;</th>
-<th class="head">SwitchboardCorpus</th>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p>SwitchboardCorpus</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>Perplexity (KL)</td>
-<td>21.70 (12.20)</td>
+<tbody>
+<tr class="row-even"><td><p>Perplexity (KL)</p></td>
+<td><p>21.70 (12.20)</p></td>
 </tr>
-<tr class="row-odd"><td>BLEU-1 precision</td>
-<td>0.13610</td>
+<tr class="row-odd"><td><p>BLEU-1 precision</p></td>
+<td><p>0.13610</p></td>
 </tr>
-<tr class="row-even"><td>BLEU-1 recall</td>
-<td>0.04108</td>
+<tr class="row-even"><td><p>BLEU-1 recall</p></td>
+<td><p>0.04108</p></td>
 </tr>
-<tr class="row-odd"><td>BLEU-2 precision</td>
-<td>0.02238</td>
+<tr class="row-odd"><td><p>BLEU-2 precision</p></td>
+<td><p>0.02238</p></td>
 </tr>
-<tr class="row-even"><td>BLEU-2 recall</td>
-<td>0.00617</td>
+<tr class="row-even"><td><p>BLEU-2 recall</p></td>
+<td><p>0.00617</p></td>
 </tr>
-<tr class="row-odd"><td>BLEU-3 precision</td>
-<td>0.00398</td>
+<tr class="row-odd"><td><p>BLEU-3 precision</p></td>
+<td><p>0.00398</p></td>
 </tr>
-<tr class="row-even"><td>BLEU-3 recall</td>
-<td>0.00115</td>
+<tr class="row-even"><td><p>BLEU-3 recall</p></td>
+<td><p>0.00115</p></td>
 </tr>
-<tr class="row-odd"><td>BLEU-4 precision</td>
-<td>0.00052</td>
+<tr class="row-odd"><td><p>BLEU-4 precision</p></td>
+<td><p>0.00052</p></td>
 </tr>
-<tr class="row-even"><td>BLEU-4 recall</td>
-<td>0.0001s6</td>
+<tr class="row-even"><td><p>BLEU-4 recall</p></td>
+<td><p>0.0001s6</p></td>
 </tr>
-<tr class="row-odd"><td>avg-bow precision</td>
-<td>0.94545</td>
+<tr class="row-odd"><td><p>avg-bow precision</p></td>
+<td><p>0.94545</p></td>
 </tr>
-<tr class="row-even"><td>avg-bow recall</td>
-<td>0.23039</td>
+<tr class="row-even"><td><p>avg-bow recall</p></td>
+<td><p>0.23039</p></td>
 </tr>
-<tr class="row-odd"><td>extrema-bow precision</td>
-<td>0.90231</td>
+<tr class="row-odd"><td><p>extrema-bow precision</p></td>
+<td><p>0.90231</p></td>
 </tr>
-<tr class="row-even"><td>extrema-bow recall</td>
-<td>0.21620</td>
+<tr class="row-even"><td><p>extrema-bow recall</p></td>
+<td><p>0.21620</p></td>
 </tr>
 </tbody>
 </table>

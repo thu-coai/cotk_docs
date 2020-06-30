@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cotk.dataloader.context &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cotk.dataloader.context</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cotk.dataloader.context</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="kn">import</span> <span class="n">DocStringInheritor</span>
+
+<span class="c1"># For type checking</span>
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span> <span class="c1">#pylint: disable=using-constant-test</span>
+	<span class="c1">#pylint: disable=unused-import</span>
+	<span class="kn">from</span> <span class="nn">.vocab</span> <span class="kn">import</span> <span class="n">Vocab</span>
+	<span class="kn">from</span> <span class="nn">.tokenizer</span> <span class="kn">import</span> <span class="n">Tokenizer</span>
+	<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="k">class</span> <span class="nc">_UNDEFINED</span><span class="p">():</span>
+	<span class="k">pass</span>
+
+<div class="viewcode-block" id="Context"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Context">[docs]</a><span class="k">class</span> <span class="nc">Context</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DocStringInheritor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;An abstract base class for context manager.</span>
+
+<span class="sd">	This class is used for setting default parameters</span>
+<span class="sd">	for :class:`Field` or :class:`Vocab`, without directly</span>
+<span class="sd">	passing parameters to ``__init__`` of the object.</span>
+
+<span class="sd">	See :ref:`examples&lt;dataloader_context_ref&gt;` for how to use context manager.</span>
+
+<span class="sd">	Arguments:</span>
+<span class="sd">		parameter_dict (Dict[str, Any]): Key-value dict for changed parameters.</span>
+<span class="sd">		weak (bool, optional): When ``False``, overwrite existing parameters. Default: ``False``.</span>
+<span class="sd">		none_as_ignored (bool, optional): When ``True``, ``None`` values in ``parameter_dict`` are ignored.</span>
+<span class="sd">			Otherwise, the corresponding key will be set to ``None``.</span>
+<span class="sd">			Default: ``True``.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">context_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">corrupted</span> <span class="o">=</span> <span class="kc">False</span>
+
+	<span class="n">UNDEFINED</span> <span class="o">=</span> <span class="n">_UNDEFINED</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">corrupted</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;A context object do not close before becoming invalid. Use ``with`` statement, &quot;</span> \
+				<span class="s2">&quot;or make sure of calling close.&quot;</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_old_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_parameters</span><span class="p">(</span><span class="n">parameter_dict</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="n">weak</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="n">none_as_ignored</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
+
+	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">_set_parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parameter_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+		<span class="n">old_parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">old_parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="n">weak</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="n">none_as_ignored</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">old_parameters</span>
+
+<div class="viewcode-block" id="Context.get"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Context.get">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">no_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Get the value of parameter named ``key`` stored in this class.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			key (str): name of the parameter</span>
+<span class="sd">			default (Any, optional): Default value if ``key`` is not set. Defaults: ``None``.</span>
+<span class="sd">			no_default (bool, optional): When ``True``, Raise ``KeyError`` if ``key`` is not set. Defaults: ``False``.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">no_default</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Must specify </span><span class="si">%s</span><span class="s2"> in Context.&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">default</span></div>
+
+	<span class="n">WEAK_ARGS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">			weak (bool, optional): When ``False``, overwrite existing parameters. Defaults: ``False``.</span>
+<span class="s1">	&#39;&#39;&#39;</span>
+	<span class="n">NONE_AS_IGNORED_ARGS</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">			none_as_ignored (bool, optional): When ``True``, ``None`` values in ``parameter_dict`` are ignored.</span>
+<span class="s1">				Otherwise, the corresponding value will be set to ``None``.</span>
+<span class="s1">				Default: ``True``.</span>
+<span class="s1">	&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="Context.set"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Context.set">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Set the parameter named ``key`` to ``value``, stored in this class.</span>
+<span class="sd">		If weak is ``True``, do not overwrite if ``key`` is already set.</span>
+<span class="sd">		Return the old value.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			key (str): The name of the changed parameter.</span>
+<span class="sd">			value (Any): The new value of changed parameter.</span>
+<span class="sd">				If want to delete the key, use ``Context.UNDEFINED``.</span>
+<span class="sd">			{WEAK_ARGS}</span>
+<span class="sd">			{NONE_AS_IGNORED_ARGS}</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">:</span>
+			<span class="n">old</span> <span class="o">=</span> <span class="n">Context</span><span class="o">.</span><span class="n">UNDEFINED</span>
+			<span class="k">if</span> <span class="n">value</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">none_as_ignored</span><span class="p">:</span>
+				<span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+			<span class="k">return</span> <span class="n">old</span>
+
+		<span class="n">old</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">weak</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">Context</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">:</span>
+				<span class="k">del</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+			<span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">none_as_ignored</span><span class="p">:</span>
+				<span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+		<span class="k">return</span> <span class="n">old</span></div>
+
+	<span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Enter a context&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="bp">self</span>
+
+	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">_restore</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">old_parameters</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">old_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">:</span>
+				<span class="k">continue</span>
+			<span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="n">Context</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">:</span>
+				<span class="k">del</span> <span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">cls</span><span class="o">.</span><span class="n">context_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span>
+
+	<span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Exit the context and restore the old parameter.&#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Context.close"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.Context.close">[docs]</a>	<span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Restore the old parameter.&#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_restore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_old_parameters</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+	<span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_closed&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">corrupted</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;A context object do not close before becoming invalid. Use ``with`` statement, &quot;</span> \
+				<span class="s2">&quot;or make sure of calling close.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FieldContext"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.FieldContext">[docs]</a><span class="k">class</span> <span class="nc">FieldContext</span><span class="p">(</span><span class="n">Context</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Bases: :class:`.dataloader.Context`</span>
+
+<span class="sd">	A context class for setting default parameters for :class:`.Field`.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">context_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">corrupted</span> <span class="o">=</span> <span class="kc">False</span>
+	<span class="n">UNDEFINED</span> <span class="o">=</span> <span class="n">Context</span><span class="o">.</span><span class="n">UNDEFINED</span>
+
+	<span class="n">NONE_AS_IGNORED_ARGS</span> <span class="o">=</span> <span class="n">Context</span><span class="o">.</span><span class="n">NONE_AS_IGNORED_ARGS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;``parameter_dict``&quot;</span><span class="p">,</span> <span class="s2">&quot;``kwargs``&quot;</span><span class="p">)</span>
+
+	<span class="c1"># pylint: disable=unused-argument</span>
+<div class="viewcode-block" id="FieldContext.set_parameters"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.FieldContext.set_parameters">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FieldContext&quot;</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Set a context for initialization of :class:`Field`.</span>
+<span class="sd">		See :ref:`examples&lt;dataloader_context_ref&gt;` for how to use context manager.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			{WEAK_ARGS}</span>
+<span class="sd">			{NONE_AS_IGNORED_ARGS}</span>
+<span class="sd">			\*\*kwargs: Any parameters to be set. Set ``key`` to ``FieldContext.UNDEFINED`` to delete a parameter.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">FieldContext</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="n">weak</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="n">none_as_ignored</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="VocabContext"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.VocabContext">[docs]</a><span class="k">class</span> <span class="nc">VocabContext</span><span class="p">(</span><span class="n">Context</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Bases: :class:`.dataloader.Context`</span>
+
+<span class="sd">	A context class for setting default parameters for :class:`.Vocab`.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">context_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">corrupted</span> <span class="o">=</span> <span class="kc">False</span>
+	<span class="n">UNDEFINED</span> <span class="o">=</span> <span class="n">Context</span><span class="o">.</span><span class="n">UNDEFINED</span>
+
+	<span class="n">NONE_AS_IGNORED_ARGS</span> <span class="o">=</span> <span class="n">Context</span><span class="o">.</span><span class="n">NONE_AS_IGNORED_ARGS</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;``parameter_dict``&quot;</span><span class="p">,</span> <span class="s2">&quot;``kwargs``&quot;</span><span class="p">)</span>
+
+	<span class="c1"># pylint: disable=unused-argument</span>
+<div class="viewcode-block" id="VocabContext.set_parameters"><a class="viewcode-back" href="../../../dataloader.html#cotk.dataloader.VocabContext.set_parameters">[docs]</a>	<span class="nd">@classmethod</span>
+	<span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;VocabContext&quot;</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Set a context for initialization of :class:`Vocab`.</span>
+<span class="sd">		See :ref:`examples&lt;dataloader_context_ref&gt;` for how to use context manager.</span>
+
+<span class="sd">		Arguments:</span>
+<span class="sd">			{WEAK_ARGS}</span>
+<span class="sd">			{NONE_AS_IGNORED_ARGS}</span>
+<span class="sd">			\*\*kwargs: Any parameters to be set. Set ``key`` to ``VocabContext.UNDEFINED`` to delete a parameter.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">VocabContext</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="n">weak</span><span class="p">,</span> <span class="n">none_as_ignored</span><span class="o">=</span><span class="n">none_as_ignored</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

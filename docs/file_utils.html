@@ -1,0 +1,493 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>file_utils &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LanguageGeneration" href="models/LanguageGeneration/index.html" />
+    <link rel="prev" title="Resources" href="resources.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/cli_usage.html">CLI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#resources-processor">resources_processor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>file_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/file_utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>File Utilities</p>
+<div class="section" id="module-cotk.file_utils">
+<span id="file-utils"></span><h1>file_utils<a class="headerlink" href="#module-cotk.file_utils" title="Permalink to this headline">¶</a></h1>
+<p>Utils for downloading and processing file.</p>
+<dl class="function">
+<dt id="cotk.file_utils.get_resource_file_path">
+<code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">get_resource_file_path</code><span class="sig-paren">(</span><em class="sig-param">file_id</em>, <em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/file_utils.html#get_resource_file_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.get_resource_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get file_path of resource of all types</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk.file_utils.import_local_resources">
+<code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">import_local_resources</code><span class="sig-paren">(</span><em class="sig-param">file_id</em>, <em class="sig-param">local_path</em>, <em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em>, <em class="sig-param">ignore_exist_error=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/file_utils.html#import_local_resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.import_local_resources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import benchmark from local, if hashtag checked, save to cache.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cotk.file_utils.load_file_from_url">
+<code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">load_file_from_url</code><span class="sig-paren">(</span><em class="sig-param">url</em>, <em class="sig-param">force=False</em>, <em class="sig-param">cache_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/file_utils.html#load_file_from_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.load_file_from_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>See cotk.downloader.load_file_from_url.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="resources-processor">
+<h1>resources_processor<a class="headerlink" href="#resources-processor" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="cotk.file_utils.ResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">ResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#ResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.ResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for processor.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.DefaultResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">DefaultResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#DefaultResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.DefaultResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for default resource: do nothing.</p>
+<dl class="method">
+<dt id="cotk.file_utils.DefaultResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#DefaultResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.DefaultResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.DefaultResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#DefaultResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.DefaultResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.BaseResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">BaseResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#BaseResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.BaseResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic processor for MSCOCO, OpenSubtitles, Ubuntu…</p>
+<dl class="method">
+<dt id="cotk.file_utils.BaseResourceProcessor.basepreprocess">
+<code class="sig-name descname">basepreprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#BaseResourceProcessor.basepreprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.BaseResourceProcessor.basepreprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.BaseResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#BaseResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.BaseResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.BaseResourceProcessor.get_temp_dir">
+<code class="sig-name descname">get_temp_dir</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#BaseResourceProcessor.get_temp_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.BaseResourceProcessor.get_temp_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a temp directory, in which some temporary files may be saved.
+The temp directory is a subdirectory of <cite>self.cache_dr</cite> and is named after the hash value of argument <cite>filepath</cite>,
+so that the same <cite>filepath</cite> has the same corresponding temp directory.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.MSCOCOResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">MSCOCOResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#MSCOCOResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.MSCOCOResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for MSCOCO dataset</p>
+<dl class="method">
+<dt id="cotk.file_utils.MSCOCOResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#MSCOCOResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.MSCOCOResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.MSCOCOResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#MSCOCOResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.MSCOCOResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.OpenSubtitlesResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">OpenSubtitlesResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#OpenSubtitlesResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.OpenSubtitlesResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for OpenSubtitles Dataset</p>
+<dl class="method">
+<dt id="cotk.file_utils.OpenSubtitlesResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#OpenSubtitlesResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.OpenSubtitlesResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.OpenSubtitlesResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#OpenSubtitlesResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.OpenSubtitlesResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.UbuntuResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">UbuntuResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#UbuntuResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.UbuntuResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for UbuntuCorpus dataset</p>
+<dl class="method">
+<dt id="cotk.file_utils.UbuntuResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#UbuntuResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.UbuntuResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.UbuntuResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#UbuntuResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.UbuntuResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.SwitchboardCorpusResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">SwitchboardCorpusResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SwitchboardCorpusResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SwitchboardCorpusResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for SwitchboardCorpus dataset</p>
+<dl class="method">
+<dt id="cotk.file_utils.SwitchboardCorpusResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SwitchboardCorpusResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SwitchboardCorpusResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.SwitchboardCorpusResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SwitchboardCorpusResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SwitchboardCorpusResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.SwitchboardCorpusResourceProcessor._read_file">
+<code class="sig-name descname">_read_file</code><span class="sig-paren">(</span><em class="sig-param">filepath</em>, <em class="sig-param">read_multi_ref=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SwitchboardCorpusResourceProcessor._read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SwitchboardCorpusResourceProcessor._read_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<em>str</em>) – Name of the file to read from</p></li>
+<li><p><strong>read_multi_ref</strong> (<em>bool</em>) – If False, add turn <code class="docutils literal notranslate"><span class="pre">&lt;d&gt;</span></code> ahead of each session
+If True, add turn <code class="docutils literal notranslate"><span class="pre">&lt;d&gt;</span></code> at the end of each session and read candidate <code class="docutils literal notranslate"><span class="pre">responses</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.SSTResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">SSTResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir</em>, <em class="sig-param">config_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SSTResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SSTResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for SST dataset</p>
+<dl class="method">
+<dt id="cotk.file_utils.SSTResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SSTResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SSTResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.SSTResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#SSTResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.SSTResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.GloveResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">GloveResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#GloveResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.GloveResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base Class for all dimension version of glove wordvector.</p>
+<dl class="method">
+<dt id="cotk.file_utils.GloveResourceProcessor.basepreprocess">
+<code class="sig-name descname">basepreprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#GloveResourceProcessor.basepreprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.GloveResourceProcessor.basepreprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.GloveResourceProcessor.basepostprocess">
+<code class="sig-name descname">basepostprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#GloveResourceProcessor.basepostprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.GloveResourceProcessor.basepostprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.Glove50dResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">Glove50dResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove50dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove50dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove50d wordvector</p>
+<dl class="method">
+<dt id="cotk.file_utils.Glove50dResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove50dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove50dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.Glove50dResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove50dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove50dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.Glove100dResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">Glove100dResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove100dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove100dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove100d wordvector</p>
+<dl class="method">
+<dt id="cotk.file_utils.Glove100dResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove100dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove100dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.Glove100dResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove100dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove100dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.Glove200dResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">Glove200dResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove200dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove200dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove200d wordvector</p>
+<dl class="method">
+<dt id="cotk.file_utils.Glove200dResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove200dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove200dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.Glove200dResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove200dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove200dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cotk.file_utils.Glove300dResourceProcessor">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.file_utils.</code><code class="sig-name descname">Glove300dResourceProcessor</code><span class="sig-paren">(</span><em class="sig-param">cache_dir=None</em>, <em class="sig-param">config_dir=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove300dResourceProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove300dResourceProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processor for glove300d wordvector</p>
+<dl class="method">
+<dt id="cotk.file_utils.Glove300dResourceProcessor.preprocess">
+<code class="sig-name descname">preprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove300dResourceProcessor.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove300dResourceProcessor.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess after download and before save.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cotk.file_utils.Glove300dResourceProcessor.postprocess">
+<code class="sig-name descname">postprocess</code><span class="sig-paren">(</span><em class="sig-param">local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/file_utils/resource_processor.html#Glove300dResourceProcessor.postprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.file_utils.Glove300dResourceProcessor.postprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess before read.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="models/LanguageGeneration/index.html" class="btn btn-neutral float-right" title="LanguageGeneration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="resources.html" class="btn btn-neutral float-left" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

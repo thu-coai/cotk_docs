@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -87,16 +87,16 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Word Vector</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-cotk.wordvector">WordVector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-cotk.wordvector">WordVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generalwordvector">GeneralWordVector</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#glove">Glove</a></li>
 </ul>
 </li>
@@ -104,7 +104,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -184,93 +185,113 @@
 loading wordvector automatically.</p>
 <dl class="class">
 <dt id="cotk.wordvector.WordVector">
-<em class="property">class </em><code class="descclassname">cotk.wordvector.</code><code class="descname">WordVector</code><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base of all word vector loader</p>
-<dl class="classmethod">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.wordvector.</code><code class="sig-name descname">WordVector</code><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base of all word vector loader.</p>
+<dl class="method">
 <dt id="cotk.wordvector.WordVector.get_all_subclasses">
-<em class="property">classmethod </em><code class="descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cotk.wordvector.WordVector.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">get_all_subclasses</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterable[Any]<a class="headerlink" href="#cotk.wordvector.WordVector.get_all_subclasses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a generator of all subclasses.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(generator) A iterator over all subclasses.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="cotk.wordvector.WordVector.load_class">
-<em class="property">classmethod </em><code class="descname">load_class</code><span class="sig-paren">(</span><em>class_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cotk.wordvector.WordVector.load_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a subclass of <code class="docutils literal notranslate"><span class="pre">class_name</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>class_name</strong> (<em>str</em>) – target class name.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(class) The subclass specified by <code class="docutils literal notranslate"><span class="pre">class_name</span></code></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.wordvector.WordVector.load_matrix">
-<code class="descname">load_matrix</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em>, <em>mean=0</em>, <em>std=0.1</em>, <em>default_embeddings=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector.load_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector.load_matrix" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.wordvector.WordVector.load_class">
+<em class="property">classmethod </em><code class="sig-name descname">load_class</code><span class="sig-paren">(</span><em class="sig-param">class_name</em><span class="sig-paren">)</span> &#x2192; Any<a class="headerlink" href="#cotk.wordvector.WordVector.load_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subclass of <code class="docutils literal notranslate"><span class="pre">class_name</span></code>, case insensitively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>class_name</strong> (<em>str</em>) – target class name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="generalwordvector">
+<h2>GeneralWordVector<a class="headerlink" href="#generalwordvector" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cotk.wordvector.GeneralWordVector">
+<em class="property">class </em><code class="sig-prename descclassname">cotk.wordvector.</code><code class="sig-name descname">GeneralWordVector</code><span class="sig-paren">(</span><em class="sig-param">file_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#GeneralWordVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.GeneralWordVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.WordVector</span></code></p>
+<p>This class is a general pretrained word vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_id</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>) – A str indicates the source of word vectors. It can be local path (<code class="docutils literal notranslate"><span class="pre">&quot;./data&quot;</span></code>), a resource name
+(<code class="docutils literal notranslate"><span class="pre">&quot;resources://dataset&quot;</span></code>), or an url (<code class="docutils literal notranslate"><span class="pre">&quot;http://test.com/dataset.zip&quot;</span></code>).
+See <a class="reference internal" href="file_utils.html#cotk.file_utils.get_resource_file_path" title="cotk.file_utils.get_resource_file_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cotk.file_utils.get_resource_file_path()</span></code></a> for further details.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, do not use pretrained word vector.</p>
+</dd>
+</dl>
+<dl>
+<dt>Input Format</dt><dd><p>A text file named <code class="docutils literal notranslate"><span class="pre">wordvec.txt</span></code> should be contained in the path. In the file, each word vec should be
+described in two lines. The first line is the word (or phrase), then the next line is multiple floats
+indicating the embedding.</p>
+<p>Example of <code class="docutils literal notranslate"><span class="pre">wordvec.txt</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>word
+0.0 1.0 -2.3
+phrases
+0.3 -1.2 3.4
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="cotk.wordvector.GeneralWordVector.load_matrix">
+<code class="sig-name descname">load_matrix</code><span class="sig-paren">(</span><em class="sig-param">n_dims</em>, <em class="sig-param">vocab_list</em>, <em class="sig-param">mean=None</em>, <em class="sig-param">std=None</em>, <em class="sig-param">default_embeddings=None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#GeneralWordVector.load_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.GeneralWordVector.load_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load pretrained word vector and return a numpy 2-d array. The ith row is the feature
 of the ith word in <code class="docutils literal notranslate"><span class="pre">vocab_list</span></code>. If some feature is not included in pretrained
 word vector, it will be initialized by:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code>, if it is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
-<li>normal distribution with <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code>, otherwise.</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code>, if it is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p>normal distribution with <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code>, otherwise.</p></li>
 </ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n_dims</strong> (<em>int</em>) – specify the dimension size of word vector. If <code class="docutils literal notranslate"><span class="pre">n_dims</span></code>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_dims</strong> (<em>int</em>) – specify the dimension size of word vector. If <code class="docutils literal notranslate"><span class="pre">n_dims</span></code>
 is bigger than size of pretrained word vector, the rest embedding will be
-initialized by <code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code> or a normal distribution.</li>
-<li><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
+initialized by <code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code> or a normal distribution.</p></li>
+<li><p><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
 is any word not appeared in pretrained word vector, the embedding will be
-initialized by <code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code> or a normal distribution.</li>
-<li><strong>mean</strong> – The mean of normal distribution. Default: 0.</li>
-<li><strong>std</strong> – The standard deviation of normal distribution. Default: 0.1.</li>
-<li><strong>default_embeddings</strong> – The default embeddings, it size should be
-<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">ndims]</span></code>.</li>
+initialized by <code class="docutils literal notranslate"><span class="pre">default_embeddings</span></code> or a normal distribution.</p></li>
+<li><p><strong>mean</strong> (<em>float, Any, None</em>) – The mean of normal distribution.
+It can be a float, or an array whose shape is <code class="docutils literal notranslate"><span class="pre">[n_dims]</span></code>.
+if <code class="docutils literal notranslate"><span class="pre">None</span></code>, it will be set by the mean of loaded word vector embedding.
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>std</strong> (<em>float, Any, None</em>) – The standard deviation of normal distribution.
+It can be a float, or an array whose shape is <code class="docutils literal notranslate"><span class="pre">[n_dims]</span></code>.
+if <code class="docutils literal notranslate"><span class="pre">None</span></code>, it will be set by the standard deviation of loaded word vector embedding.
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>default_embeddings</strong> (<em>Any, optional</em>) – The default embeddings, its size should be
+<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">n_dims]</span></code>. Default: None, which indicates initializing
+the embeddings from the normal distribution with <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code>.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – A  2-d array. Size:<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">n_dims]</span></code>.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) – A  2-d array. Size:<code class="docutils literal notranslate"><span class="pre">[len(vocab_list),</span> <span class="pre">n_dims]</span></code>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="cotk.wordvector.WordVector.load_dict">
-<code class="descname">load_dict</code><span class="sig-paren">(</span><em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#WordVector.load_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.WordVector.load_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="cotk.wordvector.GeneralWordVector.load_dict">
+<code class="sig-name descname">load_dict</code><span class="sig-paren">(</span><em class="sig-param">vocab_list</em><span class="sig-paren">)</span> &#x2192; Dict[str, numpy.ndarray]<a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#GeneralWordVector.load_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.GeneralWordVector.load_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load word vector and return a dict that maps words to vectors.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vocab_list</strong> (<em>list</em>) – specify the vocab list used in data loader. If there
 is any word not appeared in pretrained word vector, the feature will
-not be returned.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>(dict)</em> –<dl class="docutils">
-<dt>maps a word (str) to its pretrained embedding (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</dt>
-<dd>where its shape is [ndims].</dd>
+not be returned.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><em>(dict)</em> –</p>
+<dl class="simple">
+<dt>maps a word (str) to its pretrained embedding (<code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</dt><dd><p>where its shape is [ndims].</p>
+</dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -279,33 +300,20 @@ not be returned.</td>
 <h3>Glove<a class="headerlink" href="#glove" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="cotk.wordvector.Glove">
-<em class="property">class </em><code class="descclassname">cotk.wordvector.</code><code class="descname">Glove</code><span class="sig-paren">(</span><em>file_id='resources://Glove300d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove" title="Permalink to this definition">¶</a></dt>
-<dd><p>GloVe is pre-trained word vector named <cite>Global Vectors for Word Representation</cite>.</p>
+<em class="property">class </em><code class="sig-prename descclassname">cotk.wordvector.</code><code class="sig-name descname">Glove</code><span class="sig-paren">(</span><em class="sig-param">file_id='resources://Glove300d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/wordvector.html#Glove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.GeneralWordVector</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.WordVector</span></code></p>
+<p>GloVe is pre-trained word vector named <cite>Global Vectors for Word Representation</cite>.</p>
 <p class="rubric">References</p>
 <p>[1] Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014.
 GloVe: Global Vectors for Word Representation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_id</strong> (<em>str</em>) – a str indicates the source of GloVe word vectors. If it is local file,
-it can be a directory contains ‘glove.txt’ or just a text file.
-Default: <code class="docutils literal notranslate"><span class="pre">resources://Glove300d</span></code>.     A 300d glove is downloaded and cached.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="cotk.wordvector.Glove.load_matrix">
-<code class="descname">load_matrix</code><span class="sig-paren">(</span><em>n_dims</em>, <em>vocab_list</em>, <em>mean=0</em>, <em>std=0.1</em>, <em>default_embeddings=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Refer to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load()</span></code>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="cotk.wordvector.Glove.load_dict">
-<code class="descname">load_dict</code><span class="sig-paren">(</span><em>vocab_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cotk/wordvector/gloves.html#Glove.load_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cotk.wordvector.Glove.load_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Refer to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WordVector.load_pretrain_embed()</span></code>.</p>
-</dd></dl>
-
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_id</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>) – A str indicates the source of word vectors. It can be local path (<code class="docutils literal notranslate"><span class="pre">&quot;./data&quot;</span></code>), a resource name
+(<code class="docutils literal notranslate"><span class="pre">&quot;resources://dataset&quot;</span></code>), or an url (<code class="docutils literal notranslate"><span class="pre">&quot;http://test.com/dataset.zip&quot;</span></code>).
+See <a class="reference internal" href="file_utils.html#cotk.file_utils.get_resource_file_path" title="cotk.file_utils.get_resource_file_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cotk.file_utils.get_resource_file_path()</span></code></a> for further details.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, do not use pretrained word vector. Default: <code class="docutils literal notranslate"><span class="pre">resources://Glove300d</span></code>. A 300-d pretrained GloVe will be downloaded (or loaded from cache) and used.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

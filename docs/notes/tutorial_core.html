@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/cotk_theme.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="CLI Usage: Fast Model Reproduction" href="tutorial_cli.html" />
+    <link rel="next" title="CLI Usage" href="cli_usage.html" />
     <link rel="prev" title="Quick Start" href="quickstart.html" /> 
 </head>
 
@@ -98,18 +98,18 @@
 <li class="toctree-l2"><a class="reference internal" href="#additional-word-vector">Additional: Word Vector</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -188,19 +188,19 @@ We will focus on how to use <code class="docutils literal notranslate"><span cla
 so we assume you have known how to construct a neural network.</p>
 <p>After reading this tutorial, you may know:</p>
 <ul class="simple">
-<li>How to use <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cotk.dataloader</span></code></a> downloading and loading dataset.</li>
-<li>How to train model with the support of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</li>
-<li>How to use <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cotk.metric</span></code></a> evaluating models.</li>
+<li><p>How to use <a class="reference internal" href="../dataloader.html#module-cotk.dataloader" title="cotk.dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cotk.dataloader</span></code></a> downloading and loading dataset.</p></li>
+<li><p>How to train model with the support of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</p></li>
+<li><p>How to use <a class="reference internal" href="../metric.html#module-cotk.metric" title="cotk.metric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cotk.metric</span></code></a> evaluating models.</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> does <strong>not</strong> rely on any deep learning framework,
 so you can even use shallow models like ngram language model.
 However, this tutorial constructs neural networks with
 <code class="docutils literal notranslate"><span class="pre">pytorch</span></code>, so make sure you have installed the following package:</p>
 <ul class="simple">
-<li>Python &gt;= 3.5</li>
-<li>cotk</li>
-<li>pytorch &gt;= 1.0.0</li>
-<li>livelossplot (optional, just for showing loss)</li>
+<li><p>Python &gt;= 3.5</p></li>
+<li><p>cotk &gt;= 0.1.0</p></li>
+<li><p>pytorch &gt;= 1.0.0</p></li>
+<li><p>livelossplot (optional, just for showing loss)</p></li>
 </ul>
 <p><strong>Source codes</strong></p>
 <p>You can click <a class="reference external" href="https://github.com/thu-coai/cotk/blob/master/docs/source/notes/tutorial_core_1.ipynb">here</a> for the following ipynb files.
@@ -213,52 +213,48 @@ Therefore, we first construct a <a class="reference internal" href="../dataloade
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.dataloader</span> <span class="kn">import</span> <span class="n">MSCOCO</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://MSCOCO_small&quot;</span><span class="p">)</span> <span class="c1"># &quot;resources://MSCOCO_small&quot; is a predefined resources name</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vocab Size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens:&quot;</span><span class="p">,</span>  <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vocab Size:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_size</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First 10 tokens:&quot;</span><span class="p">,</span>  <span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_list</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dataset is split into:&quot;</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">get_batch</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># get the sample of id 0</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;sent&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: name: MSCOCO_small
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: downloading resources
+INFO: name: MSCOCO_small
 INFO: source: default
-INFO: processor type: MSCOCO
+INFO: url: https://cotk-data.s3-ap-northeast-1.amazonaws.com/mscoco_small.zip
+INFO: processor: MSCOCO
+100%|██████████| 1020154/1020154 [00:00&lt;00:00, 1265532.43B/s]INFO: resource cached at /root/.cotk_cache/bd12bbf8ce8b157cf620e929bb36379443876ad115951dfeafb63d50b280cff2_temp
 
-100%|██████████| 1020154/1020154 [00:00&lt;00:00, 1853831.54B/s]
-
-INFO: resource cached at /root/.cotk_cache/9e4c0afe33d98fa249e472206a39e5553d739234d0a27e055044ae8880e314b1_unzip/mscoco
-valid vocab list length = 2588
-vocab list length = 12411
-train set. invalid rate: 0.031716, unknown rate: 0.000000, max length before cut: 55, cut word rate: 0.000022
-dev set. invalid rate: 0.034089, unknown rate: 0.000000, max length before cut: 46, cut word rate: 0.000000
-test set. invalid rate: 0.031213, unknown rate: 0.000000, max length before cut: 27, cut word rate: 0.000000
-Vocab Size: 2588
+Vocab Size: 2597
 First 10 tokens: [&#39;&lt;pad&gt;&#39;, &#39;&lt;unk&gt;&#39;, &#39;&lt;go&gt;&#39;, &#39;&lt;eos&gt;&#39;, &#39;.&#39;, &#39;a&#39;, &#39;A&#39;, &#39;on&#39;, &#39;of&#39;, &#39;in&#39;]
-Dataset is split into: [&#39;train&#39;, &#39;dev&#39;, &#39;test&#39;]
-{&#39;sent&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
-        4,   3]]),
-&#39;sent_allvocabs&#39;: array([[  2,   6,  67, 651, 549,  11,   5,  65,  89,  10, 115, 349,  83,
-        4,   3]]),
-&#39;sent_length&#39;: array([15])}
-[&#39;&lt;go&gt;&#39;, &#39;A&#39;, &#39;blue&#39;, &#39;lamp&#39;, &#39;post&#39;, &#39;with&#39;, &#39;a&#39;, &#39;sign&#39;, &#39;for&#39;, &#39;the&#39;, &#39;yellow&#39;, &#39;brick&#39;, &#39;road&#39;, &#39;.&#39;]
+Dataset is split into: dict_keys([&#39;train&#39;, &#39;dev&#39;, &#39;test&#39;])
+{&#39;sent&#39;: array([[  2,   6,  67, 653, 550,  11,   5,  65,  89,  10, 115, 352,  83,
+          4,   3]]),
+ &#39;sent_allvocabs&#39;: array([[  2,   6,  67, 653, 550,  11,   5,  65,  89,  10, 115, 352,  83,
+          4,   3]]),
+ &#39;sent_length&#39;: array([15]),
+ &#39;sent_str&#39;: [&#39;A blue lamp post with a sign for the yellow brick road .&#39;]}
+[&#39;A&#39;, &#39;blue&#39;, &#39;lamp&#39;, &#39;post&#39;, &#39;with&#39;, &#39;a&#39;, &#39;sign&#39;, &#39;for&#39;, &#39;the&#39;, &#39;yellow&#39;, &#39;brick&#39;, &#39;road&#39;, &#39;.&#39;]
 </pre></div>
 </div>
 <p><a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">cotk.dataloader.MSCOCO</span></code></a> has helped us construct vocabulary list and
 turn the sentences into index representation.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can also import dataset from url (<a class="reference external" href="http://test.com/data.zip">http://test.com/data.zip</a>) or
+<p class="admonition-title">Note</p>
+<p>You can also import dataset from url (<a class="reference external" href="http://test.com/data.zip">http://test.com/data.zip</a>) or
 local path (./data.zip), as long as the format of the data is suitable.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You may find <code class="docutils literal notranslate"><span class="pre">data</span></code> contains similiar key <code class="docutils literal notranslate"><span class="pre">sent</span></code> and <code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code>.
+<p class="admonition-title">Note</p>
+<p>You may find <code class="docutils literal notranslate"><span class="pre">data</span></code> contains similiar key <code class="docutils literal notranslate"><span class="pre">sent</span></code> and <code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code>.
 The difference between them is that <code class="docutils literal notranslate"><span class="pre">sent</span></code> only contains
-<a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">valid vocabularies</span></a> and
-<code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code> contains both <a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">valid vocabularies</span></a> and
-<a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">invalid vocabularies</span></a>.</p>
+<a class="reference internal" href="../dataloader.html#vocabulary-ref"><span class="std std-ref">valid vocabularies</span></a> and
+<code class="docutils literal notranslate"><span class="pre">sent_allvocabs</span></code> contains both <a class="reference internal" href="../dataloader.html#vocabulary-ref"><span class="std std-ref">valid vocabularies</span></a> and
+<a class="reference internal" href="../dataloader.html#vocabulary-ref"><span class="std std-ref">invalid vocabularies</span></a>.</p>
 </div>
 </div>
 <div class="section" id="training-models">
@@ -273,9 +269,9 @@ The difference between them is that <code class="docutils literal notranslate"><
 <span class="k">class</span> <span class="nc">LanguageModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">embedding_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">embedding_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">crossentropy</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -290,7 +286,7 @@ The difference between them is that <code class="docutils literal notranslate"><
         <span class="n">incoming</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
         <span class="c1"># incoming: (batch_size, max(sent_length), hidden_size)</span>
         <span class="n">incoming</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_layer</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
-        <span class="c1"># incoming: (batch_size, max(sent_length), dataloader.vocab_size)</span>
+        <span class="c1"># incoming: (batch_size, max(sent_length), dataloader.frequent_vocab_size)</span>
 
         <span class="n">loss</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sent_length</span><span class="p">):</span>
@@ -308,9 +304,9 @@ The difference between them is that <code class="docutils literal notranslate"><
 </div>
 <p>If you are familiar with GRU, you can see the codes constructed a
 network for predicting next token. Then, we will train our model with
-the help of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. (It may takes several minites too train the model.)</p>
+the help of <code class="docutils literal notranslate"><span class="pre">cotk</span></code>. (It may takes several minutes to train the model.)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLosses</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">net</span> <span class="o">=</span> <span class="n">LanguageModel</span><span class="p">()</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">)</span>
@@ -332,20 +328,20 @@ the help of <code class="docutils literal notranslate"><span class="pre">cotk</s
             <span class="k">break</span> <span class="c1"># break for shorten time of an epoch</span>
     <span class="n">plot</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss_arr</span><span class="p">)})</span>
     <span class="n">plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;epoch </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epoch_num</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;epoch </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epoch_num</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
 <img alt="../_images/training_loss.png" src="../_images/training_loss.png" />
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>loss:
-training   (min:    3.126, max:    6.401, cur:    3.152)
+training   (min:    3.161, max:    6.577, cur:    3.239)
 epoch 100/100
 </pre></div>
 </div>
 </div>
 <div class="section" id="evaluations">
 <h2>Evaluations<a class="headerlink" href="#evaluations" title="Permalink to this headline">¶</a></h2>
-<p>How well our model can fit the data? <code class="docutils literal notranslate"><span class="pre">cotk</span></code> have provided
+<p>How well our model can fit the data? <code class="docutils literal notranslate"><span class="pre">cotk</span></code> provides
 some standard metrics for language generation model.</p>
 <div class="section" id="teacher-forcing">
 <h3>Teacher Forcing<a class="headerlink" href="#teacher-forcing" title="Permalink to this headline">¶</a></h3>
@@ -366,15 +362,15 @@ section, we use it right now.</p>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>test set restart, 78 batches and 2 left
-{&#39;perplexity&#39;: 32.94079849259241, &#39;perplexity hashvalue&#39;: &#39;4f101c2986f1fe10ce1d2197c3086d3659aec3e6495f381d67f00b4dbb40a538&#39;}
+{&#39;perplexity&#39;: 34.22552934535805, &#39;perplexity hashvalue&#39;: &#39;2cc7ecfad6f2b41949648225e043d0b2f8bcf283aae5ef773e821f641b8a9763&#39;}
 </pre></div>
 </div>
 <p>The codes above evaluated the model in teacher forcing mode, where every input
 token is the real data.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The type of <code class="docutils literal notranslate"><span class="pre">data['gen_log_prob']</span></code> is <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, but most metrics can
-<strong>not</strong> receive a tensor input as we are trying to implement a library <strong>not</strong>
+<p class="admonition-title">Note</p>
+<p>The type of <code class="docutils literal notranslate"><span class="pre">data['gen_log_prob']</span></code> is <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, but most metrics <strong>do not</strong>
+receive a tensor input as we are trying to implement a library <strong>not</strong>
 depending on any deep learning framework. <a class="reference internal" href="../metric.html#cotk.metric.PerplexityMetric" title="cotk.metric.PerplexityMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">metric.PerplexityMetric</span></code></a> just use <code class="docutils literal notranslate"><span class="pre">torch</span></code>
 to accelerate the calculation, a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> can also be accepted.</p>
 </div>
@@ -382,7 +378,7 @@ to accelerate the calculation, a <code class="xref py py-class docutils literal 
 <div class="section" id="free-run">
 <h3>Free Run<a class="headerlink" href="#free-run" title="Permalink to this headline">¶</a></h3>
 <p>A language model can also generate sentences by sending the
-generated token back to input in each step. We call it “freerun”
+generated token back to input in each step. It is called “freerun”
 or “inference” mode.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Pytorch</span></code> doesn’t provide a convenience api for freerun, here we implement a
 simple version that all the prefixes will be recalculated at every step.</p>
@@ -405,36 +401,37 @@ simple version that all the prefixes will be recalculated at every step.</p>
 </pre></div>
 </div>
 <p>Out:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:00&lt;00:00, 1063.21it/s]
-{&#39;bw-bleu&#39;: 0.04871277607530735,
- &#39;fw-bleu&#39;: 0.22873635755754274,
- &#39;fw-bw-bleu&#39;: 0.08032018568655393,
- &#39;fw-bw-bleu hashvalue&#39;: &#39;3018dc317f82b6013f011c1f8ccd90c5affed710b7d7d06a7235cf455c233542&#39;,
- &#39;gen&#39;: [[&#39;A&#39;, &#39;red&#39;, &#39;bus&#39;, &#39;car&#39;, &#39;being&#39;, &#39;snow&#39;, &#39;behind&#39;, &#39;much&#39;, &#39;to&#39;, &#39;it&#39;, &#39;.&#39;],
-         [&#39;The&#39;, &#39;pair&#39;, &#39;of&#39;, &#39;cover&#39;, &#39;position&#39;, &#39;two&#39;, &#39;vases&#39;, &#39;screen&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;black&#39;, &#39;dog&#39;, &#39;walking&#39;, &#39;from&#39;, &#39;a&#39;, &#39;bush&#39;, &#39;.&#39;],
-         [&#39;The&#39;, &#39;zebra&#39;, &#39;sits&#39;, &#39;in&#39;, &#39;front&#39;, &#39;of&#39;, &#39;a&#39;, &#39;bathroom&#39;, &#39;lamp&#39;, &#39;.&#39;],
-         [&#39;&lt;unk&gt;&#39;, &#39;single&#39;, &#39;boys&#39;, &#39;using&#39;, &#39;a&#39;, &#39;baseball&#39;, &#39;game&#39;, &#39;,&#39;, &#39;holds&#39;, &#39;her&#39;, &#39;dog&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;picture&#39;, &#39;of&#39;, &#39;a&#39;, &#39;shopping&#39;, &#39;colored&#39;, &#39;restroom&#39;, &#39;with&#39;, &#39;broccoli&#39;, &#39;on&#39;, &#39;it&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;people&#39;, &#39;that&#39;, &#39;is&#39;, &#39;stopped&#39;, &#39;seen&#39;, &#39;on&#39;, &#39;back&#39;, &#39;it&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;street&#39;, &#39;holding&#39;, &#39;black&#39;, &#39;with&#39;, &#39;grass&#39;, &#39;up&#39;, &#39;up&#39;, &#39;at&#39;, &#39;a&#39;, &#39;white&#39;, &#39;mirror&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;cow&#39;, &#39;sits&#39;, &#39;in&#39;, &#39;front&#39;, &#39;of&#39;, &#39;the&#39;, &#39;bowl&#39;, &#39;with&#39;, &#39;a&#39;, &#39;pan&#39;, &#39;are&#39;, &#39;playing&#39;],
-         [&#39;A&#39;, &#39;woman&#39;, &#39;looking&#39;, &#39;hardwood&#39;, &#39;&lt;unk&gt;&#39;, &#39;of&#39;, &#39;some&#39;, &#39;is&#39;, &#39;open&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;fire&#39;, &#39;hydrant&#39;, &#39;taking&#39;, &#39;a&#39;, &#39;red&#39;, &#39;toy&#39;, &#39;feet&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;woman&#39;, &#39;is&#39;, &#39;flying&#39;, &#39;on&#39;, &#39;a&#39;, &#39;cell&#39;, &#39;phone&#39;, &#39;somewhere&#39;, &#39;.&#39;],
-         [&#39;A&#39;, &#39;bear&#39;, &#39;holding&#39;, &#39;a&#39;, &#39;hill&#39;, &#39;suit&#39;, &#39;it&#39;, &#39;on&#39;, &#39;a&#39;, &#39;wooden&#39;, &#39;board&#39;, &#39;.&#39;],
-         [&#39;Woman&#39;, &#39;playing&#39;, &#39;frisbee&#39;, &#39;below&#39;, &#39;food&#39;, &#39;across&#39;, &#39;the&#39;, &#39;ocean&#39;, &#39;.&#39;],
-         [&#39;There&#39;, &#39;has&#39;, &#39;some&#39;, &#39;two&#39;, &#39;rice&#39;, &#39;screens&#39;, &#39;with&#39;, &#39;several&#39;, &#39;colorful&#39;, &#39;toy&#39;, &#39;on&#39;, &#39;a&#39;, &#39;white&#39;, &#39;tile&#39;, &#39;toilet&#39;, &#39;.&#39;],
-         [&#39;Large&#39;, &#39;&lt;unk&gt;&#39;, &#39;with&#39;, &#39;many&#39;, &#39;pretty&#39;, &#39;an&#39;, &#39;apple&#39;, &#39;.&#39;]],
- &#39;self-bleu&#39;: 0.07416490324471028,
- &#39;self-bleu hashvalue&#39;: &#39;9f1121d3988ef4789943ef18c1c0b749eec0d8eee3f12270671605ce670225f6&#39;}
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>100%|██████████| 1000/1000 [00:00&lt;00:00, 1104.71it/s]
+100%|██████████| 1250/1250 [00:01&lt;00:00, 1092.16it/s]
+{&#39;bw-bleu&#39;: 0.0552594607682451,
+ &#39;fw-bleu&#39;: 0.26895525176213,
+ &#39;fw-bw-bleu&#39;: 0.0916819725247384,
+ &#39;fw-bw-bleu hashvalue&#39;: &#39;b8b072913c122176b5a4bd3954eb1f48c921bb6c9e90b0e4547f2ad98cee56a5&#39;,
+ &#39;gen&#39;: [[&#39;A&#39;, &#39;herd&#39;, &#39;of&#39;, &#39;items&#39;, &#39;with&#39;, &#39;different&#39;, &#39;toppings&#39;, &#39;on&#39;, &#39;a&#39;, &#39;snow&#39;, &#39;competition&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;woman&#39;, &#39;oven&#39;, &#39;sits&#39;, &#39;decorated&#39;, &#39;and&#39;, &#39;forks&#39;, &#39;and&#39;, &#39;flowers&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;couple&#39;, &#39;of&#39;, &#39;&lt;unk&gt;&#39;, &#39;made&#39;, &#39;with&#39;, &#39;into&#39;, &#39;a&#39;, &#39;container&#39;, &#39;of&#39;, &#39;people&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;person&#39;, &#39;sitting&#39;, &#39;at&#39;, &#39;the&#39;, &#39;snow&#39;, &#39;flower&#39;, &#39;by&#39;, &#39;a&#39;, &#39;drink&#39;, &#39;shows&#39;, &#39;his&#39;, &#39;giraffe&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;girl&#39;, &#39;standing&#39;, &#39;on&#39;, &#39;the&#39;, &#39;wall&#39;, &#39;outfit&#39;, &#39;in&#39;, &#39;the&#39;, &#39;pedestrian&#39;, &#39;roses&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;young&#39;, &#39;girl&#39;, &#39;is&#39;, &#39;standing&#39;, &#39;by&#39;, &#39;businesses&#39;, &#39;raised&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;small&#39;, &#39;baseball&#39;, &#39;pitcher&#39;, &#39;down&#39;, &#39;a&#39;, &#39;tennis&#39;, &#39;ball&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;boat&#39;, &#39;and&#39;, &#39;bananas&#39;, &#39;train&#39;, &#39;in&#39;, &#39;a&#39;, &#39;field&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;white&#39;, &#39;double&#39;, &#39;decker&#39;, &#39;dock&#39;, &#39;sitting&#39;, &#39;inside&#39;, &#39;of&#39;, &#39;an&#39;, &#39;airplane&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;boy&#39;, &#39;being&#39;, &#39;transit&#39;, &#39;fire&#39;, &#39;hydrant&#39;, &#39;in&#39;, &#39;a&#39;, &#39;room&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;white&#39;, &#39;sink&#39;, &#39;&lt;unk&gt;&#39;, &#39;a&#39;, &#39;vase&#39;, &#39;with&#39;, &#39;two&#39;, &#39;drinks&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;very&#39;, &#39;cute&#39;, &#39;black&#39;, &#39;clock&#39;, &#39;sitting&#39;, &#39;on&#39;, &#39;ski&#39;, &#39;&lt;unk&gt;&#39;, &#39;near&#39;, &#39;a&#39;, &#39;hallway&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;large&#39;, &#39;plate&#39;, &#39;sliced&#39;, &#39;with&#39;, &#39;tomatoes&#39;, &#39;in&#39;, &#39;the&#39;, &#39;water&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;plane&#39;, &#39;with&#39;, &#39;a&#39;, &#39;laptop&#39;, &#39;and&#39;, &#39;set&#39;, &#39;of&#39;, &#39;furniture&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;person&#39;, &#39;sitting&#39;, &#39;on&#39;, &#39;a&#39;, &#39;skateboard&#39;, &#39;walk&#39;, &#39;a&#39;, &#39;dirt&#39;, &#39;area&#39;, &#39;near&#39;, &#39;the&#39;, &#39;.&#39;],
+     [&#39;A&#39;, &#39;young&#39;, &#39;boy&#39;, &#39;laying&#39;, &#39;around&#39;, &#39;with&#39;, &#39;a&#39;, &#39;red&#39;, &#39;table&#39;, &#39;.&#39;]],
+&#39;self-bleu&#39;: 0.05696094523203348,
+&#39;self-bleu hashvalue&#39;: &#39;90865484e69f47cf7aea7f89b1b1b563972ed140e8f0e6e8ec8064b7155c534c&#39;}
 </pre></div>
 </div>
 </div>
 <div class="section" id="hash-value">
 <h3>Hash value<a class="headerlink" href="#hash-value" title="Permalink to this headline">¶</a></h3>
 <p>Hash value is for checking whether you use the test set correctly.
-We can refer to dashboard (TO BE ONLINE) for the state of art on this dataset,
+We can refer to the <a class="reference external" href="http://coai.cs.tsinghua.edu.cn/dashboard/">dashboard</a> for the state of art on this dataset,
 and we find our hashvalue is correct.</p>
 <p>However, if teacher forcing is tested as following codes, we will
 see a different hash value, which means the implementation is not correct.</p>
@@ -446,14 +443,14 @@ see a different hash value, which means the implementation is not correct.</p>
         <span class="n">net</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="s2">&quot;gen_log_prob&quot;</span> <span class="ow">in</span> <span class="n">data</span>
     <span class="n">metric</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">15</span><span class="p">:</span> <span class="c1">#ignore the following batches</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">15</span><span class="p">:</span> <span class="c1">#ignore the following batches leading to an incorrect implementation</span>
         <span class="k">break</span>
 <span class="n">pprint</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">close</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Out:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test set restart, 78 batches and 2 left
-{&#39;perplexity&#39;: 31.883897093289583, &#39;perplexity hashvalue&#39;: &#39;125a45af618245364a722ad3fcac59534f30e64aa7e2dfefd35402cd67a74cec&#39;}
+{&#39;perplexity&#39;: 31.935582929323076, &#39;perplexity hashvalue&#39;: &#39;d38265b09387b07be8461f54a7879250b196b0f5bbd3669dc5c6cd17958d81f8&#39;}
 </pre></div>
 </div>
 </div>
@@ -465,7 +462,7 @@ processing natural languages. <code class="docutils literal notranslate"><span c
 that help you downloading and get word vectors.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cotk.wordvector</span> <span class="kn">import</span> <span class="n">Glove</span>
 <span class="n">wordvec</span> <span class="o">=</span> <span class="n">Glove</span><span class="p">(</span><span class="s2">&quot;resources://Glove50d_small&quot;</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wordvec</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">embedding_size</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">vocab_list</span><span class="p">)))</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">embedding_layer</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wordvec</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">embedding_size</span><span class="p">,</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">frequent_vocab_list</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p>We can add these lines at the end of <code class="docutils literal notranslate"><span class="pre">LanguageModel.__init__</span></code>.</p>
@@ -485,7 +482,7 @@ on google colab.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tutorial_cli.html" class="btn btn-neutral float-right" title="CLI Usage: Fast Model Reproduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="cli_usage.html" class="btn btn-neutral float-right" title="CLI Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

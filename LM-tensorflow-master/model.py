@@ -14,7 +14,7 @@ class LMModel(object):
 				# build the embedding table and embedding input
 				if embed is None:
 					# initialize the embedding randomly
-					self.embed = tf.get_variable('embed', [data.vocab_size, args.embedding_size], tf.float32)
+					self.embed = tf.get_variable('embed', [data.frequent_vocab_size, args.embedding_size], tf.float32)
 				else:
 					# initialize the embedding by pre-trained word vectors
 					self.embed = tf.get_variable('embed', dtype=tf.float32, initializer=embed)
@@ -44,7 +44,7 @@ class LMModel(object):
 		with tf.variable_scope('rnnlm'):
 			LM_output, _ = dynamic_rnn(basic_cell, self.LM_input, self.input_len, dtype=tf.float32, scope="rnnlm")
 		# fullly connected layer
-		LM_output = tf.layers.dense(inputs=LM_output, units=data.vocab_size) # shape of LM_output: (batch_size, batch_len-1, vocab_size)
+		LM_output = tf.layers.dense(inputs=LM_output, units=data.frequent_vocab_size) # shape of LM_output: (batch_size, batch_len-1, vocab_size)
 		
 		# loss
 		with tf.variable_scope("loss", initializer=tf.orthogonal_initializer()):
@@ -60,7 +60,7 @@ class LMModel(object):
 			self.decoder_distribution = LM_output # (batch_size, batch_len-1, vocab_size)
 			# for inference
 			self.generation_index = tf.argmax(tf.split(self.decoder_distribution,
-													   [2, data.vocab_size - 2], 2)[1], 2) + 2  # for removing UNK. 0 for <pad> and 1 for <unk>
+													   [2, data.frequent_vocab_size - 2], 2)[1], 2) + 2  # for removing UNK. 0 for <pad> and 1 for <unk>
 
 
 		self.loss = self.sen_loss
@@ -238,7 +238,8 @@ class LMModel(object):
 				else:
 					result_id = response_id_list
 				for token in response_token:
-					if token != data.ext_vocab[data.eos_id]:
+					ext_vocab=data.get_special_tokens_mapping()
+					if token != ext_vocab['eos']:
 						result_token.append(token)
 					else:
 						break

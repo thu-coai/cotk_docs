@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cotk._utils.resource_processor &mdash; cotk  documentation</title>
+  <title>cotk.file_utils.resource_processor &mdash; cotk  documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -151,7 +151,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>cotk._utils.resource_processor</li>
+      <li>cotk.file_utils.resource_processor</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -166,47 +166,66 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for cotk._utils.resource_processor</h1><div class="highlight"><pre>
+  <h1>Source code for cotk.file_utils.resource_processor</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;Processor for resource after download and before read</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">.metaclass</span> <span class="k">import</span> <span class="n">LoadClassInterface</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">.._utils.metaclass</span> <span class="kn">import</span> <span class="n">LoadClassInterface</span>
 
-<div class="viewcode-block" id="unzip_file"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.unzip_file">[docs]</a><span class="k">def</span> <span class="nf">unzip_file</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">unzip_file</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;unzip the zip file in src_path to dst_dir</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">src_path</span><span class="p">):</span>
 		<span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_obj</span><span class="p">:</span>
 			<span class="n">zip_obj</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
 	<span class="k">else</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="p">))</span></div>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src_path</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.ResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">ResourceProcessor</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="ResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.ResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">ResourceProcessor</span><span class="p">(</span><span class="n">LoadClassInterface</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base class for processor.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="o">=</span> <span class="n">cache_dir</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span> <span class="o">=</span> <span class="n">config_dir</span></div>
 
-<div class="viewcode-block" id="DefaultResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">DefaultResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.DefaultResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">DefaultResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for default resource: do nothing.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="DefaultResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.DefaultResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="n">local_path</span></div>
 
-<div class="viewcode-block" id="DefaultResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.DefaultResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="DefaultResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.DefaultResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="n">local_path</span></div></div>
 
-<div class="viewcode-block" id="BaseResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.BaseResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">BaseResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ZipResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;Processor for default resource: extract zip.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">local_path</span><span class="p">):</span>
+			<span class="k">return</span> <span class="n">local_path</span>
+		<span class="n">dst_dir</span> <span class="o">=</span> <span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;_unzip&#39;</span>
+		<span class="n">unzip_file</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">dst_dir</span>
+
+	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">local_path</span>
+
+<div class="viewcode-block" id="BaseResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.BaseResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">BaseResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Basic processor for MSCOCO, OpenSubtitles, Ubuntu...&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="BaseResourceProcessor.basepreprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.BaseResourceProcessor.basepreprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepreprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseResourceProcessor.basepreprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.BaseResourceProcessor.basepreprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepreprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">local_path</span><span class="p">):</span>
@@ -215,23 +234,32 @@
 		<span class="n">unzip_file</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.BaseResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.BaseResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="n">local_path</span></div></div>
+		<span class="k">return</span> <span class="n">local_path</span></div>
+
+<div class="viewcode-block" id="BaseResourceProcessor.get_temp_dir"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.BaseResourceProcessor.get_temp_dir">[docs]</a>	<span class="k">def</span> <span class="nf">get_temp_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Get a temp directory, in which some temporary files may be saved.</span>
+<span class="sd">		The temp directory is a subdirectory of `self.cache_dr` and is named after the hash value of argument `filepath`,</span>
+<span class="sd">		so that the same `filepath` has the same corresponding temp directory.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+		<span class="n">hash_value</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">abs_path</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">hash_value</span> <span class="o">+</span> <span class="s1">&#39;_temp&#39;</span><span class="p">)</span></div></div>
 
 <span class="c1">#TODO: merge the following Processor because of duplicate codes</span>
-<div class="viewcode-block" id="MSCOCOResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">MSCOCOResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="MSCOCOResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.MSCOCOResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">MSCOCOResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for MSCOCO dataset</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="MSCOCOResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="MSCOCOResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.MSCOCOResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;mscoco&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MSCOCOResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.MSCOCOResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="MSCOCOResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.MSCOCOResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="n">local_path</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
-		<span class="n">new_local_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;processed&#39;</span><span class="p">)</span>
+		<span class="n">new_local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_temp_dir</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
 		<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_local_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">]:</span>
 			<span class="n">local_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;mscoco_</span><span class="si">%s</span><span class="s1">.txt&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
@@ -240,16 +268,17 @@
 				<span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="n">new_local_file</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">new_local_path</span></div></div>
 
-<div class="viewcode-block" id="OpenSubtitlesResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">OpenSubtitlesResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenSubtitlesResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.OpenSubtitlesResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">OpenSubtitlesResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for OpenSubtitles Dataset</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="OpenSubtitlesResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenSubtitlesResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.OpenSubtitlesResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;opensubtitles&#39;</span><span class="p">)</span></div>
-<div class="viewcode-block" id="OpenSubtitlesResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.OpenSubtitlesResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OpenSubtitlesResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.OpenSubtitlesResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="n">local_path</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
-		<span class="n">new_local_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;processed&#39;</span><span class="p">)</span>
+		<span class="n">new_local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_temp_dir</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
 		<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_local_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">]:</span>
 			<span class="n">post_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;opensub_pair_</span><span class="si">%s</span><span class="s1">.post&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
@@ -264,18 +293,18 @@
 							<span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">resp</span> <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">resp</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">new_local_path</span></div></div>
 
-<div class="viewcode-block" id="UbuntuResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">UbuntuResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="UbuntuResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.UbuntuResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">UbuntuResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for UbuntuCorpus dataset</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="UbuntuResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="UbuntuResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.UbuntuResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;ubuntu_dataset&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UbuntuResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.UbuntuResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="UbuntuResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.UbuntuResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="kn">import</span> <span class="nn">csv</span>
 		<span class="n">local_path</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
-		<span class="n">new_local_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;processed&#39;</span><span class="p">)</span>
+		<span class="n">new_local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_temp_dir</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
 		<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_local_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">]:</span>
 			<span class="n">local_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;ubuntu_corpus_</span><span class="si">%s</span><span class="s1">.csv&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
@@ -299,19 +328,75 @@
 		<span class="k">return</span> <span class="n">new_local_path</span></div></div>
 
 
-<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpusResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">SwitchboardCorpusResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for SwitchboardCorpus dataset</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SwitchboardCorpusResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;switchboard_corpus&#39;</span><span class="p">)</span></div></div>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;switchboard_corpus&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+		<span class="n">local_path</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
+		<span class="n">new_local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_temp_dir</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_local_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">]:</span>
+			<span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;switchboard_corpus_</span><span class="si">%s</span><span class="s1">.jsonl&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+			<span class="n">new_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_local_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.txt&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+			<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">)</span>
+
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">new_filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;multi_ref&#39;</span><span class="p">:</span>
+					<span class="n">dataset</span> <span class="o">=</span> <span class="n">res</span>  <span class="c1"># sessions</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">sessions</span><span class="p">,</span> <span class="n">responses</span> <span class="o">=</span> <span class="n">res</span>
+					<span class="n">dataset</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sessions</span><span class="p">,</span> <span class="n">responses</span><span class="p">))</span>  <span class="c1"># [session1, response1, session2, response2, ...]</span>
+					<span class="c1"># response is like a session. Both contain several sentences.</span>
+				<span class="k">for</span> <span class="n">sess</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+					<span class="k">assert</span> <span class="n">sess</span>
+					<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">:</span>
+						<span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+							<span class="n">line</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+						<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+					<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">new_local_path</span></div>
+
+<div class="viewcode-block" id="SwitchboardCorpusResourceProcessor._read_file"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SwitchboardCorpusResourceProcessor._read_file">[docs]</a>	<span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">read_multi_ref</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Arguments:</span>
+<span class="sd">			filepath (str): Name of the file to read from</span>
+<span class="sd">			read_multi_ref (bool):</span>
+<span class="sd">				If False, add turn ``&lt;d&gt;`` ahead of each session</span>
+<span class="sd">				If True, add turn ``&lt;d&gt;`` at the end of each session and read candidate ``responses``</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">if</span> <span class="n">read_multi_ref</span><span class="p">:</span>
+			<span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data_file</span><span class="p">:</span>
+				<span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+				<span class="n">prefix_utts</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;d&gt;&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;utts&#39;</span><span class="p">]</span>
+				<span class="c1"># pylint: disable=cell-var-from-loop</span>
+				<span class="n">suffix_utts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">utt</span><span class="p">:</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> \
+							<span class="k">if</span> <span class="n">prefix_utts</span><span class="p">[</span><span class="n">utt</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> \
+							<span class="k">else</span> <span class="s1">&#39;&lt;eos&gt; &#39;</span> <span class="o">+</span> <span class="n">utt</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="s1">&#39;utts&#39;</span><span class="p">])))</span>
+				<span class="n">utts</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;d&gt; &#39;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suffix_utts</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">)</span>
+				<span class="n">sess</span> <span class="o">=</span> <span class="n">utts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;&lt;d&gt;&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">read_multi_ref</span> <span class="k">else</span> <span class="n">utts</span>
+				<span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">read_multi_ref</span><span class="p">:</span>
+					<span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">resp</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;responses&#39;</span><span class="p">]])</span>
+		<span class="k">if</span> <span class="n">read_multi_ref</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">sessions</span><span class="p">,</span> <span class="n">responses</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">sessions</span></div></div>
 
 
-<div class="viewcode-block" id="SSTResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SSTResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">SSTResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="SSTResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SSTResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">SSTResourceProcessor</span><span class="p">(</span><span class="n">BaseResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for SST dataset</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="SSTResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SSTResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="SSTResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SSTResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;trees&#39;</span><span class="p">)</span></div>
@@ -323,19 +408,15 @@
 		<span class="k">return</span> <span class="n">label</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">_postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-			<span class="n">labels</span><span class="p">,</span> <span class="n">sents</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-			<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">sent</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parseline</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
-				<span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-				<span class="n">sents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
-		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-			<span class="n">fp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">sents</span><span class="p">)</span>
-		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;_labels.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-			<span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">,</span> \
+			<span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">sent</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parseline</span><span class="p">,</span> <span class="n">fin</span><span class="p">):</span>
+				<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
+				<span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SSTResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.SSTResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="SSTResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.SSTResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="n">local_path</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
-		<span class="n">new_local_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;processed&#39;</span><span class="p">)</span>
+		<span class="n">new_local_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_temp_dir</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
 		<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">new_local_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">]:</span>
@@ -345,14 +426,14 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">_postprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">new_local_path</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">new_local_path</span></div></div>
 
-<div class="viewcode-block" id="GloveResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.GloveResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">GloveResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="GloveResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.GloveResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">GloveResourceProcessor</span><span class="p">(</span><span class="n">ResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Base Class for all dimension version of glove wordvector.</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="nb">super</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">,</span> <span class="n">config_dir</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="GloveResourceProcessor.basepreprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.GloveResourceProcessor.basepreprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepreprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="GloveResourceProcessor.basepreprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.GloveResourceProcessor.basepreprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepreprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">dst_dir</span> <span class="o">=</span> <span class="n">local_path</span> <span class="o">+</span> <span class="s1">&#39;_unzip&#39;</span>
@@ -364,70 +445,76 @@
 			<span class="n">dim</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
 			<span class="k">if</span> <span class="n">dim</span> <span class="o">!=</span> <span class="n">name</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;resources://Glove</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dim</span><span class="p">),</span> \
-										<span class="n">local_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span><span class="p">])</span>
+										<span class="n">local_path</span><span class="p">])</span>
 				<span class="k">continue</span>
 			<span class="n">sub_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
 			<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-			<span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">,</span> <span class="s1">&#39;glove.txt&#39;</span><span class="p">))</span>
+
+			<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+				<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">,</span> <span class="s1">&#39;wordvec.txt&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
+					<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+						<span class="n">word</span><span class="p">,</span> <span class="n">wordvec</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+						<span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">word</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+						<span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">wordvec</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">dst_dir</span></div>
 
-<div class="viewcode-block" id="GloveResourceProcessor.basepostprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.GloveResourceProcessor.basepostprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepostprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="GloveResourceProcessor.basepostprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.GloveResourceProcessor.basepostprocess">[docs]</a>	<span class="k">def</span> <span class="nf">basepostprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
-		<span class="kn">from</span> <span class="nn">.file_utils</span> <span class="k">import</span> <span class="n">import_local_resources</span>
+		<span class="kn">from</span> <span class="nn">.file_utils</span> <span class="kn">import</span> <span class="n">import_local_resources</span>
 		<span class="k">for</span> <span class="n">glove</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span><span class="p">:</span>
-			<span class="n">import_local_resources</span><span class="p">(</span><span class="o">*</span><span class="n">glove</span><span class="p">,</span> <span class="n">ignore_exist_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">import_local_resources</span><span class="p">(</span><span class="n">glove</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">glove</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span><span class="p">,</span> <span class="n">ignore_exist_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">other_gloves</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Glove50dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove50dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove50dResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove50dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove50dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for glove50d wordvector</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="Glove50dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove50dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove50dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;50d&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Glove50dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove50dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove50dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove50dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;50d&#39;</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Glove100dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove100dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove100dResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove100dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove100dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for glove100d wordvector</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="Glove100dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove100dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove100dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;100d&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Glove100dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove100dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove100dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove100dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;100d&#39;</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Glove200dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove200dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove200dResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove200dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove200dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for glove200d wordvector</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="Glove200dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove200dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove200dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;200d&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Glove200dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove200dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove200dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove200dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;200d&#39;</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Glove300dResourceProcessor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove300dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove300dResourceProcessor"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove300dResourceProcessor">[docs]</a><span class="k">class</span> <span class="nc">Glove300dResourceProcessor</span><span class="p">(</span><span class="n">GloveResourceProcessor</span><span class="p">):</span>
 	<span class="sd">&#39;&#39;&#39;Processor for glove300d wordvector</span>
 <span class="sd">	&#39;&#39;&#39;</span>
-<div class="viewcode-block" id="Glove300dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove300dResourceProcessor.preprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove300dResourceProcessor.preprocess">[docs]</a>	<span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Preprocess after download and before save.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepreprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;300d&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Glove300dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.resource_processor.Glove300dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Glove300dResourceProcessor.postprocess"><a class="viewcode-back" href="../../../file_utils.html#cotk.file_utils.Glove300dResourceProcessor.postprocess">[docs]</a>	<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;Postprocess before read.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">basepostprocess</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="s1">&#39;300d&#39;</span><span class="p">)</span></div></div>

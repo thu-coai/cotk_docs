@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -87,18 +87,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul class="current">
@@ -203,33 +203,36 @@
 <div class="section" id="require-packages">
 <h2>Require Packages<a class="headerlink" href="#require-packages" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><strong>python3</strong></li>
-<li>cotk</li>
-<li>pytorch == 1.0.0</li>
-<li>tensorboardX &gt;= 1.4</li>
+<li><p><strong>python3</strong></p></li>
+<li><p>cotk</p></li>
+<li><p>pytorch == 1.0.0</p></li>
+<li><p>tensorboardX &gt;= 1.4</p></li>
 </ul>
 </div>
 <div class="section" id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Using <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">download</span> <span class="pre">thu-coai/seq2seq-pytorch/master</span></code> to download codes.</li>
-<li>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.<ul>
-<li>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class and <code class="docutils literal notranslate"><span class="pre">--dataid</span></code> to specify other data path (can be a local path, a url or a resources id). For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">OpenSubtitles</span> <span class="pre">--dataid</span> <span class="pre">resources://OpenSubtitles</span></code></li>
-<li>It doesn’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class and <code class="docutils literal notranslate"><span class="pre">--wvpath</span></code> to specify pretrained word embeddings. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">Glove</span> <span class="pre">--dataid</span> <span class="pre">resources://Glove300</span></code></li>
-<li>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time for either training or test.</li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">cotk</span> <span class="pre">download</span> <span class="pre">thu-coai/seq2seq-pytorch/master</span></code> to download codes.</p></li>
+<li><p>Execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span></code> to train the model.</p>
+<ul>
+<li><p>The default dataset is <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--dataset</span></code> to specify other <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> class and <code class="docutils literal notranslate"><span class="pre">--dataid</span></code> to specify other data path (can be a local path, a url or a resources id). For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">OpenSubtitles</span> <span class="pre">--dataid</span> <span class="pre">resources://OpenSubtitles</span></code></p></li>
+<li><p>It doesn’t use pretrained word vector by default setting. You can use <code class="docutils literal notranslate"><span class="pre">--wvclass</span></code> to specify <code class="docutils literal notranslate"><span class="pre">wordvector</span></code> class and <code class="docutils literal notranslate"><span class="pre">--wvpath</span></code> to specify pretrained word embeddings. For example: <code class="docutils literal notranslate"><span class="pre">--wvclass</span> <span class="pre">gloves</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--dataset</span> <span class="pre">Glove</span> <span class="pre">--dataid</span> <span class="pre">resources://Glove300</span></code></p></li>
+<li><p>If you don’t have GPUs, you can add <code class="docutils literal notranslate"><span class="pre">--cpu</span></code> for switching to CPU, but it may cost very long time for either training or test.</p></li>
 </ul>
 </li>
-<li>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.<ul>
-<li>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</li>
+<li><p>You can view training process by tensorboard, the log is at <code class="docutils literal notranslate"><span class="pre">./tensorboard</span></code>.</p>
+<ul>
+<li><p>For example, <code class="docutils literal notranslate"><span class="pre">tensorboard</span> <span class="pre">--logdir=./tensorboard</span></code>. (You have to install tensorboard first.)</p></li>
 </ul>
 </li>
-<li>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.<ul>
-<li>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">pretrained-opensubtitles</span></code> for loading <code class="docutils literal notranslate"><span class="pre">./model/pretrained-opensubtitles.model</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</li>
-<li><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">NAME_last</span></code> means last checkpoint with model named NAME. The same as<code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">NAME_best</span></code>.</li>
+<li><p>After training, execute  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">--mode</span> <span class="pre">test</span> <span class="pre">--restore</span> <span class="pre">best</span></code> for test.</p>
+<ul>
+<li><p>You can use <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">filename</span></code> to specify checkpoints files, which are in <code class="docutils literal notranslate"><span class="pre">./model</span></code>. For example: <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">pretrained-opensubtitles</span></code> for loading <code class="docutils literal notranslate"><span class="pre">./model/pretrained-opensubtitles.model</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">last</span></code> means last checkpoint, <code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">best</span></code> means best checkpoints on dev.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">NAME_last</span></code> means last checkpoint with model named NAME. The same as<code class="docutils literal notranslate"><span class="pre">--restore</span> <span class="pre">NAME_best</span></code>.</p></li>
 </ul>
 </li>
-<li>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</li>
+<li><p>Find results at <code class="docutils literal notranslate"><span class="pre">./output</span></code>.</p></li>
 </ul>
 </div>
 <div class="section" id="arguments">
@@ -306,20 +309,20 @@ optional arguments:
 <a class="reference external image-reference" href="./images/tensorboard_plot_example.png"><img alt="tensorboard_plot_example" src="../../../_images/tensorboard_plot_example.png" /></a>
 <p>Following plot are shown in this model:</p>
 <ul class="simple">
-<li>gen/loss (<code class="docutils literal notranslate"><span class="pre">gen</span></code> means training process)</li>
-<li>gen/perplexity (<code class="docutils literal notranslate"><span class="pre">=exp(gen/word_loss)</span></code>)</li>
-<li>gen/word_loss (<code class="docutils literal notranslate"><span class="pre">=gen/loss</span></code> in this model)</li>
-<li>dev/loss</li>
-<li>dev/perplexity_avg_on_batch</li>
-<li>test/loss</li>
-<li>test/perplexity_avg_on_batch</li>
+<li><p>gen/loss (<code class="docutils literal notranslate"><span class="pre">gen</span></code> means training process)</p></li>
+<li><p>gen/perplexity (<code class="docutils literal notranslate"><span class="pre">=exp(gen/word_loss)</span></code>)</p></li>
+<li><p>gen/word_loss (<code class="docutils literal notranslate"><span class="pre">=gen/loss</span></code> in this model)</p></li>
+<li><p>dev/loss</p></li>
+<li><p>dev/perplexity_avg_on_batch</p></li>
+<li><p>test/loss</p></li>
+<li><p>test/perplexity_avg_on_batch</p></li>
 </ul>
 <p>And text output:</p>
 <a class="reference external image-reference" href="./images/tensorboard_text_example.png"><img alt="tensorboard_plot_example" src="../../../_images/tensorboard_text_example.png" /></a>
 <p>Following text are shown in this model:</p>
 <ul class="simple">
-<li>args</li>
-<li>dev/show_str%d (<code class="docutils literal notranslate"><span class="pre">%d</span></code> is according to <code class="docutils literal notranslate"><span class="pre">args.show_sample</span></code> in <code class="docutils literal notranslate"><span class="pre">run.py</span></code>)</li>
+<li><p>args</p></li>
+<li><p>dev/show_str%d (<code class="docutils literal notranslate"><span class="pre">%d</span></code> is according to <code class="docutils literal notranslate"><span class="pre">args.show_sample</span></code> in <code class="docutils literal notranslate"><span class="pre">run.py</span></code>)</p></li>
 </ul>
 </div>
 <div class="section" id="case-study-of-model-results">
@@ -349,114 +352,114 @@ gen:    i don&#39; t know .
 <div class="section" id="subset-experiment">
 <h3>Subset Experiment<a class="headerlink" href="#subset-experiment" title="Permalink to this headline">¶</a></h3>
 <p>Based on <code class="docutils literal notranslate"><span class="pre">OpenSubtitles_small</span></code> (a smaller version of <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>), we did the following experiments.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
-<col width="14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">encoder</th>
-<th class="head">decoder</th>
-<th class="head">batchnorm</th>
-<th class="head">learning rate</th>
-<th class="head">droprate</th>
-<th class="head">dev perplexity</th>
-<th class="head">test perplexity</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>encoder</p></th>
+<th class="head"><p>decoder</p></th>
+<th class="head"><p>batchnorm</p></th>
+<th class="head"><p>learning rate</p></th>
+<th class="head"><p>droprate</p></th>
+<th class="head"><p>dev perplexity</p></th>
+<th class="head"><p>test perplexity</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>175</td>
-<td>175</td>
-<td>no</td>
-<td>0.0001</td>
-<td>0.2</td>
-<td>88.971</td>
-<td>94.698</td>
+<tbody>
+<tr class="row-even"><td><p>175</p></td>
+<td><p>175</p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p>0.2</p></td>
+<td><p>88.971</p></td>
+<td><p>94.698</p></td>
 </tr>
-<tr class="row-odd"><td><strong>128</strong></td>
-<td><strong>128</strong></td>
-<td>no</td>
-<td>0.0001</td>
-<td><strong>0</strong></td>
-<td>95.207</td>
-<td>100.676</td>
+<tr class="row-odd"><td><p><strong>128</strong></p></td>
+<td><p><strong>128</strong></p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p><strong>0</strong></p></td>
+<td><p>95.207</p></td>
+<td><p>100.676</p></td>
 </tr>
-<tr class="row-even"><td><strong>128</strong></td>
-<td><strong>128</strong></td>
-<td>no</td>
-<td>0.0001</td>
-<td>0.2</td>
-<td>93.559</td>
-<td>99.287</td>
+<tr class="row-even"><td><p><strong>128</strong></p></td>
+<td><p><strong>128</strong></p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p>0.2</p></td>
+<td><p>93.559</p></td>
+<td><p>99.287</p></td>
 </tr>
-<tr class="row-odd"><td><strong>128</strong></td>
-<td><strong>128</strong></td>
-<td><strong>yes</strong></td>
-<td>0.0001</td>
-<td><strong>0</strong></td>
-<td>105.649</td>
-<td>112.818</td>
+<tr class="row-odd"><td><p><strong>128</strong></p></td>
+<td><p><strong>128</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>0.0001</p></td>
+<td><p><strong>0</strong></p></td>
+<td><p>105.649</p></td>
+<td><p>112.818</p></td>
 </tr>
-<tr class="row-even"><td><strong>128</strong></td>
-<td><strong>128</strong></td>
-<td><strong>yes</strong></td>
-<td>0.0001</td>
-<td>0.2</td>
-<td>95.894</td>
-<td>102.243</td>
+<tr class="row-even"><td><p><strong>128</strong></p></td>
+<td><p><strong>128</strong></p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>0.0001</p></td>
+<td><p>0.2</p></td>
+<td><p>95.894</p></td>
+<td><p>102.243</p></td>
 </tr>
-<tr class="row-odd"><td><strong>150</strong></td>
-<td><strong>150</strong></td>
-<td>no</td>
-<td>0.0001</td>
-<td>0.2</td>
-<td>90.153</td>
-<td>95.072</td>
+<tr class="row-odd"><td><p><strong>150</strong></p></td>
+<td><p><strong>150</strong></p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p>0.2</p></td>
+<td><p>90.153</p></td>
+<td><p>95.072</p></td>
 </tr>
-<tr class="row-even"><td><strong>256</strong></td>
-<td><strong>256</strong></td>
-<td>no</td>
-<td>0.0001</td>
-<td>0.2</td>
-<td>89.374</td>
-<td>94.272</td>
+<tr class="row-even"><td><p><strong>256</strong></p></td>
+<td><p><strong>256</strong></p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p>0.2</p></td>
+<td><p>89.374</p></td>
+<td><p>94.272</p></td>
 </tr>
-<tr class="row-odd"><td>175</td>
-<td>175</td>
-<td><strong>yes</strong></td>
-<td>0.0001</td>
-<td>0.2</td>
-<td>97.704</td>
-<td>102.851</td>
+<tr class="row-odd"><td><p>175</p></td>
+<td><p>175</p></td>
+<td><p><strong>yes</strong></p></td>
+<td><p>0.0001</p></td>
+<td><p>0.2</p></td>
+<td><p>97.704</p></td>
+<td><p>102.851</p></td>
 </tr>
-<tr class="row-even"><td>175</td>
-<td>175</td>
-<td>no</td>
-<td>0.0001</td>
-<td><strong>0.1</strong></td>
-<td>90.149</td>
-<td>95.310</td>
+<tr class="row-even"><td><p>175</p></td>
+<td><p>175</p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p><strong>0.1</strong></p></td>
+<td><p>90.149</p></td>
+<td><p>95.310</p></td>
 </tr>
-<tr class="row-odd"><td>175</td>
-<td>175</td>
-<td>no</td>
-<td>0.0001</td>
-<td><strong>0.3</strong></td>
-<td>89.750</td>
-<td>95.042</td>
+<tr class="row-odd"><td><p>175</p></td>
+<td><p>175</p></td>
+<td><p>no</p></td>
+<td><p>0.0001</p></td>
+<td><p><strong>0.3</strong></p></td>
+<td><p>89.750</p></td>
+<td><p>95.042</p></td>
 </tr>
-<tr class="row-even"><td>175</td>
-<td>175</td>
-<td>no</td>
-<td><strong>0.0005</strong></td>
-<td>0.2</td>
-<td><strong>88.688</strong></td>
-<td><strong>93.421</strong></td>
+<tr class="row-even"><td><p>175</p></td>
+<td><p>175</p></td>
+<td><p>no</p></td>
+<td><p><strong>0.0005</strong></p></td>
+<td><p>0.2</p></td>
+<td><p><strong>88.688</strong></p></td>
+<td><p><strong>93.421</strong></p></td>
 </tr>
 </tbody>
 </table>
@@ -466,58 +469,58 @@ gen:    i don&#39; t know .
 </pre></div>
 </div>
 <p>Based on the best parameters,  we did another five experiments in order to analyze the model’s performance totally.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">seed</th>
-<th class="head">dev perplexity</th>
-<th class="head">test perplexity</th>
-<th class="head">dev bleu(x1e-3)</th>
-<th class="head">test bleu(x1e-3)</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>seed</p></th>
+<th class="head"><p>dev perplexity</p></th>
+<th class="head"><p>test perplexity</p></th>
+<th class="head"><p>dev bleu(x1e-3)</p></th>
+<th class="head"><p>test bleu(x1e-3)</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>7913</td>
-<td>89.123</td>
-<td>93.898</td>
-<td>3.24</td>
-<td>2.82</td>
+<tbody>
+<tr class="row-even"><td><p>7913</p></td>
+<td><p>89.123</p></td>
+<td><p>93.898</p></td>
+<td><p>3.24</p></td>
+<td><p>2.82</p></td>
 </tr>
-<tr class="row-odd"><td>1640</td>
-<td>88.224</td>
-<td>94.019</td>
-<td>4.51</td>
-<td>4.13</td>
+<tr class="row-odd"><td><p>1640</p></td>
+<td><p>88.224</p></td>
+<td><p>94.019</p></td>
+<td><p>4.51</p></td>
+<td><p>4.13</p></td>
 </tr>
-<tr class="row-even"><td>3739</td>
-<td>87.969</td>
-<td>92.730</td>
-<td>2.37</td>
-<td>2.15</td>
+<tr class="row-even"><td><p>3739</p></td>
+<td><p>87.969</p></td>
+<td><p>92.730</p></td>
+<td><p>2.37</p></td>
+<td><p>2.15</p></td>
 </tr>
-<tr class="row-odd"><td>972</td>
-<td>88.083</td>
-<td>93.515</td>
-<td>2.99</td>
-<td>2.34</td>
+<tr class="row-odd"><td><p>972</p></td>
+<td><p>88.083</p></td>
+<td><p>93.515</p></td>
+<td><p>2.99</p></td>
+<td><p>2.34</p></td>
 </tr>
-<tr class="row-even"><td>3594</td>
-<td>87.933</td>
-<td>94.258</td>
-<td>4.22</td>
-<td>3.44</td>
+<tr class="row-even"><td><p>3594</p></td>
+<td><p>87.933</p></td>
+<td><p>94.258</p></td>
+<td><p>4.22</p></td>
+<td><p>3.44</p></td>
 </tr>
-<tr class="row-odd"><td>Average</td>
-<td>88.266 ± 0.440</td>
-<td>93.684 ± 0.534</td>
-<td>3.47 ± 7.92</td>
-<td>2.98 ± 7.29</td>
+<tr class="row-odd"><td><p>Average</p></td>
+<td><p>88.266 ± 0.440</p></td>
+<td><p>93.684 ± 0.534</p></td>
+<td><p>3.47 ± 7.92</p></td>
+<td><p>2.98 ± 7.29</p></td>
 </tr>
 </tbody>
 </table>
@@ -529,68 +532,68 @@ gen:    i don&#39; t know .
 <div class="section" id="fullset-experiment">
 <h3>Fullset experiment<a class="headerlink" href="#fullset-experiment" title="Permalink to this headline">¶</a></h3>
 <p>Based on the result of subset experiment, we did the following experiment on <code class="docutils literal notranslate"><span class="pre">OpenSubtitles</span></code>.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Parameters</th>
-<th class="head">Value</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"><p>Value</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>encoder</td>
-<td>256</td>
+<tbody>
+<tr class="row-even"><td><p>encoder</p></td>
+<td><p>256</p></td>
 </tr>
-<tr class="row-odd"><td>decoder</td>
-<td>256</td>
+<tr class="row-odd"><td><p>decoder</p></td>
+<td><p>256</p></td>
 </tr>
-<tr class="row-even"><td>batchnorm</td>
-<td>no</td>
+<tr class="row-even"><td><p>batchnorm</p></td>
+<td><p>no</p></td>
 </tr>
-<tr class="row-odd"><td>learning rate</td>
-<td>0.0003</td>
+<tr class="row-odd"><td><p>learning rate</p></td>
+<td><p>0.0003</p></td>
 </tr>
-<tr class="row-even"><td>droprate</td>
-<td>0.2</td>
+<tr class="row-even"><td><p>droprate</p></td>
+<td><p>0.2</p></td>
 </tr>
-<tr class="row-odd"><td>epoch</td>
-<td>200</td>
+<tr class="row-odd"><td><p>epoch</p></td>
+<td><p>200</p></td>
 </tr>
-<tr class="row-even"><td>seed</td>
-<td>0</td>
+<tr class="row-even"><td><p>seed</p></td>
+<td><p>0</p></td>
 </tr>
 </tbody>
 </table>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
-<col width="20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">decode mode</th>
-<th class="head">dev perplexity</th>
-<th class="head">test perplexity</th>
-<th class="head">dev bleu(x1e-3)</th>
-<th class="head">test bleu(x1e-3)</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>decode mode</p></th>
+<th class="head"><p>dev perplexity</p></th>
+<th class="head"><p>test perplexity</p></th>
+<th class="head"><p>dev bleu(x1e-3)</p></th>
+<th class="head"><p>test bleu(x1e-3)</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><strong>samplek</strong></td>
-<td>41.457</td>
-<td>43.868</td>
-<td>3.24</td>
-<td>2.82</td>
+<tbody>
+<tr class="row-even"><td><p><strong>samplek</strong></p></td>
+<td><p>41.457</p></td>
+<td><p>43.868</p></td>
+<td><p>3.24</p></td>
+<td><p>2.82</p></td>
 </tr>
-<tr class="row-odd"><td><strong>beam</strong></td>
-<td>41.457</td>
-<td>43.868</td>
-<td>11.5</td>
-<td>10.4</td>
+<tr class="row-odd"><td><p><strong>beam</strong></p></td>
+<td><p>41.457</p></td>
+<td><p>43.868</p></td>
+<td><p>11.5</p></td>
+<td><p>10.4</p></td>
 </tr>
 </tbody>
 </table>
@@ -606,22 +609,22 @@ gen:    i don&#39; t know .
 </div>
 <div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">&#160;</th>
-<th class="head">Perplexity</th>
-<th class="head">BLEU</th>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p>Perplexity</p></th>
+<th class="head"><p>BLEU</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>OpenSubtitles</td>
-<td>43.868</td>
-<td>0.0115</td>
+<tbody>
+<tr class="row-even"><td><p>OpenSubtitles</p></td>
+<td><p>43.868</p></td>
+<td><p>0.0115</p></td>
 </tr>
 </tbody>
 </table>

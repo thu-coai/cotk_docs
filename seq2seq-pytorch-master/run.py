@@ -43,8 +43,8 @@ def run(*argv):
 
 	parser.add_argument('--dataset', type=str, default='OpenSubtitles',
 		help='Dataloader class. Default: OpenSubtitles')
-	parser.add_argument('--dataid', type=str, default='resources://OpenSubtitles',
-		help='Resource id for data set. It can be a resource name or a local path. Default: resources://OpenSubtitles')
+	parser.add_argument('--dataid', type=str, default='resources://OpenSubtitles#OpenSubtitles',
+		help='Resource id for data set. It can be a resource name or a local path. Default: resources://OpenSubtitles#OpenSubtitles')
 	parser.add_argument('--epoch', type=int, default=100,
 		help="Epoch for training. Default: 100")
 	parser.add_argument('--batch_per_epoch', type=int, default=1500,

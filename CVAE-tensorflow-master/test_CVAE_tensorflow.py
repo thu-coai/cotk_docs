@@ -48,6 +48,7 @@ def modify_args(args):
 	args.restore = None
 	args.wvclass = 'Glove'
 	args.wvpath = path + '/tests/wordvector/dummy_glove/300d'
+	args.word_embedding_size=300  #must be the same as the dim of wvpath
 	args.out_dir = cwd + '/output_test'
 	args.log_dir = cwd + '/tensorboard_test'
 	args.model_dir = cwd + '/model_test'
@@ -58,7 +59,7 @@ def modify_args(args):
 	args.epochs = 1
 	args.batch_per_epoch = 5
 	args.batch_size = 5
-	args.datapath = path + '/tests/dataloader/dummy_switchboardcorpus'
+	args.datapath = path + '/tests/dataloader/dummy_switchboardcorpus#SwitchboardCorpus'
 
 def test_train(mocker):
 	def side_effect_train(args):

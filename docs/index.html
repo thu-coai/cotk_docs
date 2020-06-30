@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -86,18 +86,18 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -192,8 +192,6 @@ your models fairly with baselines.</p>
 <li class="toctree-l1"><a class="reference internal" href="notes/quickstart.html">Quick Start</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#dataloader">Dataloader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#metrics">Metrics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#publish-experiments">Publish Experiments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#reproduce-experiments">Reproduce Experiments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notes/quickstart.html#predefined-models">Predefined Models</a></li>
 </ul>
 </li>
@@ -204,9 +202,9 @@ your models fairly with baselines.</p>
 <li class="toctree-l2"><a class="reference internal" href="notes/tutorial_core.html#additional-word-vector">Additional: Word Vector</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notes/tutorial_cli.html#download-public-code">Download public code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notes/tutorial_cli.html#make-your-model-reproducible">Make Your Model Reproducible</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/cli_usage.html">CLI Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notes/cli_usage.html#import">Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/cli_usage.html#config">Config</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notes/extend.html">Extending Cotk: More Data, More Metrics!</a><ul>
@@ -216,7 +214,7 @@ your models fairly with baselines.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="notes/FAQ.html">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notes/FAQ.html#why-my-codes-seem-running-from-beginning-after-calling-metric-close">Why my codes seem running from beginning after calling metric.close ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes/FAQ.html#on-windows-why-my-codes-seem-running-from-beginning-after-calling-metric-close">On windows, why my codes seem running from beginning after calling metric.close ?</a></li>
 </ul>
 </li>
 </ul>
@@ -224,28 +222,23 @@ your models fairly with baselines.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="_utils.html">_utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils._utils">_utils._utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.file_utils">file_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.hooks">hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.imports">imports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.metaclass">metaclass</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.resource_processor">resources_processor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_utils.html#module-cotk._utils.unordered_hash">unordered_hash</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="dataloader.html">Data Loader</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dataloader.html#vocabulary">Vocabulary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataloader.html#basic-classes">Basic Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#dataloader">Dataloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#languageprocessing">LanguageProcessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataloader.html#languagegeneration">LanguageGeneration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataloader.html#singleturndialog">SingleTurnDialog</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dataloader.html#bertsingleturndialog">BERTSingleTurnDialog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataloader.html#multiturndialog">MultiTurnDialog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataloader.html#sentenceclassification">SentenceClassification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#id2">Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#id3">Tokenizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#vocab">Vocab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataloader.html#id4">Context</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wordvector.html">Word Vector</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="wordvector.html#module-cotk.wordvector">WordVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wordvector.html#generalwordvector">GeneralWordVector</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="metric.html">Metric</a><ul>
@@ -256,11 +249,13 @@ your models fairly with baselines.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resources.html#file-id">File ID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="resources.html#word-vector">Word Vector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="resources.html#datasets">Datasets</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound" id="model-zoo">
@@ -288,8 +283,8 @@ your models fairly with baselines.</p>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 </ul>
 </div>
 

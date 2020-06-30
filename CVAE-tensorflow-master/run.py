@@ -17,8 +17,8 @@ def run(*argv):
 		help='"train" or "test". Default: train')
 	parser.add_argument('--dataset', type=str, default='SwitchboardCorpus',
 		help='Dataloader class. Default: SwitchboardCorpus')
-	parser.add_argument('--datapath', type=str, default='resources://SwitchboardCorpus',
-		help='Directory for data set. Default: SwitchboardCorpus')
+	parser.add_argument('--datapath', type=str, default='resources://SwitchboardCorpus#SwitchboardCorpus',
+		help='Directory for data set. Default: SwitchboardCorpus#SwitchboardCorpus')
 	parser.add_argument('--epoch', type=int, default=100,
 		help="Epoch for trainning. Default: 100")
 	parser.add_argument('--wvclass', type=str, default='Glove',
@@ -76,7 +76,7 @@ def run(*argv):
 	args.batch_size = 3
 	args.grad_clip = 5.0
 	args.show_sample = [0]
-	args.min_vocab_times = 5
+	args.min_frequent_vocab_times = 5
 	args.max_sent_length = 50
 	args.max_turn_length = 1000
 	args.checkpoint_steps = 1

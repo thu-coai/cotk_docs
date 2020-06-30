@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,18 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/extend.html">Extending Cotk: More Data, More Metrics!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/FAQ.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -169,22 +169,34 @@
   <h1>Source code for cotk._utils.metaclass</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;A lib for decorator and metaclass&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 
 <div class="viewcode-block" id="DocStringInheritor"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.DocStringInheritor">[docs]</a><span class="k">class</span> <span class="nc">DocStringInheritor</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	A meta class. It let the class have the following functions:</span>
+<span class="sd">	A meta class. It make the class:</span>
 
-<span class="sd">	* Docstring can inherit the parent class.</span>
-<span class="sd">	* {STRING} in docs will be replaced by self.STRING</span>
+<span class="sd">	* Docstring can inherit the parent classes.</span>
+<span class="sd">	* {STRING_DOCS} in docs will be replaced by self.STRING_DOCS or BaseClass.STRING_DOCS. (choose the first available one)</span>
+<span class="sd">	* {BaseClassName.STRING_DOCS} in docs will be replaced by BaseClassName.STRING_DOCS. (BaseClassName can be itself)</span>
+<span class="sd">	* If the docstring iherited from the parent class Base, {_STRING_DOCS} try to use the value of self._STRING_DOCS first</span>
+<span class="sd">	  (if not existed, then trying BASE._STRING_DOCS),</span>
+<span class="sd">	  but {STRING_DOCS} (without underscore prefix) will use the value of Base.STRING_DOCS</span>
+<span class="sd">	* The replacement can be nested. But only {BaseClassName.STRING_DOCS} or {_STRING_DOCS} are allowed in the nested replacement,</span>
+<span class="sd">	  for avoiding ambiguous use.</span>
 
 <span class="sd">	A variation on</span>
 <span class="sd">	http://groups.google.com/group/comp.lang.python/msg/26f7b4fcb4d66c95</span>
 <span class="sd">	by Paul McGuire</span>
 <span class="sd">	from https://stackoverflow.com/questions/8100166/inheriting-methods-docstrings-in-python</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">):</span>
 
 		<span class="k">def</span> <span class="nf">find_base</span><span class="p">(</span><span class="n">base_name</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">base_name</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">clsdict</span>
 			<span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mro_cls</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span> <span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">mro</span><span class="p">()):</span>
 				<span class="k">if</span> <span class="n">mro_cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">base_name</span><span class="p">:</span>
 					<span class="k">return</span> <span class="n">mro_cls</span>
@@ -194,88 +206,198 @@
 			<span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">attr_name</span><span class="p">:</span>
 				<span class="n">base_name</span><span class="p">,</span> <span class="n">attr_name</span> <span class="o">=</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 				<span class="n">base</span> <span class="o">=</span> <span class="n">find_base</span><span class="p">(</span><span class="n">base_name</span><span class="p">)</span>
-				<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+				<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+					<span class="k">return</span> <span class="n">base</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">clsdict</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+				<span class="k">if</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">clsdict</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">clsdict</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span>
+				<span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mro_cls</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span> <span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">mro</span><span class="p">()):</span>
+					<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mro_cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
+						<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mro_cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+				<span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No such attr.&quot;</span><span class="p">)</span>
 
-		<span class="k">def</span> <span class="nf">replace_for_clsdict</span><span class="p">(</span><span class="n">matched</span><span class="p">):</span>
-			<span class="c1">#return clsdict[matched.group(1)]</span>
-			<span class="k">return</span> <span class="n">find_attr</span><span class="p">(</span><span class="n">matched</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-
-		<span class="k">def</span> <span class="nf">replace_for</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+		<span class="k">def</span> <span class="nf">replace_for_clsdict</span><span class="p">(</span><span class="n">first</span><span class="p">):</span>
 			<span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="n">matched</span><span class="p">):</span>
-				<span class="c1">#return obj.__getattr__(matched.group(1))</span>
-				<span class="c1">#return getattr(obj, matched.group(1))</span>
-				<span class="k">return</span> <span class="n">find_attr</span><span class="p">(</span><span class="n">matched</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+				<span class="n">attr_name</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">first</span><span class="p">:</span>
+					<span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attr_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> are not allowed in nested replacement when interpreting docstring of class </span><span class="si">%s</span><span class="s2">, &quot;</span>
+							<span class="s2">&quot;try to use BaseClassName.ATTR or _ATTR instead.&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">find_attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+				<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;No bases&quot;</span><span class="p">):</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find </span><span class="si">%s</span><span class="s2"> when interpreting docstring of class </span><span class="si">%s</span><span class="s2">, because the class doesn&#39;t have a baseclass named </span><span class="si">%s</span><span class="s2">.&quot;</span> \
+							<span class="o">%</span> <span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="k">raise</span>
+				<span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find </span><span class="si">%s</span><span class="s2"> when interpreting docstring of class </span><span class="si">%s</span><span class="s2">, please check whether the CONSTANT exists.&quot;</span> \
+						<span class="o">%</span> <span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 			<span class="k">return</span> <span class="n">replace</span>
 
+		<span class="k">def</span> <span class="nf">replace_for</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">first</span><span class="p">):</span>
+			<span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="n">matched</span><span class="p">):</span>
+				<span class="n">attr_name</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">first</span><span class="p">:</span>
+					<span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attr_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> are not allowed in nested replacement when interpreting docstring of class </span><span class="si">%s</span><span class="s2">, &quot;</span>
+							<span class="s2">&quot;try to use BaseClassName.ATTR or _ATTR instead.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="k">return</span> <span class="n">find_attr</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+				<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;No bases&quot;</span><span class="p">):</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find </span><span class="si">%s</span><span class="s2"> when interpreting docstring of </span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">, because the class doesn&#39;t have a baseclass named </span><span class="si">%s</span><span class="s2">.&quot;</span> \
+							<span class="o">%</span> <span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="k">raise</span>
+				<span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find </span><span class="si">%s</span><span class="s2"> when interpreting docstring of </span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">, please check whether the CONSTANT exists.&quot;</span> \
+						<span class="o">%</span> <span class="p">(</span><span class="n">attr_name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">replace</span>
+
+		<span class="c1"># modify class docstring</span>
+		<span class="c1"># first, inherit docstring from bases</span>
 		<span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s1">&#39;__doc__&#39;</span> <span class="ow">in</span> <span class="n">clsdict</span> <span class="ow">and</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]):</span>
 			<span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mro_cls</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span> <span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">mro</span><span class="p">()):</span>
-				<span class="n">doc</span> <span class="o">=</span> <span class="n">mro_cls</span><span class="o">.</span><span class="vm">__doc__</span>
-				<span class="k">if</span> <span class="n">doc</span><span class="p">:</span>
-					<span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span>
+				<span class="c1"># iterate from bases in MRO</span>
+				<span class="k">if</span> <span class="n">mro_cls</span><span class="o">.</span><span class="n">META_DOC</span><span class="p">:</span>
+					<span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mro_cls</span><span class="o">.</span><span class="n">META_DOC</span>
 					<span class="k">break</span>
-		<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># second, subtitute CONSTANT with _ prefix</span>
+		<span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">if</span> <span class="n">clsdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;__doc__&#39;</span><span class="p">):</span>
 			<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-				<span class="n">doc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\b((\w*\.)?[A-Z_]+?)\}&#39;</span><span class="p">,</span> <span class="n">replace_for_clsdict</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">])</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\b((\w*\.)?[A-Z][A-Z_]*?)\}&#39;</span><span class="p">,</span> <span class="n">replace_for_clsdict</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">])</span>
+				<span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]:</span>
+					<span class="k">break</span>
+				<span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span>
+		<span class="c1"># save docstring now as META_DOC, before the final subtitution</span>
+		<span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;META_DOC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clsdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;__doc__&#39;</span><span class="p">)</span>
+		<span class="c1"># final, do substitution for CONSTANT</span>
+		<span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">if</span> <span class="n">clsdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;__doc__&#39;</span><span class="p">):</span>
+			<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\b((\w*\.)?[A-Z_]+?)\}&#39;</span><span class="p">,</span> <span class="n">replace_for_clsdict</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">])</span>
+				<span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
 				<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]:</span>
 					<span class="k">break</span>
 				<span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span>
 
-		<span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">clsdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
-				<span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mro_cls</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span> <span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">mro</span><span class="p">()</span> \
-								<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mro_cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)):</span>
-					<span class="n">doc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">mro_cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">),</span> <span class="s1">&#39;__doc__&#39;</span><span class="p">)</span>
-					<span class="k">if</span> <span class="n">doc</span><span class="p">:</span>
-						<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
-							<span class="n">clsdict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">fget</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">fset</span><span class="p">,</span> \
-													 <span class="n">attribute</span><span class="o">.</span><span class="n">fdel</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
-						<span class="k">else</span><span class="p">:</span>
-							<span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
-						<span class="k">break</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-					<span class="n">doc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\b(((\w*\.)?)[A-Z_]+?)\}&#39;</span><span class="p">,</span> <span class="n">replace_for</span><span class="p">(</span><span class="n">attribute</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-					<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
-						<span class="k">break</span>
+		<span class="n">meta_doc</span> <span class="o">=</span> <span class="n">clsdict</span><span class="p">[</span><span class="s1">&#39;META_DOC_FOR_ATTRIBUTES&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-					<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
-						<span class="c1">#print(attr, attribute, doc)</span>
-						<span class="n">clsdict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">fget</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">fset</span><span class="p">,</span> \
-													<span class="n">attribute</span><span class="o">.</span><span class="n">fdel</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
-					<span class="k">else</span><span class="p">:</span>
-						<span class="c1">#print(attr, attribute, doc)</span>
-						<span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+		<span class="c1"># modify attribute docstring</span>
+		<span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">clsdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="p">(</span><span class="nb">staticmethod</span><span class="p">,</span> <span class="nb">classmethod</span><span class="p">)):</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__func__</span><span class="o">.</span><span class="vm">__doc__</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span>
+			<span class="c1"># first, inherit docstring from bases</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">doc</span><span class="p">:</span>
+				<span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mro_cls</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span> <span class="k">for</span> <span class="n">mro_cls</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">mro</span><span class="p">()</span>
+								<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mro_cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)):</span>
+					<span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mro_cls</span><span class="p">,</span> <span class="s2">&quot;META_DOC_FOR_ATTRIBUTES&quot;</span><span class="p">,</span> <span class="p">{}):</span>
+						<span class="n">doc</span> <span class="o">=</span> <span class="n">mro_cls</span><span class="o">.</span><span class="n">META_DOC_FOR_ATTRIBUTES</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+						<span class="k">break</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+			<span class="c1"># second, subtitute CONSTANT with _ prefix</span>
+			<span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+				<span class="c1"># else do substitution for CONSTANT</span>
+				<span class="n">new_doc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\b(((\w*\.)?)[A-Z][A-Z_]*?)\}&#39;</span><span class="p">,</span> <span class="n">replace_for</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">first</span><span class="p">),</span> <span class="n">doc</span><span class="p">)</span>
+				<span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">new_doc</span><span class="p">:</span>
+					<span class="k">break</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="n">new_doc</span>
+
+			<span class="c1"># save docstring now as META_DOC, before the final subtitution</span>
+			<span class="n">meta_doc</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span>
+
+			<span class="c1"># final, do substitution for CONSTANT</span>
+			<span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+			<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+				<span class="c1"># else do substitution for CONSTANT</span>
+				<span class="n">new_doc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\b(((\w*\.)?)[A-Z_]+?)\}&#39;</span><span class="p">,</span> <span class="n">replace_for</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">first</span><span class="p">),</span> <span class="n">doc</span><span class="p">)</span>
+				<span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">new_doc</span><span class="p">:</span>
+					<span class="k">break</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="n">new_doc</span>
+
+			<span class="c1"># set all doc</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">doc</span><span class="p">:</span>
+				<span class="n">doc</span> <span class="o">=</span> <span class="kc">None</span>
+			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="p">(</span><span class="nb">staticmethod</span><span class="p">,</span> <span class="nb">classmethod</span><span class="p">)):</span>
+				<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__func__</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+					<span class="k">continue</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">attribute</span><span class="o">.</span><span class="vm">__func__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">doc</span> <span class="o">==</span> <span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+					<span class="k">continue</span>
+				<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+					<span class="n">clsdict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+							<span class="n">attribute</span><span class="o">.</span><span class="n">fget</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">fset</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">fdel</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">attribute</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+
 		<span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">clsdict</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LoadClassInterface"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.LoadClassInterface">[docs]</a><span class="k">class</span> <span class="nc">LoadClassInterface</span><span class="p">:</span>
 	<span class="sa">r</span><span class="sd">&quot;&quot;&quot;The support of dynamic class load.&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="LoadClassInterface.get_all_subclasses"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.LoadClassInterface.get_all_subclasses">[docs]</a>	<span class="nd">@classmethod</span>
-	<span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 		<span class="sd">&#39;&#39;&#39;Return a generator of all subclasses.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(generator) A iterator over all subclasses.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
 			<span class="k">yield from</span> <span class="n">subclass</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">()</span>
 			<span class="k">yield</span> <span class="n">subclass</span></div>
 
 <div class="viewcode-block" id="LoadClassInterface.load_class"><a class="viewcode-back" href="../../../_utils.html#cotk._utils.metaclass.LoadClassInterface.load_class">[docs]</a>	<span class="nd">@classmethod</span>
-	<span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
-		<span class="sd">&#39;&#39;&#39;Return a subclass of ``class_name``.</span>
+	<span class="k">def</span> <span class="nf">load_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+		<span class="sd">&#39;&#39;&#39;Return a subclass of ``class_name``, case insensitively.</span>
 
 <span class="sd">		Arguments:</span>
 <span class="sd">			class_name (str): target class name.</span>
-
-<span class="sd">		Returns:</span>
-<span class="sd">			(class) The subclass specified by ``class_name``</span>
 <span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 		<span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all_subclasses</span><span class="p">():</span>
-			<span class="k">if</span> <span class="n">subclass</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">class_name</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">subclass</span>
-		<span class="k">return</span> <span class="kc">None</span></div></div>
+			<span class="k">if</span> <span class="n">subclass</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">class_name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+				<span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="n">result</span> <span class="o">=</span> <span class="n">subclass</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;There are two classes with the name &quot;</span><span class="si">{}</span><span class="s1">&quot; located at &quot;</span><span class="si">{}</span><span class="s1">&quot; and &quot;</span><span class="si">{}</span><span class="s1">&quot;. </span><span class="se">\</span>
+<span class="s1">						You have to remove one of them to make &quot;load_class&quot; work normally.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>\
+						<span class="n">class_name</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">subclass</span><span class="p">)))</span>
+		<span class="k">return</span> <span class="n">result</span></div></div>
+
+<span class="k">def</span> <span class="nf">fix_doc</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+	<span class="n">cls_str</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+	<span class="k">return</span> <span class="n">doc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;self.&quot;</span><span class="p">,</span> <span class="n">cls_str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">copy_func</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">method_name</span><span class="p">):</span>
+	<span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+	<span class="nd">@wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+	<span class="k">def</span> <span class="nf">new_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">method_name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+	<span class="n">new_method</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">fix_doc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">META_DOC_FOR_ATTRIBUTES</span><span class="p">[</span><span class="n">method_name</span><span class="p">],</span> <span class="bp">cls</span><span class="p">)</span> <span class="c1"># type: ignore</span>
+	<span class="k">return</span> <span class="n">new_method</span>
+
+<span class="k">def</span> <span class="nf">copy_property</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">old_property_name</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">new_property_fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">old_property_name</span><span class="p">)</span>
+	<span class="k">def</span> <span class="nf">new_property_fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+		<span class="nb">setattr</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">old_property_name</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+	<span class="k">def</span> <span class="nf">new_property_fdel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="nb">delattr</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">old_property_name</span><span class="p">)</span>
+	<span class="n">doc</span> <span class="o">=</span> <span class="n">fix_doc</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">META_DOC_FOR_ATTRIBUTES</span><span class="p">[</span><span class="n">old_property_name</span><span class="p">],</span> <span class="bp">cls</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">new_property_fget</span><span class="p">,</span> <span class="n">new_property_fset</span><span class="p">,</span> <span class="n">new_property_fdel</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="c1">#type: ignore</span>
 </pre></div>
 
            </div>

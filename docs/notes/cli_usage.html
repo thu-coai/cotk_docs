@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CLI Usage &mdash; cotk  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/cotk_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Extending Cotk: More Data, More Metrics!" href="extend.html" />
+    <link rel="prev" title="Practice: Implement a GRU Language Model" href="tutorial_core.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> cotk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#import">Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#config">Config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-variable">Set Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#show-variable">Show Variable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extend.html">Extending Cotk: More Data, More Metrics!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html#resources-processor">resources_processor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Model Zoo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../models/LanguageGeneration/index.html">LanguageGeneration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/SingleTurnDialog/index.html">SingleTurnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/MultiTurnDialog/index.html">MultiTurnDialog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cotk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>CLI Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notes/cli_usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cli-usage">
+<span id="id1"></span><h1>CLI Usage<a class="headerlink" href="#cli-usage" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">cotk</span></code> provides command line interface.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Usage: cotk &lt;command&gt; [...]
+
+command list:
+import       Import local files to cotk cache.
+config       Set variables at the config file (at ~/.cotk_config).
+</pre></div>
+</div>
+<div class="section" id="import">
+<h2>Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<p>The following command can import a local file of resources into cache:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cotk</span> <span class="kn">import</span> <span class="o">&lt;</span><span class="n">file_id</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file_path</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">file_id</span></code> should start with <code class="docutils literal notranslate"><span class="pre">resources://</span></code>, and <code class="docutils literal notranslate"><span class="pre">file_path</span></code> is the path to the local resource. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cotk</span> <span class="kn">import</span> <span class="nn">resources</span><span class="p">:</span><span class="o">//</span><span class="n">MSCOCO</span> <span class="o">./</span><span class="n">MSCOCO</span><span class="o">.</span><span class="n">zip</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="config">
+<h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h2>
+<p>It can set global variables of the cotk. (Not used yet.)
+An variable should be a string without space.</p>
+<div class="section" id="set-variable">
+<h3>Set Variable<a class="headerlink" href="#set-variable" title="Permalink to this headline">¶</a></h3>
+<p>The variable will be set according to the value.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cotk set &lt;variable&gt; &lt;value&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="show-variable">
+<h3>Show Variable<a class="headerlink" href="#show-variable" title="Permalink to this headline">¶</a></h3>
+<p>The variable will be shown</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cotk show &lt;variable&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="extend.html" class="btn btn-neutral float-right" title="Extending Cotk: More Data, More Metrics!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial_core.html" class="btn btn-neutral float-left" title="Practice: Implement a GRU Language Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, thu-coai
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

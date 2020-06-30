@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
-    <link rel="prev" title="CLI Usage: Fast Model Reproduction" href="tutorial_cli.html" /> 
+    <link rel="prev" title="CLI Usage" href="cli_usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,12 +87,12 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_core.html">Practice: Implement a GRU Language Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_cli.html">CLI Usage: Fast Model Reproduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_usage.html">CLI Usage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extending Cotk: More Data, More Metrics!</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#add-a-new-dataset">Add A New Dataset</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#for-local-use">For local use</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#auto-downloading">Auto downloading</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-a-resouces-name">Use a resouces name</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-local-use">For Local Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-dataset">Download Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#add-a-resource">Add A Resource</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#add-a-new-task">Add A New Task</a></li>
@@ -103,12 +103,12 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_utils.html">_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataloader.html">Data Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../wordvector.html">Word Vector</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metric.html">Metric</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html">file_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../file_utils.html#resources-processor">resources_processor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Model Zoo</span></p>
 <ul>
@@ -182,60 +182,57 @@
             
   <div class="section" id="extending-cotk-more-data-more-metrics">
 <h1>Extending Cotk: More Data, More Metrics!<a class="headerlink" href="#extending-cotk-more-data-more-metrics" title="Permalink to this headline">¶</a></h1>
-<p>We hope <code class="docutils literal notranslate"><span class="pre">cotk</span></code> can adapt to more datasets
-and more tasks. Therefore, we have a repository (TO BE ONLINE)
-to collect any contribution to cotk (<strong>regardless of its quality</strong>).
-Our maintainer will choose modules with high-quality
-and merge them to the main repository.</p>
+<p>We provide easy APIs for extend <code class="docutils literal notranslate"><span class="pre">cotk</span></code> to custom datasets and tasks.</p>
 <div class="section" id="add-a-new-dataset">
 <h2>Add A New Dataset<a class="headerlink" href="#add-a-new-dataset" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="for-local-use">
-<h3>For local use<a class="headerlink" href="#for-local-use" title="Permalink to this headline">¶</a></h3>
+<h3>For Local Use<a class="headerlink" href="#for-local-use" title="Permalink to this headline">¶</a></h3>
 <p>Now you have a new dataset and want to load it with <code class="docutils literal notranslate"><span class="pre">cotk</span></code> and
 the task is similar with the existed tasks, like <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
 <a class="reference internal" href="../dataloader.html#cotk.dataloader.SingleTurnDialog" title="cotk.dataloader.SingleTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.SingleTurnDialog</span></code></a> or <a class="reference internal" href="../dataloader.html#cotk.dataloader.MultiTurnDialog" title="cotk.dataloader.MultiTurnDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MultiTurnDialog</span></code></a>.
 The simplest way is to just adapt the format of your dataset.</p>
 <p>For example, if you want to adapt your data to <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a>,
-you just have to generate 3 text files named <code class="docutils literal notranslate"><span class="pre">mscoco_train.txt</span></code>,
-<code class="docutils literal notranslate"><span class="pre">mscoco_dev.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mscoco_test.txt</span></code>.
-Each file contains several lines and each line is a sentences.
+you just have to generate 3 text files named <code class="docutils literal notranslate"><span class="pre">train.txt</span></code>,
+<code class="docutils literal notranslate"><span class="pre">dev.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">test.txt</span></code>.
+Each file contains several lines and each line is a sentence.
 The structure of your directory should be like:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mscoco
-├── mscoco_train.txt
-├── mscoco_dev.txt
-└── mscoco_test.txt
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mydata
+├── train.txt
+├── dev.txt
+└── test.txt
 </pre></div>
 </div>
-<p>Then you can load your data using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a local path.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;./path/to/mscoco&quot;</span><span class="p">)</span>
+<p>Then you can load your data using <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a> with a local path.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">LanguageGeneration</span><span class="p">(</span><span class="s2">&quot;./path/to/mydata&quot;</span><span class="p">,</span> <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="n">min_frequent_vocab_times</span><span class="p">,</span>
+            <span class="n">max_sent_length</span><span class="o">=</span><span class="n">max_sent_length</span><span class="p">,</span> <span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="n">min_rare_vocab_times</span><span class="p">,</span>
+            <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="n">convert_to_lower_letter</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you want to write your own <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> without changing data format,
+<p class="admonition-title">Note</p>
+<p>If you want to write your own <code class="docutils literal notranslate"><span class="pre">dataloader</span></code> with a complex data format,
 see <a class="reference internal" href="#add-a-new-task">Add A New Task</a>.</p>
 </div>
 </div>
-<div class="section" id="auto-downloading">
-<h3>Auto downloading<a class="headerlink" href="#auto-downloading" title="Permalink to this headline">¶</a></h3>
-<p>If you want to publish your dataset and make them can be
-downloaded automatically. You can zip your data and upload to an server.
-The url path should be accessible for every one.</p>
-<p>Using <a class="reference internal" href="../dataloader.html#cotk.dataloader.MSCOCO" title="cotk.dataloader.MSCOCO"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.MSCOCO</span></code></a> with a url path is adequate for
+<div class="section" id="download-dataset">
+<h3>Download Dataset<a class="headerlink" href="#download-dataset" title="Permalink to this headline">¶</a></h3>
+<p>If you want to publish your dataset and make it possible to download them automatically.
+You can zip your data and upload to an server. The url path should be accessible for every one.</p>
+<p>Using <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageGeneration" title="cotk.dataloader.LanguageGeneration"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataloader.LanguageGeneration</span></code></a> with a url path is adequate for
 the requirements.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;http://url/to/new_data.zip#MSCOCO&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;http://url/to/new_data.zip&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The zip file is downloaded then processed by
-<code class="xref py py-class docutils literal notranslate"><span class="pre">_utils.resource_processor.MSCOCOResourcesProcessor</span></code>.
-For more about <code class="docutils literal notranslate"><span class="pre">ResourcesProcessor</span></code>, refer to <a class="reference internal" href="../resources.html#resources-reference"><span class="std std-ref">this</span></a>.</p>
+<p class="admonition-title">Note</p>
+<p>The zip file is downloaded then processed by
+<code class="xref py py-class docutils literal notranslate"><span class="pre">file_utils.resource_processor.DefaultResourceProcessor</span></code>.
+For more about <code class="docutils literal notranslate"><span class="pre">ResourceProcessor</span></code>, refer to <a class="reference internal" href="../resources.html#resources-reference"><span class="std std-ref">this</span></a>.</p>
 </div>
 </div>
-<div class="section" id="use-a-resouces-name">
-<h3>Use a resouces name<a class="headerlink" href="#use-a-resouces-name" title="Permalink to this headline">¶</a></h3>
-<p>This time, you have to change some codes in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.
+<div class="section" id="add-a-resource">
+<h3>Add A Resource<a class="headerlink" href="#add-a-resource" title="Permalink to this headline">¶</a></h3>
+<p id="resources-desc">This time, you have to change some codes in <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.
 First you have to understand the usage of resources at
 <a class="reference internal" href="../resources.html#resources-reference"><span class="std std-ref">here</span></a>. Then see the json file under
 <code class="docutils literal notranslate"><span class="pre">/cotk/resource_config/</span></code>, you will find each predefined resource
@@ -251,12 +248,12 @@ corresponds to a json file, like</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>There are some places you have to pay attention:</p>
+<p>There are some places you have to pay attention to:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">type</span></code> is the prefix of its <code class="docutils literal notranslate"><span class="pre">ResourcesProcessor</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">link.default</span></code> is necessary when no source is specified.</li>
-<li><code class="docutils literal notranslate"><span class="pre">hashtag</span></code> is required for checksum.</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> is the prefix of its <code class="docutils literal notranslate"><span class="pre">ResourceProcessor</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">link.default</span></code> is necessary when no source is specified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hashtag</span></code> is required for checksum.</p></li>
 </ul>
 </div></blockquote>
 <p>We use the following codes to hash the zip file.</p>
@@ -269,75 +266,82 @@ corresponds to a json file, like</p>
     <span class="k">return</span> <span class="n">hash_sha256</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>After accomplishment the config file, make a <strong>Pull Request</strong> and
-wait for update! And soon you can use the following code to load the data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resouces://new_name&quot;</span><span class="p">)</span>
+<p>After accomplishment the config file, you can use the following code to load the data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataloader</span> <span class="o">=</span> <span class="n">MSCOCO</span><span class="p">(</span><span class="s2">&quot;resources://new_name&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>We highly recommend that the developers make a <strong>Pull Request</strong> and add more datasets for <code class="docutils literal notranslate"><span class="pre">cotk</span></code>.</p>
 </div>
 </div>
 <div class="section" id="add-a-new-task">
 <h2>Add A New Task<a class="headerlink" href="#add-a-new-task" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes you want to deal with a totally different task
 from the predefined ones.
-In that case, you have to implement a subclass of <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessingBase" title="cotk.dataloader.LanguageProcessingBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageProcessingBase</span></code></a>,
-and some necessary function is necessary for your dataloader. You can click
-on the following links for its input and outputs.</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">__init__</span></code></li>
-<li><a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessingBase._load_data" title="cotk.dataloader.LanguageProcessingBase._load_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessingBase._load_data()</span></code></a></li>
-<li><a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessingBase.get_batch" title="cotk.dataloader.LanguageProcessingBase.get_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessingBase.get_batch()</span></code></a></li>
-<li>(Optional) some function like <code class="docutils literal notranslate"><span class="pre">get_metric()</span></code> to define the standard metric.</li>
-</ul>
-<p>For example, we implement a new dataloader for sentence classification.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SentenceClassfication</span><span class="p">(</span><span class="n">LanguageProcessingBase</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_id</span> <span class="o">=</span> <span class="n">file_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">get_resource_file_path</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_invalid_vocab_times</span> <span class="o">=</span> <span class="n">invalid_vocab_times</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Loading dataset, invoked by `LanguageProcessingBase.__init__`</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># You have to generate vocabulary list</span>
-        <span class="n">valid_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">]</span>
-        <span class="n">invalid_vocab</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;notcommonwords&quot;</span><span class="p">]</span>
-        <span class="n">vocab_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span> <span class="o">+</span> <span class="n">valid_vocab</span> <span class="o">+</span> <span class="n">invalid_vocab</span>
-        <span class="n">valid_vocab_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ext_vocab</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_vocab</span><span class="p">)</span>
-
-        <span class="c1"># In any format you like, just store data here for &quot;get_batch&quot;</span>
-        <span class="c1"># But we do recommand convert all sentences in to index form</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="p">[([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">)],</span>
-                    <span class="c1"># &quot;hello world&quot; for label 0</span>
-                    <span class="c1"># &quot;world hello&quot; for label 1</span>
-            <span class="s2">&quot;dev&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
-            <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="o">...</span>
-        <span class="p">}</span>
-
-        <span class="n">data_size</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;train&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1"># 2 samples in train_set</span>
-            <span class="s2">&quot;dev&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
-            <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="o">...</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="n">vocab_list</span><span class="p">,</span> <span class="n">valid_vocab_len</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_size</span>
-
-
-    <span class="k">def</span> <span class="nf">get_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get a batch of specified `index`.&#39;&#39;&#39;</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sent&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="p">[]}</span>
-
-        <span class="c1"># use the &quot;self.data&quot; you have stored</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
-            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sent&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="c1"># the return value is exactly what you will get when ``get_batches`` is called</span>
-        <span class="c1"># may be you want to do padding before return</span>
-        <span class="k">return</span> <span class="n">res</span>
+In that case, you have to implement a subclass of <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessing" title="cotk.dataloader.LanguageProcessing"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageProcessing</span></code></a>,
+and pass the parameters <code class="docutils literal notranslate"><span class="pre">file_id</span></code> and <code class="docutils literal notranslate"><span class="pre">fields</span></code> when invoking <code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessing.__init__()</span></code>.
+For more details about <code class="docutils literal notranslate"><span class="pre">file_id</span></code>, refer <a class="reference internal" href="../resources.html#resources-reference"><span class="std std-ref">this</span></a>.
+For more details about <code class="docutils literal notranslate"><span class="pre">fields</span></code>, refer <a class="reference internal" href="../dataloader.html#dataloader-reference"><span class="std std-ref">this</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the method <code class="docutils literal notranslate"><span class="pre">__init__</span></code> of your own dataloader class, <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessing.set_default_field" title="cotk.dataloader.LanguageProcessing.set_default_field"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessing.set_default_field()</span></code></a> must be
+called. If <code class="docutils literal notranslate"><span class="pre">self.default_field_set_name</span></code> and <code class="docutils literal notranslate"><span class="pre">self.default_field_name</span></code> are not set, some methods and properties
+(such as <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessing.tokenize" title="cotk.dataloader.LanguageProcessing.tokenize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LanguageProcessing.tokenize()</span></code></a>, <a class="reference internal" href="../dataloader.html#cotk.dataloader.LanguageProcessing.all_vocab_size" title="cotk.dataloader.LanguageProcessing.all_vocab_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LanguageProcessing.all_vocab_size</span></code></a>, etc.) aren’t available.</p>
+</div>
+<p>For example, you can implement a new dataloader for sentence classification.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">cotk.dataloader</span> <span class="kn">import</span> <span class="n">LanguageProcessing</span>
+<span class="kn">from</span> <span class="nn">cotk.dataloader.context</span> <span class="kn">import</span> <span class="n">FieldContext</span><span class="p">,</span> <span class="n">VocabContext</span>
+<span class="k">class</span> <span class="nc">SentenceClassification</span><span class="p">(</span><span class="n">LanguageProcessing</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">max_sent_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;sent&#39;</span><span class="p">,</span> <span class="s1">&#39;SentenceDefault&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;DenseLabel&#39;</span><span class="p">)])</span>
+        <span class="k">with</span> <span class="n">FieldContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
+                                            <span class="n">max_sent_length</span><span class="o">=</span><span class="n">max_sent_length</span><span class="p">,</span>
+                                            <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="n">convert_to_lower_letter</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">VocabContext</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">min_rare_vocab_times</span><span class="o">=</span><span class="n">min_rare_vocab_times</span><span class="p">,</span>
+                                                <span class="n">min_frequent_vocab_times</span><span class="o">=</span><span class="n">min_frequent_vocab_times</span><span class="p">):</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_field</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;sent&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Assume that there is a directory named <code class="docutils literal notranslate"><span class="pre">mydata</span></code>, which contains 3 text files (<code class="docutils literal notranslate"><span class="pre">train.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">dev.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">test.txt</span></code>) in the same format.
+For example, the content of <code class="docutils literal notranslate"><span class="pre">test.txt</span></code> is as follows. Each sentence is followed by an integer (the label), just as <code class="docutils literal notranslate"><span class="pre">fields</span></code> specifies.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>effective but too-tepid biopic.
+2
+if you sometimes like to go to the movies to have fun, wasabi is a good place to start.
+3
+emerges as something rare, an issue movie that&#39;s so honest and keenly observed that it doesn&#39;t feel like one.
+4
+the film provides some great insight into the neurotic mindset of all comics -- even those who have reached the absolute top of the game.
+2
+offers that rare combination of entertainment and education.
+4
+</pre></div>
+</div>
+<p>Then, you can use <code class="docutils literal notranslate"><span class="pre">SentenceClassification</span></code> to build the dataloader.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dl</span> <span class="o">=</span> <span class="n">SentenceClassification</span><span class="p">(</span><span class="s2">&quot;mydata&quot;</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="s2">&quot;nltk&quot;</span><span class="p">,</span> <span class="n">convert_to_lower_letter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">dl</span><span class="o">.</span><span class="n">restart</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dl</span><span class="o">.</span><span class="n">get_next_batch</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The returned value of <code class="docutils literal notranslate"><span class="pre">dl.get_next_batch</span></code> is as follows.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;sent_length&#39;</span><span class="o">:</span> <span class="nx">array</span><span class="p">([</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">23</span><span class="p">]),</span>
+<span class="s1">&#39;sent&#39;</span><span class="o">:</span> <span class="nx">array</span><span class="p">([[</span>  <span class="mi">2</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">31</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>   <span class="mi">5</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>
+    <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span>  <span class="mi">2</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>   <span class="mi">4</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>  <span class="mi">62</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">12</span><span class="p">,</span>   <span class="mi">8</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>   <span class="mi">5</span><span class="p">,</span>   <span class="mi">3</span><span class="p">]]),</span>
+<span class="s1">&#39;sent_allvocabs&#39;</span><span class="o">:</span> <span class="nx">array</span><span class="p">([[</span>  <span class="mi">2</span><span class="p">,</span> <span class="mi">138</span><span class="p">,</span>  <span class="mi">31</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span>  <span class="mi">11</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">129</span><span class="p">,</span>   <span class="mi">5</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>
+    <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span>  <span class="mi">2</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span> <span class="mi">149</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>   <span class="mi">4</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>  <span class="mi">62</span><span class="p">,</span> <span class="mi">146</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">,</span> <span class="mi">198</span><span class="p">,</span>  <span class="mi">12</span><span class="p">,</span>   <span class="mi">8</span><span class="p">,</span> <span class="mi">151</span><span class="p">,</span> <span class="mi">174</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span> <span class="mi">186</span><span class="p">,</span>   <span class="mi">5</span><span class="p">,</span>   <span class="mi">3</span><span class="p">]]),</span>
+<span class="s1">&#39;sent_str&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;effective but too-tepid biopic.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;if you sometimes like to go to the movies to have fun, wasabi is a good place to start.&#39;</span><span class="p">],</span>
+<span class="s1">&#39;label&#39;</span><span class="o">:</span> <span class="nx">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -348,9 +352,9 @@ metric class inheriting the <a class="reference internal" href="../metric.html#c
 <p>Here are some necessary functions you must implement. You can click on
 the link to find more details.</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></li>
-<li><a class="reference internal" href="../metric.html#cotk.metric.MetricBase.forward" title="cotk.metric.MetricBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.forward()</span></code></a></li>
-<li><a class="reference internal" href="../metric.html#cotk.metric.MetricBase.close" title="cotk.metric.MetricBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.close()</span></code></a></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+<li><p><a class="reference internal" href="../metric.html#cotk.metric.MetricBase.forward" title="cotk.metric.MetricBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.forward()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../metric.html#cotk.metric.MetricBase.close" title="cotk.metric.MetricBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MetricBase.close()</span></code></a></p></li>
 </ul>
 <p>Here we give an example for calculating the average length of generated
 sentences.</p>
@@ -365,23 +369,26 @@ sentences.</p>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">gen</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">gen_key</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">gen</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_index</span><span class="p">(</span><span class="n">sent</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataloader</span><span class="o">.</span><span class="n">trim_in_ids</span><span class="p">(</span><span class="n">sent</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sent_num</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;len_avg&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sent_num</span><span class="p">}</span>
+        <span class="n">metric_result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">metric_result</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;len_avg&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_num</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sent_num</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">metric_result</span>
 </pre></div>
 </div>
-<p>There is some regulation to design an metric.</p>
+<p>There is some regulations to design an metric.</p>
 <ul class="simple">
-<li>Choosing <a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">allvocabs</span></a> for reference.</li>
-<li>Dealing with <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, which should be regarded as error or
-using some methods to do smoothing. Pay atention the difference
+<li><p>Using <a class="reference internal" href="../dataloader.html#vocabulary-ref"><span class="std std-ref">allvocabs</span></a> for reference.</p></li>
+<li><p>Dealing with <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code>, which should be regarded as error or
+using some methods to do smoothing. Pay attention to the connections
 between <code class="docutils literal notranslate"><span class="pre">&lt;unk&gt;</span></code> and
-<a class="reference internal" href="../dataloader.html#vocab-ref"><span class="std std-ref">unknown vocabularies</span></a>.</li>
-<li>Record hash value. Hash value equal if and only if the metric is tested
-under the same settings. (In our case, there is no hash value
-because we don’t have input and the setting is always the same)</li>
+<a class="reference internal" href="../dataloader.html#vocabulary-ref"><span class="std std-ref">rare vocabularies</span></a>.</p></li>
+<li><p>Record hash value. Hash value keeps the same if and only if the metric is tested
+under the same settings. <a class="reference internal" href="../metric.html#cotk.metric.MetricBase._hash_unordered_list" title="cotk.metric.MetricBase._hash_unordered_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">metric.MetricBase._hash_unordered_list()</span></code></a> records unordered information. <a class="reference internal" href="../metric.html#cotk.metric.MetricBase._hash_ordered_data" title="cotk.metric.MetricBase._hash_ordered_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">metric.MetricBase._hash_ordered_data()</span></code></a> records the ordered information.
+<a class="reference internal" href="../metric.html#cotk.metric.MetricBase._hashvalue" title="cotk.metric.MetricBase._hashvalue"><code class="xref py py-meth docutils literal notranslate"><span class="pre">metric.MetricBase._hashvalue()</span></code></a> returns the hash value.
+(In the example, there is no hash value because we don’t have input and the setting is always the same)</p></li>
 </ul>
 </div>
 </div>
@@ -397,7 +404,7 @@ because we don’t have input and the setting is always the same)</li>
         <a href="FAQ.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorial_cli.html" class="btn btn-neutral float-left" title="CLI Usage: Fast Model Reproduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cli_usage.html" class="btn btn-neutral float-left" title="CLI Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

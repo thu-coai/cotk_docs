@@ -20,7 +20,7 @@ your models fairly with baselines.
    notes/installation
    notes/quickstart
    notes/tutorial_core
-   notes/tutorial_cli
+   notes/cli_usage
    notes/extend
    notes/FAQ
 
@@ -28,12 +28,11 @@ your models fairly with baselines.
    :maxdepth: 2
    :caption: Package Reference
 
-   _utils
    dataloader
    wordvector
    metric
    resources
-   downloader
+   file_utils
 
 .. _model_zoo:
 
@@ -52,3 +51,4 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
+

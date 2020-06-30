@@ -4,7 +4,7 @@ import time
 
 from utils import SummaryHelper
 from utils.basic_decoder import MyBasicDecoder
-
+from cotk._utils import trim_before_target
 
 class CVAEModel(object):
 	def __init__(self, data, args, embed):
@@ -39,7 +39,7 @@ class CVAEModel(object):
 			# build the embedding table and embedding input
 			if embed is None:
 				# initialize the embedding randomly
-				self.word_embed = tf.get_variable('word_embed', [data.vocab_size, args.word_embedding_size], tf.float32)
+				self.word_embed = tf.get_variable('word_embed', [data.frequent_vocab_size, args.word_embedding_size], tf.float32)
 			else:
 				# initialize the embedding by pre-trained word vectors
 				self.word_embed = tf.get_variable('word_embed', dtype=tf.float32, initializer=embed)
@@ -95,7 +95,7 @@ class CVAEModel(object):
 		with tf.name_scope("decode"):
 			# get output projection function
 			dec_init_fn = tf.layers.Dense(args.dh_size, use_bias=True)
-			output_fn = tf.layers.Dense(data.vocab_size, use_bias=True)
+			output_fn = tf.layers.Dense(data.frequent_vocab_size, use_bias=True)
 
 			with tf.name_scope("training"):
 				decoder_input = responses_dec_input
@@ -120,7 +120,7 @@ class CVAEModel(object):
 					self.anneal_KL_loss = self.KL_weight * self.KL_loss
 
 					bow_logits = tf.layers.dense(tf.layers.dense(dec_init_fn_input, 400, activation=tf.tanh),\
-												 data.vocab_size)
+												 data.frequent_vocab_size)
 					tile_bow_logits = tf.tile(tf.expand_dims(bow_logits, 1), [1, decoder_len, 1])
 					bow_loss = self.decoder_mask * tf.nn.sparse_softmax_cross_entropy_with_logits(\
 						logits=tile_bow_logits,\
@@ -145,7 +145,7 @@ class CVAEModel(object):
 																		scope="decoder_rnn")
 				self.decoder_distribution = infer_outputs.rnn_output
 				self.generation_index = tf.argmax(tf.split(self.decoder_distribution,
-														   [2, data.vocab_size - 2], 2)[1], 2) + 2  # for removing UNK
+														   [2, data.frequent_vocab_size - 2], 2)[1], 2) + 2  # for removing UNK
 
 		# calculate the gradient of parameters and update
 		self.params = [k for k in tf.trainable_variables() if args.name in k.name]
@@ -223,10 +223,10 @@ class CVAEModel(object):
 		for i, speaker in enumerate(raw_batch['posts_length']):
 			batch['contexts_length'].append(len(raw_batch['posts_length'][i]))
 
-			if raw_batch['posts_length'][i]:
+			if len(raw_batch['posts_length'][i]) > 0:
 				max_post_len = max(max_post_len, max(raw_batch['posts_length'][i]))
-			batch['posts_length'].append(raw_batch['posts_length'][i] + \
-										 [0] * (max_cxt_size - len(raw_batch['posts_length'][i])))
+			batch['posts_length'].append(np.concatenate([raw_batch['posts_length'][i],
+										 np.array([0] * (max_cxt_size - len(raw_batch['posts_length'][i])))], 0))
 
 		batch['contexts'] = raw_batch['contexts'][:, :, :max_post_len]
 		batch['responses'] = raw_batch['responses'][:, :np.max(raw_batch['responses_length'])]
@@ -237,18 +237,18 @@ class CVAEModel(object):
 			invoked by ^SwitchboardCorpus.split_session^
 		'''
 		raw_batch = {'posts_length': [], 'responses_length': []}
-		for i in range(len(batch_data['turn_length'])):
+		for i in range(len(batch_data['session_turn_length'])):
 			raw_batch['posts_length'].append( \
-				batch_data['sent_length'][i][start: end - 1])
-			turn_len = len(batch_data['sent_length'][i])
+				batch_data['session_sent_length'][i][start: end - 1])
+			turn_len = len(batch_data['session_sent_length'][i])
 			if end - 1 < turn_len:
 				raw_batch['responses_length'].append( \
-					batch_data['sent_length'][i][end - 1])
+					batch_data['session_sent_length'][i][end - 1])
 			else:
 				raw_batch['responses_length'].append(1)
 
-		raw_batch['contexts'] = batch_data['sent'][:, start: end - 1]
-		raw_batch['responses'] = batch_data['sent'][:, end - 1]
+		raw_batch['contexts'] = batch_data['session'][:, start: end - 1]
+		raw_batch['responses'] = batch_data['session'][:, end - 1]
 		return self._pad_batch(raw_batch)
 
 	def split_session(self, batch_data, session_window, inference=False):
@@ -275,7 +275,7 @@ class CVAEModel(object):
 					Size: ^[batch_size]^
 
 		'''
-		max_turn = np.max(batch_data['turn_length'])
+		max_turn = np.max(batch_data['session_turn_length'])
 		ends = list(range(2, max_turn + 1))
 		if not inference:
 			np.random.shuffle(ends)
@@ -301,7 +301,7 @@ class CVAEModel(object):
 		batch_data = data.get_next_batch('multi_ref')
 		while batch_data is not None:
 			batch = self._cut_batch_data(batch_data,\
-							0, np.max(batch_data['turn_length']))
+							0, np.max(batch_data['session_turn_length']))
 			batch['candidate_allvocabs'] = batch_data['candidate_allvocabs']
 			yield batch
 			batch_data = data.get_next_batch('multi_ref')
@@ -437,7 +437,7 @@ class CVAEModel(object):
 		cnt = 0
 		start_time = time.time()
 		while batched_data != None:
-			conv_data = [{'contexts': [], 'responses': [], 'generations': []} for _ in range(len(batched_data['turn_length']))]
+			conv_data = [{'contexts': [], 'responses': [], 'generations': []} for _ in range(len(batched_data['session_turn_length']))]
 			for cut_batch_data in self.split_session(batched_data, args.session_window, inference=True):
 				eval_out = self.step_decoder(sess, cut_batch_data, forward_only=True)
 				decoder_loss, gen_prob = eval_out[:6], eval_out[-1]
@@ -502,15 +502,6 @@ class CVAEModel(object):
 		return {key: val for key, val in res.items() if key not in ['reference', 'gen']}
 
 	def test_multi_ref(self, sess, data, word2vec, args):
-		def process_cands(candidates):
-			res = []
-			for cands in candidates:
-				tmp = []
-				for sent in cands:
-					tmp.append([data.go_id] + \
-						[wid if wid < data.vocab_size else data.unk_id for wid in sent] + [data.eos_id])
-				res.append(tmp)
-			return res
 		prec_rec_metrics = data.get_multi_ref_metric(generated_num_per_context=args.repeat_N, word2vec=word2vec)
 		for batch_data in self.multi_reference_batches(data, args.batch_size):
 			responses = []
@@ -522,11 +513,11 @@ class CVAEModel(object):
 						responses.append([])
 					# if data.eos_id in resp:
 					# 	resp = resp[:resp.index(data.eos_id)]
-					resp = data.trim(resp)
+					resp = trim_before_target(resp,data.eos_id)
 					if len(resp) == 0:
 						resp = [data.unk_id]
 					responses[rid].append(resp + [data.eos_id])
-			metric_data = {'candidate_allvocabs': process_cands(batch_data['candidate_allvocabs']), 'multiple_gen_key': responses}
+			metric_data = {'candidate_allvocabs': batch_data['candidate_allvocabs'], 'multiple_gen_key': responses}
 			prec_rec_metrics.forward(metric_data)
 
 		res = prec_rec_metrics.close()
